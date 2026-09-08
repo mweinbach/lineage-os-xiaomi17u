@@ -90,8 +90,8 @@ class CameraOptServiceSelectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         values = result.stdout.splitlines()
         self.assertEqual(values[0].split(), ["miui-cameraopt", "nezha-cameraopt-service"])
-        self.assertEqual(values[1].split(), ["services", "org.lineageos.platform", "miui-cameraopt",
-                                           "nezha-cameraopt-service"])
+        self.assertEqual(values[1].split(), ["services", "org.lineageos.platform", "system_ext:miui-cameraopt",
+                                           "system_ext:nezha-cameraopt-service"])
         self.assertEqual(values[2].split(), ["ro.nezha.cameraopt.service=true"])
         self.assertEqual(values[3].split(), ["device/xiaomi/nezha/cameraopt-service/overlay"])
         self.assertEqual(values[4].split(), ["device/xiaomi/nezha/cameraopt-service/sepolicy/public"])
@@ -138,7 +138,8 @@ class CameraOptServiceSelectionTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("TARGET_DEVICE=nezha", result.stderr)
         for entry in ("miui-cameraopt", "nezha-cameraopt-service", "platform:miui-cameraopt",
-                      "platform:nezha-cameraopt-service"):
+                      "platform:nezha-cameraopt-service", "system_ext:miui-cameraopt",
+                      "system_ext:nezha-cameraopt-service"):
             with self.subTest(entry=entry):
                 result = self.run_fragment("true", existing_classpath="services " + entry)
                 self.assertNotEqual(result.returncode, 0)

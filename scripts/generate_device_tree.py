@@ -34,7 +34,7 @@ except ImportError:
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
 CAMERAOPT_SERVICE_FRAGMENT = DEVICE_PATH / "cameraopt-service.mk"
-CAMERAOPT_SERVICE_FRAGMENT_SHA256 = "eecdd1702479ca7b12cddfa068087d32b89f4102ac1958815e5fd6b6cde682c8"
+CAMERAOPT_SERVICE_FRAGMENT_SHA256 = "15ead13db047761f6151dcc5e36ee2b9c154da5b5ce9b8355af85cbcee46100c"
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",

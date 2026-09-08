@@ -29,11 +29,12 @@ endif
 ifneq ($(strip $(NEZHA_CAMERA_AUX_PACKAGES)),true)
 $(error NEZHA_CAMERAOPT_SERVICE requires NEZHA_CAMERA_AUX_PACKAGES=true)
 endif
-ifneq ($(filter miui-cameraopt nezha-cameraopt-service platform:miui-cameraopt platform:nezha-cameraopt-service,$(PRODUCT_SYSTEM_SERVER_JARS)),)
+ifneq ($(filter miui-cameraopt nezha-cameraopt-service platform:miui-cameraopt platform:nezha-cameraopt-service system_ext:miui-cameraopt system_ext:nezha-cameraopt-service,$(PRODUCT_SYSTEM_SERVER_JARS)),)
 $(error NEZHA_CAMERAOPT_SERVICE requires exclusive ownership of its system-server classpath entries)
 endif
 PRODUCT_PACKAGES += miui-cameraopt nezha-cameraopt-service
-PRODUCT_SYSTEM_SERVER_JARS += miui-cameraopt nezha-cameraopt-service
+# Explicit partition qualifiers also set the runtime and dexpreopt locations.
+PRODUCT_SYSTEM_SERVER_JARS += system_ext:miui-cameraopt system_ext:nezha-cameraopt-service
 PRODUCT_SYSTEM_PROPERTIES += ro.nezha.cameraopt.service=true
 PRODUCT_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/cameraopt-service/overlay
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(NEZHA_DEVICE_PATH)/cameraopt-service/sepolicy/public
