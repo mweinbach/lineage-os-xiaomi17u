@@ -78,11 +78,11 @@ The source candidate comprises five explicit, default-disabled selections:
 
 | Contract | Intended behavior | Remaining proof |
 | --- | --- | --- |
-| [JPEG_R default](../config/nezha-camera-jpegr-default.json) | Initialize the measured factory enable value earlier | Generated property and first-session boot result |
-| [Auxiliary packages](../config/nezha-camera-aux-packages.json) | Expose auxiliary IDs to the bundled Xiaomi and Aperture apps | Combined build list and app captures |
-| [Platform camera input](../config/nezha-camera-platform-signed.json) | Normal Android platform-signing path using unchanged factory APK inputs | Final signature/content, package-data transition, installed grants and labels |
-| [CameraOpt native compatibility](../config/nezha-cameraopt-native-compat.json) | Supply the measured query-only `get_cpuset_policy` import | Final artifact checks, JNI loading and initialization |
-| [CameraOpt service](../config/nezha-cameraopt-service.json) | Publish the original Binder interface with the complete original verifier and bounded authored services | Final classpath/API retention checks, Enforcing startup, native verification and actual Xiaomi use |
+| [JPEG_R default](../config/nezha-camera-jpegr-default.json) | Initialize the measured factory enable value earlier | First-session boot behavior on the successor |
+| [Auxiliary packages](../config/nezha-camera-aux-packages.json) | Expose auxiliary IDs to the bundled Xiaomi and Aperture apps | Installed auxiliary visibility and app captures |
+| [Platform camera input](../config/nezha-camera-platform-signed.json) | Normal Android platform-signing path using unchanged factory APK inputs | Installed signer/data transition, grants and labels |
+| [CameraOpt native compatibility](../config/nezha-cameraopt-native-compat.json) | Supply the measured query-only `get_cpuset_policy` import | JNI loading and initialization |
+| [CameraOpt service](../config/nezha-cameraopt-service.json) | Publish the original Binder interface with the complete original verifier and bounded authored services | Enforcing startup, native verification and actual Xiaomi use |
 
 The CameraOpt candidate retains the original platform-signature check, native
 cached result and boot-completed callback. Its implemented request surfaces
@@ -139,9 +139,9 @@ passed all 3,339 actions as `20260908T003851-userdebug`, again preserving the
 exact 652-row source inventory. Its archive and Super were transferred with
 matching guest/host hashes. The unsigned archive passed the Camera APK, JAR/API,
 classpath, native dependency and packaged configuration checks. Effective
-split-policy compilation passed. Signed images are verified; final archive and
-bundle verification remain pending. The installed phone
-remains v8; no successor installation or Xiaomi capture is established.
+split-policy compilation passed. Signing, archive reconciliation and independent
+eight-image bundle verification also passed. The installed phone remains v8;
+no successor installation or Xiaomi capture is established.
 
 A separate [compiled-component audit](../reports/camera-completion-20260907/component-artifacts-revision-3/component-verification.json)
 verified ten stable outputs. The Camera APK uses the same platform signer as
@@ -149,7 +149,8 @@ framework-res and preserves all 9,491 original non-signature entries. Built
 services.jar retains the public helper constructor and five methods; the
 adapter implements all 28 original Binder signatures, and the original factory
 JAR remains byte-identical. The compiled service resource and native query
-export also passed. These checks will be repeated against the final archive.
+export also passed. All Camera APK, JAR/API, classpath and native checks passed
+again against the final signed archive.
 
 The [read-only pre-flash preservation record](../reports/camera-completion-20260907/xiaomi-app/preflash-transition-v9/backup-manifest.json)
 retains Camera's two private data directories and file metadata. Both archive
@@ -167,6 +168,26 @@ fails the same 16 complete rule pairs as v8, with no new conflict and no added
 policy exception. Runtime labels, constraints, service access and global kernel
 enforcement still require the successor device test.
 
+The completed v9 candidate is retained at
+[`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/`](../artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/).
+Its eight payloads use the established shared-Super and seven slot-A image
+route. The [bundle manifest](../artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/manifest.json)
+has SHA256 `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958`.
+The reconciled signed target-files archive has SHA256
+`d38d841c96893f24cfa8068101612da2b62bac63a7aa8fa645611dc41ece854e`.
+Signing preserved working76 and all 14 retained leaf images. The final signed
+configuration binding verifies 272 image files and all 98 audited policy files
+against the compiled unsigned inputs.
+
+The [read-only final preflight](../reports/camera-completion-20260907/final-preflight/receipt.json)
+reconfirms v8, slot A, Enforcing, Camera app ID 10422 and the existing bundled
+system Camera. Its separate review retains `flash_authorized=false` and
+`reboot_authorized=false`. Explicit bundle-specific approval and fresh fastboot
+preflight are required before installation. The prepared route retains userdata,
+does not change slots, and includes no uninstall, clear-data or automatic restore.
+V8 and its signed bundle remain preserved. This private bundle is not an OTA
+installer.
+
 The [high-resolution source investigation](../reports/camera-completion-20260907/raw-highres/highres-mode-plan.md)
 identifies current Pixel/AlgoUp session mode `0x9004`; `0x80f3` is the legacy
 route. Mode-specific tables offer 8192×6144 wide/ultrawide and 8160×6144 telephoto
@@ -179,6 +200,6 @@ The ignored evidence is indexed through the structured record, including the
 physical RAW matrix, both extension matrices, independent artifact/gain-map
 audits, Aperture verification receipts, Bokeh log proof and candidate source
 handoff. Preserve the installed v8 and retained v7 rollback evidence while
-the remaining build and device gates are completed. The final app cleanup
+the remaining device gates are completed. The final app cleanup
 records effect None, RAW off, Ultra HDR on, USB stay-awake off and camera
 stopped, with v8, slot A and Enforcing reconfirmed.

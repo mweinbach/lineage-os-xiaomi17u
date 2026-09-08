@@ -2,8 +2,8 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "Measured v8 capture progress; revision 3 Android component build and final offline suite passed; full target-files archive and camera acceptance incomplete",
-  "verification_scope": "Retained v8 device capture receipts, independent host artifact/hash/decode checks, reviewed successor source and successful affected Android component compilation. Full target-files archive and successor runtime acceptance remain pending.",
+  "status": "Measured v8 capture progress; v9 full build, signed archive and eight-image bundle verified; explicit installation approval and complete camera acceptance pending",
+  "verification_scope": "Retained v8 device captures and independent artifact/decode checks; v9 source, full Android build, signed archive, Camera APK/JAR/native/configuration/policy checks and bundle verification. Read-only preflight confirms v8 remains installed. Successor runtime and complete camera acceptance remain unverified.",
   "complete_camera_acceptance": false,
   "baseline": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v8",
@@ -1141,7 +1141,7 @@
     "source_findings_are_capture_results": false
   },
   "source_candidate": {
-    "status": "revision 3 full build and unsigned archive/policy gates passed; signed images verified, archive reconciliation and bundle pending",
+    "status": "v9 built, signed, reconciled and eight-image bundle verified; read-only Android preflight complete; explicit installation approval pending",
     "first_installed_build": "nezha.af6d7a77320c30b10d63afd4",
     "first_installed_rows": 652,
     "first_installed_changed_files": 41,
@@ -1154,8 +1154,8 @@
     "android_component_build_passed": true,
     "first_component_build_failure": "TARGET_DEVICE was unset when the service fragment evaluated during early dumpvars. The next revision is correcting the selector guard.",
     "revision_2_source_installed": true,
-    "final_runtime_artifact_validation_passed": false,
-    "successor_apk_signed": null,
+    "final_runtime_artifact_validation_passed": true,
+    "successor_apk_signed": true,
     "successor_flashed": false,
     "successor_runtime_verified": false,
     "source_contracts": [
@@ -1206,9 +1206,9 @@
     "unsupported_oneway_behavior": "Server-side diagnostics and counters; no synchronous negative client acknowledgment. Unported APIs are not assumed unused.",
     "process_policy_scope": "Temporary camera OOM cap; full MIUI native boost/reclamation and post-close work model are not implemented.",
     "prelaunch_event_producer_integrated": false,
-    "platform_signing_stage": "Stable completed component APK is signed by the same platform certificate as framework-res; all 9491 original non-signature entries match. Final target-files binding, installed package-data transition, grants and labels remain separate checks.",
+    "platform_signing_stage": "Final signed target-files Camera APK has the same signer as final framework-res and all 9491 original non-signature payload entries. Installed signer/data transition, grants, labels, original verifier result and capture remain unverified.",
     "jpegr_default_limit": "Fresh persistent-property store only. Existing persisted values override the build default; a stored zero is not migrated. Current v8 captures used the existing factory initializer.",
-    "retained_shrinker_requirement": "Stable built services.jar retains the public helper constructor and five public concrete methods. Final packaged method definitions still require verification.",
+    "retained_shrinker_requirement": "Final signed archive services.jar retains the public helper constructor and five public concrete methods; compiled CameraOptBinder has all 28 exact factory interface prototypes.",
     "selected_source_build": "nezha.393aae12fba9ebe8627cdc38",
     "selected_source_rows": 652,
     "revision_2_changed_files": 1,
@@ -1277,7 +1277,7 @@
     "dexpreopt_disabled": false,
     "module_partitions_changed": false,
     "classloader_arrangement_changed": false,
-    "successor_apk_signing_verified": false,
+    "successor_apk_signing_verified": true,
     "android_component_build_actions": 498,
     "android_component_build_receipt": {
       "path": "reports/camera-completion-20260907/component-build-receipts/receipt.json",
@@ -1322,7 +1322,7 @@
     "component_source_rows": 652,
     "full_target_files_build_status": "passed",
     "full_target_files_build_run_id": "20260908T003851-userdebug",
-    "full_target_files_archive_verified": false,
+    "full_target_files_archive_verified": true,
     "component_artifact_verification": {
       "status": "passed for stable copied component outputs",
       "receipt": {
@@ -1432,6 +1432,21 @@
       "new_conflicts": false,
       "policy_exceptions_added": false,
       "successor_runtime_verified": false
+    },
+    "final_signed_camera_artifacts": {
+      "path": "reports/camera-completion-20260907/signed-artifact-verification/verification.json",
+      "size_bytes": 14494,
+      "sha256": "fee2468222cbfd15946ce4ebd59f1e60923a9cd9f3b8eddcaad7c555f3f7306f"
+    },
+    "final_signed_native_artifacts": {
+      "path": "reports/camera-completion-20260907/native-artifacts-revision-3/signed-target-files-binding.json",
+      "size_bytes": 16713,
+      "sha256": "43ccb891fe756550e968690cc7b2d16eca4e1b9d326fdb9348e24d19f8a8522a"
+    },
+    "final_signed_configuration_policy_binding": {
+      "path": "reports/camera-completion-20260907/config-artifacts-revision-3/signed-archive-v9/signed-configuration-policy-binding.json",
+      "size_bytes": 79944,
+      "sha256": "64ad199b4b811f92f0784d25c4f1ae36d989293e36d2bb7059e30d9306485621"
     }
   },
   "tests": {
@@ -1584,9 +1599,9 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Complete full target-files archive and final classpath/API ownership, shrinker retention, strict uses-library and native import artifact checks.",
+    "Explicit v9 flash/reboot approval, fresh fastboot preflight and the prepared slot-A/shared-Super installation without wipe or slot change.",
     "Original CameraOpt initialization/verdict, full required API behavior and a saved Xiaomi Camera capture while Enforcing.",
-    "Successor package signing and explicitly reviewed installed signer/app-data transition, installed grants and labels.",
+    "Measure installed platform signer, retained Camera app ID/data, grants and labels on the successor before app acceptance.",
     "First-session JPEG_R behavior for the selected boot default and combined auxiliary-package selection.",
     "50 MP and 200 MP vendor capture, resolution-table discrepancy, native full-resolution readout, RAW + 200 MP and processed Ultra RAW.",
     "Useful image quality and mode-specific effect behavior beyond the retained capture/decode windows."
@@ -1713,5 +1728,76 @@
       "sha256": "125cba5111d88755ee412b537198544e833ce76b2d6a5c1ce00aaba7c2257466"
     }
   ],
-  "privacy": "Tracked record contains derived measurements, hashes and ignored evidence paths. Original images, raw logs, proprietary bytes, serials and personal media contents are not embedded."
+  "privacy": "Tracked record contains derived measurements, hashes and ignored evidence paths. Original images, raw logs, proprietary bytes, serials and personal media contents are not embedded.",
+  "successor_delivery": {
+    "set": "v9",
+    "build_number": "nezha.393aae12fba9ebe8627cdc38",
+    "signed_archive": {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v9/reconciled-v1/target-files.zip",
+      "sha256": "d38d841c96893f24cfa8068101612da2b62bac63a7aa8fa645611dc41ece854e",
+      "size_bytes": 11145221325
+    },
+    "signing_receipt": {
+      "path": "reports/variant-opt-in-20260906/v9-signing.json",
+      "size_bytes": 1212,
+      "sha256": "ad608c216854a086feb6a553410761278b40b943bccff2f4f83aca75e7e43dcf"
+    },
+    "bundle_path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9",
+    "bundle_manifest": {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/manifest.json",
+      "size_bytes": 7522,
+      "sha256": "9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958"
+    },
+    "bundle_receipt": {
+      "path": "reports/variant-opt-in-20260906/v9-bundle.json",
+      "size_bytes": 405,
+      "sha256": "9222c4e5b3b7df49b538a34eefc1c1d35a93cc0cb7c38ff352f663c28b036ec2"
+    },
+    "bundle_verified": true,
+    "payload_roles": [
+      "super",
+      "dtbo",
+      "init_boot",
+      "vendor_boot",
+      "recovery",
+      "boot",
+      "vbmeta_system",
+      "vbmeta"
+    ],
+    "recovery_working76_preserved": true,
+    "unchanged_leaf_images": 14,
+    "camera_artifact_receipt": {
+      "path": "reports/camera-completion-20260907/signed-artifact-verification/verification.json",
+      "size_bytes": 14494,
+      "sha256": "fee2468222cbfd15946ce4ebd59f1e60923a9cd9f3b8eddcaad7c555f3f7306f"
+    },
+    "native_artifact_receipt": {
+      "path": "reports/camera-completion-20260907/native-artifacts-revision-3/signed-target-files-binding.json",
+      "size_bytes": 16713,
+      "sha256": "43ccb891fe756550e968690cc7b2d16eca4e1b9d326fdb9348e24d19f8a8522a"
+    },
+    "configuration_policy_receipt": {
+      "path": "reports/camera-completion-20260907/config-artifacts-revision-3/signed-archive-v9/signed-configuration-policy-binding.json",
+      "size_bytes": 79944,
+      "sha256": "64ad199b4b811f92f0784d25c4f1ae36d989293e36d2bb7059e30d9306485621"
+    },
+    "read_only_preflight": {
+      "path": "reports/camera-completion-20260907/final-preflight/receipt.json",
+      "size_bytes": 1353,
+      "sha256": "4aaa96834a1d6ba856d01cf67670dc0ed38c3e3db45fcd9f3ea55b775a7b550e"
+    },
+    "pending_android_review": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/android-reviewed.json",
+      "size_bytes": 902,
+      "sha256": "6973781df54f757c91db8ef47a546e3414aa29b02fbed04b1514a695facff9da"
+    },
+    "expected_phone_predecessor": "nezha.f2e3feac321f56f92d2ad7ea",
+    "target_slot": "a",
+    "userdata_retained": true,
+    "slot_change": false,
+    "flash_authorized": false,
+    "reboot_authorized": false,
+    "installed": false,
+    "fastboot_preflight_after_approval_required": true
+  }
 }
