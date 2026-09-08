@@ -9,6 +9,14 @@ photos, main/telephoto 50 MP, telephoto 200 MP, Pro RAW, three physical RAW
 sensors and all ten warm Aperture Ultra HDR effects pass. See the
 [v13 installation and validation record](camera-v13-install-validation-20260908.md).
 
+**Prepared, not installed: v14 (`nezha.98d08f70d20e5a87a2777f81`, source
+revision 11, 672 rows).** It removes only the stale `SystemUIClocks-Flex`
+product selection whose pre-QPR2 plugin interface crashes Wallpaper & style;
+see the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md).
+Its signed archive and eight-image bundle pass the v13 gates plus a
+member-by-member archive comparison, and the seven camera/audio components are
+byte-identical to v13. Installing it needs a fresh explicit approval.
+
 Source revision 10 is `nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows.
 Its component/full build, signed archive and eight-image bundle pass their
 checks, recorded in the [v13 package](camera-v13-package-20260908.md).
@@ -84,9 +92,11 @@ The [v13 runtime record](camera-v13-install-validation-20260908.md) is the curre
 phone evidence. The [source behavior record](camera-bayer-audio-compat-20260908.md)
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
-verification remain separate evidence. After the runtime record was added,
-`make test-current` passes 939 tests in 28.142 seconds and `make test` passes
-4,892 tests in 193.203 seconds plus shell checks.
+verification remain separate evidence. The Linux checkout now holds source
+revision 11 (`nezha.98d08f70d20e5a87a2777f81`): revision 10 plus the
+`vendor/extras/evolution.mk` Flex removal. After the v14 record was added,
+`make test-current` passes 939 tests in 28.336 seconds and `make test` passes
+4,907 tests in 194.692 seconds plus shell checks.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -109,7 +119,9 @@ verification remain separate evidence. After the runtime record was added,
    selection when the evidence warrants it. Phone collection and changes need
    the authorized device and scope. The explicit v13 approval
    covered its installation, reboot, camera/audio/video tests and root diagnostics without
-   a wipe or slot change. It does not authorize flashing the next bundle.
+   a wipe or slot change. It does not authorize flashing the next bundle,
+   including the prepared v14 (`nezha.98d08f70d20e5a87a2777f81`, manifest
+   SHA256 `b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0`).
 
 For recovery changes, use `make recovery-build` and the
 [working recovery instructions](../recovery/twrp-working/README.md). This
@@ -131,9 +143,14 @@ successor ROM boot chain or OTA behavior.
   48 kHz mono AAC audio fully decode with a measured nonzero audio signal.
   Other video resolutions/rates/modes, microphone response, playback quality
   and sustained recording remain unverified.
-- **Wallpaper process:** Separate crashes before camera validation report a
-  missing `ClockProviderPlugin` dependency. This failure remains unresolved;
-  the completed camera capture checks have unchanged crash buffers.
+- **Wallpaper process:** The installed v13 still crashes Wallpaper & style
+  with a missing `ClockProviderPlugin` dependency. The measured cause is the
+  stale `SystemUIClocks-Flex` prebuilt (pre-QPR2 plugin package with a bundled
+  interface copy); v14 drops that product selection while SystemUI's default
+  provider keeps the Flex clock. The fix is built, signed and bundled but not
+  installed; opening Wallpaper & style, clock customization and fresh crash
+  buffers on v14 remain the device gate. See the
+  [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md).
 
 - **Retained userdata, UDFPS and shade:** Camera apps opened and new JPEGs were written after dismissing the keyguard; retained personal userdata, UDFPS authentication and shade visual acceptance remain unverified.
   The user confirmed fingerprint enrollment on a6d; f9e loaded the measured

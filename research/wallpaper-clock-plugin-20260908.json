@@ -1,0 +1,533 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-wallpaper-clock-plugin-20260908",
+  "document": "docs/wallpaper-clock-plugin-20260908.md",
+  "status": "Root cause measured; source revision 11 built, packaged, signed and bundled as delivery set v14; not installed",
+  "build_number": "nezha.98d08f70d20e5a87a2777f81",
+  "delivery_set": "v14",
+  "installed_predecessor": "nezha.2c510f47f6d99b93f0c3ee11",
+  "installed": false,
+  "flash_authorized": false,
+  "reboot_authorized": false,
+  "phone_accessed": false,
+  "wallpaper_fix_verified_on_device": false,
+  "failure": {
+    "process": "com.google.android.apps.wallpaper",
+    "exception": "com.android.systemui.shared.plugins.VersionInfo$InvalidVersionException: Missing required dependency ClockProviderPlugin",
+    "saved_trace": {
+      "path": "reports/camera-completion-20260907/v13-validation/wallpaper-interruption/crash.log",
+      "sha256": "073c8a2514e62f49ce925c744d6fdd5bbb6d66161f2e20f8a4a8772025f4aca0",
+      "size_bytes": 14631
+    },
+    "crash_count_in_saved_trace": 4,
+    "also_present_in": [
+      "research/camera-v9-install-validation-20260908.json",
+      "research/camera-v12-install-validation-20260908.json"
+    ]
+  },
+  "diagnosis": {
+    "wallpaper_app": {
+      "module": "WallpaperPickerGoogleRelease",
+      "project": "vendor/gms",
+      "revision": "89c3940a77298c204c55a21efded92ddafb59fe9",
+      "gms_source": "stallion CP1A.260505.005",
+      "overrides": [
+        "ThemePicker",
+        "WallpaperPicker",
+        "WallpaperPicker2",
+        "WallpaperCropper"
+      ],
+      "sha256": "15889abf03630a1a89a3228b799ae04b17f135ec564282de368b68278b028506"
+    },
+    "systemui_source_interface": "frameworks/base/packages/SystemUI/plugin/src/com/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin.kt",
+    "host_interface_descriptor": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;",
+    "flex_interface_descriptor": "Lcom/android/systemui/plugins/clocks/ClockProviderPlugin;",
+    "interface_package_move": {
+      "project": "frameworks/base",
+      "commit": "c5d2b0fd639d2aa8593881e7e1ecd7a3d7767499",
+      "date": "2025-08-06",
+      "subject": "Move package of LockscreenElement and related classes"
+    },
+    "class_loader_rule": "PluginInstance.ClassLoaderFilter delegates com.android.systemui.plugin* names to the host; a name the host lacks falls through to the plugin's own DEX, so Flex resolves its bundled copy and VersionInfo.checkVersion leaves the host's required class unmatched.",
+    "vendor_history": [
+      {
+        "commit": "a79459f42c0d",
+        "date": "2023-10-22",
+        "subject": "extras: Add SystemUI clock styles from husky-ap1a.240405.002"
+      },
+      {
+        "commit": "f7062b323390",
+        "date": "2025-11-18",
+        "subject": "extras: SystemUIClocks: Update to mustang BD3A.251105.010.E1",
+        "note": "last commit that changed SystemUIClocks-Flex.apk"
+      },
+      {
+        "commit": "156bf76438e3",
+        "date": "2026-01-08",
+        "subject": "extras: SystemUIClocks: Update to mustang BP4A.260205.001",
+        "note": "refreshed the other seven clocks and re-enabled Weather; Flex was not updated"
+      }
+    ],
+    "retained_flex_apk": {
+      "module": "SystemUIClocks-Flex",
+      "package": "com.android.systemui.clocks.flex",
+      "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Flex/SystemUIClocks-Flex.apk",
+      "sha256": "89a6993654d84c591689e522643ffbfc9669a510b5da6d781692df900961d878",
+      "size_bytes": 1399817,
+      "import_block_unchanged": true
+    },
+    "kept_clock_plugins": {
+      "BigNum": {
+        "sha256": "840210231d999760a8dc559b3f2c2cf7610c18a7167154bd8dc1bfc4c48cfdd1",
+        "size_bytes": 2280611,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      },
+      "Calligraphy": {
+        "sha256": "806f98e783bb3378dfa172d3e6c27a40b689b9b07c6a108e428ce0a90b1a77e3",
+        "size_bytes": 2258085,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      },
+      "Growth": {
+        "sha256": "1813297234391d92389304b096b47e3441972fad12de8b1d1b5450a9408533b5",
+        "size_bytes": 2266263,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      },
+      "Inflate": {
+        "sha256": "35ec04bf12fb1af87666af3cd8a8b06b7b34caeef64c037c6f0e119bd5132827",
+        "size_bytes": 2258076,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      },
+      "Metro": {
+        "sha256": "fe2825acf00a4ef424de1851c97665951bb11b7467587538276a327131bc05f0",
+        "size_bytes": 3367860,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      },
+      "NumOverlap": {
+        "sha256": "e9109c21c392e004d5334572beab9118e52351f27853363e04b79b7da1929838",
+        "size_bytes": 2364588,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      },
+      "Weather": {
+        "sha256": "f2c14fbfd35614364d07e42b0614c709724382fd8a09f5fdb68e9b8cf285d4b3",
+        "size_bytes": 2434383,
+        "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+      }
+    },
+    "device_log_observations": {
+      "systemui_disabling_flex_lines": 11,
+      "systemui_clock_id_conflict": "ClockRegistry (System): Clock Id conflict on attach: DIGITAL_CLOCK_FLEX is double registered by com.android.systemui.shared.clocks.DefaultClockProvider and the Flex PluginInstance",
+      "systemui_plugin_protector": "PluginProtector: Wasn't able to wrap com.android.systemui.clocks.FlexClockProvider",
+      "source": "retained v9 through v13 device logs under reports/, not redistributed"
+    },
+    "v13_audits": {
+      "built_tree": {
+        "receipt": {
+          "path": "reports/wallpaper-clock-plugin-20260908/v13-out-tree-audit.json",
+          "sha256": "a65e5693a0791d59fa8e98c89c0e4fa3a6add356eea0bf679bfb0bfd94946386",
+          "size_bytes": 6605
+        },
+        "passed": false,
+        "hosts": 2,
+        "plugins": 8,
+        "failures": [
+          "plugin_interface_not_provided_by_host",
+          "plugin_bundles_interface_copy"
+        ]
+      },
+      "transferred_archive": {
+        "receipt": {
+          "path": "reports/wallpaper-clock-plugin-20260908/v13-archive-audit.json",
+          "sha256": "f57b410355187da76c013941adf887868e66546e13a4a49913d51241bc976c7d",
+          "size_bytes": 7943
+        },
+        "passed": false,
+        "hosts": 4,
+        "plugins": 8,
+        "packaged_apks_scanned": 195,
+        "failures": [
+          "plugin_interface_not_provided_by_host",
+          "plugin_bundles_interface_copy"
+        ],
+        "hosts_found": [
+          "ColumbusService.apk",
+          "NexusLauncherRelease.apk",
+          "SystemUI.apk",
+          "WallpaperPickerGoogleRelease.apk"
+        ]
+      }
+    },
+    "ruled_out": [
+      "missing clock plugin APK",
+      "wrong wallpaper package selection",
+      "ClockProviderPlugin VERSION number mismatch",
+      "SystemUI plugin allowlist"
+    ]
+  },
+  "source_change": {
+    "contract": {
+      "path": "config/systemui-clocks-flex-removal.json",
+      "sha256": "96f105ca82370fccc6c7ceafd7c489d405eee9d776c62be286de12b0610bac51",
+      "size_bytes": 6695
+    },
+    "patch": {
+      "path": "patches/evolution/0039-remove-stale-systemui-clocks-flex.patch",
+      "sha256": "dd332a12b5672b0cf0248d30a0c028d8f2b6788c065ef29f2bc5d1d612912052",
+      "size_bytes": 7743
+    },
+    "file": "vendor/extras/evolution.mk",
+    "before_sha256": "247015dc34d77625e9fba96def23c07a79722c4d711a876cc6eafc7969e133fb",
+    "after_sha256": "00cec0caeff933975b06fc5cd4a53b6b0b39cf7557bfd0ef497aeea44b692ec5",
+    "source_revision": 11,
+    "source_rows": 672,
+    "changed_files": 1,
+    "preserved_predecessor_rows": 671,
+    "source_receipt": {
+      "path": "reports/wallpaper-clock-plugin-20260908/source-revision-11/source-installed.json",
+      "sha256": "2227c605583e78d261bb4019c8f0a19dc057cf806980a4352f2eb1330301c484",
+      "size_bytes": 168705
+    },
+    "cohort_admission": {
+      "path": "reports/wallpaper-clock-plugin-20260908/source-revision-11/cohort-admission.json",
+      "sha256": "b43726573a2f74de88f713915274747048a9290918b674838f2aba5f1a01e5b6",
+      "size_bytes": 3335
+    },
+    "pre_adoption_tests": {
+      "test_current": {
+        "log": {
+          "path": "reports/wallpaper-clock-plugin-20260908/tests-before-source/test-current.log",
+          "sha256": "e6de6b2aa45f966deece6183083af145ecee43fc720d0140b60be0d94e41e1d1",
+          "size_bytes": 177298
+        },
+        "tests": 939,
+        "seconds": 27.447,
+        "passed": true
+      },
+      "make_test": {
+        "log": {
+          "path": "reports/wallpaper-clock-plugin-20260908/tests-before-source/make-test.log",
+          "sha256": "625695c81753128c1eaa652879d58340e34b0922586e58246f53e0f702a69f2b",
+          "size_bytes": 872394
+        },
+        "tests": 4905,
+        "seconds": 188.394,
+        "passed": true
+      }
+    }
+  },
+  "build": {
+    "preflight": {
+      "path": "reports/wallpaper-clock-plugin-20260908/build-preflight.json",
+      "sha256": "e948e6b1d302e915c96f6ef30c480f41e717a87bbd6dd5b560711b03a7d28e18",
+      "size_bytes": 456
+    },
+    "space_recovery": {
+      "path": "reports/wallpaper-clock-plugin-20260908/duplicate-space-recovery.json",
+      "sha256": "08a971b283ac8ca06f5f065df2bc4b477fc8193cb59a397d8efb332540f087f9",
+      "size_bytes": 849
+    },
+    "guest_run": "/work/out/nezha-feature-fixes-20260905-v1",
+    "goals": [
+      "target-files-package"
+    ],
+    "variant": "userdebug",
+    "exit_code": 0,
+    "build_log": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-full-build.log",
+      "sha256": "01de8a67f5cd1bbc9b019eb080402d91a23bbdf93e54c104fc2e0b1d4b0ecbbb",
+      "size_bytes": 523089
+    },
+    "build_tree_check": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-full-run/build-tree-check.json",
+      "sha256": "84715b4a049069a178cf24870111e466f4616f7d345025105406690761f19903",
+      "size_bytes": 1654
+    },
+    "product_packages_clocks": [
+      "SystemUIClocks-BigNum",
+      "SystemUIClocks-Calligraphy",
+      "SystemUIClocks-Growth",
+      "SystemUIClocks-Inflate",
+      "SystemUIClocks-Metro",
+      "SystemUIClocks-NumOverlap",
+      "SystemUIClocks-Weather"
+    ],
+    "staged_clock_apks": [
+      "SystemUIClocks-BigNum.apk",
+      "SystemUIClocks-Calligraphy.apk",
+      "SystemUIClocks-Growth.apk",
+      "SystemUIClocks-Inflate.apk",
+      "SystemUIClocks-Metro.apk",
+      "SystemUIClocks-NumOverlap.apk",
+      "SystemUIClocks-Weather.apk"
+    ]
+  },
+  "package": {
+    "package_receipt": {
+      "path": "reports/variant-opt-in-20260906/v14-package-receipt.json",
+      "sha256": "072ef97298b1b6bf8ce818b8ca9d82a186c05a12d8e34d8bbb00f31ea57d00fd",
+      "size_bytes": 1062
+    },
+    "transfer_receipt": {
+      "path": "reports/variant-opt-in-20260906/v14-transfer.json",
+      "sha256": "f95acbcbfea0bfdc7ce6be5d4dabb9ff6f46df8612fcf297c985295e1a2460c0",
+      "size_bytes": 1404
+    },
+    "unsigned_archive": {
+      "sha256": "bc786fe393208bf66f61d37aaed78bcb61fc6c7c1cd498f43cdecb4b89297a11",
+      "size_bytes": 11321504578
+    },
+    "super": {
+      "sha256": "7a3b95ac3f0a88f17b428f1742abd0898513b927d298e7a3e0c0790697d8c41a",
+      "size_bytes": 9475836016
+    },
+    "admission": {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v14-admit/admission.json",
+      "sha256": "8d5eec4d9ac72489225e12ad9726989d8318ec0dab16a6c7206116623f3b97ac",
+      "size_bytes": 7096
+    },
+    "host_measured_system_ext": {
+      "sha256": "e14912d3645357c8ee8a525eea439c63cd9b55164d30a5f8c466a86f05756598",
+      "size_bytes": 791797760
+    },
+    "signing_receipt": {
+      "path": "reports/variant-opt-in-20260906/v14-signing.json",
+      "sha256": "7554512dcb3190f9329351e70399002110f2e55496a3cc5ea3d44ca40ed15c36",
+      "size_bytes": 1216
+    },
+    "signed_archive": {
+      "sha256": "fee3f8e03fef7ca7c29faf63d492d28d99c72be47dc93ddc05eafd90e9bd390d",
+      "size_bytes": 11143860576
+    },
+    "bundle_receipt": {
+      "path": "reports/variant-opt-in-20260906/v14-bundle.json",
+      "sha256": "a7d1b50f9239e8d0746eb8c18951e952db201ddd43a79a2396e8a6304572c18c",
+      "size_bytes": 407
+    },
+    "bundle_manifest_sha256": "b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0",
+    "bundle_path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14",
+    "bundle_payloads": 8,
+    "bundle_status": "byte-identities-verified-not-device-admitted-not-flash-ready",
+    "delivery_plan": {
+      "path": "reports/variant-opt-in-20260906/v14-delivery-plan.json",
+      "sha256": "df86fbabd33879ffeb83ad9b08ad580c9800fba13f7d826fa59cf9723851c487",
+      "size_bytes": 14668
+    }
+  },
+  "verification": {
+    "unsigned": {
+      "component_binding": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-unsigned-component-binding.json",
+        "sha256": "0ac2cc118966471baf0e067f9fbc1a60c78ce8099a7bab07fa27722d3a6fd024",
+        "size_bytes": 6724
+      },
+      "archive_diff": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-unsigned-archive-diff.json",
+        "sha256": "8d2dc235da0a170d66ebc034dc0564e2fcc76ad2b1fae02fee6e2fb954f81345",
+        "size_bytes": 1878
+      },
+      "clock_plugin_audit": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-unsigned-clock-plugin-audit.json",
+        "sha256": "788cfc5f87e822ad8b907593f1422d913ef00879651ebb7eb0d7696ec8cfde6e",
+        "size_bytes": 7183
+      },
+      "camera": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-unsigned-camera/verification.json",
+        "sha256": "328277d33240ebe124f07465d316dc50074aa8ab5df9c6d3920df7826303d506",
+        "size_bytes": 14628
+      },
+      "native": {
+        "path": "reports/wallpaper-clock-plugin-20260908/native-artifacts-v14/unsigned-binding.json",
+        "sha256": "ec9caf81852f535d50c271efab664447fe4c871d35a7cef593b1c200bb200b2d",
+        "size_bytes": 16777
+      },
+      "configuration": {
+        "path": "reports/wallpaper-clock-plugin-20260908/config-artifacts-v14/archive-v14-verified/configuration-verification.json",
+        "sha256": "386761a295a5a7ba724670a3ed268ab8a1a2e19592d4446b5569706ad5f77eb6",
+        "size_bytes": 154461
+      },
+      "policy_gate": {
+        "path": "reports/wallpaper-clock-plugin-20260908/config-artifacts-v14/policy-gate-v14-final.json",
+        "sha256": "f0a650038bf9dc7ea44154d2fe426a2259f0907ae6156f2c3700d64e74522aa2",
+        "size_bytes": 2098
+      }
+    },
+    "signed": {
+      "component_binding": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-signed-component-binding.json",
+        "sha256": "fb006f2a4ee08ad7baf8c1361871a64fe1d2ba92b33bdc0907bf980c7e8fad86",
+        "size_bytes": 6708
+      },
+      "archive_diff": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-signed-archive-diff.json",
+        "sha256": "926d518b7c262f92b880a7dde0fc3002e1dad3586b630d68463dc5ec1dabcd85",
+        "size_bytes": 1846
+      },
+      "clock_plugin_audit": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-signed-clock-plugin-audit.json",
+        "sha256": "788cfc5f87e822ad8b907593f1422d913ef00879651ebb7eb0d7696ec8cfde6e",
+        "size_bytes": 7183
+      },
+      "camera": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-signed-camera/verification.json",
+        "sha256": "2364a9384e51000bd9e7a3ec89817f99ac363d11d557dd3d90d15d8ef2b5c6b2",
+        "size_bytes": 14600
+      },
+      "native": {
+        "path": "reports/wallpaper-clock-plugin-20260908/native-artifacts-v14/signed-binding.json",
+        "sha256": "8080cf0452985d4acc6638d7d104c34e785a4c4c5faddb6332f1236326dcaf64",
+        "size_bytes": 16761
+      },
+      "configuration": {
+        "path": "reports/wallpaper-clock-plugin-20260908/config-artifacts-v14/signed-v14-verified/signed-configuration-policy-binding.json",
+        "sha256": "5e153a0cdd557aca2d8be26370fe2a581df46280550479cc5bb4cb330b3acc69",
+        "size_bytes": 79987
+      }
+    },
+    "archive_diff_summary": {
+      "unsigned": {
+        "previous_members": 9070,
+        "members": 9068,
+        "removed": [
+          "SYSTEM_EXT/priv-app/SystemUIClocks-Flex/",
+          "SYSTEM_EXT/priv-app/SystemUIClocks-Flex/SystemUIClocks-Flex.apk"
+        ],
+        "added": [],
+        "changed": 19,
+        "identical": 9049
+      },
+      "signed": {
+        "previous_members": 9070,
+        "members": 9068,
+        "removed": [
+          "SYSTEM_EXT/priv-app/SystemUIClocks-Flex/",
+          "SYSTEM_EXT/priv-app/SystemUIClocks-Flex/SystemUIClocks-Flex.apk"
+        ],
+        "added": [],
+        "changed": 19,
+        "identical": 9049
+      }
+    },
+    "archive_changed_members_unsigned": [
+      "BOOT/RAMDISK/system/etc/ramdisk/build.prop",
+      "IMAGES/init_boot.img",
+      "IMAGES/product.img",
+      "IMAGES/system.img",
+      "IMAGES/system_dlkm.img",
+      "IMAGES/system_ext.img",
+      "IMAGES/system_ext.map",
+      "IMAGES/vbmeta.img",
+      "IMAGES/vbmeta_system.img",
+      "IMAGES/vendor_dlkm.img",
+      "INIT_BOOT/RAMDISK/system/etc/ramdisk/build.prop",
+      "META/care_map.pb",
+      "META/system_ext_filesystem_config.txt",
+      "META/vbmeta_digest.txt",
+      "PRODUCT/etc/build.prop",
+      "SYSTEM/build.prop",
+      "SYSTEM_DLKM/etc/build.prop",
+      "SYSTEM_EXT/etc/build.prop",
+      "VENDOR_DLKM/etc/build.prop"
+    ],
+    "clock_plugin_audit_summary": {
+      "unsigned": {
+        "passed": true,
+        "hosts": 4,
+        "plugins": 7,
+        "host_interfaces": [
+          "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+        ],
+        "expect_absent": [
+          "SystemUIClocks-Flex"
+        ],
+        "expect_present": [
+          "SystemUIClocks-BigNum",
+          "SystemUIClocks-Calligraphy",
+          "SystemUIClocks-Growth",
+          "SystemUIClocks-Inflate",
+          "SystemUIClocks-Metro",
+          "SystemUIClocks-NumOverlap",
+          "SystemUIClocks-Weather",
+          "WallpaperPickerGoogleRelease",
+          "SystemUI"
+        ]
+      },
+      "signed": {
+        "passed": true,
+        "hosts": 4,
+        "plugins": 7,
+        "host_interfaces": [
+          "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+        ],
+        "expect_absent": [
+          "SystemUIClocks-Flex"
+        ],
+        "expect_present": [
+          "SystemUIClocks-BigNum",
+          "SystemUIClocks-Calligraphy",
+          "SystemUIClocks-Growth",
+          "SystemUIClocks-Inflate",
+          "SystemUIClocks-Metro",
+          "SystemUIClocks-NumOverlap",
+          "SystemUIClocks-Weather",
+          "WallpaperPickerGoogleRelease",
+          "SystemUI"
+        ]
+      }
+    },
+    "camera_baseline_components_identical_to_v13": [
+      "SYSTEM/bin/cameraserver",
+      "SYSTEM/framework/framework.jar",
+      "SYSTEM/framework/framework-res.apk",
+      "PRODUCT/app/Aperture/Aperture.apk",
+      "SYSTEM/lib64/libandroid_runtime.so",
+      "SYSTEM/lib64/libaudio_aidl_conversion_common_cpp.so",
+      "SYSTEM/lib64/libaudio_aidl_conversion_common_ndk.so"
+    ],
+    "clock_and_host_apks_identical_to_v13": [
+      "SYSTEM_EXT/priv-app/SystemUIClocks-BigNum/SystemUIClocks-BigNum.apk",
+      "SYSTEM_EXT/priv-app/SystemUIClocks-Calligraphy/SystemUIClocks-Calligraphy.apk",
+      "SYSTEM_EXT/priv-app/SystemUIClocks-Growth/SystemUIClocks-Growth.apk",
+      "SYSTEM_EXT/priv-app/SystemUIClocks-Inflate/SystemUIClocks-Inflate.apk",
+      "SYSTEM_EXT/priv-app/SystemUIClocks-Metro/SystemUIClocks-Metro.apk",
+      "SYSTEM_EXT/priv-app/SystemUIClocks-NumOverlap/SystemUIClocks-NumOverlap.apk",
+      "SYSTEM_EXT/priv-app/SystemUIClocks-Weather/SystemUIClocks-Weather.apk",
+      "SYSTEM_EXT/priv-app/WallpaperPickerGoogleRelease/WallpaperPickerGoogleRelease.apk",
+      "SYSTEM_EXT/priv-app/SystemUI/SystemUI.apk"
+    ],
+    "policy": {
+      "identical_policy_files": 98,
+      "permissive_domains": [
+        "su"
+      ],
+      "strict_new_violations": false
+    }
+  },
+  "tests": {
+    "admission_test_current": {
+      "log": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-admission-test-current.log",
+        "sha256": "dcdcfc4edb4fe6008c7e862ab1801e7efe9a86f8d633470f2b26920b25b04b08",
+        "size_bytes": 177298
+      },
+      "tests": 939,
+      "seconds": 29.245,
+      "passed": true
+    },
+    "admission_make_test": {
+      "log": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-admission-make-test.log",
+        "sha256": "82490904bf890289ba4f1492754fcb3118306d0c689801ddcc53a0dc4481ac75",
+        "size_bytes": 872394
+      },
+      "tests": 4905,
+      "seconds": 194.765,
+      "passed": true
+    }
+  },
+  "remaining": [
+    "Install v14 to slot A over the shared-super route only after separate explicit approval; no wipe, slot change or data clear is part of this fix.",
+    "On the phone: open Wallpaper & style, enter wallpaper and lock-screen clock customization, pick a Pixel clock and return to the previous clock, then read fresh crash and SystemUI buffers.",
+    "Repeat the v13 camera regression subset after installation; this package changes only the system_ext product selection, but runtime behavior is unverified until measured.",
+    "The Flex APK, its Android.bp import and allowlist entries remain in the tree; a future upstream refresh can restore the module if a QPR2-compatible Flex plugin appears."
+  ],
+  "privacy": "Proprietary APKs, raw logs, images and keys stay under ignored directories; only hashes, counts and descriptor names are recorded here."
+}

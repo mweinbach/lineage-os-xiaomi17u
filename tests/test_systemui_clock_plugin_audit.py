@@ -193,3 +193,39 @@ class ContractTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RecordTests(unittest.TestCase):
+    """Tie the sanitized v14 record to the contract and patch it claims."""
+    RECORD = ROOT / "research/wallpaper-clock-plugin-20260908.json"
+
+    def test_record_pins_recompute_from_tracked_files(self):
+        record = json.loads(self.RECORD.read_text())
+        contract = json.loads(CONTRACT.read_text())
+        for pin in (record["source_change"]["contract"], record["source_change"]["patch"]):
+            raw = (ROOT / pin["path"]).read_bytes()
+            self.assertEqual((hashlib.sha256(raw).hexdigest(), len(raw)), (pin["sha256"], pin["size_bytes"]), pin["path"])
+        self.assertEqual(record["source_change"]["before_sha256"], contract["files"]["evolution.mk"]["before_sha256"])
+        self.assertEqual(record["source_change"]["after_sha256"], contract["files"]["evolution.mk"]["after_sha256"])
+        self.assertEqual(record["diagnosis"]["host_interface_descriptor"], "L" + NEW[1:])
+        self.assertEqual(record["diagnosis"]["flex_interface_descriptor"], OLD)
+        self.assertEqual(record["diagnosis"]["retained_flex_apk"], contract["retained_flex_apk"])
+
+    def test_record_keeps_device_gates_open_and_only_flex_removed(self):
+        record = json.loads(self.RECORD.read_text())
+        self.assertFalse(record["installed"] or record["flash_authorized"] or record["phone_accessed"]
+                         or record["wallpaper_fix_verified_on_device"])
+        self.assertRegex(record["build_number"], r"^nezha\.[0-9a-f]{24}$")
+        self.assertNotEqual(record["build_number"], record["installed_predecessor"])
+        for phase in ("unsigned", "signed"):
+            summary = record["verification"]["archive_diff_summary"][phase]
+            self.assertEqual(summary["removed"], ["SYSTEM_EXT/priv-app/SystemUIClocks-Flex/",
+                                                  "SYSTEM_EXT/priv-app/SystemUIClocks-Flex/SystemUIClocks-Flex.apk"])
+            self.assertEqual(summary["added"], [])
+            self.assertEqual(summary["previous_members"] - summary["members"], 2)
+            self.assertEqual(summary["identical"] + summary["changed"] + 2, summary["previous_members"])
+            audit_summary = record["verification"]["clock_plugin_audit_summary"][phase]
+            self.assertTrue(audit_summary["passed"])
+            self.assertEqual((audit_summary["plugins"], audit_summary["host_interfaces"]), (7, ["L" + NEW[1:]]))
+        self.assertEqual(sorted(record["diagnosis"]["kept_clock_plugins"]), sorted(KEPT_CLOCKS))
+        self.assertEqual(record["source_change"]["source_rows"], record["source_change"]["preserved_predecessor_rows"] + 1)

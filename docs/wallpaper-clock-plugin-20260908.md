@@ -81,3 +81,94 @@ absent and the seven kept clocks and both hosts are present.
 [Thirteen offline tests](../tests/test_systemui_clock_plugin_audit.py) exercise
 the classifier and archive scan on synthetic APKs, reconstruct both source
 files from the full-file patch, and reject a tampered patch.
+
+## Source revision 11 and build
+
+Source revision 11 is `nezha.98d08f70d20e5a87a2777f81`, with 672 recorded rows:
+all 671 revision-10 rows preserved byte for byte plus the new
+`vendor/extras/evolution.mk` row. Before adoption `make test-current` passed
+939 tests and `make test` passed 4,905 tests. The guest transaction checked
+every baseline row and the `vendor/extras` HEAD (`c401d732`) before writing
+the one file, and its receipt is
+`reports/wallpaper-clock-plugin-20260908/source-revision-11/source-installed.json`.
+
+Preflight verified aarch64, case-sensitive ext4, the pinned manifest and the
+sole `evolution-nezha-work` writer. The guest's copy of the verified v13 super
+image was removed only after it and both host copies rehashed identically;
+that restored the 200 GiB build threshold. The userdebug `target-files-package`
+build ran in the existing `/work/out/nezha-feature-fixes-20260905-v1` output
+and closed with exit 0 in about fourteen minutes; source bytes were verified
+unchanged before and after. The build tree lists exactly the seven kept clock
+modules, stages no Flex directory, and carries the new incremental identity.
+
+## Package checks
+
+The unsigned archive is 11,321,504,578 bytes, SHA256
+`bc786fe393208bf66f61d37aaed78bcb61fc6c7c1cd498f43cdecb4b89297a11`; the
+sparse super image is 9,475,836,016 bytes, SHA256
+`7a3b95ac3f0a88f17b428f1742abd0898513b927d298e7a3e0c0790697d8c41a`.
+
+A member-by-member comparison against the transferred v13 archive shows 9,049
+identical members, exactly two removed entries (the Flex directory and its
+APK), nothing added, and 19 changed members that are all build-identity
+files: partition build props, the boot and init_boot ramdisk props, the
+system, system_ext, product, system_dlkm, vendor_dlkm, init_boot and vbmeta
+images, the system_ext map, care map, filesystem config and vbmeta digest.
+
+The seven v13 camera and audio components (cameraserver, framework.jar,
+framework resources, Aperture, the runtime library and both audio conversion
+libraries) and all nine plugin-related APKs (seven clocks, the wallpaper
+picker and SystemUI) are byte-identical to v13. The clock plugin audit passes on
+the archive with four hosts and seven plugins, Flex absent and every expected
+module present. The v13 camera artifact, native CameraOpt, configuration and
+policy gates pass unchanged: 98 policy inputs identical, the compiled normal
+policy leaves only `su` permissive, and the strict neverallow differential
+reports no new violation.
+
+## Signing, admission and bundle
+
+After the unsigned gates, the package was admitted, the host-measured
+system_ext image (791,797,760 bytes, SHA256
+`e14912d3645357c8ee8a525eea439c63cd9b55164d30a5f8c466a86f05756598`) was added
+to the AVB image-set budget, and `make test-current` (939 tests) and
+`make test` (4,905 tests) passed again. The reconciled signed target-files
+archive is 11,143,860,576 bytes, SHA256
+`fee3f8e03fef7ca7c29faf63d492d28d99c72be47dc93ddc05eafd90e9bd390d`. The signed
+archive passes the same component, archive-diff, clock-audit, camera, native
+and configuration gates as the unsigned one.
+
+The private eight-image bundle is
+`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/`, manifest SHA256
+`b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0`, status
+byte-identities-verified, not device-admitted, not flash-ready. It is not an
+OTA or TWRP installer. The v13 bundle, working76 recovery and all predecessor
+bundles are preserved. No phone was accessed at any stage of this work.
+
+The [research record](../research/wallpaper-clock-plugin-20260908.json) binds
+the crash trace, both v13 audits, the contract and patch, the source receipt,
+build, package, admission, signing and bundle receipts, and the gate outputs.
+Raw logs, APKs, images and keys stay under ignored directories.
+
+## Device validation plan and remaining gates
+
+Installing v14 needs a fresh explicit approval against the manifest hash above.
+The intended route is the same as v13: the eight A-chain writes over the
+shared Super, no wipe, no slot change, no data clear, then a reboot. After
+boot, confirm the build identity, slot A, userdebug and Enforcing.
+
+Then, with the phone unlocked: open Wallpaper & style from the launcher long
+press and from Settings; enter the wallpaper picker; open lock-screen
+customization and the clock chooser; select one Pixel clock (for example
+BigNum), return to the lock screen and confirm it renders, then restore the
+previously selected clock; also confirm the default Flex-style clock remains
+offered. Read the fresh crash buffer and the SystemUI log for
+`InvalidVersionException`, `Disabling plugin` and `Clock Id conflict` lines;
+all three should be absent. Restore any wallpaper or clock change made during
+the test to the state observed before it. Repeat the v13 camera subset (rear and
+front photo, UltraRAW, one Aperture effect, one short video) to show the
+preserved baseline still captures.
+
+Until those observations exist, the crash is unresolved on the phone. The Flex
+APK, its `Android.bp` import and the allowlist entries remain in the tree; a
+QPR2-compatible Flex plugin from a future `vendor/extras` refresh could be
+re-enabled after passing the same audit.
