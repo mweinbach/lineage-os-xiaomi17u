@@ -1141,7 +1141,7 @@
     "source_findings_are_capture_results": false
   },
   "source_candidate": {
-    "status": "revision 3 source and affected Android component build passed; full target-files build running",
+    "status": "revision 3 full build and unsigned archive/policy gates passed; signed images verified, archive reconciliation and bundle pending",
     "first_installed_build": "nezha.af6d7a77320c30b10d63afd4",
     "first_installed_rows": 652,
     "first_installed_changed_files": 41,
@@ -1320,7 +1320,7 @@
     ],
     "component_source_before_after_identical": true,
     "component_source_rows": 652,
-    "full_target_files_build_status": "running",
+    "full_target_files_build_status": "passed",
     "full_target_files_build_run_id": "20260908T003851-userdebug",
     "full_target_files_archive_verified": false,
     "component_artifact_verification": {
@@ -1351,6 +1351,87 @@
       "restore_authorized": false,
       "clear_or_uninstall_authorized": false,
       "transition_verified": false
+    },
+    "full_target_files_build_actions": 3339,
+    "full_target_files_build_receipt": {
+      "path": "reports/camera-completion-20260907/full-target-files-build-receipts/receipt.json",
+      "size_bytes": 1387,
+      "sha256": "f36cc4ebda284f28abc46d40166c804d8dc4dde333fee76f6c0bf08d029c7a7f"
+    },
+    "full_target_files_build_log": {
+      "path": "reports/camera-completion-20260907/full-target-files-build.log",
+      "size_bytes": 3349343,
+      "sha256": "a6cdc439de8500d9fa3574384de87ca6ed577f8872c119812d056dbb578c7930"
+    },
+    "full_source_before_after_identical": true,
+    "full_source_rows": 652,
+    "archive_transfer_verified": true,
+    "package_receipt": {
+      "path": "reports/variant-opt-in-20260906/v9-package-receipt.json",
+      "size_bytes": 1055,
+      "sha256": "73f1dd67ee6c17649a0c28b1d8fb6cc30f5c5ca4b68f1df663aeb167c3c795ed"
+    },
+    "transfer_receipt": {
+      "path": "reports/variant-opt-in-20260906/v9-transfer.json",
+      "size_bytes": 1399,
+      "sha256": "7d6db1def15fd8f511d45d777deb3f7d311a04da0867f7e4c2cd424441e3cf81"
+    },
+    "unsigned_camera_artifacts": {
+      "status": "passed",
+      "receipt": {
+        "path": "reports/camera-completion-20260907/unsigned-artifact-verification/verification.json",
+        "size_bytes": 14522,
+        "sha256": "a4f77afed2efac6155b877989205033ba0b5d316e889b4c1ae979aa2fba4b534"
+      }
+    },
+    "unsigned_native_artifacts": {
+      "status": "passed",
+      "receipt": {
+        "path": "reports/camera-completion-20260907/native-artifacts-revision-3/unsigned-target-files-binding.json",
+        "size_bytes": 16729,
+        "sha256": "e707389af590d88922d1ca8d4ee154d0c074fe88ad9d6c94af966236c0d1407d"
+      }
+    },
+    "unsigned_configuration_artifacts": {
+      "status": "passed",
+      "receipt": {
+        "path": "reports/camera-completion-20260907/config-artifacts-revision-3/archive-v9-verified/configuration-verification.json",
+        "size_bytes": 154690,
+        "sha256": "a64a560ebafc324759873850c88fde6a6706b85bf9c4196cd8f99904e59ec9b7"
+      },
+      "effective_policy_compile_passed": true
+    },
+    "image_admission": {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v9-admit/admission.json",
+      "size_bytes": 7087,
+      "sha256": "d1d312030b894e9be072d01ecfacd11b4b58d44c6dd2ab326dd1a0f265942b8a"
+    },
+    "retained_firmware_manifest": {
+      "path": "reports/variant-opt-in-20260906/retained-input-manifest-userdebug-v9.json",
+      "size_bytes": 1246,
+      "sha256": "cdf4837e50c675f3ab87e083b1e16207074cc691feb3288b3fc7a2a6c275cb22"
+    },
+    "effective_policy": {
+      "receipt": {
+        "path": "reports/camera-completion-20260907/config-artifacts-revision-3/policy-gate-v9-final.json",
+        "size_bytes": 13290,
+        "sha256": "58aeda3ee2838fa44560b1bdc21b0e249ff5924b99f2b31fc89cf2c01c58eff2"
+      },
+      "normal_init_compile_passed": true,
+      "init_policy_version": 30,
+      "observed_v8_kernel_maximum": 33,
+      "required_compiled_allow_checks": 17,
+      "compiled_permissive_domains": [
+        "su"
+      ],
+      "camera_domains_enforcing": true,
+      "strict_neverallow_compile_passed": false,
+      "strict_baseline_conflicts": 16,
+      "strict_successor_conflicts": 16,
+      "strict_conflicting_rule_pairs_identical_to_v8": true,
+      "new_conflicts": false,
+      "policy_exceptions_added": false,
+      "successor_runtime_verified": false
     }
   },
   "tests": {
@@ -1453,6 +1534,19 @@
       }
     },
     "latest_revision_full_suite": {
+      "command": "make test",
+      "tests": 4866,
+      "elapsed_seconds": 205.601,
+      "status": "passed",
+      "scope": "After actual v9 image admission and signing-contract cascade",
+      "shell_checks_passed": true,
+      "log": {
+        "path": "reports/camera-completion-20260907/final-tests-after-v9-admission.log",
+        "size_bytes": 866502,
+        "sha256": "e394afb888843acb246c14c8158e4d5ddcf42af40c6702d6fb6aa2d368e4aeb6"
+      }
+    },
+    "source_revision_full_suite": {
       "command": "make test",
       "tests": 4866,
       "elapsed_seconds": 197.413,

@@ -106,8 +106,10 @@ run passed 258 tests. The corrected combined suite then passed 4,865 tests in
 189.946 seconds and its shell checks. That suite preceded the additional early
 selector and classpath corrections below. The current revision passed 268
 affected service/generator tests in 31.654 seconds and `make test-current`
-passed 939 tests in 29.119 seconds. The final `make test` rerun passed
-**4,866 tests in 197.413 seconds**.
+passed 939 tests in 29.119 seconds. The source revision `make test` rerun passed
+4,866 tests in 197.413 seconds. After admitting the actual v9 image and updating
+the signing contracts, the final rerun passed **4,866 tests in 205.601 seconds**
+and its shell checks.
 
 The selected successor source is revision 3,
 **`nezha.393aae12fba9ebe8627cdc38`**, with 652 inventory rows. Its source
@@ -132,11 +134,14 @@ The [component-build receipt](../reports/camera-completion-20260907/component-bu
 records exit 0 for `libprocessgroup`, `services`, `nezha-cameraopt-service`,
 `NezhaXiaomiCameraPlatform` and `framework-res` in run
 `20260908T001748-userdebug`. The source inventories before and after the build
-are byte-identical at 652 rows. The full target-files build is now running as
-`20260908T003851-userdebug`; the complete archive and final artifact/API checks
-remain pending. No successor delivery or runtime result is established. The
-installed phone remains v8; a component build does not establish a new device
-installation or Xiaomi capture.
+are byte-identical at 652 rows. The [full target-files build](../reports/camera-completion-20260907/full-target-files-build-receipts/receipt.json)
+passed all 3,339 actions as `20260908T003851-userdebug`, again preserving the
+exact 652-row source inventory. Its archive and Super were transferred with
+matching guest/host hashes. The unsigned archive passed the Camera APK, JAR/API,
+classpath, native dependency and packaged configuration checks. Effective
+split-policy compilation passed. Signed images are verified; final archive and
+bundle verification remain pending. The installed phone
+remains v8; no successor installation or Xiaomi capture is established.
 
 A separate [compiled-component audit](../reports/camera-completion-20260907/component-artifacts-revision-3/component-verification.json)
 verified ten stable outputs. The Camera APK uses the same platform signer as
@@ -152,6 +157,15 @@ streams were read twice with identical bytes, while Camera was stopped. The
 package remains the bundled system app with ID 10422. This provides comparison
 and recovery evidence; the signer/data transition remains unverified, and no
 data restoration, clearing or uninstall is authorized by the record.
+
+The [packaged SELinux gate](../reports/camera-completion-20260907/config-artifacts-revision-3/policy-gate-v9-final.json)
+confirms that the stale vendor policy cache selects normal split compilation.
+The exact init options compile the packaged policy and retain all 17 required
+CameraOpt type-enforcement accesses. Only the existing userdebug `su` domain is
+permissive; the camera domains enforce. The separate strict neverallow compile
+fails the same 16 complete rule pairs as v8, with no new conflict and no added
+policy exception. Runtime labels, constraints, service access and global kernel
+enforcement still require the successor device test.
 
 The [high-resolution source investigation](../reports/camera-completion-20260907/raw-highres/highres-mode-plan.md)
 identifies current Pixel/AlgoUp session mode `0x9004`; `0x80f3` is the legacy

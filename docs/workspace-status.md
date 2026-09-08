@@ -11,7 +11,10 @@ is **not device-admitted**. See the [camera completion record](camera-completion
 The selected development source is `nezha.393aae12fba9ebe8627cdc38`, which adds
 the guarded CameraOpt service and native compatibility, platform-signed original
 Camera input, auxiliary-package selection and JPEG_R default. Its affected
-Android component build passed, and the full target-files build is in progress.
+Android component and full target-files builds passed. The transferred archive
+passed Camera APK, JAR/API, classpath, native, configuration and normal policy
+compilation checks. Signed images are verified; final archive and bundle checks
+remain pending.
 No successor bundle or installation is claimed. The earlier product-configuration
 and dex-preoptimization failures and their one-file corrections are retained.
 The phone remains on v8, with Aperture effects
@@ -33,7 +36,7 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
 | Installed build identity | `nezha.f2e3feac321f56f92d2ad7ea` (userdebug opt-in, delivery set v8); last user-variant install remains `nezha.f9e30611efe01b882f9ed0cb` |
 | Installed source receipt | 613 rows; `reports/camera-native-hook-20260907/source-revision-2/source-installed.json`, SHA256 `254b42243742a8b3945fb064156a84a2b0d1e19db1990403f6da4d094fa1f651` |
-| Development source | `nezha.393aae12fba9ebe8627cdc38`, 652 inventory rows; `reports/camera-completion-20260907/source-revision-3/source-installed.json`, SHA256 `3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5`; component build passed, target-files build in progress |
+| Development source | `nezha.393aae12fba9ebe8627cdc38`, 652 inventory rows; `reports/camera-completion-20260907/source-revision-3/source-installed.json`, SHA256 `3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5`; full target-files build and transfer passed; final signing pending |
 | Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v8/` |
 | Bundle manifest SHA256 | `2f0d1a033596a3649a674ae6a0359324c48cd3ec3b0234ec0947bf76f43f9631` |
 | Reconciled signed target-files SHA256 | `f34b286df2748e4b8f5958c6b905d2d4a3e396cf9b16ede31d34a5a3768e8da1` |
@@ -68,7 +71,7 @@ methods are explicitly unported, and final signature, runtime and high-resolutio
 proof remain separate gates. The current generated product selects the five new
 guarded options in addition to `NEZHA_CAMERA_SESSION_INJECT`.
 
-The latest full offline suite passed 4,866 tests in 197.413 seconds plus shell
+The latest full offline suite passed 4,866 tests in 205.601 seconds plus shell
 checks. The final classpath qualification passed 268 affected tests, and
 `make test-current` passed 939 tests. The affected Android component build also
 passed, with identical 652-row before/after inventories. It compiled and
@@ -112,7 +115,8 @@ successor ROM boot chain or OTA behavior.
   20 platform extension combinations, and Aperture Bokeh + Ultra HDR are measured
   on v8. The new source integrates the normal CameraOpt verifier, native query
   ABI and platform-signed original Camera input; the component build passed.
-  Full target-files, final-artifact and runtime checks remain pending. Xiaomi
+  Full target-files build, unsigned artifact and normal policy checks passed;
+  final bundle and runtime checks remain pending. Xiaomi
   capture, 50/200 MP, processed Ultra RAW and video
   require their own measured results. The dark extension test scene establishes
   capture and file decoding, not visual quality. Preserve the
