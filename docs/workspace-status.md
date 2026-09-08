@@ -20,7 +20,9 @@ A [successor source candidate](camera-save-audio-compat-20260908.md) adds the
 compressed-DNG save APIs, repairs the measured neutral HDR metadata and admits
 the two rejected audio enum values. Its host checks pass and source revision 9
 (`nezha.0a0b5c6187d711a32aa3e46e`, 668 rows) is installed in the build VM.
-The component/full build, signing and successor phone validation are pending.
+Its component/full build, signed archive and eight-image bundle pass their
+checks. The [v12 package](camera-v12-package-20260908.md) awaits separate
+installation approval and phone validation.
 
 The installed source includes the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md),
 [CameraX cache backport](camerax-extension-cache-20260908.md) and
@@ -84,14 +86,13 @@ The installed v11r1 sizing repair resolves the measured telephoto output
 truncation and Pro RAW configuration failure. Ultra RAW reaches the app save
 step and now exposes a separate missing framework API.
 
-The latest full offline suite passed 4,885 tests in 192.417 seconds plus shell
-checks; `make test-current` passed 939 tests in 27.858 seconds during v11
-validation. The sizing C++ harness passed 89 assertions across disabled
-and enabled configurations with the undefined-behavior sanitizer. The earlier
-vendor-key Java harness passed 35 assertions, and the CameraX cache harness
-passed 24 with the actual rebuilt classes. The full Android package and final
-signed artifact checks are recorded separately in the v11 package record.
-The v11 runtime record contains the current measured device evidence.
+The latest full offline suite passed 4,892 tests in 196.162 seconds plus shell
+checks; `make test-current` passed 939 tests in 28.950 seconds after the v12
+image admission. The [save/audio source record](camera-save-audio-compat-20260908.md)
+contains the focused host behavior and full-image decoder evidence. The actual
+component, full ROM, signed archive and eight-image bundle checks are recorded
+in the [v12 package record](camera-v12-package-20260908.md). The installed v11r1
+runtime record remains the current measured device evidence.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the

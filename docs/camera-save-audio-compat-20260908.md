@@ -1,5 +1,9 @@
 # Camera save and audio compatibility candidate, 2026-09-08
 
+**Later host delivery:** The revision-9 component/full build, signed archive and
+eight-image bundle pass their checks. See the [v12 package record](camera-v12-package-20260908.md).
+The source-stage checkpoint below is preserved; phone validation is pending.
+
 The successor source candidate addresses three failures measured on
 [v11r1](camera-v11-install-validation-20260908.md): the missing Xiaomi Ultra RAW
 save methods, a neutral gain map that fails independent HDR decoding, and two
