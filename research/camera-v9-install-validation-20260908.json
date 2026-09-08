@@ -349,21 +349,27 @@
     "50/200 MP, processed Ultra RAW and complete Xiaomi Camera capture remain unverified."
   ],
   "successor": {
-    "build_number": "nezha.8fb05f49f5a7e31a6a3a498b",
+    "build_number": "nezha.0c10ad024d3033691a2825cc",
     "source_receipt": {
-      "path": "reports/camera-completion-20260907/source-revision-4/source-installed.json",
-      "sha256": "68364bc538b99bb3d3f0b9ea745198afff1163e23dbe0c9e28110ed7cd8c6b1a",
-      "size_bytes": 165365
+      "path": "reports/camera-completion-20260907/source-revision-5/source-installed.json",
+      "sha256": "657fd91cc57d1df0d46c26fb2940886b8221ed438ec3c577492cfed7b0b2dedb",
+      "size_bytes": 165662
     },
-    "source_rows": 658,
-    "android_build_status": "affected framework component build passed, 658 source rows unchanged",
+    "source_rows": 659,
+    "android_build_status": "Aperture component passed, 659 source rows unchanged; full target-files build in progress",
     "component_result": {
       "path": "reports/camera-completion-20260907/v10-component-run/result.json",
       "sha256": "03de13032cd24749235455cd122b65940d5af49254d06264868640e30c18cbd5",
       "size_bytes": 127
     },
     "installed": false,
-    "flash_authorized": false
+    "flash_authorized": false,
+    "component_result_build": "nezha.8fb05f49f5a7e31a6a3a498b",
+    "aperture_component_result": {
+      "path": "reports/camera-completion-20260907/v10-aperture-run/result.json",
+      "sha256": "82c521faa1e142c927c97357b9052a5416db22489ab46a945e20d98f4859d815",
+      "size_bytes": 127
+    }
   },
   "cleanup": {
     "path": "reports/camera-completion-20260907/v9-validation/final-cleanup-v2/receipt.json",
@@ -382,7 +388,12 @@
       "sha256": "8c42b859192fa8e796278eaac5d90ffd6b35265aad3a9ee96d00aedbcc2beb02",
       "size_bytes": 317
     },
-    "installed": false
+    "installed": false,
+    "optimized_apk_verification": {
+      "path": "reports/camera-completion-20260907/v10-aperture-run/dex-cache-verification.json",
+      "sha256": "10d3a8a82f9932cd1a9d5abfdf1ecadf11d086418043f79eaea7dec75653f896",
+      "size_bytes": 1976
+    }
   },
   "privacy": "Only derived facts, hashes and ignored evidence paths are tracked; personal images, raw logs and proprietary bytes remain private.",
   "offline_tests": {

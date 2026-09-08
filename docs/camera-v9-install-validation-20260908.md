@@ -50,11 +50,12 @@ Wallpaper `ClockProviderPlugin` crashes exist outside those windows; a clean
 whole-device crash buffer is not claimed. These images establish capture and
 pixel decoding, not useful effect quality in a representative scene.
 
-The successor source is `nezha.8fb05f49f5a7e31a6a3a498b`, with 658 verified
-inventory rows. Its affected framework build passed with all source records unchanged. Source staging,
-35 vendor-key Java assertions, 24 CameraX cache assertions and 4,881 passing
-offline tests do not
-establish a complete ROM build or an installed successor. The next bundle needs its own explicit
+The combined successor source is `nezha.0c10ad024d3033691a2825cc`, with 659
+verified inventory rows. The vendor-key framework build passed on predecessor
+`nezha.8fb05f49f5a7e31a6a3a498b`; the combined Aperture build passed; full target-files build is in progress.
+The host checks comprise 35 vendor-key Java assertions, 24 CameraX cache
+assertions and 4,881 passing offline tests. They do not establish a complete
+ROM build or an installed successor. The next bundle needs its own explicit
 flash/reboot approval. Xiaomi 50/200 MP, processed Ultra RAW and full camera
 acceptance remain unverified.
 

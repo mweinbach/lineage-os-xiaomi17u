@@ -53,8 +53,17 @@ plus shell checks).
 
 Private runtime evidence and retained public source inputs are under
 `reports/camera-completion-20260907/v9-validation/extension-transition-diagnosis/`
-and `transitions/`. Source staging, the Aperture Android build, packaged class
-identity and a fresh installed effect-switch test remain separate gates. The
+and `transitions/`. The combined source is staged as `nezha.0c10ad024d3033691a2825cc`, with 659
+verified inventory rows. The three rebuilt classes are byte-identical in
+Aperture's Soong input to R8. Its Android app build passed all 63 actions,
+including signing and dex preoptimization, with 659 unchanged source records.
+The optimized APK was inspected after R8. Its active synchronous lookup is
+inlined into `Camera2CameraMetadata.awaitExtensionMetadata(int)` and both reads
+and populates `extensionCache[cameraId][extensionMode]`. R8 removes the unused
+suspend method; both source methods passed the separate JVM harness. The
+retained DEX and mapping receipt is `v10-aperture-run/dex-cache-verification.json`
+under the camera-completion report directory. The full target-files build and
+an installed effect-switch test remain pending. The
 phone remains on v9, `nezha.393aae12fba9ebe8627cdc38`, slot A, Enforcing. Final
 cleanup restores rear camera, effect None, RAW off, Ultra HDR on and USB
 stay-awake off, with all three camera/test apps stopped.

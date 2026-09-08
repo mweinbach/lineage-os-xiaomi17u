@@ -7,12 +7,13 @@ its app ID and byte-identical app data before first launch, and now passes its
 original CameraOpt verifier. Its first rear Photo capture still failed to save.
 See the [v9 installation and validation record](camera-v9-install-validation-20260908.md).
 
-The selected development source is `nezha.8fb05f49f5a7e31a6a3a498b`, which adds
-the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md).
-All 658 source inventory rows are verified; its affected framework build passed. A separately prepared
-[CameraX cache backport](camerax-extension-cache-20260908.md) addresses the
-measured rear effect-switch failure. This successor has not been installed. The installed v9 bundle and
-prior v8/v7 bundles remain preserved.
+The selected development source is `nezha.0c10ad024d3033691a2825cc`, combining
+the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md)
+and [CameraX cache backport](camerax-extension-cache-20260908.md). All 659
+source inventory rows are verified. The vendor-key framework component passed
+on its 658-row predecessor; the combined source's Aperture build passed and full target-files build is in progress.
+This successor has not been installed. The installed v9 and prior v8/v7 bundles
+remain preserved.
 
 Aperture Ultra HDR and RAW, three rear physical RAW captures, and all 20
 platform extension combinations were measured on v8. V9 regression tests have
@@ -35,7 +36,7 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
 | Installed build identity | `nezha.393aae12fba9ebe8627cdc38` (userdebug, delivery set v9) |
 | Installed source receipt | 652 rows; `reports/camera-completion-20260907/source-revision-3/source-installed.json`, SHA256 `3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5` |
-| Development source | `nezha.8fb05f49f5a7e31a6a3a498b`, 658 inventory rows; `reports/camera-completion-20260907/source-revision-4/source-installed.json`, SHA256 `68364bc538b99bb3d3f0b9ea745198afff1163e23dbe0c9e28110ed7cd8c6b1a`; affected framework component build passed |
+| Development source | `nezha.0c10ad024d3033691a2825cc`, 659 rows; `reports/camera-completion-20260907/source-revision-5/source-installed.json`, SHA256 `657fd91cc57d1df0d46c26fb2940886b8221ed438ec3c577492cfed7b0b2dedb`; Aperture component passed; full target-files build in progress |
 | Installed v9 bundle | Installed; manifest SHA256 `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958` |
 | Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/` |
 | Bundle manifest SHA256 | `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958` |
@@ -115,7 +116,7 @@ successor ROM boot chain or OTA behavior.
   physical RAW captures and 20 platform extension combinations. V9 adds original
   CameraOpt verifier success and further capture regressions, while Xiaomi
   rear Photo still fails to save. The selected vendor-key framework build passed. The CameraX metadata-cache
-  backport is prepared; its source staging and app build remain pending. Its installation, 50/200 MP, processed Ultra RAW,
+  backport is staged in the combined source; its app build passed; full target-files build is in progress. Its installation, 50/200 MP, processed Ultra RAW,
   useful effect quality and video remain separate gates. Preserve the
   [v9 runtime record](camera-v9-install-validation-20260908.md),
   [vendor-key diagnosis](camera-vendor-key-discovery-20260908.md) and
