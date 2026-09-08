@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "V9 installed; Xiaomi Photo and effect switching remain open. V10 full build, signed archive and eight-image bundle verified; new flash approval pending.",
+  "status": "V10 installed: ordinary Xiaomi Photo and ten warm Aperture effects pass. Telephoto high resolution, Xiaomi RAW/Ultra RAW and video fail; source repair pending.",
   "verification_scope": "V8 capture/decode evidence and v9 source/build/signed archive evidence are preserved here. Current v9 installation, package-data preservation and runtime capture results are recorded in research/camera-v9-install-validation-20260908.json. Complete camera acceptance remains false.",
   "complete_camera_acceptance": false,
   "baseline": {
@@ -1624,11 +1624,10 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Install the verified v10 bundle only after new explicit approval, then measure Xiaomi Photo and effect-switch behavior.",
-    "Save a full Xiaomi Camera photo; the v9 verifier succeeds but its rear Photo times out with missing shot-name metadata.",
-    "Validate the prepared CameraX cache-key backport on device; all ten Aperture effect captures already save and decode Ultra HDR.",
-    "Measure 50 MP and 200 MP vendor capture, native full-resolution readout, RAW + 200 MP and processed Ultra RAW.",
-    "Useful image quality, video and sustained behavior beyond retained capture/decode windows."
+    "Restore factory mock-camera/custom-size handling and verify telephoto 50 MP and 200 MP output with complete decodes.",
+    "Repair Xiaomi Pro RAW/Ultra RAW paths; ordinary physical RAW and warm Aperture effect captures already pass on v10.",
+    "Collect audio startup diagnostics from the next approved boot and fix the video AudioRecord initialization failure.",
+    "Measure useful image quality, sensor-native full-resolution readout, RAW + 200 MP and sustained behavior beyond retained capture/decode windows."
   ],
   "evidence_receipts": [
     {
@@ -1839,15 +1838,25 @@
       "sha256": "657fd91cc57d1df0d46c26fb2940886b8221ed438ec3c577492cfed7b0b2dedb",
       "size_bytes": 165662
     },
-    "status": "Full build, signed archive and eight-image bundle verified; separate flash approval pending",
+    "status": "Installed v10; runtime validation recorded separately; full camera acceptance incomplete",
     "diagnosis_document": "docs/camera-vendor-key-discovery-20260908.md",
     "delivery_record": {
       "path": "research/camera-v10-package-20260908.json",
       "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
       "size_bytes": 8142
+    },
+    "runtime_record": {
+      "path": "research/camera-v10-install-validation-20260908.json",
+      "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
+      "size_bytes": 25738
     }
   },
-  "next_candidate_delivery": {
+  "v10_runtime_validation": {
+    "path": "research/camera-v10-install-validation-20260908.json",
+    "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
+    "size_bytes": 25738
+  },
+  "v10_package_checkpoint": {
     "path": "research/camera-v10-package-20260908.json",
     "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
     "size_bytes": 8142

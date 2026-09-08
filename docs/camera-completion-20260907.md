@@ -1,5 +1,9 @@
 # Camera capture progress and successor candidate, 2026-09-07
 
+**Later device evidence:** V10 is installed. Ordinary Xiaomi Photo and all ten
+warm Aperture effect cases pass; the high-resolution telephoto, Xiaomi RAW/Ultra
+RAW and video failures remain open. See the [v10 runtime record](camera-v10-install-validation-20260908.md).
+
 **V9 is now installed and passes the original CameraOpt verifier, but Xiaomi
 Camera's first rear Photo still failed to save.** The
 [v9 installation record](camera-v9-install-validation-20260908.md) contains the

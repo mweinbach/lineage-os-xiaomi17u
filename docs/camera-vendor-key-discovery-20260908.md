@@ -1,5 +1,9 @@
 # Xiaomi Camera vendor-key discovery (2026-09-08)
 
+**Later device evidence:** V10 is installed. Ordinary Xiaomi Photo and all ten
+warm Aperture effect cases pass; the high-resolution telephoto, Xiaomi RAW/Ultra
+RAW and video failures remain open. See the [v10 runtime record](camera-v10-install-validation-20260908.md).
+
 **The v9 Camera now passes its original verifier, but its first rear Photo
 capture did not save a full image.** The app omitted the shot-name control that
 the vendor processing path expects. A guarded source candidate restores the

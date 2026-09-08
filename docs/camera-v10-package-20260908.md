@@ -1,5 +1,9 @@
 # Camera v10 package, 2026-09-08
 
+**Later device evidence:** V10 is installed. Ordinary Xiaomi Photo and all ten
+warm Aperture effect cases pass; the high-resolution telephoto, Xiaomi RAW/Ultra
+RAW and video failures remain open. See the [v10 runtime record](camera-v10-install-validation-20260908.md).
+
 **V10, `nezha.0c10ad024d3033691a2825cc`, passed its full Android build and
 signed archive checks. Its eight-image bundle passed byte-identity verification.**
 The phone remains on installed v9, `nezha.393aae12fba9ebe8627cdc38`. V10 has

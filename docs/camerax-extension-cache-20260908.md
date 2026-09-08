@@ -1,5 +1,9 @@
 # Aperture extension metadata cache correction, 2026-09-08
 
+**Later device evidence:** V10 is installed. Ordinary Xiaomi Photo and all ten
+warm Aperture effect cases pass; the high-resolution telephoto, Xiaomi RAW/Ultra
+RAW and video failures remain open. See the [v10 runtime record](camera-v10-install-validation-20260908.md).
+
 **All ten Aperture effect captures saved and decoded Ultra HDR photos on v9,
 but switching rear effects can close the activity.** A logged None-to-Bokeh
 switch selected a 1440×1080 preview, which the extension rejected. The bundled
