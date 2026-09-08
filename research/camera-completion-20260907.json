@@ -2,8 +2,8 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "V10 installed: ordinary Xiaomi Photo and ten warm Aperture effects pass. Telephoto high resolution, Xiaomi RAW/Ultra RAW and video fail. V11 factory stream-sizing source and native build pass; full package in progress.",
-  "verification_scope": "V8 capture/decode evidence and v9 source/build/signed archive evidence are preserved here. Current v9 installation, package-data preservation and runtime capture results are recorded in research/camera-v9-install-validation-20260908.json. Complete camera acceptance remains false.",
+  "status": "V10 remains installed with ordinary Xiaomi Photo and ten warm Aperture effect cases passing. Corrected v11r1 factory stream-sizing package is built, signed and verified; new flash approval pending.",
+  "verification_scope": "Preserves v8/v9 capture, source and delivery evidence. Current installed v10 results are in research/camera-v10-install-validation-20260908.json. The next v11r1 delivery is verified in research/camera-v11-package-20260908.json but is not installed. Complete camera acceptance remains false.",
   "complete_camera_acceptance": false,
   "baseline": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v8",
@@ -1551,16 +1551,16 @@
     },
     "latest_revision_full_suite": {
       "command": "make test",
-      "tests": 4881,
-      "elapsed_seconds": 197.202,
+      "tests": 4885,
+      "elapsed_seconds": 194.538,
       "status": "passed",
-      "shell_checks_passed": true,
-      "scope": "After actual v10 image admission and signing-contract cascade",
       "log": {
-        "path": "reports/camera-completion-20260907/v10-admission-make-test.log",
-        "sha256": "2d5a8dcf2700936c446f2d6b6f5aaebb91ce13f26f557f9f1a97cc8367247a03",
-        "size_bytes": 868775
-      }
+        "path": "reports/camera-completion-20260907/v11r1-admission-make-test.log",
+        "sha256": "8353a1a5c5a2d5ee7b73680b4f0b4055e347ce73f959a0b228ac223fa1c38973",
+        "size_bytes": 869483
+      },
+      "shell_checks_passed": true,
+      "scope": "After measured corrected v11r1 image admission and signing-contract updates"
     },
     "source_revision_full_suite": {
       "command": "make test",
@@ -1629,6 +1629,30 @@
         "sha256": "8689853f900e8b711f7fb9d1c48a9402b8c77f7c7f4c9d0b0e96a8a31038e613",
         "size_bytes": 8307
       }
+    },
+    "v10_admission_full_suite": {
+      "command": "make test",
+      "tests": 4881,
+      "elapsed_seconds": 197.202,
+      "status": "passed",
+      "shell_checks_passed": true,
+      "scope": "After actual v10 image admission and signing-contract cascade",
+      "log": {
+        "path": "reports/camera-completion-20260907/v10-admission-make-test.log",
+        "sha256": "2d5a8dcf2700936c446f2d6b6f5aaebb91ce13f26f557f9f1a97cc8367247a03",
+        "size_bytes": 868775
+      }
+    },
+    "v11r1_admission_current": {
+      "command": "make test-current",
+      "tests": 939,
+      "elapsed_seconds": 29.001,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/v11r1-admission-test-current.log",
+        "sha256": "698afb321ae756a10cfea7c1719d599dde1763ca2f2fc82f591c0b563032a06f",
+        "size_bytes": 177298
+      }
     }
   },
   "cleanup": {
@@ -1657,7 +1681,7 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Complete v11 package/signing checks, obtain separate installation approval, and verify telephoto 50 MP and 200 MP output with complete decodes.",
+    "Obtain explicit corrected v11r1 bundle flash/reboot approval, then verify telephoto 50 MP and 200 MP output with complete decodes.",
     "Repair Xiaomi Pro RAW/Ultra RAW paths; ordinary physical RAW and warm Aperture effect captures already pass on v10.",
     "Collect audio startup diagnostics from the next approved boot and fix the video AudioRecord initialization failure.",
     "Measure useful image quality, sensor-native full-resolution readout, RAW + 200 MP and sustained behavior beyond retained capture/decode windows."
@@ -1871,14 +1895,19 @@
       "sha256": "0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c",
       "size_bytes": 166175
     },
-    "status": "Source and native component build passed; full package in progress; not device-admitted",
+    "status": "Corrected full package, signed archive and eight-image bundle verified; separate flash approval pending",
     "diagnosis_document": "docs/camera-stream-sizing-20260908.md",
     "source_validation_record": {
       "path": "research/camera-stream-sizing-20260908.json",
       "sha256": "8689853f900e8b711f7fb9d1c48a9402b8c77f7c7f4c9d0b0e96a8a31038e613",
       "size_bytes": 8307
     },
-    "installed": false
+    "installed": false,
+    "delivery_record": {
+      "path": "research/camera-v11-package-20260908.json",
+      "sha256": "21c0b36eb454b9736310bb4fac93685e4d798828ae2ba04642877b4e0282af1c",
+      "size_bytes": 10431
+    }
   },
   "v10_runtime_validation": {
     "path": "research/camera-v10-install-validation-20260908.json",
@@ -1910,5 +1939,10 @@
       "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
       "size_bytes": 25738
     }
+  },
+  "next_candidate_delivery": {
+    "path": "research/camera-v11-package-20260908.json",
+    "sha256": "21c0b36eb454b9736310bb4fac93685e4d798828ae2ba04642877b4e0282af1c",
+    "size_bytes": 10431
   }
 }

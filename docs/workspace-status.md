@@ -13,13 +13,14 @@ stream configuration, Ultra RAW restarts the provider, and video fails audio
 initialization. **Full camera acceptance remains incomplete.** Physical RAW
 captures from all three rear sensors independently decode on the host.
 
-The selected source combines the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md)
+The installed v10 source combines the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md)
 and [CameraX cache backport](camerax-extension-cache-20260908.md). Its 659 rows,
 full Android build, signed archive and eight-image bundle are recorded in the
 [v10 package record](camera-v10-package-20260908.md). The [factory stream-sizing successor](camera-stream-sizing-20260908.md),
 `nezha.130611bac9232625e0066968`, has 661 source rows and passes its native
-component build. Its full package is in progress; it is not installed or
-device-admitted.
+component build, full package, signed archive and eight-image bundle checks.
+The corrected [v11r1 package](camera-v11-package-20260908.md) is ready for
+separate flash/reboot approval; it is not installed or device-admitted.
 
 V9 (`nezha.393aae12fba9ebe8627cdc38`), v8
 (`nezha.f2e3feac321f56f92d2ad7ea`) and v7
@@ -70,14 +71,17 @@ Its original factory verifier and native boot hook remain unchanged. V10
 resolves the measured vendor-key discovery failure and saves ordinary Xiaomi
 photos. CameraOpt still has explicitly unported methods, including
 `reclaimMemoryForCamera`, which is observed during successful captures too.
-The next sizing repair is supported by separate v10 device and factory evidence.
+The sizing repair in the prepared v11r1 bundle is supported by separate v10
+device and factory evidence. Its effects still need measured device validation.
 
-The latest full offline suite passed 4,881 tests in 197.202 seconds plus shell
-checks; `make test-current` passed 939 tests. A separate host Java harness passed
-35 behavior assertions for vendor-key filtering and merging; the CameraX
-cache harness passed 24 assertions with the actual rebuilt classes. The complete Android build and final artifact checks are recorded separately
-in the v10 package record. The v10 runtime results are additional measured
-evidence; the earlier v9 build and installation records remain preserved.
+The latest full offline suite passed 4,885 tests in 194.538 seconds plus shell
+checks; `make test-current` passed 939 tests in 29.001 seconds after the v11r1
+image admission. The sizing C++ harness passed 89 assertions across disabled
+and enabled configurations with the undefined-behavior sanitizer. The earlier
+vendor-key Java harness passed 35 assertions, and the CameraX cache harness
+passed 24 with the actual rebuilt classes. The full Android package and final
+signed artifact checks are recorded separately in the v11 package record.
+The installed v10 runtime results remain the current measured device evidence.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -114,8 +118,9 @@ successor ROM boot chain or OTA behavior.
 - **Camera:** V10 establishes ordinary Xiaomi Photo saves, a valid main-camera
   50 MP Ultra HDR output, all ten warm Aperture effect cases and three physical
   RAW captures. Telephoto high-resolution output is truncated; Xiaomi RAW and
-  Ultra RAW fail. Restore the measured stock mock-camera/custom-size behavior
-  before repeating those paths. Useful effect quality and sensor-native
+  Ultra RAW fail. The measured stock mock-camera/custom-size behavior is
+  restored in the prepared v11r1 package; install only after new approval and
+  repeat those paths with full output decodes. Useful effect quality and sensor-native
   resolution remain unverified. Preserve the
   [v10 runtime record](camera-v10-install-validation-20260908.md),
   [vendor-key diagnosis](camera-vendor-key-discovery-20260908.md) and

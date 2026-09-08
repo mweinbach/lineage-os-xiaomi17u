@@ -1,8 +1,14 @@
 # Factory camera stream sizing, 2026-09-08
 
+**Later package evidence:** The corrected v11r1 full build, signed archive and
+eight-image bundle pass their checks. See the [v11 package record](camera-v11-package-20260908.md).
+The component-stage checkpoint below is preserved; device validation still
+requires separate flash/reboot approval.
+
 **The factory stream-sizing hooks are restored in source and pass a native
-component build.** The successor is `nezha.130611bac9232625e0066968`; its full
-package is in progress and it is **not device-admitted**. The phone remains on
+component build.** At this component-stage checkpoint, the successor
+`nezha.130611bac9232625e0066968` still needed its full package checks. It remains
+**not device-admitted**. The phone remains on
 [v10](camera-v10-install-validation-20260908.md). Telephoto high resolution,
 Xiaomi Pro RAW and Ultra RAW remain unverified with this change.
 

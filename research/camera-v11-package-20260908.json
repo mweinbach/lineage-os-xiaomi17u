@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-v11-package-20260908",
+  "build_number": "nezha.130611bac9232625e0066968",
+  "delivery_set": "v11r1",
+  "status": "Corrected full package, signed archive and eight-image bundle verified; separate flash approval pending",
+  "document": "docs/camera-v11-package-20260908.md",
+  "source_rows": 661,
+  "native_component_actions": 152,
+  "initial_full_build_actions": 35,
+  "corrected_full_build_actions": 3,
+  "installed": false,
+  "flash_authorized": false,
+  "reboot_authorized": false,
+  "phone_accessed": false,
+  "complete_camera_acceptance": false,
+  "installed_predecessor": "nezha.0c10ad024d3033691a2825cc",
+  "source_fixes": [
+    "Factory mock-camera requested dimensions",
+    "Factory custom-size selection and image-quality adjustment",
+    "Factory mock-camera JPEG size extrapolation"
+  ],
+  "receipts": {
+    "source": {
+      "path": "reports/camera-completion-20260907/source-revision-6/source-installed.json",
+      "sha256": "0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c",
+      "size_bytes": 166175
+    },
+    "source_validation": {
+      "path": "research/camera-stream-sizing-20260908.json",
+      "sha256": "8689853f900e8b711f7fb9d1c48a9402b8c77f7c7f4c9d0b0e96a8a31038e613",
+      "size_bytes": 8307
+    },
+    "native_component": {
+      "path": "reports/camera-completion-20260907/v11-component-run/native-verification.json",
+      "sha256": "bdbcfa96f3f092075187cc2feb9a6ee06a6f1d0b06c3a0dd5e1cc4514f5901bc",
+      "size_bytes": 2317
+    },
+    "build_result": {
+      "path": "reports/camera-completion-20260907/v11r1-full-run/result.json",
+      "sha256": "cc0fd9e2b08a2974eb131bb9057d12302e05e1640edb9c7ae35213055c2e92f3",
+      "size_bytes": 127
+    },
+    "build_request": {
+      "path": "reports/camera-completion-20260907/v11r1-full-run/request.json",
+      "sha256": "01548687177e8f6d147b7a4f643be0263305a182de15e8fb9bd2372951b1a923",
+      "size_bytes": 1265
+    },
+    "source_before": {
+      "path": "reports/camera-completion-20260907/v11r1-full-run/source-before.json",
+      "sha256": "0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c",
+      "size_bytes": 166175
+    },
+    "source_after": {
+      "path": "reports/camera-completion-20260907/v11r1-full-run/source-after.json",
+      "sha256": "0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c",
+      "size_bytes": 166175
+    },
+    "package": {
+      "path": "reports/variant-opt-in-20260906/v11r1-package-receipt.json",
+      "sha256": "f96026f43e3c69a4885f2f22ec59e86a49dc426d21c584ca3bb40fa7893382d2",
+      "size_bytes": 1058
+    },
+    "transfer": {
+      "path": "reports/variant-opt-in-20260906/v11r1-transfer.json",
+      "sha256": "38805caddef8d32c0d3fc78f38c883be615f2c29bd48e795ede4842db0c1af31",
+      "size_bytes": 1414
+    },
+    "admission": {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v11r1-admit/admission.json",
+      "sha256": "c2d6b9a5af0545ee4d7a65f4296a7cde16ebf1c9ee18ba31bbed992961a0216b",
+      "size_bytes": 7096
+    },
+    "unsigned_components": {
+      "path": "reports/camera-completion-20260907/v11r1-unsigned-component-binding.json",
+      "sha256": "c3064a73a94e07ef269db0319e20471f744141273072b140eff726eea2f74e28",
+      "size_bytes": 3334
+    },
+    "signed_components": {
+      "path": "reports/camera-completion-20260907/v11r1-signed-component-binding.json",
+      "sha256": "83e5d88073fc9eecc06f0cac8baef7808d4d14dad51d236658cd0b3c8643fe6c",
+      "size_bytes": 3318
+    },
+    "unsigned_camera": {
+      "path": "reports/camera-completion-20260907/v11r1-unsigned-camera/verification.json",
+      "sha256": "37447a846720bb0e8a67f877b0631eaf34f919600d6029d03382952571daa423",
+      "size_bytes": 14612
+    },
+    "signed_camera": {
+      "path": "reports/camera-completion-20260907/v11r1-signed-camera/verification.json",
+      "sha256": "2a6af73de46e1ee8a498aee6975d03eb8e8790c975b7eb7906d3c287c5e966ce",
+      "size_bytes": 14584
+    },
+    "unsigned_native": {
+      "path": "reports/camera-completion-20260907/native-artifacts-v11r1/unsigned-binding.json",
+      "sha256": "9163f2e2523ce4cc3ff1863c56d8bc61d937209b5e8c4db932a388686b5a6df0",
+      "size_bytes": 16779
+    },
+    "signed_native": {
+      "path": "reports/camera-completion-20260907/native-artifacts-v11r1/signed-binding.json",
+      "sha256": "98f51ca168629122138a78f7525fba6b411983aa3f724bc1895597a2cca9d94c",
+      "size_bytes": 16763
+    },
+    "policy_gate": {
+      "path": "reports/camera-completion-20260907/config-artifacts-v11r1/policy-gate-v11r1-final.json",
+      "sha256": "e6c51d7fbf0cbb9eae959e3e379223aa2b02cd6e1f8dd3ca5589427f350bddb1",
+      "size_bytes": 2098
+    },
+    "signed_configuration": {
+      "path": "reports/camera-completion-20260907/config-artifacts-v11r1/signed-v11r1-verified/signed-configuration-policy-binding.json",
+      "sha256": "08cb9cd02e8d0c1f99b7a8692bb2287e86c5bd8c76427a0e7ab218a56173af7e",
+      "size_bytes": 79983
+    },
+    "retained_firmware": {
+      "path": "reports/variant-opt-in-20260906/retained-input-manifest-userdebug-v11r1.json",
+      "sha256": "5c46a9e8a7544d150bb2fc1fa0cb8ecec25c1e5bbc3cc020ae413062fc415cad",
+      "size_bytes": 1249
+    },
+    "signing": {
+      "path": "reports/variant-opt-in-20260906/v11r1-signing.json",
+      "sha256": "cff87e675442bc73ac892a09acc19bf5eac63dda8a14c7ec851dc502dde13f98",
+      "size_bytes": 1224
+    },
+    "signing_receipt": {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v11r1/signed-v1/signing-receipt.json",
+      "sha256": "958445135e90d7088e2f04d633a57af0068b7fd07a17e4113e0ec4c1c89b5612",
+      "size_bytes": 88528
+    },
+    "bundle": {
+      "path": "reports/variant-opt-in-20260906/v11r1-bundle.json",
+      "sha256": "4c683a95c21b66e3ce0ef2ed71fd1ac0fcf80557fed857209775a6327734b62f",
+      "size_bytes": 411
+    },
+    "bundle_manifest": {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v11r1/manifest.json",
+      "sha256": "b6966d7e2071e23de371d74e1e295d4e7c8277465ae8f50f3ee5ac96a5b64d80",
+      "size_bytes": 7531
+    },
+    "bundle_verification_log": {
+      "path": "reports/variant-opt-in-20260906/v11r1-bundle-verify.log",
+      "sha256": "3590dc35dc7f17cdf0baf1678d9f280a6c4a949703ecad5507736d25c9e6e021",
+      "size_bytes": 204
+    },
+    "package_correction": {
+      "path": "reports/camera-completion-20260907/stream-sizing/package-correction-complete/receipt.json",
+      "sha256": "b8c36611f6504a3a1dc3b321e9e5f01584c0283f81f0f8131d4b9b9617a0a111",
+      "size_bytes": 2682
+    },
+    "initial_unsigned_attempt": {
+      "path": "reports/variant-opt-in-20260906/v11-transfer.json",
+      "sha256": "47226898c94c85ac716c57da9ab76ad431e3d139f17bcdc16c1a9d9ba5a90870",
+      "size_bytes": 1404
+    },
+    "validation_plan": {
+      "path": "reports/camera-completion-20260907/v11-validation/validation-plan.md",
+      "sha256": "7ad0a390480c350af7235e40b4c21873338bde803ee95e8a394c9a69c089b0c0",
+      "size_bytes": 3203
+    },
+    "boot_audio_collector": {
+      "path": "reports/camera-completion-20260907/v11-validation/collect_boot_audio.py",
+      "sha256": "664da26ab591e1e70f2b582cf393508af40f76e1fed6b75d5eb70c4ef93842d7",
+      "size_bytes": 4509
+    },
+    "boot_audio_plan": {
+      "path": "reports/camera-completion-20260907/v11-validation/boot-audio-plan.json",
+      "sha256": "70a9be4627d59913cf5834f8df1a6890b2ba1f92a36d0c954d50a3e2b61a6295",
+      "size_bytes": 549
+    }
+  },
+  "unsigned_archive": {
+    "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/build-validation/variant-opt-in-userdebug-20260906-v11r1-transfer/lineage_nezha-target_files.zip",
+    "sha256": "b1d6bb078ec797ffbc6e73af3050ee6094ddf026705eefd272c1928591c84675",
+    "size_bytes": 11322896122
+  },
+  "signed_archive": {
+    "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v11r1/reconciled-v1/target-files.zip",
+    "sha256": "dbdfefb26e4acdbd2081175412de3935527b5a07dab6b4da312913fdb88c1c02",
+    "size_bytes": 11145217133
+  },
+  "bundle_manifest": {
+    "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v11r1/manifest.json",
+    "sha256": "b6966d7e2071e23de371d74e1e295d4e7c8277465ae8f50f3ee5ac96a5b64d80",
+    "size_bytes": 7531
+  },
+  "bundle_path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v11r1",
+  "verification": {
+    "unsigned_and_signed_camera_gates": true,
+    "unsigned_and_signed_native_gates": true,
+    "component_byte_identity": true,
+    "unselected_shared_library_absent_in_archive_and_actual_images": true,
+    "normal_policy_compile_passed": true,
+    "strict_neverallow_passed": false,
+    "strict_new_violations": false,
+    "strict_existing_conflicts": 16,
+    "identical_policy_files": 98,
+    "signed_configuration_files": 272,
+    "runtime_linking_and_capture_verified": false
+  },
+  "tests": {
+    "current": {
+      "command": "make test-current",
+      "tests": 939,
+      "elapsed_seconds": 29.001,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/v11r1-admission-test-current.log",
+        "sha256": "698afb321ae756a10cfea7c1719d599dde1763ca2f2fc82f591c0b563032a06f",
+        "size_bytes": 177298
+      }
+    },
+    "full": {
+      "command": "make test",
+      "tests": 4885,
+      "elapsed_seconds": 194.538,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/v11r1-admission-make-test.log",
+        "sha256": "8353a1a5c5a2d5ee7b73680b4f0b4055e347ce73f959a0b228ac223fa1c38973",
+        "size_bytes": 869483
+      },
+      "shell_checks_passed": true,
+      "scope": "After measured corrected v11r1 image admission and signing-contract updates"
+    }
+  },
+  "remaining": [
+    "Install only after new bundle-specific flash/reboot approval",
+    "Verify normal Xiaomi/Aperture Ultra HDR and physical RAW regressions",
+    "Fully decode telephoto 50 MP and 200 MP outputs",
+    "Verify Xiaomi Pro RAW and processed Ultra RAW with provider stability",
+    "Collect first-boot audio diagnostics and resolve video initialization",
+    "Measure useful effect quality and native sensor resolution"
+  ],
+  "privacy": "Private inputs, images and device evidence remain ignored; no proprietary redistribution."
+}
