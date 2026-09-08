@@ -62,8 +62,10 @@ inlined into `Camera2CameraMetadata.awaitExtensionMetadata(int)` and both reads
 and populates `extensionCache[cameraId][extensionMode]`. R8 removes the unused
 suspend method; both source methods passed the separate JVM harness. The
 retained DEX and mapping receipt is `v10-aperture-run/dex-cache-verification.json`
-under the camera-completion report directory. The full target-files build and
-an installed effect-switch test remain pending. The
+under the camera-completion report directory. The full target-files build passed with all 659 source rows unchanged.
+Its archive contains the exact inspected Aperture APK. The
+[v10 package record](camera-v10-package-20260908.md) tracks final delivery
+verification; an installed effect-switch test remains pending. The
 phone remains on v9, `nezha.393aae12fba9ebe8627cdc38`, slot A, Enforcing. Final
 cleanup restores rear camera, effect None, RAW off, Ultra HDR on and USB
 stay-awake off, with all three camera/test apps stopped.

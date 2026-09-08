@@ -52,10 +52,12 @@ pixel decoding, not useful effect quality in a representative scene.
 
 The combined successor source is `nezha.0c10ad024d3033691a2825cc`, with 659
 verified inventory rows. The vendor-key framework build passed on predecessor
-`nezha.8fb05f49f5a7e31a6a3a498b`; the combined Aperture build passed; full target-files build is in progress.
+`nezha.8fb05f49f5a7e31a6a3a498b`; the combined Aperture and full target-files builds passed with all 659 source
+rows unchanged. See the [v10 package record](camera-v10-package-20260908.md)
+for final artifact and delivery verification.
 The host checks comprise 35 vendor-key Java assertions, 24 CameraX cache
-assertions and 4,881 passing offline tests. They do not establish a complete
-ROM build or an installed successor. The next bundle needs its own explicit
+assertions and 4,881 passing offline tests. Those host checks are separate from the completed Android build. The
+successor has not been installed. The next bundle needs its own explicit
 flash/reboot approval. Xiaomi 50/200 MP, processed Ultra RAW and full camera
 acceptance remain unverified.
 

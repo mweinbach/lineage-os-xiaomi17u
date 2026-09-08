@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "V9 installed with verifier success and all ten Aperture effect captures decoded; Xiaomi Photo save and effect switching remain open; combined successor source staged",
+  "status": "V9 installed; Xiaomi Photo and effect switching remain open. V10 full build, signed archive and eight-image bundle verified; new flash approval pending.",
   "verification_scope": "V8 capture/decode evidence and v9 source/build/signed archive evidence are preserved here. Current v9 installation, package-data preservation and runtime capture results are recorded in research/camera-v9-install-validation-20260908.json. Complete camera acceptance remains false.",
   "complete_camera_acceptance": false,
   "baseline": {
@@ -1551,15 +1551,15 @@
     },
     "latest_revision_full_suite": {
       "command": "make test",
-      "tests": 4866,
-      "elapsed_seconds": 205.601,
+      "tests": 4881,
+      "elapsed_seconds": 197.202,
       "status": "passed",
-      "scope": "After actual v9 image admission and signing-contract cascade",
       "shell_checks_passed": true,
+      "scope": "After actual v10 image admission and signing-contract cascade",
       "log": {
-        "path": "reports/camera-completion-20260907/final-tests-after-v9-admission.log",
-        "size_bytes": 866502,
-        "sha256": "e394afb888843acb246c14c8158e4d5ddcf42af40c6702d6fb6aa2d368e4aeb6"
+        "path": "reports/camera-completion-20260907/v10-admission-make-test.log",
+        "sha256": "2d5a8dcf2700936c446f2d6b6f5aaebb91ce13f26f557f9f1a97cc8367247a03",
+        "size_bytes": 868775
       }
     },
     "source_revision_full_suite": {
@@ -1571,6 +1571,30 @@
         "path": "reports/camera-completion-20260907/full-tests.log",
         "size_bytes": 866502,
         "sha256": "0113dfd865ea2d8ccd6e509b1f7b55f95570e1befe6683b05e87942d9be82525"
+      }
+    },
+    "v9_admission_full_suite": {
+      "command": "make test",
+      "tests": 4866,
+      "elapsed_seconds": 205.601,
+      "status": "passed",
+      "scope": "After actual v9 image admission and signing-contract cascade",
+      "shell_checks_passed": true,
+      "log": {
+        "path": "reports/camera-completion-20260907/final-tests-after-v9-admission.log",
+        "size_bytes": 866502,
+        "sha256": "e394afb888843acb246c14c8158e4d5ddcf42af40c6702d6fb6aa2d368e4aeb6"
+      }
+    },
+    "v10_admission_current": {
+      "command": "make test-current",
+      "tests": 939,
+      "elapsed_seconds": 29.886,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/v10-admission-test-current.log",
+        "sha256": "9a16e55a6b5c4881318ba6d53caa1905bed7cf00a3f4f535851f9c7051325a20",
+        "size_bytes": 177298
       }
     }
   },
@@ -1600,7 +1624,7 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Stage and build the CameraX cache backport with the vendor-key successor; verify the final archive and obtain new explicit approval before installation.",
+    "Install the verified v10 bundle only after new explicit approval, then measure Xiaomi Photo and effect-switch behavior.",
     "Save a full Xiaomi Camera photo; the v9 verifier succeeds but its rear Photo times out with missing shot-name metadata.",
     "Validate the prepared CameraX cache-key backport on device; all ten Aperture effect captures already save and decode Ultra HDR.",
     "Measure 50 MP and 200 MP vendor capture, native full-resolution readout, RAW + 200 MP and processed Ultra RAW.",
@@ -1815,7 +1839,17 @@
       "sha256": "657fd91cc57d1df0d46c26fb2940886b8221ed438ec3c577492cfed7b0b2dedb",
       "size_bytes": 165662
     },
-    "status": "Combined source staged; Aperture component passed; full target-files build in progress; not installed",
-    "diagnosis_document": "docs/camera-vendor-key-discovery-20260908.md"
+    "status": "Full build, signed archive and eight-image bundle verified; separate flash approval pending",
+    "diagnosis_document": "docs/camera-vendor-key-discovery-20260908.md",
+    "delivery_record": {
+      "path": "research/camera-v10-package-20260908.json",
+      "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
+      "size_bytes": 8142
+    }
+  },
+  "next_candidate_delivery": {
+    "path": "research/camera-v10-package-20260908.json",
+    "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
+    "size_bytes": 8142
   }
 }

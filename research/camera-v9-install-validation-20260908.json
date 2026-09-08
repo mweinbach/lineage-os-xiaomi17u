@@ -356,7 +356,7 @@
       "size_bytes": 165662
     },
     "source_rows": 659,
-    "android_build_status": "Aperture component passed, 659 source rows unchanged; full target-files build in progress",
+    "android_build_status": "Full build, signed archive and eight-image bundle verified; separate flash approval pending",
     "component_result": {
       "path": "reports/camera-completion-20260907/v10-component-run/result.json",
       "sha256": "03de13032cd24749235455cd122b65940d5af49254d06264868640e30c18cbd5",
@@ -369,6 +369,16 @@
       "path": "reports/camera-completion-20260907/v10-aperture-run/result.json",
       "sha256": "82c521faa1e142c927c97357b9052a5416db22489ab46a945e20d98f4859d815",
       "size_bytes": 127
+    },
+    "full_build_result": {
+      "path": "reports/camera-completion-20260907/v10-full-run/result.json",
+      "sha256": "82c521faa1e142c927c97357b9052a5416db22489ab46a945e20d98f4859d815",
+      "size_bytes": 127
+    },
+    "delivery_record": {
+      "path": "research/camera-v10-package-20260908.json",
+      "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
+      "size_bytes": 8142
     }
   },
   "cleanup": {

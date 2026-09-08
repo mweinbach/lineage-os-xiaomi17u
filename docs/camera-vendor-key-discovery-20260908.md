@@ -5,7 +5,9 @@ capture did not save a full image.** The app omitted the shot-name control that
 the vendor processing path expects. A guarded source candidate restores the
 factory app's registered-vendor-key discovery on this AOSP framework. The source is staged as `nezha.8fb05f49f5a7e31a6a3a498b` (658 rows);
 its affected framework build passed with all 658 inventory rows unchanged.
-It has not been installed.
+The combined v10 source adds the CameraX cache correction and has completed
+its full build. See the [v10 package record](camera-v10-package-20260908.md)
+for final artifact checks. It has not been installed.
 
 ## Measured v9 failure
 
@@ -101,9 +103,9 @@ passes 35 behavior assertions covering scope, disabled/null/empty catalogs,
 preserved types/order, duplicate provider/name pairs, immutability and error
 propagation. These are host checks, not an Android build or hardware result.
 
-A future build must verify the compiled resource selection and actual helper
-and call site in framework DEX, preserve the original APK payload/signature
-checks, and repeat the real Xiaomi shutter test before advancing to front,
-50/200 MP, RAW/Ultra RAW and video. The v9 Bokeh Ultra HDR and telephoto RAW
+The built framework resource, helper and DEX call site have been verified.
+The v10 archive contains byte-identical framework artifacts and passes the
+original APK payload/signature checks. A real Xiaomi shutter test is still
+required before advancing to front, 50/200 MP, RAW/Ultra RAW and video. The v9 Bokeh Ultra HDR and telephoto RAW
 regression captures independently decoded successfully; they do not establish
 Xiaomi Camera acceptance.

@@ -4,7 +4,9 @@
 Camera's first rear Photo still failed to save.** The
 [v9 installation record](camera-v9-install-validation-20260908.md) contains the
 current runtime results, and the [vendor-key diagnosis](camera-vendor-key-discovery-20260908.md)
-tracks the selected successor. Full camera acceptance remains incomplete.
+explains one of its fixes. The combined [v10 package](camera-v10-package-20260908.md)
+has completed its full build and signing; installation requires new approval.
+Full camera acceptance remains incomplete.
 
 The v8 measurements below ran on `nezha.f2e3feac321f56f92d2ad7ea`, slot A,
 with SELinux Enforcing. They extend the earlier

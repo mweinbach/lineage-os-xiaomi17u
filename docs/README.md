@@ -36,7 +36,8 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | [Camera completion progress](camera-completion-20260907.md) | Retained v8 rear/front Ultra HDR and RAW, three physical RAW captures, 20 extension cases and Aperture Bokeh; v9 installation follows below |
 | [V9 installation and camera validation](camera-v9-install-validation-20260908.md) | Installed v9: original verifier succeeds, Camera data preserved, Xiaomi Photo save fails; decoded Bokeh Ultra HDR, telephoto RAW and Aperture effect tests |
 | [Xiaomi vendor-key discovery](camera-vendor-key-discovery-20260908.md) | Measured missing shot-name discovery; guarded framework successor compiled, not installed |
-| [CameraX extension cache](camerax-extension-cache-20260908.md) | Diagnosed effect-switch preview mismatch; prepared upstream cache-key backport, real-class JVM behavior and ABI checked; Android app build/runtime pending |
+| [CameraX extension cache](camerax-extension-cache-20260908.md) | Diagnosed effect-switch preview mismatch; upstream cache-key backport compiled; real-class JVM, ABI and optimized APK checked; runtime transition test pending |
+| [Camera v10 package](camera-v10-package-20260908.md) | Combined vendor-key and CameraX fixes; full build, signed archive and eight-image bundle verified; new installation approval pending |
 | [Camera library analysis](camera-library-analysis-20260907.md) | Logical XML-ID mismatch behind damage verdicts; conditional GSI override and matching compiled IDs; effective runtime selection unverified |
 | [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |
 | [Dolby controls candidate](nezha-dolby-20260905.md) | Exact factory effect protocol and opt-in manual source controller; playback qualification remains open |
