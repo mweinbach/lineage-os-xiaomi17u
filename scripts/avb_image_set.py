@@ -323,6 +323,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "84a879e70dc47626f3022885160be09a180627485be765f9f53d40bc62a46efe", "size_bytes": 792690688},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v12-admit/admission.json", "sha256": "b9b3cb5809ecbad4c3def4d2a221cb796b579219985fefed763cacc77a3e20b7", "size_bytes": 7090},
      "build_number": "nezha.0a0b5c6187d711a32aa3e46e"},
+    # Compressed Bayer DNG and factory multiroute/MIHC audio compatibility successor.
+    {"measured_image": {"sha256": "a87066388590766c118fae7e8afea30c8b776715a2e9bc69feba6a7cbe798390", "size_bytes": 792690688},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v13-admit/admission.json", "sha256": "a8924569f9baa38c4f3408aeb2e0448700816bcf10a8a9c5dae98875a38ac2c5", "size_bytes": 7091},
+     "build_number": "nezha.2c510f47f6d99b93f0c3ee11"},
 )
 
 
