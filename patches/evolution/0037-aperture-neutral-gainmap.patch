@@ -283,3 +283,14 @@ new file mode 100644
 +        return new int[]{position, iso[0] + 16};
 +    }
 +}
+diff --git a/app/Android.bp b/app/Android.bp
+--- a/app/Android.bp
++++ b/app/Android.bp
+@@ -13,6 +13,7 @@
+     srcs: [
+         "src/main/java/**/*.kt",
+         "src/main/java/org/lineageos/aperture/compat/NezhaCameraFactory.java",
++        "src/main/java/org/lineageos/aperture/compat/NezhaNeutralGainmap.java",
+     ],
+     resource_dirs: ["src/main/res"],
+     manifest: "src/main/AndroidManifest.xml",

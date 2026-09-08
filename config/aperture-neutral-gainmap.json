@@ -9,7 +9,7 @@
   "revision": "88625a9b7c4178601169dbda2c38cd845b68cd38",
   "device": "nezha",
   "patch": "patches/evolution/0037-aperture-neutral-gainmap.patch",
-  "patch_sha256": "5e028cff383560fc6e072ca1b556710e946d6552e2a903077bb2dec267b8435a",
+  "patch_sha256": "c106b7b0843eec21f1d1506c1eb4b8e4f20ded04cb3a9dcc52d807eeca8e3150",
   "files": {
     "app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel.kt": {
       "before_sha256": "baf048fcde001bea9a464952ebb16f4173c9914142dc60394e0052ec5dd6f46b",
@@ -22,6 +22,12 @@
       "after_sha256": "2486517a0802991a3027eeaf9509958c638abdb9b6243a1b33c2bf88b6f90c2e",
       "after_bytes": 6222,
       "before_bytes": null
+    },
+    "app/Android.bp": {
+      "before_sha256": "7f9b82aa19e89ffbd5b625e7f3b7ac74b7ec8a8edb8e4270e287c58f2538b22b",
+      "before_bytes": 2849,
+      "after_sha256": "61e987ef8af94ed70918b4db133cf25638a4dfc0dda6dc99ee3d882c0db5c4b0",
+      "after_bytes": 2929
     }
   },
   "authored_templates": {
