@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "contract_id": "systemui-clocks-flex-removal-v1",
+  "status": "tested_source_patch_pending_source_adoption",
+  "document": "docs/wallpaper-clock-plugin-20260908.md",
+  "phone_fix_verified": false,
+  "project": "vendor/extras",
+  "repository": "https://github.com/Evolution-X/vendor_extras",
+  "remote_name": "evo",
+  "branch": "bka",
+  "revision": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+  "upstream_bka_head_checked_20260908": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+  "patch": "patches/evolution/0039-remove-stale-systemui-clocks-flex.patch",
+  "patch_sha256": "dd332a12b5672b0cf0248d30a0c028d8f2b6788c065ef29f2bc5d1d612912052",
+  "patch_size_bytes": 7743,
+  "files": {
+    "evolution.mk": {
+      "before_sha256": "247015dc34d77625e9fba96def23c07a79722c4d711a876cc6eafc7969e133fb",
+      "before_bytes": 7021,
+      "before_git_blob": "fe7b243352bc13c3e8959c046917451ce0130d48",
+      "after_sha256": "00cec0caeff933975b06fc5cd4a53b6b0b39cf7557bfd0ef497aeea44b692ec5",
+      "after_bytes": 7275,
+      "after_git_blob": "0e0a10f5085b5ef8150ae03f90f03f4e8d9452cb",
+      "mode": "100644",
+      "line_endings": "LF"
+    }
+  },
+  "purpose": "Stop shipping the stale SystemUIClocks-Flex prebuilt so the Google wallpaper picker's plugin discovery no longer meets a clock plugin whose @Requires target is a different ClockProviderPlugin class than the host's.",
+  "root_cause": {
+    "crash": "com.google.android.apps.wallpaper: com.android.systemui.shared.plugins.VersionInfo$InvalidVersionException: Missing required dependency ClockProviderPlugin",
+    "host_interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;",
+    "flex_interface": "Lcom/android/systemui/plugins/clocks/ClockProviderPlugin;",
+    "interface_package_move": {
+      "project": "frameworks/base",
+      "commit": "c5d2b0fd639d2aa8593881e7e1ecd7a3d7767499",
+      "date": "2025-08-06",
+      "subject": "Move package of LockscreenElement and related classes"
+    },
+    "class_loader_rule": "PluginInstance.ClassLoaderFilter delegates com.android.systemui.plugin* names to the host; a name the host lacks falls through to the plugin's own DEX, so Flex resolves its bundled copy and VersionInfo.checkVersion leaves the host's required class unmatched.",
+    "systemui_behavior": "bka SystemUI's VersionCheckerImpl returns false and PluginActionManager disables the plugin; device logs also show 'Clock Id conflict on attach: DIGITAL_CLOCK_FLEX is double registered by DefaultClockProvider', because the QPR2 default provider already ships the Flex clock.",
+    "wallpaper_behavior": "WallpaperPickerGoogleRelease (stallion CP1A.260505.005 snapshot) lets the exception escape from PluginInstance.onCreate on the main thread."
+  },
+  "vendor_history": [
+    {
+      "commit": "a79459f42c0d",
+      "date": "2023-10-22",
+      "subject": "extras: Add SystemUI clock styles from husky-ap1a.240405.002"
+    },
+    {
+      "commit": "f7062b323390",
+      "date": "2025-11-18",
+      "subject": "extras: SystemUIClocks: Update to mustang BD3A.251105.010.E1",
+      "note": "last commit that changed SystemUIClocks-Flex.apk"
+    },
+    {
+      "commit": "156bf76438e3",
+      "date": "2026-01-08",
+      "subject": "extras: SystemUIClocks: Update to mustang BP4A.260205.001",
+      "note": "refreshed the other seven clocks and re-enabled Weather; Flex was not updated"
+    }
+  ],
+  "retained_flex_apk": {
+    "module": "SystemUIClocks-Flex",
+    "package": "com.android.systemui.clocks.flex",
+    "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Flex/SystemUIClocks-Flex.apk",
+    "sha256": "89a6993654d84c591689e522643ffbfc9669a510b5da6d781692df900961d878",
+    "size_bytes": 1399817,
+    "import_block_unchanged": true
+  },
+  "kept_clock_plugins": {
+    "BigNum": {
+      "sha256": "840210231d999760a8dc559b3f2c2cf7610c18a7167154bd8dc1bfc4c48cfdd1",
+      "size_bytes": 2280611,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "Calligraphy": {
+      "sha256": "806f98e783bb3378dfa172d3e6c27a40b689b9b07c6a108e428ce0a90b1a77e3",
+      "size_bytes": 2258085,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "Growth": {
+      "sha256": "1813297234391d92389304b096b47e3441972fad12de8b1d1b5450a9408533b5",
+      "size_bytes": 2266263,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "Inflate": {
+      "sha256": "35ec04bf12fb1af87666af3cd8a8b06b7b34caeef64c037c6f0e119bd5132827",
+      "size_bytes": 2258076,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "Metro": {
+      "sha256": "fe2825acf00a4ef424de1851c97665951bb11b7467587538276a327131bc05f0",
+      "size_bytes": 3367860,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "NumOverlap": {
+      "sha256": "e9109c21c392e004d5334572beab9118e52351f27853363e04b79b7da1929838",
+      "size_bytes": 2364588,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "Weather": {
+      "sha256": "f2c14fbfd35614364d07e42b0614c709724382fd8a09f5fdb68e9b8cf285d4b3",
+      "size_bytes": 2434383,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    }
+  },
+  "hosts": {
+    "WallpaperPickerGoogleRelease": {
+      "sha256": "15889abf03630a1a89a3228b799ae04b17f135ec564282de368b68278b028506",
+      "size_bytes": 10522867,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    },
+    "SystemUI": {
+      "sha256": "ff806a867f5cc97cbbb45a6fe221855a9e8a7d1109bebec25f17cabd16e2739b",
+      "size_bytes": 51347515,
+      "interface": "Lcom/android/systemui/plugins/keyguard/ui/clocks/ClockProviderPlugin;"
+    }
+  },
+  "host_evidence": [
+    {
+      "path": "reports/wallpaper-clock-plugin-20260908/v13-out-tree-audit.json",
+      "sha256": "a65e5693a0791d59fa8e98c89c0e4fa3a6add356eea0bf679bfb0bfd94946386",
+      "size_bytes": 6605
+    },
+    {
+      "path": "reports/wallpaper-clock-plugin-20260908/v13-archive-audit.json",
+      "sha256": "f57b410355187da76c013941adf887868e66546e13a4a49913d51241bc976c7d",
+      "size_bytes": 7943
+    }
+  ],
+  "limits": [
+    "The audit reads DEX descriptors and manifest strings; it does not execute plugin code or render clocks.",
+    "Removing the product selection leaves the Flex APK, its Android.bp import and the plugin allowlist entries untouched.",
+    "The successor build must be installed and Wallpaper & style opened before the crash is considered resolved."
+  ]
+}
