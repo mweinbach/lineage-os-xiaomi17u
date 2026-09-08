@@ -111,9 +111,20 @@ A C++ compiler and JDK must be available; `--cxx`, `--javac` and `--java` can
 select explicit installations. The ordinary offline suite checks the patch and
 template bytes, inherited Aperture preimage and the measured factory ABI pins.
 The focused seven-test contract suite passes. `make test-current` passed 939
-tests in 27.607 seconds; `make test` passed 4,892 tests in 185.538 seconds plus
-shell checks. Source installation, the component/full ROM build and signed
-bundle follow as distinct gates before requesting the next phone installation.
+tests in 27.607 seconds; `make test` passed 4,892 tests in 192.314 seconds plus
+shell checks. The focused contract checks also passed after correcting the
+build descriptor.
+
+The installed source revision 8 is `nezha.efda11d09f81d7685c018d03`, with
+668 source rows. Its receipt is
+`reports/camera-completion-20260907/source-revision-8/source-installed.json`,
+SHA256 `d4ff6f7e7726d7366bdbffdb92bab116e7101ceee106fcaf9668b64794101b4b`.
+The initial component build rejected a duplicate Soong `defaults` property.
+Revision 8 merges the new default into the existing list and preserves the
+other 667 source rows. The failed revision 7, its log and the correction
+preimage remain recorded. Revision 8 passed source, manifest, filesystem,
+architecture, disk and one-writer preflight. The component/full ROM build and
+signed bundle remain separate pending gates before the next phone installation.
 
 The previous phone approval covered v11r1 only. A successor flash and reboot
 require separate explicit authorization under [AGENTS.md](../AGENTS.md). The
