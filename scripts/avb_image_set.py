@@ -319,6 +319,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "938d37bd18aae9f01640a28fc8e5d7bd9869e8ef51aea458adfbe95e406e60da", "size_bytes": 792690688},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v11r1-admit/admission.json", "sha256": "c2d6b9a5af0545ee4d7a65f4296a7cde16ebf1c9ee18ba31bbed992961a0216b", "size_bytes": 7096},
      "build_number": "nezha.130611bac9232625e0066968"},
+    # Compressed DNG save, neutral HDR metadata and audio enum successor.
+    {"measured_image": {"sha256": "84a879e70dc47626f3022885160be09a180627485be765f9f53d40bc62a46efe", "size_bytes": 792690688},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v12-admit/admission.json", "sha256": "b9b3cb5809ecbad4c3def4d2a221cb796b579219985fefed763cacc77a3e20b7", "size_bytes": 7090},
+     "build_number": "nezha.0a0b5c6187d711a32aa3e46e"},
 )
 
 
