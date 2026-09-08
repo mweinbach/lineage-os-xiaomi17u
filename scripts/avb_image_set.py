@@ -315,6 +315,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "0af4035baaea12652952ef4977857da7b8ce0c241311a1dc33d8c857e1229f01", "size_bytes": 792690688},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v10-admit/admission.json", "sha256": "e1449b613eea446e7730d0b4a94fa7414d1727d7ec8a23f59e64c2f71aa4f7ff", "size_bytes": 7090},
      "build_number": "nezha.0c10ad024d3033691a2825cc"},
+    # Factory stream-sizing successor; corrected package excludes the unselected shared component install.
+    {"measured_image": {"sha256": "938d37bd18aae9f01640a28fc8e5d7bd9869e8ef51aea458adfbe95e406e60da", "size_bytes": 792690688},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v11r1-admit/admission.json", "sha256": "c2d6b9a5af0545ee4d7a65f4296a7cde16ebf1c9ee18ba31bbed992961a0216b", "size_bytes": 7096},
+     "build_number": "nezha.130611bac9232625e0066968"},
 )
 
 
