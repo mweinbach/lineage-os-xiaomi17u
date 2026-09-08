@@ -2,8 +2,8 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "V11r1 is installed and passes ordinary Xiaomi photos, main/telephoto 50 MP, telephoto 200 MP Ultra HDR, Xiaomi Pro RAW and physical RAW. The v12 compressed-DNG, neutral-HDR and audio-conversion package is built, signed and verified; separate installation approval and runtime validation remain pending.",
-  "verification_scope": "Preserves historical v8 through v11 source, package and capture checkpoints. Current installed v11r1 results are in research/camera-v11-install-validation-20260908.json. The next v12 delivery is built, signed and verified in research/camera-v12-package-20260908.json but is not installed. Complete camera acceptance remains false.",
+  "status": "V12 is installed. All ten warm rear/front CameraX effects fully decode as Ultra HDR; Xiaomi ordinary, 50 MP, 200 MP, Pro RAW and physical RAW regressions pass. UltraRAW compressed Bayer format 32 and vendor audio conversions remain unresolved.",
+  "verification_scope": "Preserves historical v8 through v12 source and package checkpoints. Current installed v12 measurements are in research/camera-v12-install-validation-20260908.json. Complete camera acceptance remains false; a future bundle has no flash approval.",
   "complete_camera_acceptance": false,
   "baseline": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v8",
@@ -1663,6 +1663,28 @@
         "sha256": "f77af5d513fe58fe09785f152abb1f42782c75d0381b95d9d07f4f9f2fc1a4fe",
         "size_bytes": 177298
       }
+    },
+    "v12_runtime_record": {
+      "test-current": {
+        "passed": true,
+        "tests": 939,
+        "seconds": 28.347,
+        "log": {
+          "path": "reports/camera-completion-20260907/v12-validation/test-current.log",
+          "sha256": "e1eab482f8524e51b11343037042f56fdcbc66ed59157ca5090fbfc3395c6e58",
+          "size_bytes": 177298
+        }
+      },
+      "make-test": {
+        "passed": true,
+        "tests": 4892,
+        "seconds": 186.83,
+        "log": {
+          "path": "reports/camera-completion-20260907/v12-validation/make-test.log",
+          "sha256": "fa8c9a81096caeee8446ae81e2eb882ed8ff67e3c40b546f741a5aa3ecfd10b5",
+          "size_bytes": 870541
+        }
+      }
     }
   },
   "cleanup": {
@@ -1907,13 +1929,18 @@
       "sha256": "ef5452f69c340ce714849f467c4cfe106e31769bc4c40d286d8e9cb0f4a26245",
       "size_bytes": 167825
     },
-    "status": "Full package, signed archive and eight-image bundle verified; separate flash approval pending",
+    "status": "Installed and booted Enforcing on slot A; see v12 runtime validation for qualified feature results",
     "diagnosis_document": "docs/camera-save-audio-compat-20260908.md",
-    "installed": false,
+    "installed": true,
     "delivery_record": {
       "path": "research/camera-v12-package-20260908.json",
       "sha256": "397be81363c69e705590d8b8130bcfab5568f71fb6add7892dc91715e3ff54c3",
       "size_bytes": 12233
+    },
+    "runtime_record": {
+      "path": "research/camera-v12-install-validation-20260908.json",
+      "sha256": "e95d8ef362c2d82985568546137ad8fe4b20a2517ead0093ec927447233af70a",
+      "size_bytes": 28058
     }
   },
   "v10_runtime_validation": {
@@ -1946,11 +1973,6 @@
       "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
       "size_bytes": 25738
     }
-  },
-  "next_candidate_delivery": {
-    "path": "research/camera-v12-package-20260908.json",
-    "sha256": "397be81363c69e705590d8b8130bcfab5568f71fb6add7892dc91715e3ff54c3",
-    "size_bytes": 12233
   },
   "previous_development_source_v11r1": {
     "build_number": "nezha.130611bac9232625e0066968",
@@ -1995,5 +2017,43 @@
       "sha256": "94bfb40d0d3446e4b9e329b73140f17f1e4e580806c39f3e4234601913b2c9ab",
       "size_bytes": 26126
     }
-  }
+  },
+  "v12_runtime_validation": {
+    "path": "research/camera-v12-install-validation-20260908.json",
+    "sha256": "e95d8ef362c2d82985568546137ad8fe4b20a2517ead0093ec927447233af70a",
+    "size_bytes": 28058
+  },
+  "installed_development_source_v12": {
+    "build_number": "nezha.0a0b5c6187d711a32aa3e46e",
+    "source_rows": 668,
+    "source_receipt": {
+      "path": "reports/camera-completion-20260907/source-revision-9/source-installed.json",
+      "sha256": "ef5452f69c340ce714849f467c4cfe106e31769bc4c40d286d8e9cb0f4a26245",
+      "size_bytes": 167825
+    },
+    "status": "Installed and booted Enforcing on slot A; see v12 runtime validation for qualified feature results",
+    "diagnosis_document": "docs/camera-save-audio-compat-20260908.md",
+    "installed": true,
+    "delivery_record": {
+      "path": "research/camera-v12-package-20260908.json",
+      "sha256": "397be81363c69e705590d8b8130bcfab5568f71fb6add7892dc91715e3ff54c3",
+      "size_bytes": 12233
+    },
+    "runtime_record": {
+      "path": "research/camera-v12-install-validation-20260908.json",
+      "sha256": "e95d8ef362c2d82985568546137ad8fe4b20a2517ead0093ec927447233af70a",
+      "size_bytes": 28058
+    }
+  },
+  "previous_v12_package_checkpoint": {
+    "path": "research/camera-v12-package-20260908.json",
+    "sha256": "397be81363c69e705590d8b8130bcfab5568f71fb6add7892dc91715e3ff54c3",
+    "size_bytes": 12233
+  },
+  "current_remaining": [
+    "Compressed Bayer format 32 DNG writer and full compressed-image decode",
+    "Vendor multiroute and MIHC audio compatibility with policy initialization and subsequent video validation",
+    "Effect quality and sensor-native resolving power",
+    "Concurrent Wallpaper ClockProviderPlugin failure; full phone health unverified"
+  ]
 }

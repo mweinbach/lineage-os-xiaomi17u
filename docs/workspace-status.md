@@ -1,37 +1,29 @@
 # Current Nezha workspace status
 
-**Installed phone: v11r1 userdebug (`nezha.130611bac9232625e0066968`),
+**Installed phone: v12 userdebug (`nezha.0a0b5c6187d711a32aa3e46e`),
 slot A, boot completed with SELinux Enforcing.** The approved eight-image
-installation completed without a wipe or slot change. Xiaomi Camera now saves
-ordinary rear/front photos, main and telephoto 50 MP photos, and a 200 MP photo
-with fully decoded Ultra HDR. Xiaomi Pro RAW and all three physical rear RAW
-sensors fully decode. Aperture saves all ten rear/front effect cases while
-switching modes in one running app process; nine decode as Ultra HDR, while
-front HDR has a neutral-gainmap metadata interoperability failure. See the
-[v11 installation and validation record](camera-v11-install-validation-20260908.md).
+installation completed without a wipe or slot change. All ten warm rear/front
+Aperture effect captures fully decode as Ultra HDR. Xiaomi ordinary rear/front,
+main and telephoto 50 MP, telephoto 200 MP, Pro RAW and all three physical RAW
+sensors also pass their independent decoders. See the
+[v12 installation and validation record](camera-v12-install-validation-20260908.md).
 
-Ultra RAW saves its companion JPEG but leaves an empty DNG because the app's
-framework save API is missing. Early boot diagnostics identify AIDL audio flag
-and usage conversion failures before audio policy initialization. Video remains
-unverified on v11 and failed on v10 with a null audio policy manager.
-**Full camera acceptance remains incomplete.**
+UltraRAW now reaches the implemented writer, but the measured capture uses
+compressed Bayer format 32; the installed writer supports linear RGB format 15.
+Early boot audio diagnostics advance past the previous flag/usage errors and
+now reject the factory multiroute device. Audio policy remains null, so video
+was not retried. **Full camera acceptance remains incomplete.**
 
-A [successor source candidate](camera-save-audio-compat-20260908.md) adds the
-compressed-DNG save APIs, repairs the measured neutral HDR metadata and admits
-the two rejected audio enum values. Its host checks pass and source revision 9
-(`nezha.0a0b5c6187d711a32aa3e46e`, 668 rows) is installed in the build VM.
-Its component/full build, signed archive and eight-image bundle pass their
-checks. The [v12 package](camera-v12-package-20260908.md) awaits separate
-installation approval and phone validation.
-
-The installed source includes the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md),
-[CameraX cache backport](camerax-extension-cache-20260908.md) and
-[factory stream-sizing repair](camera-stream-sizing-20260908.md). Its 661 source
-rows, full Android build, signed archive and eight-image bundle are recorded
-in the [v11 package checkpoint](camera-v11-package-20260908.md). That checkpoint's
-uninstalled state is historical; the runtime record above follows the separately
-approved installation. [V10](camera-v10-install-validation-20260908.md) remains
-a preserved predecessor.
+Source revision 9 has 668 rows. Its component/full build, signed archive and
+eight-image bundle are recorded in the [v12 package checkpoint](camera-v12-package-20260908.md).
+That checkpoint's pending-installation state is historical; the runtime record
+above follows the separately approved installation. The installed source includes
+the [save/audio compatibility changes](camera-save-audio-compat-20260908.md),
+[stream-sizing repair](camera-stream-sizing-20260908.md),
+[vendor-key discovery fix](camera-vendor-key-discovery-20260908.md) and
+[CameraX cache backport](camerax-extension-cache-20260908.md).
+[V11r1](camera-v11-install-validation-20260908.md) and
+[v10](camera-v10-install-validation-20260908.md) remain preserved predecessors.
 
 V9 (`nezha.393aae12fba9ebe8627cdc38`), v8
 (`nezha.f2e3feac321f56f92d2ad7ea`) and v7
@@ -47,16 +39,16 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.130611bac9232625e0066968` (userdebug, delivery set v11r1) |
-| Installed source receipt | 661 rows; `reports/camera-completion-20260907/source-revision-6/source-installed.json`, SHA256 `0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v11r1/` |
-| Bundle manifest SHA256 | `b6966d7e2071e23de371d74e1e295d4e7c8277465ae8f50f3ee5ac96a5b64d80` |
-| Reconciled signed target-files SHA256 | `dbdfefb26e4acdbd2081175412de3935527b5a07dab6b4da312913fdb88c1c02` |
-| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [package checkpoint](camera-v11-package-20260908.md) |
-| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe or slot change; normal boot completed in 25.3 s |
+| Installed build identity | `nezha.0a0b5c6187d711a32aa3e46e` (userdebug, delivery set v12) |
+| Installed source receipt | 668 rows; `reports/camera-completion-20260907/source-revision-9/source-installed.json`, SHA256 `ef5452f69c340ce714849f467c4cfe106e31769bc4c40d286d8e9cb0f4a26245` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v12/` |
+| Bundle manifest SHA256 | `45e4b0b034807b5f4f21a138f7a04244332fb698d8c661c55dc20367eabd28c8` |
+| Reconciled signed target-files SHA256 | `113b87cd7466590580e3a359d50c065bca623b6bdff2e5ad201e916d6ae3abc2` |
+| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [package checkpoint](camera-v12-package-20260908.md) |
+| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe or slot change; normal boot completed in 25.5 s |
 | Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; final cleanup reconfirmed build, slot and policy |
-| Camera acceptance observed | Five Xiaomi photos fully decode as Ultra HDR, including main/telephoto 50 MP and telephoto 200 MP; ten warm Aperture JPEG saves (nine Ultra HDR decodes) and three physical RAW captures pass; Xiaomi Pro RAW decodes. Ultra RAW save and audio/video remain incomplete |
-| Camera app data | All 512 CE and five DE members unchanged before first launch; active APK and signer unchanged; no claim about all userdata |
+| Camera acceptance observed | Five Xiaomi photos fully decode as Ultra HDR, including main/telephoto 50 MP and telephoto 200 MP; all ten warm Aperture JPEG/Ultra HDR decodes, Xiaomi Pro RAW and three physical RAW captures pass. UltraRAW Bayer save and audio/video remain incomplete |
+| Camera app data | All 513 CE and five DE members unchanged before first launch; active APK and signer unchanged; no claim about all userdata |
 | Recovery | TWRP `working76`; preserve its `fix22ZJ-touchfix18` runtime/hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; measured current state is recorded above |
 
@@ -82,17 +74,17 @@ Its original factory verifier and native boot hook remain unchanged. V10
 resolves the measured vendor-key discovery failure and saves ordinary Xiaomi
 photos. CameraOpt still has explicitly unported methods, including
 `reclaimMemoryForCamera`, which is observed during successful captures too.
-The installed v11r1 sizing repair resolves the measured telephoto output
-truncation and Pro RAW configuration failure. Ultra RAW reaches the app save
-step and now exposes a separate missing framework API.
+The retained v11r1 sizing repair resolves the measured telephoto output
+truncation and Pro RAW configuration failure. V12 adds the save APIs; the
+traced UltraRAW Bayer format requires a separate container-path repair.
 
-The latest full offline suite passed 4,892 tests in 196.162 seconds plus shell
-checks; `make test-current` passed 939 tests in 28.950 seconds after the v12
-image admission. The [save/audio source record](camera-save-audio-compat-20260908.md)
+The completed v12 runtime record passes 67 evidence-pin checks. The full
+offline suite passes 4,892 tests in 186.830 seconds plus shell checks;
+`make test-current` passes 939 tests in 28.347 seconds. The [save/audio source record](camera-save-audio-compat-20260908.md)
 contains the focused host behavior and full-image decoder evidence. The actual
 component, full ROM, signed archive and eight-image bundle checks are recorded
-in the [v12 package record](camera-v12-package-20260908.md). The installed v11r1
-runtime record remains the current measured device evidence.
+in the [v12 package record](camera-v12-package-20260908.md). The installed v12
+runtime record contains the current measured device evidence.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -113,8 +105,8 @@ runtime record remains the current measured device evidence.
    phone. Record build, package and device evidence separately.
 4. Record each observed device result in a focused issue note and update this
    selection when the evidence warrants it. Phone collection and changes need
-   the authorized device and scope. The explicit v11r1 approval
-   covered its installation, reboot, camera tests and root diagnostics without
+   the authorized device and scope. The explicit v12 approval
+   covered its installation, reboot, camera/audio/video tests and root diagnostics without
    a wipe or slot change. It does not authorize flashing the next bundle.
 
 For recovery changes, use `make recovery-build` and the
@@ -126,21 +118,21 @@ successor ROM boot chain or OTA behavior.
 
 ## Remaining feature work
 
-- **Camera:** V11 passes ordinary Xiaomi photos, main/telephoto 50 MP and
-  telephoto 200 MP Ultra HDR, Xiaomi Pro RAW, all ten warm Aperture JPEG saves
-  (nine Ultra HDR decodes) and three physical RAW sensors. Front HDR needs neutral-gainmap metadata
-  interoperability work. Ultra RAW reaches the missing
-  `DngCreator.writeLossLessJpeg` save API and leaves an empty DNG. Implement the
-  measured factory compressed-DNG container contract and validate it after
-  separately approved successor installation. Useful effect quality and
+- **Camera:** V12 passes ordinary Xiaomi photos, main/telephoto 50 MP,
+  telephoto 200 MP Ultra HDR, Xiaomi Pro RAW, all ten warm Aperture JPEG/Ultra
+  HDR cases and three physical RAW sensors. Implement the measured compressed
+  Bayer format 32 path for UltraRAW; its two-component lossless JPEG tiles
+  require CFA metadata and matching dimensions. Useful effect quality and
   sensor-native resolution remain unverified. Preserve the
-  [v11 runtime record](camera-v11-install-validation-20260908.md) and
-  [v10 predecessor](camera-v10-install-validation-20260908.md).
-- **Video and audio:** Early v11 boot logs identify AIDL output-flag and usage
-  conversion failures, then a null audio policy manager. The factory mapping
-  for output index 19 is legacy `0x40000000`; Bluetooth SCO usage is 19.
-  Repair the measured conversions and validate policy/output initialization
-  before repeating video. No valid video has been verified.
+  [v12 runtime record](camera-v12-install-validation-20260908.md).
+- **Video and audio:** V12 startup advances beyond the prior AIDL output-flag
+  and usage errors but rejects the factory multiroute descriptor. Audit its
+  factory mapping (`0x20000004`), the MIHC format (`0x40000000`) and their
+  validation paths before building the next repair. Audio policy remains null;
+  no valid video has been verified.
+- **Wallpaper process:** A concurrent crash during the first UltraRAW capture
+  reports a missing `ClockProviderPlugin` dependency. Camera process identities
+  remain unchanged. This separate failure remains unresolved.
 
 - **Retained userdata, UDFPS and shade:** Camera apps opened and new JPEGs were written after dismissing the keyguard; retained personal userdata, UDFPS authentication and shade visual acceptance remain unverified.
   The user confirmed fingerprint enrollment on a6d; f9e loaded the measured

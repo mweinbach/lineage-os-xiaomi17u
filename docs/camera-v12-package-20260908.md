@@ -1,5 +1,10 @@
 # Camera v12 package, 2026-09-08
 
+**Historical host checkpoint.** V12 was subsequently approved and installed.
+The [runtime record](camera-v12-install-validation-20260908.md) measures the
+resolved front HDR failure, passing photo/RAW regressions and remaining Bayer-DNG
+and audio failures. The pre-installation checkpoint below is preserved.
+
 **V12 is built, signed and verified on the host. It has not been installed on
 the phone.** The installed predecessor is still
 [v11r1](camera-v11-install-validation-20260908.md). The new bundle targets its
