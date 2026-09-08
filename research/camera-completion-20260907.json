@@ -1,0 +1,1453 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-completion-progress-20260907",
+  "date": "2026-09-07",
+  "status": "Measured v8 capture progress; successor source revision 2 installed and component build running; full camera acceptance incomplete",
+  "verification_scope": "Retained device capture receipts plus independent host artifact/hash/decode checks and reviewed successor source. Captures belong to installed v8; source installation does not establish new Android artifacts or runtime behavior.",
+  "complete_camera_acceptance": false,
+  "baseline": {
+    "delivery_set": "variant-opt-in-userdebug-20260906-v8",
+    "installed_build": "nezha.f2e3feac321f56f92d2ad7ea",
+    "slot_suffix": "_a",
+    "selinux": "Enforcing",
+    "prior_native_hook_record": {
+      "path": "research/camera-native-hook-20260907.json",
+      "size_bytes": 40597,
+      "sha256": "20db81ce8b2cbb1e5af61d49ac6cad1c84eac17d37332df0a6456169b73d3cd1"
+    },
+    "captured_on_successor": false
+  },
+  "aperture_captures": [
+    {
+      "camera_id": "0",
+      "mode": "Ultra HDR",
+      "format": "JPEG_R",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "artifact": {
+        "path": "reports/camera-completion-20260907/aperture-tests/ultrahdr-verified/aperture-rear-ultrahdr.jpg",
+        "size_bytes": 2372274,
+        "sha256": "fcea377aeae783df79d82b8f6814b8575870d382caf51f4a4057619b5b64cee7"
+      },
+      "decoder": "libultrahdr v1.4.0 ultrahdr_app",
+      "decode_exit_code": 0,
+      "decoded_rgba_f16_bytes": 100663296,
+      "gainmap_max_content_boost": 1.48872,
+      "verification": {
+        "path": "reports/camera-completion-20260907/aperture-tests/ultrahdr-verified/verification.json",
+        "size_bytes": 757,
+        "sha256": "17a12442eeefa937addee60ed774a572c5b87e85f77852bb48d5eee255b97304"
+      },
+      "candidate_boot_default_tested": false
+    },
+    {
+      "camera_id": "1",
+      "mode": "Ultra HDR",
+      "format": "JPEG_R",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "artifact": {
+        "path": "reports/camera-completion-20260907/aperture-tests/ultrahdr-verified/aperture-front-ultrahdr.jpg",
+        "size_bytes": 7072821,
+        "sha256": "a159549356a29bc2194d3028887acc69c91c106216057fdbd3a85310cc9713c3"
+      },
+      "decoder": "libultrahdr v1.4.0 ultrahdr_app",
+      "decode_exit_code": 0,
+      "decoded_rgba_f16_bytes": 100663296,
+      "gainmap_max_content_boost": 2.26206,
+      "verification": {
+        "path": "reports/camera-completion-20260907/aperture-tests/ultrahdr-verified/front-verification.json",
+        "size_bytes": 612,
+        "sha256": "fa60f964ba13f8d96de1371ea41ce825108b76b67302ae7d284d105ab7dd547d"
+      },
+      "candidate_boot_default_tested": false
+    },
+    {
+      "camera_id": "0",
+      "mode": "RAW + JPEG",
+      "raw_dimensions": [
+        4096,
+        3072
+      ],
+      "decode_exit_code": 0,
+      "artifacts": [
+        {
+          "path": "reports/camera-completion-20260907/aperture-tests/raw-verified/aperture-rear.dng",
+          "size_bytes": 25195884,
+          "sha256": "0852ea4851fd9108e9d240b17e2efa26fa82afdcfdb34913b0fb91f80b8160ec"
+        },
+        {
+          "path": "reports/camera-completion-20260907/aperture-tests/raw-verified/aperture-rear.jpg",
+          "size_bytes": 1306947,
+          "sha256": "9588eff45cc3d4db8f4889069d1afc3b50830d4e3f13b2933458063d715a2fdd"
+        },
+        {
+          "path": "reports/camera-completion-20260907/aperture-tests/raw-verified/aperture-rear-decoded.tiff",
+          "size_bytes": 37750608,
+          "sha256": "300ce171b483ac7107ff20fb9b7dcfe3666d3640eb326262e44a9e705d6ce444"
+        }
+      ],
+      "verification": {
+        "path": "reports/camera-completion-20260907/aperture-tests/raw-verified/verification.json",
+        "size_bytes": 1897,
+        "sha256": "0dfbeba7eda8c30c37602e853ffaf7a3d1a58762a67bb20a0d06b14967389a39"
+      },
+      "resolution_scope": "standard default pixel mode"
+    },
+    {
+      "camera_id": "1",
+      "mode": "RAW",
+      "raw_dimensions": [
+        4096,
+        3072
+      ],
+      "artifact": {
+        "path": "reports/camera-completion-20260907/aperture-tests/raw-verified/aperture-front.dng",
+        "size_bytes": 25195884,
+        "sha256": "601dc8e46cf238bdc3b1e1459bb038a9ffff0a095ede61c700a26e434ff2d5a8"
+      },
+      "decoded_dimensions": [
+        3072,
+        4096
+      ],
+      "decode_exit_code": 0,
+      "pixel_decode_verified": true,
+      "verification": {
+        "path": "reports/camera-completion-20260907/aperture-tests/raw-verified/front-verification.json",
+        "size_bytes": 1066,
+        "sha256": "6f4835c58f3a387df541e5e024945878384faff71d3ec310dcec178ee2686c96"
+      },
+      "companion_jpeg_verified": false,
+      "resolution_scope": "standard default pixel mode"
+    },
+    {
+      "camera_id": "0",
+      "mode": "Bokeh + Ultra HDR",
+      "api": "Aperture CameraX CameraExtensionSession",
+      "configured_format": "JPEG_R",
+      "configured_dimensions": [
+        4096,
+        3072
+      ],
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "artifact": {
+        "path": "reports/camera-completion-20260907/aperture-tests/bokeh-verified/aperture-bokeh-ultrahdr.jpg",
+        "size_bytes": 4671264,
+        "sha256": "39983292850a660a8ce738d20153e4f69fe7cbdf2e46a8f5d583e1592efbc1c1"
+      },
+      "shutter_to_save_ms": 4471,
+      "decoder": "libultrahdr1.4.0",
+      "decode_exit_code": 0,
+      "decoded_rgba_f16_bytes": 100663296,
+      "gainmap_max_content_boost": 3,
+      "verification": {
+        "path": "reports/camera-completion-20260907/aperture-tests/bokeh-verified/verification.json",
+        "size_bytes": 514,
+        "sha256": "6318abd2646d8e6ca2f877dba77d33ceae43bea1701f5fa3d84f2ea26d80bcde"
+      },
+      "capture_log_audit": {
+        "path": "reports/camera-completion-20260907/aperture-tests/effects-bokeh-capture-log-audit.json",
+        "size_bytes": 5800,
+        "sha256": "4a91b2b3045768f6cfe9635244235806a27ccc2620e305726b362e0bd8479bf3"
+      },
+      "capture_log_events": [
+        {
+          "name": "configured_jpeg_r_output",
+          "line": 3830121
+        },
+        {
+          "name": "platform_extension_session",
+          "line": 3830448
+        },
+        {
+          "name": "camerax_extension_session_created",
+          "line": 3832709
+        },
+        {
+          "name": "extension_session_configured",
+          "line": 3832715
+        },
+        {
+          "name": "vendor_bokeh_route",
+          "line": 3832755
+        },
+        {
+          "name": "vendor_bokeh_route_success",
+          "line": 3832768
+        },
+        {
+          "name": "shutter",
+          "line": 4937353
+        },
+        {
+          "name": "still_request",
+          "line": 4937354
+        },
+        {
+          "name": "processing_request",
+          "line": 4937355
+        },
+        {
+          "name": "capture_started",
+          "line": 4949128
+        },
+        {
+          "name": "image_available_nonnull",
+          "line": 4986310
+        },
+        {
+          "name": "image_captured",
+          "line": 4986311
+        },
+        {
+          "name": "final_output_result",
+          "line": 4987231
+        },
+        {
+          "name": "media_store_save_success",
+          "line": 4987232
+        }
+      ],
+      "app_capture_failure_pattern_counts": {
+        "Photo capture failed": 0,
+        "ImageCaptureException": 0,
+        "onCaptureFailed": 0,
+        "onCaptureSequenceAborted": 0,
+        "onConfigureFailed": 0,
+        "FATAL EXCEPTION": 0,
+        "Fatal signal": 0
+      },
+      "early_snapshot_preceded_save": true,
+      "other_aperture_effect_selections_verified": false
+    }
+  ],
+  "physical_raw": {
+    "case_count": 3,
+    "logical_camera_id": "0",
+    "preview_results_before_still_each": 8,
+    "still_requests_each": 1,
+    "pixel_mode": "default",
+    "cases": [
+      {
+        "logical_camera_id": "0",
+        "physical_id": "2",
+        "role": "wide",
+        "sensor": "OVX10500U",
+        "format": "RAW_SENSOR/DNG",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "pixels": 12582912,
+        "pixel_mode": "default",
+        "active_physical_id": "2",
+        "image_result_timestamps_match": true,
+        "sensor_start_log_verified": true,
+        "independent_dng_decode_exit_code": 0,
+        "decoded_tiff_dimensions": [
+          4096,
+          3072
+        ],
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "native_full_resolution_sensor_readout_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-wide-physical-raw/capture.dng",
+          "size_bytes": 25195884,
+          "sha256": "69449c648c00ad46d1ab64f1c96d7effae1dcb4acb38aaa70b68128e7b807774"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-wide-physical-raw/report.json",
+          "size_bytes": 2020,
+          "sha256": "5c7ae0648649d7c2423972b25674eef346ba5e9ebfe95d4532fd364843e8b8e7"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-wide-physical-raw/host-audit.json",
+          "size_bytes": 621,
+          "sha256": "0af8998c96d1fee30db7cd3182b314c6deb97a599beba2f0760844f4e93d547b"
+        }
+      },
+      {
+        "logical_camera_id": "0",
+        "physical_id": "3",
+        "role": "ultrawide",
+        "sensor": "S5KJN5",
+        "format": "RAW_SENSOR/DNG",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "pixels": 12582912,
+        "pixel_mode": "default",
+        "active_physical_id": "3",
+        "image_result_timestamps_match": true,
+        "sensor_start_log_verified": true,
+        "independent_dng_decode_exit_code": 0,
+        "decoded_tiff_dimensions": [
+          4096,
+          3072
+        ],
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "native_full_resolution_sensor_readout_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-ultrawide-physical-raw/capture.dng",
+          "size_bytes": 25195884,
+          "sha256": "1ed93a34124c48dc9ab9699f671149c27f7cf317d1907e70e9086834c7a3e0e4"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-ultrawide-physical-raw/report.json",
+          "size_bytes": 2022,
+          "sha256": "e8937015443bbe35c57cf7d54e038d0b55b1c9e8beb13a226341bfbbac445b85"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-ultrawide-physical-raw/host-audit.json",
+          "size_bytes": 620,
+          "sha256": "9534c73e91cbf55abaef3197a81acfbc0f1617fc03f009670bdc9b9808bab071"
+        }
+      },
+      {
+        "logical_camera_id": "0",
+        "physical_id": "4",
+        "role": "telephoto",
+        "sensor": "S5KHPE",
+        "format": "RAW_SENSOR/DNG",
+        "dimensions": [
+          4080,
+          3072
+        ],
+        "pixels": 12533760,
+        "pixel_mode": "default",
+        "active_physical_id": "4",
+        "image_result_timestamps_match": true,
+        "sensor_start_log_verified": true,
+        "independent_dng_decode_exit_code": 0,
+        "decoded_tiff_dimensions": [
+          4080,
+          3072
+        ],
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "native_full_resolution_sensor_readout_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-telephoto-physical-raw/capture.dng",
+          "size_bytes": 25097580,
+          "sha256": "486b1ba70265f3660236930683d92984fb5c6c9861c6503de556345d6ab6dc76"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-telephoto-physical-raw/report.json",
+          "size_bytes": 2018,
+          "sha256": "82ee8a35ff4bf312d6d0ea3d587daf96355ac906a84b8345e797a5f5a973c5cf"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-telephoto-physical-raw/host-audit.json",
+          "size_bytes": 619,
+          "sha256": "fc2117d63ceee80f928d9bb22dfdbe43eac90e465a15e0c76065e7772c8f22d2"
+        }
+      }
+    ]
+  },
+  "platform_extensions": {
+    "case_count": 20,
+    "coverage": "Five platform modes x two public cameras x JPEG and JPEG_R",
+    "camera_ids": [
+      "0",
+      "1"
+    ],
+    "mode_ids": {
+      "AUTO": 0,
+      "FACE_RETOUCH": 1,
+      "BOKEH": 2,
+      "HDR": 3,
+      "NIGHT": 4
+    },
+    "formats": [
+      "jpeg",
+      "jpeg_r"
+    ],
+    "all_encoded_dimensions": [
+      4096,
+      3072
+    ],
+    "jpeg_count": 10,
+    "jpeg_r_count": 10,
+    "total_capture_bytes": 61677549,
+    "all_full_jpeg_decodes_pass": true,
+    "all_10_fresh_jpeg_r_decodes_pass": true,
+    "gainmap_dimensions": [
+      2048,
+      1536
+    ],
+    "decoded_hdr_rgba_f16_bytes_each": 100663296,
+    "cases": [
+      {
+        "camera_id": "1",
+        "extension_name": "AUTO",
+        "platform_mode": 0,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-auto-jpeg/capture.jpg",
+          "size_bytes": 3319417,
+          "sha256": "86a733d04d844bcb338ef4b9383afde3874aa190f1bccda066821f702a623cf3"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-auto-jpeg/report.json",
+          "size_bytes": 4512,
+          "sha256": "5a4d55fa249c2539834a7d5c4e9d525283a1fed08bdbbf8a4773f49cf27d77f0"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-auto-jpeg/host-audit.json",
+          "size_bytes": 1033,
+          "sha256": "4806f3354663062a9746cae4738b9128e7e5deddea3c06e252df1d2665ce20e5"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "BOKEH",
+        "platform_mode": 2,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-bokeh-jpeg/capture.jpg",
+          "size_bytes": 2672930,
+          "sha256": "ca17d8fdc55d2758ff4bfead428e636134e1281925cd6dccae2dfd601e561bf7"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-bokeh-jpeg/report.json",
+          "size_bytes": 4458,
+          "sha256": "48c85371473e2dc3e01af11215578f849d03d5ab2f130d7a651af7ee3a5b87f0"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-bokeh-jpeg/host-audit.json",
+          "size_bytes": 1035,
+          "sha256": "f4b5b63d3e300eb96bd03e1a020f5b201a1846ce561dbc07240da7ed8a517ae9"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "FACE_RETOUCH",
+        "platform_mode": 1,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-face-retouch-jpeg/capture.jpg",
+          "size_bytes": 4156487,
+          "sha256": "9102243428c1b495d3bf1f82498f0177b31569d665d7e70a80a5f11f50729613"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-face-retouch-jpeg/report.json",
+          "size_bytes": 4520,
+          "sha256": "7105721a1108a56a81c6cdc83edced16f063d349bc9ef29ea50289fb88ed5783"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-face-retouch-jpeg/host-audit.json",
+          "size_bytes": 1049,
+          "sha256": "6a49f94c741fa875e3d83d99bfc33878b8d0282c473ec51852b55d3b767b69f5"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "HDR",
+        "platform_mode": 3,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-hdr-jpeg/capture.jpg",
+          "size_bytes": 1995965,
+          "sha256": "8c7e855a289cb7d33c5b477cdb328921872771864653643ce65bb144d0d766fb"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-hdr-jpeg/report.json",
+          "size_bytes": 4443,
+          "sha256": "e24e6e8ca2dab06ced758054c2138bfbe32cd55bb21e476a3527fdcb992dfe75"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-hdr-jpeg/host-audit.json",
+          "size_bytes": 1031,
+          "sha256": "be554e4079bcf9887df351506e5253b114026a69f9904f3ca8f84d7bd6990dc6"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "NIGHT",
+        "platform_mode": 4,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-night-jpeg/capture.jpg",
+          "size_bytes": 1741731,
+          "sha256": "6556d936ca7bf083db97ab483aa6d993dabb736ef63b7739de7c8ee8cb14bbc6"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-night-jpeg/report.json",
+          "size_bytes": 4445,
+          "sha256": "31a2f83f6c9aa9aa75cbf8f8544ddfc64f22a41f8232258db6b0dfc4638b4bea"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-night-jpeg/host-audit.json",
+          "size_bytes": 1035,
+          "sha256": "495828c64921b676ef805e672f85b32497296a4ca2ad96228090d2573bc5bedd"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "AUTO",
+        "platform_mode": 0,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-auto-jpeg/capture.jpg",
+          "size_bytes": 528734,
+          "sha256": "4c53359895089fdca9a45e6121caae90e6be188ca7bb78534fb013a5a6680536"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-auto-jpeg/report.json",
+          "size_bytes": 4511,
+          "sha256": "c0c3a066340fb42dc4c80071d838f72439669fb59ae47340ec02dea81429535a"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-auto-jpeg/host-audit.json",
+          "size_bytes": 1031,
+          "sha256": "b79f124be7bbced9e579760c7839384806d00b2df0d502aba61ea23d68632081"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "BOKEH",
+        "platform_mode": 2,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1280,
+          960
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-bokeh-jpeg/capture.jpg",
+          "size_bytes": 1402152,
+          "sha256": "7fb9bac139828a870698a66bd8f729d0d78375bd50825c184153fcd0eae5804d"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-bokeh-jpeg/report.json",
+          "size_bytes": 4454,
+          "sha256": "5faa76d1fa8e80d7b1f026b224de5b10a64f048fcee820e680e214dc051f3b6e"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-bokeh-jpeg/host-audit.json",
+          "size_bytes": 1034,
+          "sha256": "5acbceba4cc0c0f65662d7a9628cca10e6ec3a1ad7a1fe3e76b57d373700b963"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "FACE_RETOUCH",
+        "platform_mode": 1,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-face-retouch-jpeg/capture.jpg",
+          "size_bytes": 321096,
+          "sha256": "1cf38a71a77281b25b40e296daa0150b65f85447549c6a4a4105995fe62ddfe0"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-face-retouch-jpeg/report.json",
+          "size_bytes": 4519,
+          "sha256": "744f54903332bbd546d8c4a8d4ffbf2d5adb66b69f89c4ce0106b3aedd60ef8d"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-face-retouch-jpeg/host-audit.json",
+          "size_bytes": 1047,
+          "sha256": "ee483d8135c512cda01bed362e29c1ea537b75981a1d14b55805edd12909f536"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "HDR",
+        "platform_mode": 3,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-hdr-jpeg/capture.jpg",
+          "size_bytes": 672927,
+          "sha256": "6a79158a154d5d09f856a65dfc026a57d6c0b77664a4445975369c09c0df669c"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-hdr-jpeg/report.json",
+          "size_bytes": 4442,
+          "sha256": "c31df868b51fd6c0dbc6254a9c26477f6edbb9ab358a265df3304246743ea1d8"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-hdr-jpeg/host-audit.json",
+          "size_bytes": 1029,
+          "sha256": "ddf0f763ff71913c8138c9c43648001944e8e322d2bec2036eceef8d7555976e"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "NIGHT",
+        "platform_mode": 4,
+        "format": "jpeg",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": false,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-night-jpeg/capture.jpg",
+          "size_bytes": 1841376,
+          "sha256": "1d7dcdc1b03cdced0b32210e3fab4ce116ab414c35130a1ff59a4cb467912c71"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-night-jpeg/report.json",
+          "size_bytes": 4445,
+          "sha256": "3463d1d34a3bda9e7ecb3b71ea19a8b0e5c9d1d93456df5568ed85511ea36379"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-night-jpeg/host-audit.json",
+          "size_bytes": 1034,
+          "sha256": "aabc21f9bc2b7f9c8e0c6d69bc6d6cc11ac67e642be4ab3d7b5e9b0d2d25f2b8"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "AUTO",
+        "platform_mode": 0,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-auto-jpegr/capture.jpg",
+          "size_bytes": 4715147,
+          "sha256": "ce0984f47f5ec5552d474f807bf82230a15e63efb304dc26efe67ffff33dd9e9"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-auto-jpegr/report.json",
+          "size_bytes": 4458,
+          "sha256": "8d7232276899b2215dae13a08be13af250333f0cb3f353fe59bb97c7889fcd33"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-auto-jpegr/host-audit.json",
+          "size_bytes": 1275,
+          "sha256": "8573d1839431a7bf7e9b0d3cde6fb7d8d6eb1a87a6dbf6d529953ee116cdf680"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "BOKEH",
+        "platform_mode": 2,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-bokeh-jpegr/capture.jpg",
+          "size_bytes": 4820523,
+          "sha256": "7af1a6438d091713eb8233929908fc2724c85749240a77f60260f0076168a23a"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-bokeh-jpegr/report.json",
+          "size_bytes": 4459,
+          "sha256": "bc35added29dc5b834c7ebec08a70018834c4cf6632ee38dd2d2e2f7b628db3e"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-bokeh-jpegr/host-audit.json",
+          "size_bytes": 1271,
+          "sha256": "d6e2cf8cdd49ba4f874a24fd9cb1e41e84a89ac6b9337aba3b849fef14d40545"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "FACE_RETOUCH",
+        "platform_mode": 1,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-face-retouch-jpegr/capture.jpg",
+          "size_bytes": 5806197,
+          "sha256": "43528a123bc880ef883a3c6755cbff18025d110507a74a897d87f5d43c212ec6"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-face-retouch-jpegr/report.json",
+          "size_bytes": 4466,
+          "sha256": "2d3ac8c42ca0e9afe0f52010d394f0580f978a10f77301b0f11a238c602bf1be"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-face-retouch-jpegr/host-audit.json",
+          "size_bytes": 1285,
+          "sha256": "288188fcd4ea435639f6bbe180a26caa9160f20cd8b0c21350d347ab1f35e87e"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "HDR",
+        "platform_mode": 3,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-hdr-jpegr/capture.jpg",
+          "size_bytes": 4047453,
+          "sha256": "5b3588ae1e23d25d2d477220ee0e9d8563c1845053a746010bcf8fbd10a57c32"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-hdr-jpegr/report.json",
+          "size_bytes": 4389,
+          "sha256": "8cd9407b33bbdc2791889e41d9834237daf4a78ea3d7cabd8fd428370692ce8f"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-hdr-jpegr/host-audit.json",
+          "size_bytes": 1261,
+          "sha256": "8633eddf45b7c77de49505bbadf195ecbee041d7f1bb52341e1ef21f79b4d4fe"
+        }
+      },
+      {
+        "camera_id": "1",
+        "extension_name": "NIGHT",
+        "platform_mode": 4,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-night-jpegr/capture.jpg",
+          "size_bytes": 4342517,
+          "sha256": "408fe010d74bbcd5150d7abdc888748fed980ec261371c506ba33eb7e22e718e"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-night-jpegr/report.json",
+          "size_bytes": 4391,
+          "sha256": "990404c28482e94a581499c78247c839ebae285639e8cd02684d5b11f1a0111e"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/front-night-jpegr/host-audit.json",
+          "size_bytes": 1265,
+          "sha256": "b8b8dee0023f7f15e16379173fe73a523e26bb8c68083deccce1315a90454305"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "AUTO",
+        "platform_mode": 0,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-auto-jpegr/capture.jpg",
+          "size_bytes": 3058224,
+          "sha256": "aad734ac9cac34241ced091bffcba6081e22ca4314d2c0a87418b2a4ce8848a6"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-auto-jpegr/report.json",
+          "size_bytes": 4458,
+          "sha256": "7667395b7a2ce607831efa53006aaeb9c0733be94c24c7edcfd2136953024f20"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-auto-jpegr/host-audit.json",
+          "size_bytes": 1274,
+          "sha256": "48ab6f382a9dadc5adb77d50cd645a611a1778821b93e41462fbbcf3f9f6772b"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "BOKEH",
+        "platform_mode": 2,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1280,
+          960
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-bokeh-jpegr/capture.jpg",
+          "size_bytes": 5556142,
+          "sha256": "08cfdf3b4e5df53ad94903bab2935a222d12f3b90009a02ec2c7fcf225f19d0a"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-bokeh-jpegr/report.json",
+          "size_bytes": 4455,
+          "sha256": "2aed042b57ebf1bdb0211041e975fd618186c57aa0caac02de9ecf1f36dee3f4"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-bokeh-jpegr/host-audit.json",
+          "size_bytes": 1264,
+          "sha256": "207e723a089820b3816699d0a054ffa3dc8dfa16936f0a0f137dd003874b9a14"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "FACE_RETOUCH",
+        "platform_mode": 1,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-face-retouch-jpegr/capture.jpg",
+          "size_bytes": 3084321,
+          "sha256": "c2594ec3ffb3c6574ebac047f55f094e9d8a50281b336370144dd53193d6bdb2"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-face-retouch-jpegr/report.json",
+          "size_bytes": 4466,
+          "sha256": "96bf07ac2c65a10df8cd9614d3242f684f1a4f46716cf0eb80425c30d60d2b1f"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-face-retouch-jpegr/host-audit.json",
+          "size_bytes": 1290,
+          "sha256": "ad306a570e5aee3aff4dade8cde0125e5997e325db8fd9c18ea573ac5d4ce7a1"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "HDR",
+        "platform_mode": 3,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-hdr-jpegr/capture.jpg",
+          "size_bytes": 3358983,
+          "sha256": "3aa64c90c091a9a0e4338f0050f5e73ec010c181532f4e5b432e0984b6caa32e"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-hdr-jpegr/report.json",
+          "size_bytes": 4389,
+          "sha256": "7191d0393ca8a8b534d6ef958c2bb1142751e7eb22defe0fe88569a0aa5d9683"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-hdr-jpegr/host-audit.json",
+          "size_bytes": 1272,
+          "sha256": "260dc47740f4e1c3caf4fbc678f314e2f82ceb07cc258646d6cdab38577d944d"
+        }
+      },
+      {
+        "camera_id": "0",
+        "extension_name": "NIGHT",
+        "platform_mode": 4,
+        "format": "jpeg_r",
+        "dimensions": [
+          4096,
+          3072
+        ],
+        "preview_dimensions": [
+          1440,
+          1080
+        ],
+        "preview_frame_count": 8,
+        "outcome": "captured",
+        "independent_full_pixel_decode_verified": true,
+        "independent_gainmap_decode_verified": true,
+        "camera_process_ids_unchanged": true,
+        "crash_buffer_unchanged": true,
+        "physical_sensor_selection_proven": false,
+        "artifact": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-night-jpegr/capture.jpg",
+          "size_bytes": 4235227,
+          "sha256": "16dcc8ed87ee8fa2ec956f9fd5039396419edf909da464992a15750fbcfa144c"
+        },
+        "report": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-night-jpegr/report.json",
+          "size_bytes": 4391,
+          "sha256": "6ce379a4d0dbc39f951f73fb478e6a2fb6a971dd496e3e55bfd8ad52cdbc0bc9"
+        },
+        "host_audit": {
+          "path": "reports/camera-completion-20260907/probe-tests/rear-night-jpegr/host-audit.json",
+          "size_bytes": 1264,
+          "sha256": "fde2e65cef14d94928b0b6d1594e4207fc2a977f09e8982566dfeb2c64c3ed12"
+        }
+      }
+    ],
+    "limits": [
+      "Eight preview callbacks are the still-submission threshold; sustained preview is not measured.",
+      "Probe-reported callback and timestamp consistency is separate from independent host artifact verification.",
+      "Public rear 0 and front 1 do not isolate each rear physical sensor in the extension matrix.",
+      "Camera PID and crash-buffer equality apply only to the retained per-case windows.",
+      "Rear samples are very dark. Rear Auto, Face retouch and HDR JPEG_R have identical all-zero gain maps; rear Bokeh and Night gain-map values range from 0 to 3. Useful HDR enhancement and visible effect quality are unverified."
+    ]
+  },
+  "high_resolution": {
+    "standard_pixel_mode_tested": "default",
+    "vendor_high_resolution_session_mode_from_source": "0x9004",
+    "legacy_vendor_session_mode": "0x80f3",
+    "wide_ultrawide_candidate_dimensions": [
+      8192,
+      6144
+    ],
+    "telephoto_50mp_candidate_dimensions": [
+      8160,
+      6144
+    ],
+    "telephoto_200mp_advertised_dimensions": [
+      16320,
+      12288
+    ],
+    "vendor_50mp_capture_tested": false,
+    "vendor_200mp_capture_tested": false,
+    "native_200mp_readout_tested": false,
+    "raw_plus_200mp_tested": false,
+    "remaining_contract_gap": "Telephoto mode-specific SuperResolution table stops at 8160x6144 while general/QCFA rows advertise 16320x12288; actual factory Pixel/REARx7 stream configuration remains to be observed.",
+    "processed_ultra_raw_tested": false,
+    "source_findings_are_capture_results": false
+  },
+  "source_candidate": {
+    "status": "revision 2 source installed; affected Android component build running",
+    "first_installed_build": "nezha.af6d7a77320c30b10d63afd4",
+    "first_installed_rows": 652,
+    "first_installed_changed_files": 41,
+    "first_source_receipt": {
+      "path": "reports/camera-completion-20260907/source/source-installed.json",
+      "size_bytes": 163920,
+      "sha256": "19834874c97e83b6c640e8714cc698825d750af040ffcbe986a18a425b75b637"
+    },
+    "source_installation_is_device_installation": false,
+    "android_component_build_passed": false,
+    "first_component_build_failure": "TARGET_DEVICE was unset when the service fragment evaluated during early dumpvars. The next revision is correcting the selector guard.",
+    "revision_2_source_installed": true,
+    "final_runtime_artifact_validation_passed": false,
+    "successor_apk_signed": false,
+    "successor_flashed": false,
+    "successor_runtime_verified": false,
+    "source_contracts": [
+      {
+        "path": "config/nezha-camera-jpegr-default.json",
+        "size_bytes": 1989,
+        "sha256": "1d28772fd7d89d240eee631b01a6a37b7885423164fe9f355400b1ed288d58eb"
+      },
+      {
+        "path": "config/nezha-camera-aux-packages.json",
+        "size_bytes": 1351,
+        "sha256": "8a586131a0d48432866bcf3cbb219f21e34d5aa14526880dfcbacd322aa9a6d2"
+      },
+      {
+        "path": "config/nezha-camera-platform-signed.json",
+        "size_bytes": 3776,
+        "sha256": "c6ef89fa9600aba6760885c08e00cef3d8ca494217a7d67de76340758acc28e5"
+      },
+      {
+        "path": "config/nezha-cameraopt-native-compat.json",
+        "size_bytes": 2375,
+        "sha256": "82577c6ae7fe8e97c87de420b45c9c8eb4fbda3b4faa6fdd2fd1c9c2bfe35540"
+      },
+      {
+        "path": "config/nezha-cameraopt-service.json",
+        "size_bytes": 5535,
+        "sha256": "3c4a9fb56e93269db479356315133498cc6b8bd30e09eddb4cd37f31b63731c3"
+      }
+    ],
+    "factory_verifier": "Complete unchanged original Verifier including real PackageManagerInternal.isPlatformSigned, original native cached result and original phase-1000 callback. Runtime verdict remains unverified.",
+    "implemented_request_surfaces": [
+      "adjBoost",
+      "getSystemStatusJson",
+      "getVerifyResult",
+      "notifyCameraPostProcessState",
+      "sendCameraEvent"
+    ],
+    "factory_immediate_return_methods": [
+      "reportMemPressure"
+    ],
+    "unported_binder_methods": 22,
+    "app_reachable_unported_methods": [
+      "boostCameraByThreshold",
+      "reclaimMemoryForCamera",
+      "notifyCameraPerformanceTime",
+      "updateCloudData"
+    ],
+    "unsupported_oneway_behavior": "Server-side diagnostics and counters; no synchronous negative client acknowledgment. Unported APIs are not assumed unused.",
+    "process_policy_scope": "Temporary camera OOM cap; full MIUI native boost/reclamation and post-close work model are not implemented.",
+    "prelaunch_event_producer_integrated": false,
+    "platform_signing_stage": "Original APK input packet staged and verified without byte transformation or signing. Normal Android signing, package-data transition, installed grants, seinfo and runtime checks remain required.",
+    "jpegr_default_limit": "Fresh persistent-property store only. Existing persisted values override the build default; a stored zero is not migrated. Current v8 captures used the existing factory initializer.",
+    "retained_shrinker_requirement": "Keep the public NezhaCameraProcessPolicy API in services.jar under the selected SYSTEM_OPTIMIZE_JAVA configuration; final packaged method definitions still require verification.",
+    "selected_source_build": "nezha.cbf3d0c25dde0df6305c66d4",
+    "selected_source_rows": 652,
+    "revision_2_changed_files": 1,
+    "selected_source_receipt": {
+      "path": "reports/camera-completion-20260907/source-revision-2/source-installed.json",
+      "size_bytes": 163919,
+      "sha256": "a575ba51426b6fca103d00ffdf541748630500817b85256965c66bce74761c0e"
+    },
+    "android_component_build_status": "running",
+    "first_component_build_log": {
+      "path": "reports/camera-completion-20260907/component-build-first-source-dumpvars-failure.log",
+      "size_bytes": 1671,
+      "sha256": "5c3b64c19de431daab51dbd285e5077bb1489d80ac39b13d7012a4e0fafc4944"
+    },
+    "revision_2_correction": "Require TARGET_PRODUCT=lineage_nezha during early dumpvars; reject a nonempty TARGET_DEVICE unless it is nezha. No camera or Java behavior change.",
+    "handoff_scope": "The retained candidate handoff predates the early product-guard correction. Revision 2 source receipt and current source-contract pins identify the selected source."
+  },
+  "tests": {
+    "initial_combined_suite": {
+      "command": "make test",
+      "tests_run": 4862,
+      "elapsed_seconds": 179.735,
+      "status": "failed",
+      "failures": 8,
+      "errors": 116,
+      "log": {
+        "path": "reports/camera-completion-20260907/full-tests-before-generator-policy-fix.log",
+        "size_bytes": 1174054,
+        "sha256": "538ebdefda62932528f77608101f8f1ed6d36c551a234c6f8f88e4620d441709"
+      },
+      "cause": "Generic device generator rejected the reviewed CameraOpt SYSTEM_EXT policy fragment; dependent validation tests failed before their intended checks."
+    },
+    "corrected_generator": {
+      "tests": 258,
+      "elapsed_seconds": 25.55,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/source-generator-tests.log",
+        "size_bytes": 359,
+        "sha256": "0074bd03cbec807ac3af92c699bd7997a3c81e9bb7953849b870163350360820"
+      }
+    },
+    "combined_suite_before_early_dumpvars_guard_revision": {
+      "command": "make test",
+      "tests": 4865,
+      "elapsed_seconds": 189.946,
+      "status": "passed",
+      "shell_checks_passed": true,
+      "log": {
+        "path": "reports/camera-completion-20260907/full-tests.log",
+        "size_bytes": 866311,
+        "sha256": "d59bb3782dcfba8c4526e04230cf07c16e180ea9a78f6974f9d589340c629293"
+      }
+    },
+    "service_offline": {
+      "tests": 12,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/service-root-tests.log",
+        "size_bytes": 111,
+        "sha256": "3572b86b3bb8100cd2083bc7cef05a8f6096c98852dcdfa57dabbff5293f42df"
+      }
+    },
+    "sampler_host_compile": {
+      "status": "passed",
+      "is_android_platform_build": false
+    },
+    "process_helper_host_harness": {
+      "assertions": 35,
+      "status": "passed",
+      "scope": "Actual helper with minimal platform fixtures"
+    },
+    "native_query_host_harness": {
+      "cases": 88,
+      "status": "passed",
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "scope": "Synthetic controller lookups and exact extracted query; no Android library or cgroup runtime proof"
+    },
+    "latest_guard_revision_full_suite": "pending",
+    "early_product_guard_revision": {
+      "tests": 268,
+      "elapsed_seconds": 31.367,
+      "status": "passed",
+      "service_tests": 13,
+      "generator_tests": 255,
+      "log": {
+        "path": "reports/camera-completion-20260907/early-product-guard-tests.log",
+        "size_bytes": 100,
+        "sha256": "6d3a91670e056c874f3e39d10418392bdcf26d9a9e350569359b809ea0020bf7"
+      }
+    }
+  },
+  "cleanup": {
+    "final_aperture_effect": "none",
+    "raw_enabled": false,
+    "ultra_hdr_enabled": true,
+    "stay_awake_off": true,
+    "camera_stopped": true,
+    "receipt": {
+      "path": "reports/camera-completion-20260907/aperture-tests/effects-ui-cleanup-cold/receipt.json",
+      "size_bytes": 81,
+      "sha256": "37e337da5d1ea9e6a7b01b84dac8ba5db165d5008ed37e4e873a755d18f4efe8"
+    },
+    "final_state": {
+      "path": "reports/camera-completion-20260907/aperture-tests/effects-ui-cleanup-cold/final-state.json",
+      "size_bytes": 176,
+      "sha256": "bbbdbe96a615fd58bde3137d2562d8a1b360eaac9310516fb1c5ea3cdd57d24b"
+    },
+    "preferences": {
+      "path": "reports/camera-completion-20260907/aperture-tests/effects-ui-cleanup-cold/final-preferences.xml",
+      "size_bytes": 816,
+      "sha256": "77352bbda1871be3f8a1569c17f8c9192ad7eaeedab63af78fcd846274655883"
+    },
+    "build": "nezha.f2e3feac321f56f92d2ad7ea",
+    "slot_suffix": "_a",
+    "selinux": "Enforcing"
+  },
+  "remaining": [
+    "Successful affected Android component build and final classpath, shrinker API, strict uses-library and native import checks.",
+    "Original CameraOpt initialization/verdict, full required API behavior and a saved Xiaomi Camera capture while Enforcing.",
+    "Successor package signing and explicitly reviewed installed signer/app-data transition, installed grants and labels.",
+    "First-session JPEG_R behavior for the selected boot default and combined auxiliary-package selection.",
+    "50 MP and 200 MP vendor capture, resolution-table discrepancy, native full-resolution readout, RAW + 200 MP and processed Ultra RAW.",
+    "Useful image quality and mode-specific effect behavior beyond the retained capture/decode windows."
+  ],
+  "evidence_receipts": [
+    {
+      "path": "reports/camera-completion-20260907/handoffs/raw-extensions-proposed-research.json",
+      "size_bytes": 46279,
+      "sha256": "19332f3b0e0c4dcd1b6ac27d24ec31bbba01ed2b0085f50aadd114edfa78b0bc"
+    },
+    {
+      "path": "reports/camera-completion-20260907/probe-tests/physical-raw-matrix.json",
+      "size_bytes": 1992,
+      "sha256": "e569b54f3b188b6f4f072dca63989079d68c1c627c28a4f29dd601bf33c16322"
+    },
+    {
+      "path": "reports/camera-completion-20260907/probe-tests/extension-jpeg-matrix.json",
+      "size_bytes": 10951,
+      "sha256": "b47d28c5afc80c89d056a469934410800fce27c0850ce543e92dadfa1c6ef0eb"
+    },
+    {
+      "path": "reports/camera-completion-20260907/probe-tests/extension-jpegr-matrix.json",
+      "size_bytes": 13374,
+      "sha256": "a730f8c5f28bec8de8a7069a57055785918dfc022475005387904710969d076d"
+    },
+    {
+      "path": "reports/camera-completion-20260907/probe-tests/extension-matrix-independent-audit.json",
+      "size_bytes": 73845,
+      "sha256": "8ba1c818fdc32853004c05d179961ccd7ed3f603f20131dbd43e35c02976fbb3"
+    },
+    {
+      "path": "reports/camera-completion-20260907/probe-tests/gainmap-independent-audit.json",
+      "size_bytes": 17906,
+      "sha256": "6e49be1919a0732b4ce645a52092c7daafa1ef2a17c586797be45c50b39a0016"
+    },
+    {
+      "path": "reports/camera-completion-20260907/raw-highres/highres-mode-plan.md",
+      "size_bytes": 10737,
+      "sha256": "b7c3ccd4c8c1444ed4c0a3d0486e36db6a25ba65fa18534dadb4f57db7e7b6d4"
+    },
+    {
+      "path": "reports/camera-completion-20260907/raw-highres/highres-source-ledger.json",
+      "size_bytes": 7765,
+      "sha256": "4149532fed05a32bc61159efc9480063b6b1c58a0fb97a3238db53dac0eadc86"
+    },
+    {
+      "path": "reports/camera-completion-20260907/extensions/aperture-effects-diagnosis.md",
+      "size_bytes": 7179,
+      "sha256": "6acd1765ab8c5085f9c79c1e248594c8bfdad3881b9053db76d1d99b382c5d51"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/candidate-source-handoff.json",
+      "size_bytes": 6536,
+      "sha256": "4b590b2a1405525452ef58691eecb90c9d77cfb248ee0e294b8d2ef8dd37ae07"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/hawk/verification-contract.md",
+      "size_bytes": 11547,
+      "sha256": "cac8fcb884d96391eb73f241231550628d60a20cd9a1f03c4bb40c2aab9e164c"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/cameraopt-source-independent-review.md",
+      "size_bytes": 7608,
+      "sha256": "3c6d362b88a4bba67ae26686b2cad151b33b8ebe3fcf2aa1f0509d6eec773205"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/shrinker-review/review.md",
+      "size_bytes": 3497,
+      "sha256": "f98a0ff452827961bf7f6abdbb7a7cdb4076e791f0753d0988aa1f989c33c8d5"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/shrinker-review/patch-replay.json",
+      "size_bytes": 1135,
+      "sha256": "1ce93cb0d3879c75ba2edda8a848e902fe90c908202cace344031b37942ea016"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/hawk/status-isolation/sampler-compile/result.json",
+      "size_bytes": 923,
+      "sha256": "3b9662c70caa9ff7f671a2a9fe44cda9f2c6679aa3073cbffc3762267b2ca828"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/cloud/adapter-policy-analysis/process-policy-host-tests/result.json",
+      "size_bytes": 1993,
+      "sha256": "727c17f0503577cb707d67a97c57fc236aaeafeea8a4836e783e38fb0804ef09"
+    },
+    {
+      "path": "reports/camera-completion-20260907/processgroup/review-harness-results.json",
+      "size_bytes": 2272,
+      "sha256": "2b9f7bea17c149f20f49e6e6828d74db5fbdb4198f41dcabc4f9532857ea1f4e"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/camera-platform-source-stage.json",
+      "size_bytes": 5206,
+      "sha256": "3b414efc827eab4a536872cef1884224903e1139309caaeeb37bc8a2f943fe7c"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/camera-platform-source-verify.json",
+      "size_bytes": 5206,
+      "sha256": "3b414efc827eab4a536872cef1884224903e1139309caaeeb37bc8a2f943fe7c"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/package-transition-inputs/package-transition-review.json",
+      "size_bytes": 5300,
+      "sha256": "cca0783c91c6728790660cf522907d99908e6832e86f86271b63160420de5368"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/camera-platform-mac-review.json",
+      "size_bytes": 3651,
+      "sha256": "e2a58cb50f4486b4454593442a8844956fffaf4b7425c72a09f818623dfe1be5"
+    },
+    {
+      "path": "reports/camera-completion-20260907/aperture-tests/effects-ui-cleanup-cold/receipt.json",
+      "size_bytes": 81,
+      "sha256": "37e337da5d1ea9e6a7b01b84dac8ba5db165d5008ed37e4e873a755d18f4efe8"
+    }
+  ],
+  "privacy": "Tracked record contains derived measurements, hashes and ignored evidence paths. Original images, raw logs, proprietary bytes, serials and personal media contents are not embedded."
+}

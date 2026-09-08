@@ -1,9 +1,8 @@
 # Workspace documentation
 
-**The Package7 feature successor is the installed development baseline.** It
-boots with retained data and fingerprint enrollment works; camera and the UDFPS
-icon still need fixes. Start with the current pages below. The expanded index
-preserves dated evidence and earlier experiments.
+**The installed development baseline is v8 on slot A with SELinux Enforcing.**
+Start with the current status for source selection, measured capture results and
+remaining work. The expanded index preserves dated evidence and earlier experiments.
 
 | Start here | Purpose |
 | --- | --- |
@@ -33,7 +32,8 @@ preserves dated evidence and earlier experiments.
 | [Camera XML selection and the QTI framework flag](camera-xml-selection-20260907.md) | Missing ro.vendor.qti.va_aosp.support selects kaanapali_gsi.xml; the runtime test with the flag measured nezha.xml, nine devices and no damage verdicts; system-property fix built, signed and flashed as delivery set v6 and reproduced from first boot; capture unconfirmed, not device-admitted |
 | [Camera capture diagnosis](camera-capture-diagnosis-20260907.md) | After the enumeration fix: single sensors stream, but the default 3-sensor rear fails in Xiaomi's Unified Multi-Camera graph (VirtualSuperGraphDesc EInvalidArg / ENODEV); framework-side gap, not a config flip; not device-admitted |
 | [Full HyperOS camera-framework port](camera-framework-port-20260907.md) | Brought the whole HyperOS camera stack (24 libs, CameraMind, configs, init, properties) over as delivery set v7; builds, signs, flashes and boots enforcing with no regression, but rear multi-camera capture still fails because the libcameraimpl MiStreamUsecase injection is never loaded on the AOSP framework; single sensors stream |
-| [Native camera session hook](camera-native-hook-20260907.md) | v8 built, signed and flashed on slot A, enforcing; native tags and Aperture ordinary-JPEG rear/front capture verified; Ultra HDR graph failure, Xiaomi app compatibility rejection and isolated rear-lens checks remain open; not device-admitted |
+| [Native camera session hook](camera-native-hook-20260907.md) | Installed v8 baseline: native tags and Aperture ordinary-JPEG rear/front capture; its early remaining camera failures are followed by the completion record below |
+| [Camera completion progress](camera-completion-20260907.md) | v8 rear/front Ultra HDR and RAW, three physical RAW captures, 20 extension cases and Aperture Bokeh; CameraOpt successor source/build stages and remaining Xiaomi/50/200 MP proof |
 | [Camera library analysis](camera-library-analysis-20260907.md) | Logical XML-ID mismatch behind damage verdicts; conditional GSI override and matching compiled IDs; effective runtime selection unverified |
 | [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |
 | [Dolby controls candidate](nezha-dolby-20260905.md) | Exact factory effect protocol and opt-in manual source controller; playback qualification remains open |
