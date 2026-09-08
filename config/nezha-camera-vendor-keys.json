@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-vendor-key-discovery-v1",
+  "selector": "NEZHA_CAMERA_VENDOR_KEYS",
+  "default_enabled": false,
+  "requires_selectors": [
+    "NEZHA_CAMERA_FRAMEWORK",
+    "NEZHA_XIAOMI_CAMERA",
+    "NEZHA_CAMERA_PLATFORM_SIGNED"
+  ],
+  "fragment": "device/xiaomi/nezha/camera-vendor-keys.mk",
+  "fragment_sha256": "f65f4a82e8ad67e2b3994038a0c17bf91687e83d9ff0df6101c1cbccbe50c053",
+  "fragment_size_bytes": 1152,
+  "project": "frameworks/base",
+  "repository": "https://github.com/Evolution-X/frameworks_base",
+  "branch": "bka",
+  "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "upstream_branch_observed_20260908": "b557afa98c14f3f33f70be3bbeb8aaaeb95a8882",
+  "patch": "patches/evolution/0032-nezha-camera-vendor-key-discovery.patch",
+  "patch_sha256": "3b612c4cb75e10fee73e5102a4f12980de4109a8b6d85ac04c40a0ae107e6250",
+  "files": {
+    "core/java/android/hardware/camera2/CameraCharacteristics.java": {
+      "before_sha256": "7a6573e3b9d46976894fd10cc0bb3e4b8a1d474016fbf325413d995311d3a4e4",
+      "after_sha256": "b0a54addea0551d255d1b8abd2ded0ea39456ff41933afef851d56763b31a1c5",
+      "after_bytes": 372592
+    },
+    "core/res/res/values/config.xml": {
+      "before_sha256": "b7c169c6ce96e3e76617eb2e253e74deac4c3a1e9822025d5ba7443db235e0ba",
+      "after_sha256": "04836ae4855b0dcf55de22c7ff65129de4b22649ada53ebbdad97371887fd08a",
+      "after_bytes": 434933
+    },
+    "core/res/res/values/symbols.xml": {
+      "before_sha256": "fd7e9f3876b77f9e541f69f5d2b53b549a8821de1d31e2afef7c287106502548",
+      "after_sha256": "412cc1dc8c501d0c33de9cef3099b285c1dc6e7e0d14b04bb02fa7abf643f970",
+      "after_bytes": 392830
+    },
+    "core/java/android/hardware/camera2/impl/NezhaCameraVendorKeyCompat.java": {
+      "before_sha256": null,
+      "after_sha256": "e34f8769eafe245d943a815d8e13ce743dc88c57ee0c56ea47cc90ed5934e39a",
+      "after_bytes": 2564
+    }
+  },
+  "template": "templates/camera-vendor-keys/NezhaCameraVendorKeyCompat.java",
+  "template_sha256": "e34f8769eafe245d943a815d8e13ce743dc88c57ee0c56ea47cc90ed5934e39a",
+  "resource": "config_nezhaCameraVendorKeys",
+  "runtime_scope": {
+    "device": "nezha",
+    "package": "com.android.camera",
+    "entrypoint": "CameraCharacteristics.getAvailableCaptureRequestKeys",
+    "effect": "Append the actual registered vendor-key catalog to this client enumeration, preserving advertised keys and native metadata. This mirrors the unmodified factory app getAllVendorKeys branch.",
+    "standard_keys_added": false,
+    "metadata_values_changed": false,
+    "app_payload_changed": false,
+    "os_identity_properties_added": false,
+    "permissions_changed": false
+  },
+  "evidence_document": "docs/camera-vendor-key-discovery-20260908.md",
+  "status": "source-candidate-not-built-not-installed"
+}

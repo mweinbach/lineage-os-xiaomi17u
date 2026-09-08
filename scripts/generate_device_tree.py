@@ -49,6 +49,8 @@ TEMPLATE_FILES = (
     "camera-jpegr-default.mk",
     "camera-platform-signed.mk",
     "cameraopt-service.mk",
+    "camera-vendor-keys.mk",
+    "camera-vendor-keys/overlay/frameworks/base/core/res/res/values/config.xml",
     "cameraopt-service/Android.bp",
     "cameraopt-service/README.md",
     "cameraopt-service/compile-stubs/com/miui/cameraopt/ICameraOptManager.java",

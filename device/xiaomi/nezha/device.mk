@@ -51,6 +51,9 @@ endif
 # Start the authored CameraOpt bridge with the unchanged factory verifier.
 include $(NEZHA_DEVICE_PATH)/cameraopt-service.mk
 
+# Restore the factory Camera's registered vendor-key discovery on this AOSP base.
+include $(NEZHA_DEVICE_PATH)/camera-vendor-keys.mk
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch.mk)
 $(call inherit-product, $(NEZHA_DEVICE_PATH)/generated/device-candidate.mk)
