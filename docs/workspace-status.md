@@ -16,6 +16,11 @@ and usage conversion failures before audio policy initialization. Video remains
 unverified on v11 and failed on v10 with a null audio policy manager.
 **Full camera acceptance remains incomplete.**
 
+A [successor source candidate](camera-save-audio-compat-20260908.md) adds the
+compressed-DNG save APIs, repairs the measured neutral HDR metadata and admits
+the two rejected audio enum values. Its host checks pass; source installation,
+full build, signing and successor phone validation are pending.
+
 The installed source includes the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md),
 [CameraX cache backport](camerax-extension-cache-20260908.md) and
 [factory stream-sizing repair](camera-stream-sizing-20260908.md). Its 661 source

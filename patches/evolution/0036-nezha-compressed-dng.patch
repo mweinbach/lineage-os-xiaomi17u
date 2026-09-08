@@ -1,0 +1,635 @@
+diff --git a/core/java/android/hardware/camera2/DngCreator.java b/core/java/android/hardware/camera2/DngCreator.java
+--- a/core/java/android/hardware/camera2/DngCreator.java
++++ b/core/java/android/hardware/camera2/DngCreator.java
+@@ -646,6 +646,49 @@
+      */
+     private long mNativeContext;
+ 
++    /**
++     * Retain the encoded JPEG preview used by the Xiaomi compressed RAW writer.
++     * The full buffer is used, matching the factory API's clear semantics.
++     * @hide
++     */
++    public synchronized void writeJpeg(int width, int height, ByteBuffer pixels) {
++        if (width <= 0 || height <= 0 || pixels == null) {
++            throw new IllegalArgumentException("Invalid JPEG dimensions or buffer");
++        }
++        nativeWriteJpeg(nezhaDirectBuffer(pixels), width, height);
++        pixels.clear();
++    }
++
++    /**
++     * Write factory lossless JPEG data and result metadata as a LinearRaw DNG.
++     * The caller owns the output stream. Unsupported data throws before writing.
++     * @hide
++     */
++    public synchronized void writeLossLessJpeg(OutputStream out, ByteBuffer pixels)
++            throws IOException {
++        if (out == null || pixels == null) {
++            throw new IllegalArgumentException("Null output stream or compressed RAW buffer");
++        }
++        pixels.clear();
++        nativeWriteLossLessJpeg(out, nezhaDirectBuffer(pixels), 0);
++        pixels.clear();
++    }
++
++    private static ByteBuffer nezhaDirectBuffer(ByteBuffer pixels) {
++        if (pixels.isDirect()) return pixels;
++        ByteBuffer copy = ByteBuffer.allocateDirect(pixels.capacity());
++        ByteBuffer source = pixels.duplicate();
++        source.clear();
++        copy.put(source);
++        copy.clear();
++        return copy;
++    }
++
++    private synchronized native void nativeWriteJpeg(ByteBuffer pixels, int width, int height);
++
++    private synchronized native void nativeWriteLossLessJpeg(OutputStream out, ByteBuffer pixels,
++            long offset) throws IOException;
++
+     private static native void nativeClassInit();
+ 
+     private synchronized native void nativeInit(CameraMetadataNative nativeCharacteristics,
+diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android_hardware_camera2_DngCreator.cpp
+--- a/core/jni/android_hardware_camera2_DngCreator.cpp
++++ b/core/jni/android_hardware_camera2_DngCreator.cpp
+@@ -43,6 +43,7 @@
+ #include <img_utils/StripSource.h>
+ 
+ #include "core_jni_helpers.h"
++#include "NezhaCompressedDng.h"
+ 
+ #include "android_runtime/AndroidRuntime.h"
+ #include "android_runtime/android_hardware_camera2_CameraMetadata.h"
+@@ -177,6 +178,10 @@
+     virtual ~NativeContext();
+ 
+     TiffWriter* getWriter();
++
++    Vector<uint8_t> jpegPreview;
++    uint32_t jpegWidth = 0;
++    uint32_t jpegHeight = 0;
+ 
+     std::shared_ptr<const CameraMetadata> getCharacteristics() const;
+     std::shared_ptr<const CameraMetadata> getResult() const;
+@@ -1278,8 +1283,32 @@
+     DngCreator_setNativeContext(env, thiz, nativeContext);
+ }
+ 
++// TIFF 6.0 tile tags are absent from AOSP's default definitions. Extend this
++// writer's mapping only; keep the shared img_utils library and other callers intact.
++static constexpr uint16_t NEZHA_TILE_WIDTH = 322;
++static constexpr uint16_t NEZHA_TILE_LENGTH = 323;
++static constexpr uint16_t NEZHA_TILE_OFFSETS = 324;
++static constexpr uint16_t NEZHA_TILE_BYTE_COUNTS = 325;
++
++static sp<TiffWriter> DngCreator_newCompressedWriter() {
++    static const TagDefinition_t tiles[] = {
++        {"TileWidth", NEZHA_TILE_WIDTH, LONG, TIFF_IFD_0, 1, UNDEFINED_ENDIAN},
++        {"TileLength", NEZHA_TILE_LENGTH, LONG, TIFF_IFD_0, 1, UNDEFINED_ENDIAN},
++        {"TileOffsets", NEZHA_TILE_OFFSETS, LONG, TIFF_IFD_0, 0, UNDEFINED_ENDIAN},
++        {"TileByteCounts", NEZHA_TILE_BYTE_COUNTS, LONG, TIFF_IFD_0, 0, UNDEFINED_ENDIAN},
++    };
++    static KeyedVector<uint16_t, const TagDefinition_t*> maps[] = {
++        TiffWriter::buildTagMap(tiles, std::size(tiles)),
++        TiffWriter::buildTagMap(TIFF_EP_TAG_DEFINITIONS, std::size(TIFF_EP_TAG_DEFINITIONS)),
++        TiffWriter::buildTagMap(DNG_TAG_DEFINITIONS, std::size(DNG_TAG_DEFINITIONS)),
++        TiffWriter::buildTagMap(EXIF_2_3_TAG_DEFINITIONS, std::size(EXIF_2_3_TAG_DEFINITIONS)),
++        TiffWriter::buildTagMap(TIFF_6_TAG_DEFINITIONS, std::size(TIFF_6_TAG_DEFINITIONS)),
++    };
++    return new TiffWriter(maps, std::size(maps));
++}
++
+ static sp<TiffWriter> DngCreator_setup(JNIEnv* env, jobject thiz, uint32_t imageWidth,
+-        uint32_t imageHeight) {
++        uint32_t imageHeight, bool linearRaw = false) {
+ 
+     NativeContext* nativeContext = DngCreator_getNativeContext(env, thiz);
+ 
+@@ -1292,7 +1321,7 @@
+     CameraMetadata characteristics = *(nativeContext->getCharacteristics());
+     CameraMetadata results = *(nativeContext->getResult());
+ 
+-    sp<TiffWriter> writer = new TiffWriter();
++    sp<TiffWriter> writer = linearRaw ? DngCreator_newCompressedWriter() : new TiffWriter();
+ 
+     uint32_t preXMin = 0;
+     uint32_t preYMin = 0;
+@@ -1351,7 +1380,7 @@
+ 
+     status_t err = OK;
+ 
+-    const uint32_t samplesPerPixel = 1;
++    const uint32_t samplesPerPixel = linearRaw ? 3 : 1;
+     const uint32_t bitsPerSample = BITS_PER_SAMPLE;
+ 
+     OpcodeListBuilder::CfaLayout opcodeCfaLayout = OpcodeListBuilder::CFA_NONE;
+@@ -1382,8 +1411,8 @@
+ 
+     {
+         // Set bits per sample
+-        uint16_t bits = static_cast<uint16_t>(bitsPerSample);
+-        BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_BITSPERSAMPLE, 1, &bits, TIFF_IFD_0), env,
++        uint16_t bits[] = {static_cast<uint16_t>(bitsPerSample), 16, 16};
++        BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_BITSPERSAMPLE, samplesPerPixel, bits, TIFF_IFD_0), env,
+                 TAG_BITSPERSAMPLE, writer);
+     }
+ 
+@@ -1404,7 +1433,7 @@
+ 
+     {
+         // Set photometric interpretation
+-        uint16_t interpretation = isBayer ? 32803 /* CFA */ :
++        uint16_t interpretation = (isBayer && !linearRaw) ? 32803 /* CFA */ :
+                 34892; /* Linear Raw */;
+         BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_PHOTOMETRICINTERPRETATION, 1,
+                 &interpretation, TIFF_IFD_0), env, TAG_PHOTOMETRICINTERPRETATION, writer);
+@@ -1412,7 +1441,7 @@
+ 
+     {
+         uint16_t repeatDim[2] = {2, 2};
+-        if (!isBayer) {
++        if (!isBayer && !linearRaw) {
+             repeatDim[0] = repeatDim[1] = 1;
+         }
+         BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_BLACKLEVELREPEATDIM, 2, repeatDim,
+@@ -1437,8 +1466,20 @@
+                 blackLevelRational[i * 2 + 1] = 1;
+             }
+         }
+-        BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_BLACKLEVEL, repeatDim[0]*repeatDim[1],
+-                blackLevelRational, TIFF_IFD_0), env, TAG_BLACKLEVEL, writer);
++        if (linearRaw) {
++            // The factory RGB container repeats the first black-level numerator
++            // for all three channels and all four sites, with denominator 100.
++            uint32_t rgbBlack[24];
++            for (size_t i = 0; i < 12; ++i) {
++                rgbBlack[2 * i] = blackLevelRational[0];
++                rgbBlack[2 * i + 1] = 100;
++            }
++            BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_BLACKLEVEL, 12,
++                    rgbBlack, TIFF_IFD_0), env, TAG_BLACKLEVEL, writer);
++        } else {
++            BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_BLACKLEVEL, repeatDim[0]*repeatDim[1],
++                    blackLevelRational, TIFF_IFD_0), env, TAG_BLACKLEVEL, writer);
++        }
+     }
+ 
+     {
+@@ -1456,7 +1497,7 @@
+     }
+ 
+     // All CFA pattern tags are not necessary for monochrome cameras.
+-    if (isBayer) {
++    if (isBayer && !linearRaw) {
+         // Set CFA pattern dimensions
+         uint16_t repeatDim[2] = {2, 2};
+         BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_CFAREPEATPATTERNDIM, 2, repeatDim,
+@@ -1732,9 +1773,17 @@
+         camera_metadata_entry entry =
+                 characteristics.find(ANDROID_SENSOR_INFO_WHITE_LEVEL);
+         BAIL_IF_EMPTY_RET_NULL_SP(entry, env, TAG_WHITELEVEL, writer);
+-        uint32_t whiteLevel = static_cast<uint32_t>(entry.data.i32[0]);
+-        BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_WHITELEVEL, 1, &whiteLevel, TIFF_IFD_0),
+-                env, TAG_WHITELEVEL, writer);
++        if (linearRaw) {
++            camera_metadata_entry dynamic = results.find(ANDROID_SENSOR_DYNAMIC_WHITE_LEVEL);
++            if (dynamic.count) entry = dynamic;
++            BAIL_IF_EXPR_RET_NULL_SP(entry.type != TYPE_INT32 || entry.count != 1 ||
++                    entry.data.i32[0] <= 0 || entry.data.i32[0] > 65535,
++                    env, TAG_WHITELEVEL, writer);
++        }
++        uint32_t whiteLevel[] = {static_cast<uint32_t>(*(entry.data.i32)),
++                static_cast<uint32_t>(*(entry.data.i32)), static_cast<uint32_t>(*(entry.data.i32))};
++        BAIL_IF_INVALID_RET_NULL_SP(writer->addEntry(TAG_WHITELEVEL, samplesPerPixel, whiteLevel,
++                TIFF_IFD_0), env, TAG_WHITELEVEL, writer);
+     }
+ 
+     {
+@@ -1933,7 +1982,7 @@
+                                     env, TAG_UNIQUECAMERAMODEL, writer);
+     }
+ 
+-    {
++    if (!linearRaw) {
+         // Setup sensor noise model
+         camera_metadata_entry entry =
+             results.find(ANDROID_SENSOR_NOISE_PROFILE);
+@@ -1973,7 +2022,7 @@
+         }
+     }
+ 
+-    {
++    if (!linearRaw) {
+         // Set up opcode List 2
+         OpcodeListBuilder builder;
+         status_t err = OK;
+@@ -2080,7 +2129,7 @@
+         }
+     }
+ 
+-    {
++    if (!linearRaw) {
+         // Set up opcode List 3
+         OpcodeListBuilder builder;
+         status_t err = OK;
+@@ -2275,7 +2324,7 @@
+     }
+ 
+ 
+-    if (nativeContext->hasThumbnail()) {
++    if (!linearRaw && nativeContext->hasThumbnail()) {
+         if (!writer->hasIfd(TIFF_IFD_SUB1)) {
+             if (writer->addSubIfd(TIFF_IFD_0, TIFF_IFD_SUB1) != OK) {
+                 ALOGE("%s: Failed to add SubIFD %u to IFD %u", __FUNCTION__, TIFF_IFD_SUB1,
+@@ -2358,7 +2407,7 @@
+         }
+     }
+ 
+-    if (writer->addStrip(TIFF_IFD_0) != OK) {
++    if (!linearRaw && writer->addStrip(TIFF_IFD_0) != OK) {
+         ALOGE("%s: Could not setup main image strip tags.", __FUNCTION__);
+         jniThrowException(env, "java/lang/IllegalStateException",
+                 "Failed to setup main image strip tags.");
+@@ -2683,6 +2732,172 @@
+ 
+ } /*extern "C" */
+ 
++// Hidden factory camera APIs. These methods are inert unless the Nezha camera
++// session integration is selected; regular DngCreator entry points are unchanged.
++static bool DngCreator_requireNezha(JNIEnv* env) {
++#ifdef NEZHA_COMPRESSED_DNG
++    return true;
++#else
++    jniThrowException(env, "java/lang/UnsupportedOperationException",
++            "Compressed DNG support is not selected for this product");
++    return false;
++#endif
++}
++
++static void DngCreator_nativeWriteJpeg(JNIEnv* env, jobject thiz, jobject pixels,
++        jint width, jint height) {
++    if (!DngCreator_requireNezha(env)) return;
++    NativeContext* context = DngCreator_getNativeContext(env, thiz);
++    if (!context) {
++        jniThrowException(env, "java/lang/IllegalStateException", "DngCreator is closed");
++        return;
++    }
++    const auto* data = static_cast<const uint8_t*>(env->GetDirectBufferAddress(pixels));
++    const jlong capacity = env->GetDirectBufferCapacity(pixels);
++    nezha::dng::JpegFrame frame;
++    if (width <= 0 || height <= 0 || !data || capacity <= 0 || capacity > INT32_MAX ||
++            !nezha::dng::inspectJpeg(data, static_cast<size_t>(capacity), &frame) ||
++            (frame.coding != 0xc0 && frame.coding != 0xc2) || frame.precision != 8 ||
++            frame.components != 3 ||
++            !((frame.width == static_cast<uint32_t>(width) && frame.height == static_cast<uint32_t>(height)) ||
++              (frame.width == static_cast<uint32_t>(height) && frame.height == static_cast<uint32_t>(width)))) {
++        jniThrowException(env, "java/lang/IllegalArgumentException", "Invalid compressed DNG JPEG preview");
++        return;
++    }
++    // Preserve the encoded preview, including any embedded Ultra HDR gain map and metadata.
++    Vector<uint8_t> preview;
++    if (preview.resize(static_cast<size_t>(capacity)) < 0) {
++        jniThrowException(env, "java/lang/OutOfMemoryError", "Cannot retain DNG JPEG preview");
++        return;
++    }
++    memcpy(preview.editArray(), data, static_cast<size_t>(capacity));
++    context->jpegPreview = preview;
++    context->jpegWidth = frame.width;
++    context->jpegHeight = frame.height;
++}
++
++static void DngCreator_nativeWriteLossLessJpeg(JNIEnv* env, jobject thiz, jobject outStream,
++        jobject pixels, jlong offset) {
++    if (!DngCreator_requireNezha(env)) return;
++    NativeContext* context = DngCreator_getNativeContext(env, thiz);
++    if (!context) {
++        jniThrowException(env, "java/lang/IllegalStateException", "DngCreator is closed");
++        return;
++    }
++    if (!outStream || !pixels || offset != 0) {
++        jniThrowException(env, "java/lang/IllegalArgumentException", "Invalid compressed DNG output/buffer");
++        return;
++    }
++    const auto* data = static_cast<const uint8_t*>(env->GetDirectBufferAddress(pixels));
++    const jlong capacity = env->GetDirectBufferCapacity(pixels);
++    if (!data || capacity <= 0 || capacity > INT32_MAX) {
++        jniThrowException(env, "java/lang/IllegalArgumentException", "Invalid compressed DNG direct buffer");
++        return;
++    }
++    CameraMetadata results = *context->getResult();
++    uint32_t tag = 0;
++    sp<VendorTagDescriptor> descriptor;
++    sp<VendorTagDescriptorCache> cache = VendorTagDescriptorCache::getGlobalVendorTagCache();
++    if (cache) cache->getVendorTagDescriptor(results.getVendorId(), &descriptor);
++    if (!descriptor || descriptor->lookupTag(String8("compressedParameters"),
++            String8("com.xiaomi.dng"), &tag) != OK) {
++        jniThrowException(env, "java/lang/IllegalArgumentException", "Missing compressed DNG vendor tag");
++        return;
++    }
++    camera_metadata_entry entry = results.find(tag);
++    const uint8_t* metadata = nullptr;
++    if (entry.type == TYPE_BYTE && entry.count == nezha::dng::Layout::kMetadataBytes) {
++        metadata = entry.data.u8;
++    } else if (entry.type == TYPE_INT32 && entry.count == nezha::dng::Layout::kMetadataBytes / 4) {
++        metadata = reinterpret_cast<const uint8_t*>(entry.data.i32);
++    }
++    nezha::dng::Layout layout;
++    const char* error = nezha::dng::parseLayout(metadata, metadata ? nezha::dng::Layout::kMetadataBytes : 0,
++            data, static_cast<size_t>(capacity), &layout);
++    if (error) {
++        ALOGE("Compressed DNG rejected: %s (metadata type=%u count=%zu capacity=%" PRId64 ")",
++                error, entry.type, entry.count, capacity);
++        jniThrowException(env, "java/lang/IllegalArgumentException", error);
++        return;
++    }
++    sp<TiffWriter> writer = DngCreator_setup(env, thiz, layout.width, layout.height, true);
++    if (!writer || env->ExceptionCheck()) return;
++
++    // Add complete placeholder entries before computing offsets. Replacing LONG
++    // values with the same count preserves the exact serialized header size.
++    auto add = [&](uint16_t id, size_t count, const auto* values, uint32_t ifd = TIFF_IFD_0) {
++        if (env->ExceptionCheck()) return false;
++        if (writer->addEntry(id, count, values, ifd) == OK) return true;
++        jniThrowExceptionFmt(env, "java/lang/IllegalStateException", "Cannot create DNG TIFF tag %u", id);
++        return false;
++    };
++    const uint16_t jpegCompression = 7;
++    if (!add(TAG_COMPRESSION, 1, &jpegCompression)) return;
++    const uint16_t offsetTag = layout.tiled ? NEZHA_TILE_OFFSETS : TAG_STRIPOFFSETS;
++    const uint16_t countTag = layout.tiled ? NEZHA_TILE_BYTE_COUNTS : TAG_STRIPBYTECOUNTS;
++    if (layout.tiled) {
++        if (!add(NEZHA_TILE_WIDTH, 1, &layout.tileWidth) || !add(NEZHA_TILE_LENGTH, 1, &layout.tileHeight)) return;
++    } else if (!add(TAG_ROWSPERSTRIP, 1, &layout.height)) {
++        return;
++    }
++    if (!add(offsetTag, layout.count, layout.offsets.data()) ||
++            !add(countTag, layout.count, layout.byteCounts.data())) return;
++
++    const uint32_t previewSize = context->jpegPreview.size();
++    uint32_t previewOffset = 0;
++    if (previewSize) {
++        if (writer->addSubIfd(TIFF_IFD_0, TIFF_IFD_SUB1) != OK) {
++            jniThrowException(env, "java/lang/IllegalStateException", "Cannot create DNG preview IFD");
++            return;
++        }
++        const uint32_t reducedImage = 1;
++        const uint16_t bits[] = {8, 8, 8};
++        const uint16_t samples = 3;
++        const uint16_t ycbcr = 6;
++        const uint16_t chunky = 1;
++        const uint16_t orientation = context->getOrientation();
++        if (!add(TAG_NEWSUBFILETYPE, 1, &reducedImage, TIFF_IFD_SUB1) ||
++                !add(TAG_IMAGEWIDTH, 1, &context->jpegWidth, TIFF_IFD_SUB1) ||
++                !add(TAG_IMAGELENGTH, 1, &context->jpegHeight, TIFF_IFD_SUB1) ||
++                !add(TAG_BITSPERSAMPLE, 3, bits, TIFF_IFD_SUB1) ||
++                !add(TAG_COMPRESSION, 1, &jpegCompression, TIFF_IFD_SUB1) ||
++                !add(TAG_PHOTOMETRICINTERPRETATION, 1, &ycbcr, TIFF_IFD_SUB1) ||
++                !add(TAG_SAMPLESPERPIXEL, 1, &samples, TIFF_IFD_SUB1) ||
++                !add(TAG_PLANARCONFIGURATION, 1, &chunky, TIFF_IFD_SUB1) ||
++                !add(TAG_ROWSPERSTRIP, 1, &context->jpegHeight, TIFF_IFD_SUB1) ||
++                !add(TAG_STRIPBYTECOUNTS, 1, &previewSize, TIFF_IFD_SUB1) ||
++                !add(TAG_STRIPOFFSETS, 1, &previewOffset, TIFF_IFD_SUB1)) return;
++        if (orientation != TAG_ORIENTATION_UNKNOWN &&
++                !add(TAG_ORIENTATION, 1, &orientation, TIFF_IFD_SUB1)) return;
++    }
++    const uint32_t headerSize = writer->getTotalSize();
++    if (!nezha::dng::assignOffsets(headerSize, previewSize, &layout, &previewOffset)) {
++        jniThrowException(env, "java/lang/IllegalArgumentException", "Compressed DNG exceeds TIFF offsets");
++        return;
++    }
++    if (!add(offsetTag, layout.count, layout.offsets.data()) ||
++            (previewSize && !add(TAG_STRIPOFFSETS, 1, &previewOffset, TIFF_IFD_SUB1))) return;
++    if (writer->getTotalSize() != headerSize) {
++        jniThrowException(env, "java/lang/IllegalStateException", "Compressed DNG header size changed");
++        return;
++    }
++    sp<JniOutputStream> out = new JniOutputStream(env, outStream);
++    if (env->ExceptionCheck()) return;
++    const uint8_t padding = 0;
++    status_t status = writer->write(out.get());
++    if (status == OK) status = out->write(data, 0, layout.dataSize);
++    if (status == OK && previewSize && ((headerSize + layout.dataSize) & 1)) {
++        status = out->write(&padding, 0, 1);
++    }
++    if (status == OK && previewSize) status = out->write(context->jpegPreview.array(), 0, previewSize);
++    if (status != OK || env->ExceptionCheck()) {
++        if (!env->ExceptionCheck()) jniThrowException(env, "java/io/IOException", "Compressed DNG write failed");
++        return;
++    }
++    ALOGI("Wrote compressed DNG %ux%u, %u lossless JPEG segment(s), %u image bytes, %u preview bytes",
++            layout.width, layout.height, layout.count, layout.dataSize, previewSize);
++}
++
+ static const JNINativeMethod gDngCreatorMethods[] = {
+     {"nativeClassInit",        "()V", (void*) DngCreator_nativeClassInit},
+     {"nativeInit", "(Landroid/hardware/camera2/impl/CameraMetadataNative;"
+@@ -2694,6 +2909,9 @@
+     {"nativeSetGpsTags",    "([ILjava/lang/String;[ILjava/lang/String;Ljava/lang/String;[I)V",
+             (void*) DngCreator_nativeSetGpsTags},
+     {"nativeSetThumbnail","(Ljava/nio/ByteBuffer;II)V", (void*) DngCreator_nativeSetThumbnail},
++    {"nativeWriteJpeg", "(Ljava/nio/ByteBuffer;II)V", (void*) DngCreator_nativeWriteJpeg},
++    {"nativeWriteLossLessJpeg", "(Ljava/io/OutputStream;Ljava/nio/ByteBuffer;J)V",
++            (void*) DngCreator_nativeWriteLossLessJpeg},
+     {"nativeWriteImage",        "(Ljava/io/OutputStream;IILjava/nio/ByteBuffer;IIJZ)V",
+             (void*) DngCreator_nativeWriteImage},
+     {"nativeWriteInputStream",    "(Ljava/io/OutputStream;Ljava/io/InputStream;IIJ)V",
+diff --git a/core/jni/Android.bp b/core/jni/Android.bp
+--- a/core/jni/Android.bp
++++ b/core/jni/Android.bp
+@@ -29,6 +29,7 @@
+ 
+ cc_defaults_for_libandroid_runtime {
+     name: "libandroid_runtime_defaults",
++    defaults: ["nezha_compressed_dng_defaults"],
+     host_supported: true,
+     cflags: [
+         "-Wno-cast-function-type-mismatch",
+@@ -615,3 +616,15 @@
+         "-Wunreachable-code",
+     ],
+ }
++
++cc_defaults {
++    name: "nezha_compressed_dng_defaults",
++    target: {
++        android: {
++            cflags: select(soong_config_variable("nezha_camera_session", "enabled"), {
++                true: ["-DNEZHA_COMPRESSED_DNG"],
++                default: [],
++            }),
++        },
++    },
++}
+diff --git a/core/jni/NezhaCompressedDng.h b/core/jni/NezhaCompressedDng.h
+--- /dev/null
++++ b/core/jni/NezhaCompressedDng.h
+@@ -0,0 +1,167 @@
++/*
++ * Copyright 2026 The Android Open Source Project
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
++ * Unless required by applicable law or agreed to in writing, software distributed
++ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
++ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
++ * specific language governing permissions and limitations under the License.
++ */
++#pragma once
++
++#include <array>
++#include <cstddef>
++#include <cstdint>
++#include <limits>
++
++namespace android::nezha::dng {
++
++struct JpegFrame {
++    uint32_t width = 0;
++    uint32_t height = 0;
++    uint8_t precision = 0;
++    uint8_t components = 0;
++    uint8_t coding = 0;
++    size_t size = 0;
++};
++
++// Inspect marker boundaries, including escaped entropy bytes, without decoding
++// or reading past the supplied buffer. The first image may have trailing data
++// (for example an Ultra HDR preview's gain map).
++inline bool inspectJpeg(const uint8_t* data, size_t size, JpegFrame* result) {
++    if (!data || !result || size < 4 || data[0] != 0xff || data[1] != 0xd8) return false;
++    JpegFrame frame;
++    bool entropy = false;
++    bool scan = false;
++    size_t p = 2;
++    while (p < size) {
++        if (entropy) {
++            while (p < size && data[p] != 0xff) ++p;
++        }
++        if (p >= size || data[p++] != 0xff) return false;
++        while (p < size && data[p] == 0xff) ++p;
++        if (p == size) return false;
++        const uint8_t marker = data[p++];
++        if (entropy && (marker == 0 || (marker >= 0xd0 && marker <= 0xd7))) continue;
++        if (marker == 0xd9) {
++            if (!scan || !frame.width || !frame.height) return false;
++            frame.size = p;
++            *result = frame;
++            return true;
++        }
++        entropy = false;
++        if (marker == 0 || marker == 0xd8 || (marker >= 0xd0 && marker <= 0xd7)) return false;
++        if (marker == 1) continue;
++        if (size - p < 2) return false;
++        const size_t length = (static_cast<size_t>(data[p]) << 8) | data[p + 1];
++        if (length < 2 || length > size - p) return false;
++        if (marker >= 0xc0 && marker <= 0xcf && marker != 0xc4 && marker != 0xc8 && marker != 0xcc) {
++            if (frame.width || length < 8) return false;
++            frame.precision = data[p + 2];
++            frame.height = (static_cast<uint32_t>(data[p + 3]) << 8) | data[p + 4];
++            frame.width = (static_cast<uint32_t>(data[p + 5]) << 8) | data[p + 6];
++            frame.components = data[p + 7];
++            frame.coding = marker;
++            if (!frame.width || !frame.height || !frame.components ||
++                    length != 8u + 3u * frame.components) return false;
++        }
++        if (marker == 0xda) {
++            if (!frame.width || length < 6 || !data[p + 2] ||
++                    data[p + 2] > frame.components || length != 6u + 2u * data[p + 2]) return false;
++            scan = true;
++            entropy = true;
++        }
++        p += length;
++    }
++    return false;
++}
++
++struct Layout {
++    static constexpr size_t kMetadataBytes = 604;
++    static constexpr size_t kMaxTiles = 64;
++    uint32_t width = 0;
++    uint32_t height = 0;
++    uint32_t dataSize = 0;
++    uint32_t tileWidth = 0;
++    uint32_t tileHeight = 0;
++    uint32_t count = 0;
++    bool tiled = false;
++    std::array<uint32_t, kMaxTiles> byteCounts{};
++    std::array<uint32_t, kMaxTiles> offsets{};
++};
++
++inline uint32_t read32(const uint8_t* p) {
++    return static_cast<uint32_t>(p[0]) | (static_cast<uint32_t>(p[1]) << 8) |
++            (static_cast<uint32_t>(p[2]) << 16) | (static_cast<uint32_t>(p[3]) << 24);
++}
++
++// Factory com.xiaomi.dng.compressedParameters: 7 little-endian uint32 fields
++// followed by the tile byte counts. Format 15 is interleaved 16-bit LinearRaw.
++// Only this measured factory layout is admitted; ordinary RAW uses AOSP's path.
++inline const char* parseLayout(const uint8_t* metadata, size_t metadataSize,
++        const uint8_t* data, size_t capacity, Layout* result) {
++    if (!metadata || metadataSize != Layout::kMetadataBytes || !data || !result) {
++        return "Missing or invalid compressed DNG metadata/buffer";
++    }
++    if (read32(metadata) != 15) return "Unsupported compressed DNG format (expected LinearRaw 15)";
++    Layout layout;
++    layout.width = read32(metadata + 4);
++    layout.height = read32(metadata + 8);
++    layout.dataSize = read32(metadata + 12);
++    const uint32_t multiThread = read32(metadata + 16);
++    if (!layout.width || !layout.height || layout.width > 65535 || layout.height > 65535 ||
++            !layout.dataSize || layout.dataSize > capacity || multiThread > 1) {
++        return "Invalid compressed DNG dimensions, size or compression mode";
++    }
++    layout.tiled = multiThread != 0;
++    layout.tileWidth = layout.width;
++    layout.tileHeight = layout.height;
++    layout.count = 1;
++    layout.byteCounts[0] = layout.dataSize;
++    if (layout.tiled) {
++        if (read32(metadata + 20) != 8 || read32(metadata + 24) != 8 ||
++                layout.width < 8 || layout.height < 8) return "Unsupported compressed DNG tile grid";
++        layout.tileWidth = (layout.width + 7) / 8;
++        layout.tileHeight = (layout.height + 7) / 8;
++        if ((layout.width + layout.tileWidth - 1) / layout.tileWidth != 8 ||
++                (layout.height + layout.tileHeight - 1) / layout.tileHeight != 8) {
++            return "Inconsistent compressed DNG tile dimensions";
++        }
++        layout.count = Layout::kMaxTiles;
++        for (size_t i = 0; i < layout.count; ++i) layout.byteCounts[i] = read32(metadata + 28 + 4 * i);
++    }
++    size_t offset = 0;
++    for (size_t i = 0; i < layout.count; ++i) {
++        const size_t count = layout.byteCounts[i];
++        if (!count || count > layout.dataSize - offset) return "Compressed DNG tile exceeds image data";
++        JpegFrame frame;
++        if (!inspectJpeg(data + offset, count, &frame) || frame.coding != 0xc3 ||
++                frame.precision != 16 || frame.components != 3 ||
++                frame.width != layout.tileWidth || frame.height != layout.tileHeight ||
++                frame.size != count) return "Invalid lossless JPEG tile in compressed DNG";
++        offset += count;
++    }
++    if (offset != layout.dataSize) return "Compressed DNG tile sizes do not sum to image size";
++    *result = layout;
++    return nullptr;
++}
++
++// Compute TIFF LONG offsets after every metadata entry has been added. Keep the
++// preview word aligned without changing any of the encoded lossless image data.
++inline bool assignOffsets(uint32_t headerSize, uint32_t previewSize, Layout* layout,
++        uint32_t* previewOffset) {
++    if (!layout || !previewOffset || !layout->count || layout->count > Layout::kMaxTiles) return false;
++    uint64_t offset = headerSize;
++    for (size_t i = 0; i < layout->count; ++i) {
++        if (offset > std::numeric_limits<uint32_t>::max()) return false;
++        layout->offsets[i] = static_cast<uint32_t>(offset);
++        offset += layout->byteCounts[i];
++    }
++    offset = (offset + 1) & ~uint64_t{1};
++    if (offset + previewSize > std::numeric_limits<uint32_t>::max()) return false;
++    *previewOffset = static_cast<uint32_t>(offset);
++    return true;
++}
++
++} // namespace android::nezha::dng

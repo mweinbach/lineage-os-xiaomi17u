@@ -1,6 +1,6 @@
 # Workspace documentation
 
-**The installed development baseline is v8 on slot A with SELinux Enforcing.**
+**The installed development baseline is v11r1 on slot A with SELinux Enforcing.**
 Start with the current status for source selection, measured capture results and
 remaining work. The expanded index preserves dated evidence and earlier experiments.
 
@@ -41,6 +41,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | [Factory camera stream sizing](camera-stream-sizing-20260908.md) | Five-file mock/custom-size source repair and native component build pass; corrected full delivery follows below, not device-admitted |
 | [Camera v11 package](camera-v11-package-20260908.md) | Corrected v11r1 full build, signed archive and eight-image bundle pass; pre-install checkpoint; subsequent runtime results below |
 | [V11 installation and camera validation](camera-v11-install-validation-20260908.md) | 200 MP Ultra HDR, telephoto 50 MP, Xiaomi Pro RAW, ten warm CameraX JPEG saves and three physical RAW sensors pass; nine effect HDR decodes pass; front HDR metadata, Ultra RAW and audio remain unresolved |
+| [Camera save and audio compatibility candidate](camera-save-audio-compat-20260908.md) | Compressed DNG writer, neutral HDR metadata repair and audio enum conversions; host validation passes, successor build and phone validation pending |
 | [V10 installation and camera validation](camera-v10-install-validation-20260908.md) | Five Xiaomi Ultra HDR photos including 50 MP main, ten warm Aperture effect cases and three physical RAW captures pass; telephoto high resolution, Xiaomi RAW/Ultra RAW and video fail |
 | [Camera library analysis](camera-library-analysis-20260907.md) | Logical XML-ID mismatch behind damage verdicts; conditional GSI override and matching compiled IDs; effective runtime selection unverified |
 | [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |

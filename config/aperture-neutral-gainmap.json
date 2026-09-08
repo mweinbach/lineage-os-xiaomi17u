@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "phone_fix_verified": false,
+  "document": "docs/camera-save-audio-compat-20260908.md",
+  "contract_id": "aperture-neutral-gainmap-v1",
+  "project": "packages/apps/Aperture",
+  "repository": "https://github.com/LineageOS/android_packages_apps_Aperture.git",
+  "branch": "lineage-23.2",
+  "revision": "88625a9b7c4178601169dbda2c38cd845b68cd38",
+  "device": "nezha",
+  "patch": "patches/evolution/0037-aperture-neutral-gainmap.patch",
+  "patch_sha256": "1c6a6ff5467e97b2d783bc41570d76bb6c1c4d775c2369b55253f00bbed0d16a",
+  "files": {
+    "app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel.kt": {
+      "before_sha256": "baf048fcde001bea9a464952ebb16f4173c9914142dc60394e0052ec5dd6f46b",
+      "after_sha256": "01b5615a15af18da843ea8b13707242fef8c2dd0d46e0614f262b58b112865cb",
+      "after_bytes": 67678,
+      "before_bytes": 64225
+    },
+    "app/src/main/java/org/lineageos/aperture/compat/NezhaNeutralGainmap.java": {
+      "before_sha256": null,
+      "after_sha256": "2486517a0802991a3027eeaf9509958c638abdb9b6243a1b33c2bf88b6f90c2e",
+      "after_bytes": 6222,
+      "before_bytes": null
+    }
+  },
+  "authored_templates": {
+    "templates/camera-save-compat/NezhaNeutralGainmap.java": {
+      "sha256": "2486517a0802991a3027eeaf9509958c638abdb9b6243a1b33c2bf88b6f90c2e",
+      "size_bytes": 6222
+    }
+  },
+  "neutral_metadata": {
+    "gain_min_log2": 0,
+    "gain_max_log2": 0,
+    "gamma": 1,
+    "offset_sdr": 0,
+    "offset_hdr": 0,
+    "capacity_min_log2": 0,
+    "capacity_max_log2_before": 0,
+    "capacity_max_log2_after": 1,
+    "iso_version": 0,
+    "iso_flags": 72,
+    "iso_common_denominator": 1
+  },
+  "measured_image_repair": {
+    "original_sha256": "2e8b73590a54dec30494887263ebd28e86c1ee79d4829fbd8a5354926ba1720c",
+    "corrected_sha256": "129a92fbedf054c2eb92e0ffab9777409a01d4861976aa60e46141ba3970e7c4",
+    "size_bytes": 3478116,
+    "changed_offsets": [
+      3178676,
+      3178794
+    ],
+    "original_values": [
+      48,
+      0
+    ],
+    "corrected_values": [
+      49,
+      1
+    ]
+  },
+  "host_evidence": [
+    {
+      "path": "reports/camera-completion-20260907/v12-hdr/behavior/result.json",
+      "sha256": "da09f753e16d19ab5497d1686cd5057e089e4ade825e51b574b2105728acb1c7",
+      "size_bytes": 2475
+    },
+    {
+      "path": "reports/camera-completion-20260907/v12-dng/tracked-host-tests/result.json",
+      "sha256": "f385610341803386b667468a0e3b95d70b1b9f6448f730dcb0d904c708bce5b8",
+      "size_bytes": 2502
+    }
+  ],
+  "limits": [
+    "Repair is applied in Aperture after JPEG save and before notification.",
+    "Only the measured neutral XMP/ISO layout is changed; other values remain untouched.",
+    "Saved photo pixels, compressed gain map, EXIF and MPF offsets are unchanged."
+  ]
+}

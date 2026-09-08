@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "phone_fix_verified": false,
+  "document": "docs/camera-save-audio-compat-20260908.md",
+  "contract_id": "nezha-compressed-dng-v1",
+  "project": "frameworks/base",
+  "repository": "https://github.com/Evolution-X/frameworks_base",
+  "branch": "bka",
+  "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "selector": "NEZHA_CAMERA_SESSION_INJECT",
+  "soong_selector": {
+    "namespace": "nezha_camera_session",
+    "variable": "enabled"
+  },
+  "patch": "patches/evolution/0036-nezha-compressed-dng.patch",
+  "patch_sha256": "3b699366874f6b7aef553280846bab80092d480484af6a89d33ce92b341d6e79",
+  "files": {
+    "core/java/android/hardware/camera2/DngCreator.java": {
+      "before_sha256": "8c9bc21d2072e80455b50b22d7fb7864a595d6907b5c8c8ec6e496b2b63c3875",
+      "after_sha256": "4412d3de7fb9f6d0a8ec1f670c92ae3e346c7125039b3b5991ee97429233d51f",
+      "after_bytes": 30723,
+      "before_bytes": 29045
+    },
+    "core/jni/android_hardware_camera2_DngCreator.cpp": {
+      "before_sha256": "5fd82cede8418ee626e1e7fba409e2873d6a95ac9b9c1735aa7f859b17bda45e",
+      "after_sha256": "b54e1147f63424bdb0d146e6b618811beb8f0292b429e80fd46aab13c20545eb",
+      "after_bytes": 115542,
+      "before_bytes": 103748
+    },
+    "core/jni/Android.bp": {
+      "before_sha256": "9a7b597c995070c653af0dd251c984fb6f08d185b9382ed899988e2749280b4b",
+      "after_sha256": "3054f36c84d707f036fcf6641ef322d31ba43893d3a934b0b001f9ff5a013e24",
+      "after_bytes": 22289,
+      "before_bytes": 21947
+    },
+    "core/jni/NezhaCompressedDng.h": {
+      "before_sha256": null,
+      "after_sha256": "388121b554aee85ff10d22b7213986ae2e4f23389709d0b08f194ee92251cf82",
+      "after_bytes": 7370,
+      "before_bytes": null
+    }
+  },
+  "authored_templates": {
+    "templates/camera-save-compat/NezhaCompressedDng.h": {
+      "sha256": "388121b554aee85ff10d22b7213986ae2e4f23389709d0b08f194ee92251cf82",
+      "size_bytes": 7370
+    }
+  },
+  "factory_runtime": {
+    "path": "artifacts/camera-analysis/factory-extract/system/system/lib64/libandroid_runtime.so",
+    "sha256": "ef093978b8cc781a9002eb9d7fafca8c19076c78beaa83cc77a9704590700191",
+    "size_bytes": 3321232
+  },
+  "factory_dng_impl": {
+    "path": "artifacts/camera-analysis/factory-extract/system_ext/lib64/libcameradngimpl.so",
+    "sha256": "33021e6c3adfc82d7eb62febf80eb29e4e2a47eb09416806fe016884c82c49f0",
+    "size_bytes": 101720
+  },
+  "factory_contract": {
+    "vendor_tag": "com.xiaomi.dng.compressedParameters",
+    "metadata_bytes": 604,
+    "linear_raw_format": 15,
+    "header_fields": {
+      "format": 0,
+      "width": 4,
+      "height": 8,
+      "compressed_size": 12,
+      "multi_thread": 16,
+      "grid_x": 20,
+      "grid_y": 24,
+      "tile_byte_counts": 28
+    },
+    "tile_grid": [
+      8,
+      8
+    ],
+    "max_tiles": 64,
+    "bits_per_sample": 16,
+    "samples_per_pixel": 3,
+    "compression": 7,
+    "photometric_interpretation": 34892,
+    "java_methods": [
+      "writeJpeg(int,int,java.nio.ByteBuffer)",
+      "writeLossLessJpeg(java.io.OutputStream,java.nio.ByteBuffer)"
+    ]
+  },
+  "host_evidence": [
+    {
+      "path": "reports/camera-completion-20260907/v12-dng/behavior/writer-verification.json",
+      "sha256": "70c7239d71d734a80480886507584ef56d084dfba2740bdc3900bef2871a49a5",
+      "size_bytes": 4710
+    },
+    {
+      "path": "reports/camera-completion-20260907/v12-dng/tracked-host-tests/result.json",
+      "sha256": "f385610341803386b667468a0e3b95d70b1b9f6448f730dcb0d904c708bce5b8",
+      "size_bytes": 2502
+    },
+    {
+      "path": "reports/camera-completion-20260907/v12-dng/compile-verification.json",
+      "sha256": "0b9cce0830c9300e26b72fa189e0cf1f5ba804c848d03ea89137f35354061709",
+      "size_bytes": 1294
+    }
+  ],
+  "limits": [
+    "Compressed vendor image metadata and SOF layout still need runtime capture validation.",
+    "Host writer test uses synthetic camera metadata; JNI metadata setup requires the component build and phone test.",
+    "Only measured RGB format 15 and 8x8 tiles or a single JPEG strip are admitted."
+  ]
+}

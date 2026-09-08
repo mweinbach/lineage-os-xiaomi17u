@@ -1,0 +1,85 @@
+diff --git a/media/audioaidlconversion/AidlConversionCppNdk.cpp b/media/audioaidlconversion/AidlConversionCppNdk.cpp
+--- a/media/audioaidlconversion/AidlConversionCppNdk.cpp
++++ b/media/audioaidlconversion/AidlConversionCppNdk.cpp
+@@ -1422,6 +1422,13 @@
+ 
+ ConversionResult<audio_output_flags_t> aidl2legacy_AudioOutputFlags_audio_output_flags_t(
+         AudioOutputFlags aidl) {
++#ifdef NEZHA_AUDIO_VENDOR_ENUMS
++    // Factory VIRTUAL_DEEP_BUFFER is AIDL index 19, legacy bit 30.
++    if (static_cast<int32_t>(aidl) == 19) {
++        return static_cast<audio_output_flags_t>(0x40000000u);
++    }
++#endif
++
+     switch (aidl) {
+         case AudioOutputFlags::DIRECT:
+             return AUDIO_OUTPUT_FLAG_DIRECT;
+@@ -1467,6 +1474,12 @@
+ 
+ ConversionResult<AudioOutputFlags> legacy2aidl_audio_output_flags_t_AudioOutputFlags(
+         audio_output_flags_t legacy) {
++#ifdef NEZHA_AUDIO_VENDOR_ENUMS
++    if (static_cast<uint32_t>(legacy) == 0x40000000u) {
++        return static_cast<AudioOutputFlags>(19);
++    }
++#endif
++
+     switch (legacy) {
+         case AUDIO_OUTPUT_FLAG_NONE:
+             break; // shouldn't get here. must be listed  -Werror,-Wswitch
+@@ -1791,6 +1804,13 @@
+ 
+ ConversionResult<audio_usage_t>
+ aidl2legacy_AudioUsage_audio_usage_t(AudioUsage aidl) {
++#ifdef NEZHA_AUDIO_VENDOR_ENUMS
++    // Retained Xiaomi engine strategies use AUDIO_USAGE_BLUETOOTH_SCO.
++    if (static_cast<int32_t>(aidl) == 19) {
++        return static_cast<audio_usage_t>(19);
++    }
++#endif
++
+     switch (aidl) {
+         case AudioUsage::INVALID:
+             break;  // return error
+@@ -1846,6 +1866,12 @@
+ 
+ ConversionResult<AudioUsage>
+ legacy2aidl_audio_usage_t_AudioUsage(audio_usage_t legacy) {
++#ifdef NEZHA_AUDIO_VENDOR_ENUMS
++    if (static_cast<int32_t>(legacy) == 19) {
++        return static_cast<AudioUsage>(19);
++    }
++#endif
++
+     switch (legacy) {
+         case AUDIO_USAGE_UNKNOWN:
+             return AudioUsage::UNKNOWN;
+diff --git a/media/audioaidlconversion/Android.bp b/media/audioaidlconversion/Android.bp
+--- a/media/audioaidlconversion/Android.bp
++++ b/media/audioaidlconversion/Android.bp
+@@ -70,6 +70,7 @@
+ 
+ cc_defaults {
+     name: "audio_aidl_conversion_common_default",
++    defaults: ["nezha_audio_vendor_enum_defaults"],
+     export_include_dirs: ["include"],
+     host_supported: true,
+     vendor_available: true,
+@@ -246,3 +247,16 @@
+     ],
+     min_sdk_version: "33", //AParcel_unmarshal has been introduced in 33
+ }
++
++// Only the Nezha product with its retained Xiaomi audio HAL selects these values.
++cc_defaults {
++    name: "nezha_audio_vendor_enum_defaults",
++    target: {
++        android: {
++            cflags: select(soong_config_variable("nezha_audio", "vendor_enums"), {
++                true: ["-DNEZHA_AUDIO_VENDOR_ENUMS"],
++                default: [],
++            }),
++        },
++    },
++}
