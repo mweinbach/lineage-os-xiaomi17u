@@ -138,6 +138,21 @@ remain pending. No successor delivery or runtime result is established. The
 installed phone remains v8; a component build does not establish a new device
 installation or Xiaomi capture.
 
+A separate [compiled-component audit](../reports/camera-completion-20260907/component-artifacts-revision-3/component-verification.json)
+verified ten stable outputs. The Camera APK uses the same platform signer as
+framework-res and preserves all 9,491 original non-signature entries. Built
+services.jar retains the public helper constructor and five methods; the
+adapter implements all 28 original Binder signatures, and the original factory
+JAR remains byte-identical. The compiled service resource and native query
+export also passed. These checks will be repeated against the final archive.
+
+The [read-only pre-flash preservation record](../reports/camera-completion-20260907/xiaomi-app/preflash-transition-v9/backup-manifest.json)
+retains Camera's two private data directories and file metadata. Both archive
+streams were read twice with identical bytes, while Camera was stopped. The
+package remains the bundled system app with ID 10422. This provides comparison
+and recovery evidence; the signer/data transition remains unverified, and no
+data restoration, clearing or uninstall is authorized by the record.
+
 The [high-resolution source investigation](../reports/camera-completion-20260907/raw-highres/highres-mode-plan.md)
 identifies current Pixel/AlgoUp session mode `0x9004`; `0x80f3` is the legacy
 route. Mode-specific tables offer 8192×6144 wide/ultrawide and 8160×6144 telephoto

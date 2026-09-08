@@ -1206,9 +1206,9 @@
     "unsupported_oneway_behavior": "Server-side diagnostics and counters; no synchronous negative client acknowledgment. Unported APIs are not assumed unused.",
     "process_policy_scope": "Temporary camera OOM cap; full MIUI native boost/reclamation and post-close work model are not implemented.",
     "prelaunch_event_producer_integrated": false,
-    "platform_signing_stage": "Original APK input packet remains unchanged. The platform Camera APK component build passed; final signer/content and strict uses-library artifact validation, complete target-files archive, installed package-data transition, grants and labels remain separate checks.",
+    "platform_signing_stage": "Stable completed component APK is signed by the same platform certificate as framework-res; all 9491 original non-signature entries match. Final target-files binding, installed package-data transition, grants and labels remain separate checks.",
     "jpegr_default_limit": "Fresh persistent-property store only. Existing persisted values override the build default; a stored zero is not migrated. Current v8 captures used the existing factory initializer.",
-    "retained_shrinker_requirement": "Keep the public NezhaCameraProcessPolicy API in services.jar under the selected SYSTEM_OPTIMIZE_JAVA configuration; final packaged method definitions still require verification.",
+    "retained_shrinker_requirement": "Stable built services.jar retains the public helper constructor and five public concrete methods. Final packaged method definitions still require verification.",
     "selected_source_build": "nezha.393aae12fba9ebe8627cdc38",
     "selected_source_rows": 652,
     "revision_2_changed_files": 1,
@@ -1322,7 +1322,36 @@
     "component_source_rows": 652,
     "full_target_files_build_status": "running",
     "full_target_files_build_run_id": "20260908T003851-userdebug",
-    "full_target_files_archive_verified": false
+    "full_target_files_archive_verified": false,
+    "component_artifact_verification": {
+      "status": "passed for stable copied component outputs",
+      "receipt": {
+        "path": "reports/camera-completion-20260907/component-artifacts-revision-3/component-verification.json",
+        "size_bytes": 1878,
+        "sha256": "97d2aa75ffffc01bad69ead4064679afea574e6af04b1669b5bfba7912daff77"
+      },
+      "artifacts": 10,
+      "unchanged_camera_payload_entries": 9491,
+      "camera_signer_matches_framework_res": true,
+      "factory_binder_signatures": 28,
+      "public_helper_apis": 6,
+      "full_target_files_verified": false,
+      "runtime_verified": false
+    },
+    "preflash_camera_data_preservation": {
+      "receipt": {
+        "path": "reports/camera-completion-20260907/xiaomi-app/preflash-transition-v9/backup-manifest.json",
+        "size_bytes": 167875,
+        "sha256": "125cba5111d88755ee412b537198544e833ce76b2d6a5c1ce00aaba7c2257466"
+      },
+      "read_only": true,
+      "app_id": 10422,
+      "private_archive_count": 2,
+      "each_archive_second_read_byte_identical": true,
+      "restore_authorized": false,
+      "clear_or_uninstall_authorized": false,
+      "transition_verified": false
+    }
   },
   "tests": {
     "initial_combined_suite": {
@@ -1578,6 +1607,16 @@
       "path": "reports/camera-completion-20260907/aperture-tests/effects-ui-cleanup-cold/receipt.json",
       "size_bytes": 81,
       "sha256": "37e337da5d1ea9e6a7b01b84dac8ba5db165d5008ed37e4e873a755d18f4efe8"
+    },
+    {
+      "path": "reports/camera-completion-20260907/component-artifacts-revision-3/component-verification.json",
+      "size_bytes": 1878,
+      "sha256": "97d2aa75ffffc01bad69ead4064679afea574e6af04b1669b5bfba7912daff77"
+    },
+    {
+      "path": "reports/camera-completion-20260907/xiaomi-app/preflash-transition-v9/backup-manifest.json",
+      "size_bytes": 167875,
+      "sha256": "125cba5111d88755ee412b537198544e833ce76b2d6a5c1ce00aaba7c2257466"
     }
   ],
   "privacy": "Tracked record contains derived measurements, hashes and ignored evidence paths. Original images, raw logs, proprietary bytes, serials and personal media contents are not embedded."
