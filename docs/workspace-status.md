@@ -16,7 +16,9 @@ was not retried. **Full camera acceptance remains incomplete.**
 
 A [successor source candidate](camera-bayer-audio-compat-20260908.md) adds the
 measured compressed Bayer path and multiroute/MIHC audio mappings and validators.
-Its host image and conversion checks pass; it still needs build and phone validation.
+Its host image and conversion checks pass. Source revision 10 is applied as
+`nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows; build and phone validation
+remain pending.
 
 Source revision 9 has 668 rows. Its component/full build, signed archive and
 eight-image bundle are recorded in the [v12 package checkpoint](camera-v12-package-20260908.md).

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "status": "source_installed_build_pending",
+  "phone_fix_verified": false,
+  "installed_phone_record": "research/camera-v12-install-validation-20260908.json",
+  "candidate_build_number": "nezha.2c510f47f6d99b93f0c3ee11",
+  "source_rows": 671,
+  "changed_source_files": 8,
+  "preserved_predecessor_rows": 663,
+  "source_commit": "3f9f9e8",
+  "dng": {
+    "synthetic_files_fully_decoded": 12,
+    "parser_assertions": 1228,
+    "jni_compile_enabled_and_disabled": true,
+    "live_save_verified": false
+  },
+  "audio": {
+    "device_descriptions": 31,
+    "formats": 33,
+    "flag_combinations": 18,
+    "directional_channel_layouts": 18,
+    "disabled_checks": 309,
+    "enabled_checks": 314,
+    "live_policy_verified": false
+  },
+  "tests": {
+    "current_count": 939,
+    "current_seconds": 29.284,
+    "full_count": 4892,
+    "full_seconds": 199.57,
+    "shell_checks_passed": true
+  },
+  "evidence": [
+    {
+      "path": "reports/camera-completion-20260907/source-revision-10/source-installed.json",
+      "sha256": "1316c5392b530fff257d05088b8b841ba8279d647ffb1086c4f47c2a99715021",
+      "size_bytes": 168499
+    },
+    {
+      "path": "reports/camera-completion-20260907/source-revision-10/cohort-admission.json",
+      "sha256": "9cee476b72fa899fbfc9c3234c1c89136977a1179cfb05128d6c128d6c57e0ca",
+      "size_bytes": 7625
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-investigation/prototype-host-preflight.json",
+      "sha256": "ace6201c42a32dba3d96bfa4a56b17215c86e3e557633689892942b0c608f123",
+      "size_bytes": 488
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-investigation/duplicate-space-recovery.json",
+      "sha256": "25ec6cce53100a716b7674d288fb0482a44d7f437c15255040ac1363f47fca02",
+      "size_bytes": 1099
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-investigation/make-test.log",
+      "sha256": "60dea8bd97c7458e8f7b2fa5e7759943a069d24347e7589d44ccd1151e555f34",
+      "size_bytes": 870541
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-investigation/test-current.log",
+      "sha256": "0cb5d97c3bf51a830309a0d8e25b86f6e777cf88bf04039b385472ec65d81084",
+      "size_bytes": 177298
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-dng/behavior/writer-verification.json",
+      "sha256": "1eb1bf77b93fefccda25d98933d21f5671b467fae141db607275963ddab635de",
+      "size_bytes": 12362
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-dng/tracked-host-tests/result.json",
+      "sha256": "7881af3bba28532f7347b8c86ad81a18e6ec363d7d289946693bd7543c21cb44",
+      "size_bytes": 2710
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-dng/prototype-compile.log",
+      "sha256": "d1f743a53f7b6ebf0be81b392ff0411287cbe9a5c2c8aa366a2b6a417ca7711a",
+      "size_bytes": 81
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-audio/behavior/verification.json",
+      "sha256": "8856b4e664a58963cb6b692defbfb0478ab5e7e18e9e0a2f72a78c45fd0599ab",
+      "size_bytes": 4205
+    },
+    {
+      "path": "config/nezha-compressed-dng.json",
+      "sha256": "25ce1e40e9da562ae35f41e6f492f3c2ac78dcf9056d90719983ab8792a1e969",
+      "size_bytes": 5305
+    },
+    {
+      "path": "config/nezha-audio-vendor-enums.json",
+      "sha256": "f9b7baaf63eaaf5f30e1804d4351570d8bb9c1fa0712c79c6d5d9c14b958d164",
+      "size_bytes": 3720
+    },
+    {
+      "path": "config/nezha-audio-device-format.json",
+      "sha256": "466f833b6e209ba0143a7e912adb3569e0f8ba52cf4a136485d00e50a35a6281",
+      "size_bytes": 1978
+    }
+  ],
+  "remaining": [
+    "Component and full ROM build, archive verification, signing and bundle assembly.",
+    "Separately approved installation and actual UltraRAW, audio and video validation."
+  ]
+}

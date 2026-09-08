@@ -72,6 +72,16 @@ The full offline suite passes 4,892 tests in 199.570 seconds plus shell checks.
 `make test-current` passes 939 tests in 29.284 seconds. These are workspace checks;
 they do not substitute for a ROM build or phone validation.
 
+## Source adoption
+
+The source change is committed as `3f9f9e8` and applied as revision 10,
+`nezha.2c510f47f6d99b93f0c3ee11`. The guarded transaction changes eight files,
+retains 663 predecessor rows byte-for-byte and adds three existing legacy header
+preimages to the inventory, for 671 recorded rows. The
+[source evidence record](../research/camera-bayer-audio-compat-20260908.json)
+pins the transaction and host checks. Component/full build and delivery are
+pending.
+
 ## Evidence and delivery boundary
 
 Private inputs and generated checks remain under
