@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "V10 installed: ordinary Xiaomi Photo and ten warm Aperture effects pass. Telephoto high resolution, Xiaomi RAW/Ultra RAW and video fail; source repair pending.",
+  "status": "V10 installed: ordinary Xiaomi Photo and ten warm Aperture effects pass. Telephoto high resolution, Xiaomi RAW/Ultra RAW and video fail. V11 factory stream-sizing source and native build pass; full package in progress.",
   "verification_scope": "V8 capture/decode evidence and v9 source/build/signed archive evidence are preserved here. Current v9 installation, package-data preservation and runtime capture results are recorded in research/camera-v9-install-validation-20260908.json. Complete camera acceptance remains false.",
   "complete_camera_acceptance": false,
   "baseline": {
@@ -1596,6 +1596,39 @@
         "sha256": "9a16e55a6b5c4881318ba6d53caa1905bed7cf00a3f4f535851f9c7051325a20",
         "size_bytes": 177298
       }
+    },
+    "v11_stream_sizing": {
+      "current": {
+        "tests": 939,
+        "elapsed_seconds": 27.889,
+        "passed": true
+      },
+      "full": {
+        "tests": 4885,
+        "elapsed_seconds": 188.047,
+        "shell_checks_passed": true,
+        "passed": true
+      },
+      "cpp": {
+        "fixture_sha256": "53bd1ad6bc8c36bc662e1fc526835f5363a94f487951744e87203d61d4575fb7",
+        "undefined_behavior_sanitizer": true,
+        "cases": [
+          {
+            "selector_enabled": false,
+            "assertions": 43
+          },
+          {
+            "selector_enabled": true,
+            "assertions": 46
+          }
+        ],
+        "scope": "Actual sizing bodies with host doubles; not Android ABI or device proof"
+      },
+      "source_record": {
+        "path": "research/camera-stream-sizing-20260908.json",
+        "sha256": "8689853f900e8b711f7fb9d1c48a9402b8c77f7c7f4c9d0b0e96a8a31038e613",
+        "size_bytes": 8307
+      }
     }
   },
   "cleanup": {
@@ -1624,7 +1657,7 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Restore factory mock-camera/custom-size handling and verify telephoto 50 MP and 200 MP output with complete decodes.",
+    "Complete v11 package/signing checks, obtain separate installation approval, and verify telephoto 50 MP and 200 MP output with complete decodes.",
     "Repair Xiaomi Pro RAW/Ultra RAW paths; ordinary physical RAW and warm Aperture effect captures already pass on v10.",
     "Collect audio startup diagnostics from the next approved boot and fix the video AudioRecord initialization failure.",
     "Measure useful image quality, sensor-native full-resolution readout, RAW + 200 MP and sustained behavior beyond retained capture/decode windows."
@@ -1831,6 +1864,33 @@
     "installation_record": "research/camera-v9-install-validation-20260908.json"
   },
   "current_development_source": {
+    "build_number": "nezha.130611bac9232625e0066968",
+    "source_rows": 661,
+    "source_receipt": {
+      "path": "reports/camera-completion-20260907/source-revision-6/source-installed.json",
+      "sha256": "0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c",
+      "size_bytes": 166175
+    },
+    "status": "Source and native component build passed; full package in progress; not device-admitted",
+    "diagnosis_document": "docs/camera-stream-sizing-20260908.md",
+    "source_validation_record": {
+      "path": "research/camera-stream-sizing-20260908.json",
+      "sha256": "8689853f900e8b711f7fb9d1c48a9402b8c77f7c7f4c9d0b0e96a8a31038e613",
+      "size_bytes": 8307
+    },
+    "installed": false
+  },
+  "v10_runtime_validation": {
+    "path": "research/camera-v10-install-validation-20260908.json",
+    "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
+    "size_bytes": 25738
+  },
+  "v10_package_checkpoint": {
+    "path": "research/camera-v10-package-20260908.json",
+    "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
+    "size_bytes": 8142
+  },
+  "installed_development_source_v10": {
     "build_number": "nezha.0c10ad024d3033691a2825cc",
     "source_rows": 659,
     "source_receipt": {
@@ -1850,15 +1910,5 @@
       "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
       "size_bytes": 25738
     }
-  },
-  "v10_runtime_validation": {
-    "path": "research/camera-v10-install-validation-20260908.json",
-    "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
-    "size_bytes": 25738
-  },
-  "v10_package_checkpoint": {
-    "path": "research/camera-v10-package-20260908.json",
-    "sha256": "7323a792b731556a87d91f23757622f159158b24877a46e5f7ef3906a49e56ae",
-    "size_bytes": 8142
   }
 }

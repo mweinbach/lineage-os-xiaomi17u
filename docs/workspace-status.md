@@ -16,9 +16,10 @@ captures from all three rear sensors independently decode on the host.
 The selected source combines the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md)
 and [CameraX cache backport](camerax-extension-cache-20260908.md). Its 659 rows,
 full Android build, signed archive and eight-image bundle are recorded in the
-[v10 package record](camera-v10-package-20260908.md). The next camera repair
-should follow the measured factory mock-camera and custom-size hooks; no
-successor sizing fix is installed yet.
+[v10 package record](camera-v10-package-20260908.md). The [factory stream-sizing successor](camera-stream-sizing-20260908.md),
+`nezha.130611bac9232625e0066968`, has 661 source rows and passes its native
+component build. Its full package is in progress; it is not installed or
+device-admitted.
 
 V9 (`nezha.393aae12fba9ebe8627cdc38`), v8
 (`nezha.f2e3feac321f56f92d2ad7ea`) and v7

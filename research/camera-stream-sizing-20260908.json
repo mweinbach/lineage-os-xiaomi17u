@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-stream-sizing-20260908",
+  "document": "docs/camera-stream-sizing-20260908.md",
+  "status": "Source and native component build passed; full package in progress; not device-admitted",
+  "build_number": "nezha.130611bac9232625e0066968",
+  "installed": false,
+  "predecessor": "nezha.0c10ad024d3033691a2825cc",
+  "source_rows": 661,
+  "changed_files": 5,
+  "preserved_predecessor_rows": 656,
+  "added_preimage_rows": 2,
+  "source_commit": "ccc6738",
+  "pinned_frameworks_av": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
+  "observed_upstream_bka": "64d275464c01488267ad1d73abdd0ccbc57ecf4b",
+  "upstream_changed_locally": false,
+  "patch": "patches/evolution/0034-nezha-camera-stream-sizing.patch",
+  "selector": "NEZHA_CAMERA_SESSION_INJECT",
+  "factory_dispatch": [
+    {
+      "name": "isMockCamera",
+      "symbol": "_ZN10CameraImpl12isMockCameraERKN7android7String8E",
+      "address": "0x6e41c",
+      "vtable_offset": "0x208",
+      "vtable_relocations": [
+        "00000000000f4220  0000066600000101 R_AARCH64_ABS64        000000000006e41c _ZN10CameraImpl12isMockCameraERKN7android7String8E + 0",
+        "00000000000f4fb8  0000066600000101 R_AARCH64_ABS64        000000000006e41c _ZN10CameraImpl12isMockCameraERKN7android7String8E + 0"
+      ]
+    },
+    {
+      "name": "getCustomBestSize",
+      "symbol": "_ZN10CameraImpl17getCustomBestSizeERKN7android14CameraMetadataEiiiRKNS0_7String8ERiS7_",
+      "address": "0x70324",
+      "vtable_offset": "0xf0",
+      "vtable_relocations": [
+        "00000000000f4108  0000038a00000101 R_AARCH64_ABS64        0000000000070324 _ZN10CameraImpl17getCustomBestSizeERKN7android14CameraMetadataEiiiRKNS0_7String8ERiS7_ + 0",
+        "00000000000f4ea0  0000038a00000101 R_AARCH64_ABS64        0000000000070324 _ZN10CameraImpl17getCustomBestSizeERKN7android14CameraMetadataEiiiRKNS0_7String8ERiS7_ + 0"
+      ]
+    },
+    {
+      "name": "raiseDimensionsforCustomImageQuality",
+      "symbol": "_ZN10CameraImpl36raiseDimensionsforCustomImageQualityERKN7android14CameraMetadataEiiiRKNS0_7String8ERiS7_",
+      "address": "0x706d4",
+      "vtable_offset": "0xf8",
+      "vtable_relocations": [
+        "00000000000f4110  0000056f00000101 R_AARCH64_ABS64        00000000000706d4 _ZN10CameraImpl36raiseDimensionsforCustomImageQualityERKN7android14CameraMetadataEiiiRKNS0_7String8ERiS7_ + 0",
+        "00000000000f4ea8  0000056f00000101 R_AARCH64_ABS64        00000000000706d4 _ZN10CameraImpl36raiseDimensionsforCustomImageQualityERKN7android14CameraMetadataEiiiRKNS0_7String8ERiS7_ + 0"
+      ]
+    }
+  ],
+  "native_artifact": {
+    "path": "reports/camera-completion-20260907/v11-component-run/cameraserver",
+    "sha256": "5dd3bc8a8105877dbff507afaf9d2a420cce53a1f3a9397f2b869aadd603c938",
+    "size_bytes": 4026968
+  },
+  "component_build_actions": 152,
+  "cfi_check_defined": true,
+  "tests": {
+    "current": {
+      "tests": 939,
+      "elapsed_seconds": 27.889,
+      "passed": true
+    },
+    "affected_module": {
+      "tests": 4,
+      "passed": true
+    },
+    "full": {
+      "tests": 4885,
+      "elapsed_seconds": 188.047,
+      "shell_checks_passed": true,
+      "passed": true
+    },
+    "cpp": {
+      "fixture_sha256": "53bd1ad6bc8c36bc662e1fc526835f5363a94f487951744e87203d61d4575fb7",
+      "undefined_behavior_sanitizer": true,
+      "cases": [
+        {
+          "selector_enabled": false,
+          "assertions": 43
+        },
+        {
+          "selector_enabled": true,
+          "assertions": 46
+        }
+      ],
+      "scope": "Actual sizing bodies with host doubles; not Android ABI or device proof"
+    }
+  },
+  "receipts": {
+    "contract": {
+      "path": "config/nezha-camera-stream-sizing.json",
+      "sha256": "5b1d7d8b64338b691913afdebcbf2d4e1c54132a7657dca66af2125c25f75e77",
+      "size_bytes": 4803
+    },
+    "source": {
+      "path": "reports/camera-completion-20260907/source-revision-6/source-installed.json",
+      "sha256": "0f14265c8112793c263b4149a627fd9098fba4f2451073cbfb2881ff41e8466c",
+      "size_bytes": 166175
+    },
+    "source_admission": {
+      "path": "reports/camera-completion-20260907/source-revision-6/cohort-admission.json",
+      "sha256": "d3476dd673bd989588bc442ef1199724cb4e961b74f61284bb32bd29e6bb49ab",
+      "size_bytes": 8885
+    },
+    "source_recipe": {
+      "path": "reports/camera-completion-20260907/prepare_revision_6.py",
+      "sha256": "24581111664b0389d21871c3d15d6d142da8a11fac88036f1387305f2ec76d1e",
+      "size_bytes": 7283
+    },
+    "factory_abi": {
+      "path": "reports/camera-completion-20260907/stream-sizing/factory-abi.json",
+      "sha256": "d92d2220123252849501e3f65fd9d9cbf8216ef021f9c02207373334d5823c28",
+      "size_bytes": 2101
+    },
+    "behavior": {
+      "path": "reports/camera-completion-20260907/stream-sizing/behavior.json",
+      "sha256": "f6f91a61045586986f7095014d1005261bf2c00c907974c5d09b6ad7709e72f4",
+      "size_bytes": 371
+    },
+    "current_tests": {
+      "path": "reports/camera-completion-20260907/stream-sizing/current-tests.log",
+      "sha256": "3f38da126cee4b641869a60889a12eeb937c8f8c46b45df639f120632f5b448e",
+      "size_bytes": 177298
+    },
+    "full_tests": {
+      "path": "reports/camera-completion-20260907/stream-sizing/full-tests.log",
+      "sha256": "668ef825653fa15251ec03ac0360d9f3c49e9ebf70ab8492f6167fe468e7ff3f",
+      "size_bytes": 869483
+    },
+    "component": {
+      "path": "reports/camera-completion-20260907/v11-component-run/native-verification.json",
+      "sha256": "bdbcfa96f3f092075187cc2feb9a6ee06a6f1d0b06c3a0dd5e1cc4514f5901bc",
+      "size_bytes": 2317
+    },
+    "component_log": {
+      "path": "reports/camera-completion-20260907/stream-sizing/component-build.log",
+      "sha256": "4baffdf6e3aded305ee83b5057347f8fb0a63e0d3cf7623caa91bb1ca224dba4",
+      "size_bytes": 20279
+    },
+    "upstream_head": {
+      "path": "reports/camera-completion-20260907/stream-sizing/upstream-head.txt",
+      "sha256": "fc24095c60b33f7e0d5cd6ab5aa34f6a73ef8648ff646d9f8303f2a8945734a2",
+      "size_bytes": 56
+    },
+    "source_preflight": {
+      "path": "reports/camera-completion-20260907/stream-sizing/source-host-preflight.json",
+      "sha256": "b53a182cd5fca0450b9150a715fe36a6e8eb209265be3c3bfa040678f208719b",
+      "size_bytes": 1377
+    },
+    "build_preflight": {
+      "path": "reports/camera-completion-20260907/source-revision-6/build-host-preflight.json",
+      "sha256": "0d624527198308ec71fe64cbc140043e6e8694cb5bc1be1d7cb4f6171521be21",
+      "size_bytes": 413
+    },
+    "full_build_preflight": {
+      "path": "reports/camera-completion-20260907/source-revision-6/full-build-preflight.json",
+      "sha256": "dffaebf529c9628b948374178d583953423c609c6dd5403fa99e6982f5865dc2",
+      "size_bytes": 466
+    },
+    "duplicate_comparison": {
+      "path": "reports/camera-completion-20260907/stream-sizing/disk-preparation/receipt.json",
+      "sha256": "705819ea3b589c21899c443103dc1fa6aa6c27579c6635880effc0d1cc6a92fe",
+      "size_bytes": 1225
+    },
+    "duplicate_reclaimed": {
+      "path": "reports/camera-completion-20260907/stream-sizing/disk-preparation/reclaimed.json",
+      "sha256": "c56225bfae3c706f2d7bb880ba2cf813107cd9f6c87018fe06ee389cc3f78c77",
+      "size_bytes": 305
+    },
+    "runtime_predecessor": {
+      "path": "research/camera-v10-install-validation-20260908.json",
+      "sha256": "c011bd76577d8f1699855b19ce808c300dc8d0e46a9aeeb981903984ee125de9",
+      "size_bytes": 25738
+    }
+  },
+  "scope": [
+    "Factory-identified mock cameras preserve requested stream dimensions",
+    "Factory custom exact size or seeded nearest search",
+    "Factory image-quality dimension adjustment after legacy privileged rules",
+    "JPEG interpolation may exceed public metadata maximum only for factory-identified mock cameras; existing privileged behavior retained"
+  ],
+  "not_verified": [
+    "Factory method runtime behavior in this build",
+    "Telephoto 50 MP and 200 MP full image decode",
+    "Xiaomi Pro RAW capture",
+    "Processed Ultra RAW and provider stability",
+    "Video/audio initialization",
+    "Useful effect quality and native sensor resolution"
+  ],
+  "phone_actions_this_revision": false,
+  "flash_authorized": false,
+  "privacy": "Proprietary inputs, binaries and device evidence remain ignored"
+}
