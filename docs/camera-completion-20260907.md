@@ -81,8 +81,8 @@ The source candidate comprises five explicit, default-disabled selections:
 | [JPEG_R default](../config/nezha-camera-jpegr-default.json) | Initialize the measured factory enable value earlier | Generated property and first-session boot result |
 | [Auxiliary packages](../config/nezha-camera-aux-packages.json) | Expose auxiliary IDs to the bundled Xiaomi and Aperture apps | Combined build list and app captures |
 | [Platform camera input](../config/nezha-camera-platform-signed.json) | Normal Android platform-signing path using unchanged factory APK inputs | Final signature/content, package-data transition, installed grants and labels |
-| [CameraOpt native compatibility](../config/nezha-cameraopt-native-compat.json) | Supply the measured query-only `get_cpuset_policy` import | Android compilation, JNI loading and initialization |
-| [CameraOpt service](../config/nezha-cameraopt-service.json) | Publish the original Binder interface with the complete original verifier and bounded authored services | Built classpath/API retention, Enforcing startup, native verification and actual Xiaomi use |
+| [CameraOpt native compatibility](../config/nezha-cameraopt-native-compat.json) | Supply the measured query-only `get_cpuset_policy` import | Final artifact checks, JNI loading and initialization |
+| [CameraOpt service](../config/nezha-cameraopt-service.json) | Publish the original Binder interface with the complete original verifier and bounded authored services | Final classpath/API retention checks, Enforcing startup, native verification and actual Xiaomi use |
 
 The CameraOpt candidate retains the original platform-signature check, native
 cached result and boot-completed callback. Its implemented request surfaces
@@ -95,7 +95,7 @@ Unsupported one-way calls produce server-side diagnostics, not a client failure
 acknowledgment. Genuine prelaunch sampling still lacks an integrated producer.
 The original verifier's runtime result is not established by these source checks.
 
-Host validation includes 12 service tests, 35 process-helper harness assertions,
+Host validation includes 13 service tests, 35 process-helper harness assertions,
 88 native-query harness cases, sampler compilation and exact patch replay.
 The service patch also preserves its public helper API under the selected
 services.jar shrinker. The first combined suite ran 4,862 tests and failed with
@@ -104,22 +104,39 @@ CameraOpt policy fragment. The corrected generator admits the exact reviewed
 fragment while retaining other policy restrictions. A later retained generator
 run passed 258 tests. The corrected combined suite then passed 4,865 tests in
 189.946 seconds and its shell checks. That suite preceded the additional early
-selector correction described below; the latest revision needs its own checks.
+selector and classpath corrections below. The current revision passed 268
+affected service/generator tests in 31.654 seconds and `make test-current`
+passed 939 tests in 29.119 seconds. The final `make test` rerun passed
+**4,866 tests in 197.413 seconds**.
 
-The first successor source transaction installed
-`nezha.af6d7a77320c30b10d63afd4`, with 652 inventory rows and 41 changed files.
-Its affected-component build failed before Soong compilation because the service
-fragment required `TARGET_DEVICE` during an early dumpvars pass where that
-variable was still unset. The second source revision corrects that selector
-guard by requiring the selected product early and rejecting a foreign device
-once the device variable is populated. Revision 2 installed
-`nezha.cbf3d0c25dde0df6305c66d4`, retaining 652 inventory rows with one changed
-file. Its affected-component build is running. The revised guard passed 268
-focused service/generator tests; a final combined-suite rerun is still pending.
-Final runtime-artifact validation, signing and device delivery also remain
-pending. The installed phone is still v8; a source-tree
-installation and host tests do not establish a new device installation or
-Xiaomi capture.
+The selected successor source is revision 3,
+**`nezha.393aae12fba9ebe8627cdc38`**, with 652 inventory rows. Its source
+transaction changed one file from revision 2. The retained source/build sequence
+is:
+
+| Source revision | Result |
+| --- | --- |
+| 1: `nezha.af6d7a77320c30b10d63afd4` | Installed 652 rows, 41 changed files. Build stopped during early dumpvars because `TARGET_DEVICE` was unset. |
+| 2: `nezha.cbf3d0c25dde0df6305c66d4` | Corrected the early product/device guard. Kati then rejected inconsistent system-server preopt paths. |
+| 3: `nezha.393aae12fba9ebe8627cdc38` | Corrected the two system-server JAR qualifiers; all 498 affected-component build actions passed. |
+
+The [classpath diagnosis](../reports/camera-completion-20260907/classpath-layout-diagnosis/receipt.json)
+records that the two modules scheduled installation under `system_ext/framework`,
+while unqualified `PRODUCT_SYSTEM_SERVER_JARS` entries advertised
+`system/framework` to preopt checking and classpath generation. Revision 3 uses
+the supported `system_ext:miui-cameraopt` and
+`system_ext:nezha-cameraopt-service` entries in their existing order. Normal
+classpath loading, module partitions and strict preopt checks remain enabled.
+
+The [component-build receipt](../reports/camera-completion-20260907/component-build-receipts/receipt.json)
+records exit 0 for `libprocessgroup`, `services`, `nezha-cameraopt-service`,
+`NezhaXiaomiCameraPlatform` and `framework-res` in run
+`20260908T001748-userdebug`. The source inventories before and after the build
+are byte-identical at 652 rows. The full target-files build is now running as
+`20260908T003851-userdebug`; the complete archive and final artifact/API checks
+remain pending. No successor delivery or runtime result is established. The
+installed phone remains v8; a component build does not establish a new device
+installation or Xiaomi capture.
 
 The [high-resolution source investigation](../reports/camera-completion-20260907/raw-highres/highres-mode-plan.md)
 identifies current Pixel/AlgoUp session mode `0x9004`; `0x80f3` is the legacy

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "Measured v8 capture progress; successor source revision 2 installed and component build running; full camera acceptance incomplete",
-  "verification_scope": "Retained device capture receipts plus independent host artifact/hash/decode checks and reviewed successor source. Captures belong to installed v8; source installation does not establish new Android artifacts or runtime behavior.",
+  "status": "Measured v8 capture progress; revision 3 Android component build and final offline suite passed; full target-files archive and camera acceptance incomplete",
+  "verification_scope": "Retained v8 device capture receipts, independent host artifact/hash/decode checks, reviewed successor source and successful affected Android component compilation. Full target-files archive and successor runtime acceptance remain pending.",
   "complete_camera_acceptance": false,
   "baseline": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v8",
@@ -1141,7 +1141,7 @@
     "source_findings_are_capture_results": false
   },
   "source_candidate": {
-    "status": "revision 2 source installed; affected Android component build running",
+    "status": "revision 3 source and affected Android component build passed; full target-files build running",
     "first_installed_build": "nezha.af6d7a77320c30b10d63afd4",
     "first_installed_rows": 652,
     "first_installed_changed_files": 41,
@@ -1151,11 +1151,11 @@
       "sha256": "19834874c97e83b6c640e8714cc698825d750af040ffcbe986a18a425b75b637"
     },
     "source_installation_is_device_installation": false,
-    "android_component_build_passed": false,
+    "android_component_build_passed": true,
     "first_component_build_failure": "TARGET_DEVICE was unset when the service fragment evaluated during early dumpvars. The next revision is correcting the selector guard.",
     "revision_2_source_installed": true,
     "final_runtime_artifact_validation_passed": false,
-    "successor_apk_signed": false,
+    "successor_apk_signed": null,
     "successor_flashed": false,
     "successor_runtime_verified": false,
     "source_contracts": [
@@ -1181,8 +1181,8 @@
       },
       {
         "path": "config/nezha-cameraopt-service.json",
-        "size_bytes": 5535,
-        "sha256": "3c4a9fb56e93269db479356315133498cc6b8bd30e09eddb4cd37f31b63731c3"
+        "size_bytes": 5647,
+        "sha256": "a0e7eca6456791c9ff38e0a0ef73963f4e95efe4ceef904639bffd72e7fd73bf"
       }
     ],
     "factory_verifier": "Complete unchanged original Verifier including real PackageManagerInternal.isPlatformSigned, original native cached result and original phase-1000 callback. Runtime verdict remains unverified.",
@@ -1206,25 +1206,123 @@
     "unsupported_oneway_behavior": "Server-side diagnostics and counters; no synchronous negative client acknowledgment. Unported APIs are not assumed unused.",
     "process_policy_scope": "Temporary camera OOM cap; full MIUI native boost/reclamation and post-close work model are not implemented.",
     "prelaunch_event_producer_integrated": false,
-    "platform_signing_stage": "Original APK input packet staged and verified without byte transformation or signing. Normal Android signing, package-data transition, installed grants, seinfo and runtime checks remain required.",
+    "platform_signing_stage": "Original APK input packet remains unchanged. The platform Camera APK component build passed; final signer/content and strict uses-library artifact validation, complete target-files archive, installed package-data transition, grants and labels remain separate checks.",
     "jpegr_default_limit": "Fresh persistent-property store only. Existing persisted values override the build default; a stored zero is not migrated. Current v8 captures used the existing factory initializer.",
     "retained_shrinker_requirement": "Keep the public NezhaCameraProcessPolicy API in services.jar under the selected SYSTEM_OPTIMIZE_JAVA configuration; final packaged method definitions still require verification.",
-    "selected_source_build": "nezha.cbf3d0c25dde0df6305c66d4",
+    "selected_source_build": "nezha.393aae12fba9ebe8627cdc38",
     "selected_source_rows": 652,
     "revision_2_changed_files": 1,
     "selected_source_receipt": {
-      "path": "reports/camera-completion-20260907/source-revision-2/source-installed.json",
+      "path": "reports/camera-completion-20260907/source-revision-3/source-installed.json",
       "size_bytes": 163919,
-      "sha256": "a575ba51426b6fca103d00ffdf541748630500817b85256965c66bce74761c0e"
+      "sha256": "3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5"
     },
-    "android_component_build_status": "running",
+    "android_component_build_status": "passed",
     "first_component_build_log": {
       "path": "reports/camera-completion-20260907/component-build-first-source-dumpvars-failure.log",
       "size_bytes": 1671,
       "sha256": "5c3b64c19de431daab51dbd285e5077bb1489d80ac39b13d7012a4e0fafc4944"
     },
     "revision_2_correction": "Require TARGET_PRODUCT=lineage_nezha during early dumpvars; reject a nonempty TARGET_DEVICE unless it is nezha. No camera or Java behavior change.",
-    "handoff_scope": "The retained candidate handoff predates the early product-guard correction. Revision 2 source receipt and current source-contract pins identify the selected source."
+    "handoff_scope": "The retained candidate source handoff predates the early product guard and system_ext classpath corrections. Revision 3 installed-source receipt and current integration/contract pins identify the selected source.",
+    "revision_2_source_receipt": {
+      "path": "reports/camera-completion-20260907/source-revision-2/source-installed.json",
+      "size_bytes": 163919,
+      "sha256": "a575ba51426b6fca103d00ffdf541748630500817b85256965c66bce74761c0e"
+    },
+    "revision_3_changed_files": 1,
+    "revision_3_source_installed": true,
+    "source_commit": "7e877023f1f7fe8234498f7c3bbc120c9cdfd255",
+    "current_integration_files": [
+      {
+        "path": "config/nezha-cameraopt-service.json",
+        "size_bytes": 5647,
+        "sha256": "a0e7eca6456791c9ff38e0a0ef73963f4e95efe4ceef904639bffd72e7fd73bf"
+      },
+      {
+        "path": "device/xiaomi/nezha/cameraopt-service.mk",
+        "size_bytes": 2298,
+        "sha256": "15ead13db047761f6151dcc5e36ee2b9c154da5b5ce9b8355af85cbcee46100c"
+      },
+      {
+        "path": "scripts/generate_device_tree.py",
+        "size_bytes": 284308,
+        "sha256": "ee700889e5f8b33067fa8618c0a4db4c6ebea024e18b839e7b6d2be360588036"
+      },
+      {
+        "path": "tests/test_cameraopt_service.py",
+        "size_bytes": 13835,
+        "sha256": "5b1a482f5c9defc811ff4cbb0a8b073f536bfb106c66bd633d841a51448add95"
+      }
+    ],
+    "android_component_build_run_id": "20260908T001748-userdebug",
+    "revision_2_component_build_failure": "Kati dex_preopt_check expected both CameraOpt JARs odex/vdex under system/framework, while module installation declarations placed them under system_ext/framework.",
+    "revision_2_component_build_log": {
+      "path": "reports/camera-completion-20260907/component-build-revision-2-dexpreopt-failure.log",
+      "size_bytes": 16778,
+      "sha256": "ad0d759d2d820ea4c164d217a4eae6303da41c1506ec5ae359f266326b3e9f59"
+    },
+    "revision_3_correction": "Qualify the existing ordered PRODUCT_SYSTEM_SERVER_JARS entries as system_ext:miui-cameraopt and system_ext:nezha-cameraopt-service. Include system_ext-qualified forms in duplicate-entry checks.",
+    "system_server_jar_entries": [
+      "system_ext:miui-cameraopt",
+      "system_ext:nezha-cameraopt-service"
+    ],
+    "classpath_layout_diagnosis": {
+      "path": "reports/camera-completion-20260907/classpath-layout-diagnosis/receipt.json",
+      "size_bytes": 16101,
+      "sha256": "3a66c3a963738845e444f27d946dd2988b24458384a07035102fe911ecb725fe"
+    },
+    "classpath_diagnosis_scope": "Retained pre-correction generated configuration and installation declarations plus exact Soong source. No post-correction generated configuration or live release-flag value is claimed by this receipt.",
+    "dexpreopt_checks_disabled": false,
+    "dexpreopt_disabled": false,
+    "module_partitions_changed": false,
+    "classloader_arrangement_changed": false,
+    "successor_apk_signing_verified": false,
+    "android_component_build_actions": 498,
+    "android_component_build_receipt": {
+      "path": "reports/camera-completion-20260907/component-build-receipts/receipt.json",
+      "size_bytes": 1213,
+      "sha256": "7fb5cc068f95a24fa314c015d51b795be5d29df311b47fc8ecdd1cfc7473d812"
+    },
+    "android_component_build_log": {
+      "path": "reports/camera-completion-20260907/component-build.log",
+      "size_bytes": 76417,
+      "sha256": "160a0814fac806725f39847bf4f1512a34a900b3cf1cf492c938a07b10cd3183"
+    },
+    "android_component_build_run_files": [
+      {
+        "path": "reports/camera-completion-20260907/component-build-receipts/result.json",
+        "sha256": "d0b9ae90100a582172c537e3625d0fb09646faae8b58b8eb8811c2493ca4007f",
+        "size_bytes": 127
+      },
+      {
+        "path": "reports/camera-completion-20260907/component-build-receipts/request.json",
+        "sha256": "76079108152d832cc87618e175118d91895c7125d45ac6c77cfff753bcfd81f2",
+        "size_bytes": 1361
+      },
+      {
+        "path": "reports/camera-completion-20260907/component-build-receipts/source-before.json",
+        "sha256": "3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5",
+        "size_bytes": 163919
+      },
+      {
+        "path": "reports/camera-completion-20260907/component-build-receipts/source-after.json",
+        "sha256": "3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5",
+        "size_bytes": 163919
+      }
+    ],
+    "android_component_build_goals": [
+      "libprocessgroup",
+      "services",
+      "nezha-cameraopt-service",
+      "NezhaXiaomiCameraPlatform",
+      "framework-res"
+    ],
+    "component_source_before_after_identical": true,
+    "component_source_rows": 652,
+    "full_target_files_build_status": "running",
+    "full_target_files_build_run_id": "20260908T003851-userdebug",
+    "full_target_files_archive_verified": false
   },
   "tests": {
     "initial_combined_suite": {
@@ -1258,7 +1356,7 @@
       "status": "passed",
       "shell_checks_passed": true,
       "log": {
-        "path": "reports/camera-completion-20260907/full-tests.log",
+        "path": "reports/camera-completion-20260907/full-tests-before-native-configuration-corrections.log",
         "size_bytes": 866311,
         "sha256": "d59bb3782dcfba8c4526e04230cf07c16e180ea9a78f6974f9d589340c629293"
       }
@@ -1290,7 +1388,6 @@
       ],
       "scope": "Synthetic controller lookups and exact extracted query; no Android library or cgroup runtime proof"
     },
-    "latest_guard_revision_full_suite": "pending",
     "early_product_guard_revision": {
       "tests": 268,
       "elapsed_seconds": 31.367,
@@ -1301,6 +1398,40 @@
         "path": "reports/camera-completion-20260907/early-product-guard-tests.log",
         "size_bytes": 100,
         "sha256": "6d3a91670e056c874f3e39d10418392bdcf26d9a9e350569359b809ea0020bf7"
+      }
+    },
+    "system_ext_classpath_revision": {
+      "tests": 268,
+      "elapsed_seconds": 31.654,
+      "status": "passed",
+      "service_tests": 13,
+      "generator_tests": 255,
+      "log": {
+        "path": "reports/camera-completion-20260907/system-ext-classpath-tests.log",
+        "size_bytes": 100,
+        "sha256": "5f255a0dc8dbe90ce532ead1fa0200838726eb89b9d3f25cf842157ec2aae5d1"
+      }
+    },
+    "current_baseline_after_classpath_revision": {
+      "command": "make test-current",
+      "tests": 939,
+      "elapsed_seconds": 29.119,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/current-tests-after-classpath.log",
+        "size_bytes": 177298,
+        "sha256": "603c80db408df5f78720e4e14774edd5b30cd43078c08b58c015920f3340fd78"
+      }
+    },
+    "latest_revision_full_suite": {
+      "command": "make test",
+      "tests": 4866,
+      "elapsed_seconds": 197.413,
+      "status": "passed",
+      "log": {
+        "path": "reports/camera-completion-20260907/full-tests.log",
+        "size_bytes": 866502,
+        "sha256": "0113dfd865ea2d8ccd6e509b1f7b55f95570e1befe6683b05e87942d9be82525"
       }
     }
   },
@@ -1330,7 +1461,7 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Successful affected Android component build and final classpath, shrinker API, strict uses-library and native import checks.",
+    "Complete full target-files archive and final classpath/API ownership, shrinker retention, strict uses-library and native import artifact checks.",
     "Original CameraOpt initialization/verdict, full required API behavior and a saved Xiaomi Camera capture while Enforcing.",
     "Successor package signing and explicitly reviewed installed signer/app-data transition, installed grants and labels.",
     "First-session JPEG_R behavior for the selected boot default and combined auxiliary-package selection.",

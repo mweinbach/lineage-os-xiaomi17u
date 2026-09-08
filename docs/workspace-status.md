@@ -8,12 +8,13 @@ Aperture Bokeh + Ultra HDR is measured separately. Xiaomi Camera capture,
 50/200 MP modes and processed Ultra RAW remain unverified; full camera acceptance
 is **not device-admitted**. See the [camera completion record](camera-completion-20260907.md).
 
-The selected development source is `nezha.cbf3d0c25dde0df6305c66d4`, which adds
+The selected development source is `nezha.393aae12fba9ebe8627cdc38`, which adds
 the guarded CameraOpt service and native compatibility, platform-signed original
 Camera input, auxiliary-package selection and JPEG_R default. Its affected
-Android component build is in progress; no successor bundle or installation is
-claimed. The first candidate's early product-configuration failure and its
-one-file correction are retained. The phone remains on v8, with Aperture effects
+Android component build passed, and the full target-files build is in progress.
+No successor bundle or installation is claimed. The earlier product-configuration
+and dex-preoptimization failures and their one-file corrections are retained.
+The phone remains on v8, with Aperture effects
 and RAW off, Ultra HDR on, the original auxiliary property restored and USB
 stay-awake off.
 
@@ -32,7 +33,7 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
 | Installed build identity | `nezha.f2e3feac321f56f92d2ad7ea` (userdebug opt-in, delivery set v8); last user-variant install remains `nezha.f9e30611efe01b882f9ed0cb` |
 | Installed source receipt | 613 rows; `reports/camera-native-hook-20260907/source-revision-2/source-installed.json`, SHA256 `254b42243742a8b3945fb064156a84a2b0d1e19db1990403f6da4d094fa1f651` |
-| Development source | `nezha.cbf3d0c25dde0df6305c66d4`, 652 inventory rows; `reports/camera-completion-20260907/source-revision-2/source-installed.json`, SHA256 `a575ba51426b6fca103d00ffdf541748630500817b85256965c66bce74761c0e`; component build in progress |
+| Development source | `nezha.393aae12fba9ebe8627cdc38`, 652 inventory rows; `reports/camera-completion-20260907/source-revision-3/source-installed.json`, SHA256 `3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5`; component build passed, target-files build in progress |
 | Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v8/` |
 | Bundle manifest SHA256 | `2f0d1a033596a3649a674ae6a0359324c48cd3ec3b0234ec0947bf76f43f9631` |
 | Reconciled signed target-files SHA256 | `f34b286df2748e4b8f5958c6b905d2d4a3e396cf9b16ede31d34a5a3768e8da1` |
@@ -67,10 +68,13 @@ methods are explicitly unported, and final signature, runtime and high-resolutio
 proof remain separate gates. The current generated product selects the five new
 guarded options in addition to `NEZHA_CAMERA_SESSION_INJECT`.
 
-The pre-guard-correction full offline suite passed 4,865 tests in 189.946 seconds
-plus shell checks. The early product-guard correction passed 268 affected tests
-in 31.367 seconds. These results prove workspace tooling and source contracts;
-the running Android build and later device behavior need their own receipts.
+The latest full offline suite passed 4,866 tests in 197.413 seconds plus shell
+checks. The final classpath qualification passed 268 affected tests, and
+`make test-current` passed 939 tests. The affected Android component build also
+passed, with identical 652-row before/after inventories. It compiled and
+preoptimized the service, built the native query export, and signed the original
+Camera payload with the platform key. Final archive, signing and device
+validation remain separate gates.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -107,8 +111,9 @@ successor ROM boot chain or OTA behavior.
 - **Camera:** Rear/front Aperture Ultra HDR and RAW, three physical rear RAW captures,
   20 platform extension combinations, and Aperture Bokeh + Ultra HDR are measured
   on v8. The new source integrates the normal CameraOpt verifier, native query
-  ABI and platform-signed original Camera input; Android build/artifact/runtime
-  checks remain pending. Xiaomi capture, 50/200 MP, processed Ultra RAW and video
+  ABI and platform-signed original Camera input; the component build passed.
+  Full target-files, final-artifact and runtime checks remain pending. Xiaomi
+  capture, 50/200 MP, processed Ultra RAW and video
   require their own measured results. The dark extension test scene establishes
   capture and file decoding, not visual quality. Preserve the
   [v7 diagnosis](camera-capture-diagnosis-20260907.md),
