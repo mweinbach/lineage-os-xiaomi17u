@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "phone_fix_verified": false,
+  "document": "docs/camera-bayer-audio-compat-20260908.md",
+  "contract_id": "nezha-audio-device-format-v1",
+  "project": "system/media",
+  "repository": "https://github.com/Evolution-X/system_media",
+  "branch": "bka",
+  "revision": "f49b447fd0f00152ecffbb9446403def0708a592",
+  "upstream_branch_verified": "2026-09-08",
+  "patch": "patches/evolution/0038-nezha-audio-device-format.patch",
+  "patch_sha256": "8da1f7ee518cf9840ab1dcbb0caa2fb69434c989c0cdc89e0407a734512eb26f",
+  "files": {
+    "audio/include/system/audio-hal-enums.h": {
+      "before_sha256": "2c0e50533596423acefc60e748a3632803cfb101866e9b230eca85693066c48c",
+      "after_sha256": "ffdef0c89121b4dd11337ca103020a48d12a9b7a1805d057f736fa2a094dccf1",
+      "before_bytes": 43799,
+      "after_bytes": 43889
+    },
+    "audio/include/system/audio-base-utils.h": {
+      "before_sha256": "ad281b938ece3c60b161ef53a2de9bd6be5672336ebab87777450ccc91058bdf",
+      "after_sha256": "223a795c213f52f23cea2a284394ff41eb3aab122b10bdfd579f26082fe52d35",
+      "before_bytes": 25577,
+      "after_bytes": 25639
+    },
+    "audio/include/system/audio.h": {
+      "before_sha256": "1c220d00b543b9f7ab2492091531a8a95486b63a601f1bd82002d170eaec8903",
+      "after_sha256": "638d260c0fc297af674baa3a78ca8e99719db54d83208ad13c97b445e94c58b5",
+      "before_bytes": 101325,
+      "after_bytes": 101450
+    }
+  },
+  "vendor_values": {
+    "output_device": 536870916,
+    "format": 1073741824
+  },
+  "scope": "Add named legacy values, include multiroute in the sorted output device array, and accept only the exact MIHC format. Header definitions are shared, while AIDL conversions remain gated by the existing Nezha product selector.",
+  "host_evidence": [
+    {
+      "path": "reports/camera-completion-20260907/v13-audio/behavior/verification.json",
+      "sha256": "8856b4e664a58963cb6b692defbfb0478ab5e7e18e9e0a2f72a78c45fd0599ab",
+      "size_bytes": 4205
+    }
+  ]
+}

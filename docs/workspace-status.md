@@ -14,6 +14,10 @@ Early boot audio diagnostics advance past the previous flag/usage errors and
 now reject the factory multiroute device. Audio policy remains null, so video
 was not retried. **Full camera acceptance remains incomplete.**
 
+A [successor source candidate](camera-bayer-audio-compat-20260908.md) adds the
+measured compressed Bayer path and multiroute/MIHC audio mappings and validators.
+Its host image and conversion checks pass; it still needs build and phone validation.
+
 Source revision 9 has 668 rows. Its component/full build, signed archive and
 eight-image bundle are recorded in the [v12 package checkpoint](camera-v12-package-20260908.md).
 That checkpoint's pending-installation state is historical; the runtime record

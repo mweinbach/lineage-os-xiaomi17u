@@ -87,6 +87,7 @@ struct Layout {
     uint32_t tileHeight = 0;
     uint32_t count = 0;
     bool tiled = false;
+    bool linearRaw = false;
     std::array<uint32_t, kMaxTiles> byteCounts{};
     std::array<uint32_t, kMaxTiles> offsets{};
 };
@@ -97,15 +98,18 @@ inline uint32_t read32(const uint8_t* p) {
 }
 
 // Factory com.xiaomi.dng.compressedParameters: 7 little-endian uint32 fields
-// followed by the tile byte counts. Format 15 is interleaved 16-bit LinearRaw.
-// Only this measured factory layout is admitted; ordinary RAW uses AOSP's path.
+// followed by the tile byte counts. Format 15 is interleaved 16-bit LinearRaw;
+// format 32 is Bayer RAW16 encoded as two JPEG components per pixel pair.
+// Ordinary uncompressed RAW continues to use AOSP's path.
 inline const char* parseLayout(const uint8_t* metadata, size_t metadataSize,
         const uint8_t* data, size_t capacity, Layout* result) {
     if (!metadata || metadataSize != Layout::kMetadataBytes || !data || !result) {
         return "Missing or invalid compressed DNG metadata/buffer";
     }
-    if (read32(metadata) != 15) return "Unsupported compressed DNG format (expected LinearRaw 15)";
+    const uint32_t format = read32(metadata);
+    if (format != 15 && format != 32) return "Unsupported compressed DNG format (expected 15 or 32)";
     Layout layout;
+    layout.linearRaw = format == 15;
     layout.width = read32(metadata + 4);
     layout.height = read32(metadata + 8);
     layout.dataSize = read32(metadata + 12);
@@ -131,14 +135,19 @@ inline const char* parseLayout(const uint8_t* metadata, size_t metadataSize,
         layout.count = Layout::kMaxTiles;
         for (size_t i = 0; i < layout.count; ++i) layout.byteCounts[i] = read32(metadata + 28 + 4 * i);
     }
+    if (!layout.linearRaw && (layout.tileWidth & 1)) {
+        return "Compressed Bayer DNG requires an even tile width";
+    }
+    const uint32_t jpegWidth = layout.linearRaw ? layout.tileWidth : layout.tileWidth / 2;
+    const uint8_t jpegComponents = layout.linearRaw ? 3 : 2;
     size_t offset = 0;
     for (size_t i = 0; i < layout.count; ++i) {
         const size_t count = layout.byteCounts[i];
         if (!count || count > layout.dataSize - offset) return "Compressed DNG tile exceeds image data";
         JpegFrame frame;
         if (!inspectJpeg(data + offset, count, &frame) || frame.coding != 0xc3 ||
-                frame.precision != 16 || frame.components != 3 ||
-                frame.width != layout.tileWidth || frame.height != layout.tileHeight ||
+                frame.precision != 16 || frame.components != jpegComponents ||
+                frame.width != jpegWidth || frame.height != layout.tileHeight ||
                 frame.size != count) return "Invalid lossless JPEG tile in compressed DNG";
         offset += count;
     }

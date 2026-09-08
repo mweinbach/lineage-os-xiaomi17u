@@ -15,7 +15,7 @@ def contract(name):
 class CameraSaveAudioContracts(unittest.TestCase):
     def test_patch_and_authored_template_bytes(self):
         for name in ('nezha-compressed-dng.json', 'aperture-neutral-gainmap.json',
-                     'nezha-audio-vendor-enums.json'):
+                     'nezha-audio-vendor-enums.json', 'nezha-audio-device-format.json'):
             record = contract(name)
             patch = (ROOT / record['patch']).read_bytes()
             self.assertEqual(hashlib.sha256(patch).hexdigest(), record['patch_sha256'])
@@ -78,12 +78,23 @@ class CameraSaveAudioContracts(unittest.TestCase):
                           layout['compression'], layout['photometric_interpretation']),
                          (604, 15, 64, 16, 3, 7, 34892))
         self.assertEqual(layout['tile_grid'], [8, 8])
+        # V12 writer-entry metadata and JPEG SOF3 header measured on the phone.
+        self.assertEqual(layout['bayer_raw'], {'format': 32, 'samples_per_pixel': 1,
+                         'jpeg_components': 2, 'jpeg_width_divisor': 2,
+                         'photometric_interpretation': 32803})
 
     def test_measured_audio_enum_pins(self):
         # Altering these values changes compatibility with the retained audio HAL.
         record = contract('nezha-audio-vendor-enums.json')
         self.assertEqual(record['vendor_values'], {'output_flag': {'aidl_index': 19,
-                         'legacy_mask': 0x40000000}, 'usage': {'aidl': 19, 'legacy': 19}})
+                         'legacy_mask': 0x40000000}, 'usage': {'aidl': 19, 'legacy': 19},
+                         'multiroute': {'aidl_type': 'OUT_DEVICE', 'connection': 'multiroute',
+                                        'legacy': 0x20000004},
+                         'mihc': {'aidl_type': 'DEFAULT', 'pcm': 'DEFAULT',
+                                  'encoding': 'audio/vnd.mi.mihc', 'legacy': 0x40000000}})
+        headers = contract('nezha-audio-device-format.json')
+        self.assertEqual(headers['vendor_values'], {'output_device': 0x20000004,
+                                                    'format': 0x40000000})
         self.assertEqual(record['factory_converter']['sha256'],
                          '5837d318589b7f38e217dec0cd666bb32e4e68a637cabde6eb6916a56365b965')
 

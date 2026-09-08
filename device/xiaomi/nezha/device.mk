@@ -25,7 +25,7 @@ include $(NEZHA_DEVICE_PATH)/haptics.mk
 # Manual Dolby controls only; do not replace the factory vendor backend.
 include $(NEZHA_DEVICE_PATH)/dolby.mk
 
-# The retained Nezha audio HAL uses two measured Xiaomi AIDL enum extensions.
+# The retained Nezha audio HAL uses measured Xiaomi AIDL extensions.
 $(call soong_config_set_bool,nezha_audio,vendor_enums,true)
 
 # Explicit QTI value-add framework flag; selected per build, off by default.

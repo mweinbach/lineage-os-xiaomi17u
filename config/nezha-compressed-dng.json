@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "phone_fix_verified": false,
-  "document": "docs/camera-save-audio-compat-20260908.md",
-  "contract_id": "nezha-compressed-dng-v1",
+  "document": "docs/camera-bayer-audio-compat-20260908.md",
+  "contract_id": "nezha-compressed-dng-v2",
   "project": "frameworks/base",
   "repository": "https://github.com/Evolution-X/frameworks_base",
   "branch": "bka",
@@ -13,18 +13,18 @@
     "variable": "enabled"
   },
   "patch": "patches/evolution/0036-nezha-compressed-dng.patch",
-  "patch_sha256": "2972f39c334dcc289f851dafe04e3e463e5614a43c1c11b461f0eafc22d26132",
+  "patch_sha256": "09451b5d6beb4c566d93b99485d4dbf3828e8eb3f0c8af2396e6b40d44f6e892",
   "files": {
     "core/java/android/hardware/camera2/DngCreator.java": {
       "before_sha256": "8c9bc21d2072e80455b50b22d7fb7864a595d6907b5c8c8ec6e496b2b63c3875",
-      "after_sha256": "4412d3de7fb9f6d0a8ec1f670c92ae3e346c7125039b3b5991ee97429233d51f",
-      "after_bytes": 30723,
+      "after_sha256": "2bc7662ac7fad8455bbf2bf1203be36a0d60ca2c5c70875929c790f4bf3006c8",
+      "after_bytes": 30732,
       "before_bytes": 29045
     },
     "core/jni/android_hardware_camera2_DngCreator.cpp": {
       "before_sha256": "5fd82cede8418ee626e1e7fba409e2873d6a95ac9b9c1735aa7f859b17bda45e",
-      "after_sha256": "b54e1147f63424bdb0d146e6b618811beb8f0292b429e80fd46aab13c20545eb",
-      "after_bytes": 115542,
+      "after_sha256": "60cbefc4b7e8d696c34d42442e982a5989949fcd19eb94665da58215fbbcc092",
+      "after_bytes": 115588,
       "before_bytes": 103748
     },
     "core/jni/Android.bp": {
@@ -35,15 +35,15 @@
     },
     "core/jni/NezhaCompressedDng.h": {
       "before_sha256": null,
-      "after_sha256": "388121b554aee85ff10d22b7213986ae2e4f23389709d0b08f194ee92251cf82",
-      "after_bytes": 7370,
+      "after_sha256": "340ef0d71e70226fd0518bf720e7e748bb00d1b4fa847d327bfa3a39647341b7",
+      "after_bytes": 7822,
       "before_bytes": null
     }
   },
   "authored_templates": {
     "templates/camera-save-compat/NezhaCompressedDng.h": {
-      "sha256": "388121b554aee85ff10d22b7213986ae2e4f23389709d0b08f194ee92251cf82",
-      "size_bytes": 7370
+      "sha256": "340ef0d71e70226fd0518bf720e7e748bb00d1b4fa847d327bfa3a39647341b7",
+      "size_bytes": 7822
     }
   },
   "factory_runtime": {
@@ -82,9 +82,26 @@
     "java_methods": [
       "writeJpeg(int,int,java.nio.ByteBuffer)",
       "writeLossLessJpeg(java.io.OutputStream,java.nio.ByteBuffer)"
-    ]
+    ],
+    "bayer_raw": {
+      "format": 32,
+      "samples_per_pixel": 1,
+      "jpeg_components": 2,
+      "jpeg_width_divisor": 2,
+      "photometric_interpretation": 32803
+    }
   },
-  "host_evidence": [
+  "limits": [
+    "Live v12 metadata confirms format 32, 4080x3072 and an 8x8 grid of two-component JPEG frames with 255x384 pixels. The new DNG output still requires a successor phone test.",
+    "The actual TIFF serialization block is tested with synthetic metadata and independent full-image decoding, including the measured Bayer dimensions.",
+    "JNI metadata setup compiles; a full component build and sensor capture remain separate validation."
+  ],
+  "measured_bayer_metadata": {
+    "path": "reports/camera-completion-20260907/v12-validation/dng-writer-trace/metadata-analysis.json",
+    "sha256": "605d93b8db848bb51f05a54836faf652fde67a20e2e4c697b79989de8b62fb1f",
+    "size_bytes": 1277
+  },
+  "historical_v12_host_evidence": [
     {
       "path": "reports/camera-completion-20260907/v12-dng/behavior/writer-verification.json",
       "sha256": "70c7239d71d734a80480886507584ef56d084dfba2740bdc3900bef2871a49a5",
@@ -101,9 +118,21 @@
       "size_bytes": 1294
     }
   ],
-  "limits": [
-    "Compressed vendor image metadata and SOF layout still need runtime capture validation.",
-    "Host writer test uses synthetic camera metadata; JNI metadata setup requires the component build and phone test.",
-    "Only measured RGB format 15 and 8x8 tiles or a single JPEG strip are admitted."
+  "host_evidence": [
+    {
+      "path": "reports/camera-completion-20260907/v13-dng/behavior/writer-verification.json",
+      "sha256": "1eb1bf77b93fefccda25d98933d21f5671b467fae141db607275963ddab635de",
+      "size_bytes": 12362
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-dng/tracked-host-tests/result.json",
+      "sha256": "7881af3bba28532f7347b8c86ad81a18e6ec363d7d289946693bd7543c21cb44",
+      "size_bytes": 2710
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-dng/prototype-compile.log",
+      "sha256": "d1f743a53f7b6ebf0be81b392ff0411287cbe9a5c2c8aa366a2b6a417ca7711a",
+      "size_bytes": 81
+    }
   ]
 }

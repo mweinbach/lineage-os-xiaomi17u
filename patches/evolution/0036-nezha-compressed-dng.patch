@@ -19,7 +19,7 @@ diff --git a/core/java/android/hardware/camera2/DngCreator.java b/core/java/andr
 +    }
 +
 +    /**
-+     * Write factory lossless JPEG data and result metadata as a LinearRaw DNG.
++     * Write factory lossless JPEG data and result metadata as a Bayer or LinearRaw DNG.
 +     * The caller owns the output stream. Unsupported data throws before writing.
 +     * @hide
 +     */
@@ -103,7 +103,7 @@ diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android
 +
  static sp<TiffWriter> DngCreator_setup(JNIEnv* env, jobject thiz, uint32_t imageWidth,
 -        uint32_t imageHeight) {
-+        uint32_t imageHeight, bool linearRaw = false) {
++        uint32_t imageHeight, bool compressed = false, bool linearRaw = false) {
  
      NativeContext* nativeContext = DngCreator_getNativeContext(env, thiz);
  
@@ -112,7 +112,7 @@ diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android
      CameraMetadata results = *(nativeContext->getResult());
  
 -    sp<TiffWriter> writer = new TiffWriter();
-+    sp<TiffWriter> writer = linearRaw ? DngCreator_newCompressedWriter() : new TiffWriter();
++    sp<TiffWriter> writer = compressed ? DngCreator_newCompressedWriter() : new TiffWriter();
  
      uint32_t preXMin = 0;
      uint32_t preYMin = 0;
@@ -239,7 +239,7 @@ diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android
  
  
 -    if (nativeContext->hasThumbnail()) {
-+    if (!linearRaw && nativeContext->hasThumbnail()) {
++    if (!compressed && nativeContext->hasThumbnail()) {
          if (!writer->hasIfd(TIFF_IFD_SUB1)) {
              if (writer->addSubIfd(TIFF_IFD_0, TIFF_IFD_SUB1) != OK) {
                  ALOGE("%s: Failed to add SubIFD %u to IFD %u", __FUNCTION__, TIFF_IFD_SUB1,
@@ -248,7 +248,7 @@ diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android
      }
  
 -    if (writer->addStrip(TIFF_IFD_0) != OK) {
-+    if (!linearRaw && writer->addStrip(TIFF_IFD_0) != OK) {
++    if (!compressed && writer->addStrip(TIFF_IFD_0) != OK) {
          ALOGE("%s: Could not setup main image strip tags.", __FUNCTION__);
          jniThrowException(env, "java/lang/IllegalStateException",
                  "Failed to setup main image strip tags.");
@@ -344,7 +344,7 @@ diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android
 +        jniThrowException(env, "java/lang/IllegalArgumentException", error);
 +        return;
 +    }
-+    sp<TiffWriter> writer = DngCreator_setup(env, thiz, layout.width, layout.height, true);
++    sp<TiffWriter> writer = DngCreator_setup(env, thiz, layout.width, layout.height, true, layout.linearRaw);
 +    if (!writer || env->ExceptionCheck()) return;
 +
 +    // Add complete placeholder entries before computing offsets. Replacing LONG
@@ -466,7 +466,7 @@ diff --git a/core/jni/NezhaCompressedDng.h b/core/jni/NezhaCompressedDng.h
 new file mode 100644
 --- /dev/null
 +++ b/core/jni/NezhaCompressedDng.h
-@@ -0,0 +1,167 @@
+@@ -0,0 +1,176 @@
 +/*
 + * Copyright 2026 The Android Open Source Project
 + * Licensed under the Apache License, Version 2.0 (the "License");
@@ -556,6 +556,7 @@ new file mode 100644
 +    uint32_t tileHeight = 0;
 +    uint32_t count = 0;
 +    bool tiled = false;
++    bool linearRaw = false;
 +    std::array<uint32_t, kMaxTiles> byteCounts{};
 +    std::array<uint32_t, kMaxTiles> offsets{};
 +};
@@ -566,15 +567,18 @@ new file mode 100644
 +}
 +
 +// Factory com.xiaomi.dng.compressedParameters: 7 little-endian uint32 fields
-+// followed by the tile byte counts. Format 15 is interleaved 16-bit LinearRaw.
-+// Only this measured factory layout is admitted; ordinary RAW uses AOSP's path.
++// followed by the tile byte counts. Format 15 is interleaved 16-bit LinearRaw;
++// format 32 is Bayer RAW16 encoded as two JPEG components per pixel pair.
++// Ordinary uncompressed RAW continues to use AOSP's path.
 +inline const char* parseLayout(const uint8_t* metadata, size_t metadataSize,
 +        const uint8_t* data, size_t capacity, Layout* result) {
 +    if (!metadata || metadataSize != Layout::kMetadataBytes || !data || !result) {
 +        return "Missing or invalid compressed DNG metadata/buffer";
 +    }
-+    if (read32(metadata) != 15) return "Unsupported compressed DNG format (expected LinearRaw 15)";
++    const uint32_t format = read32(metadata);
++    if (format != 15 && format != 32) return "Unsupported compressed DNG format (expected 15 or 32)";
 +    Layout layout;
++    layout.linearRaw = format == 15;
 +    layout.width = read32(metadata + 4);
 +    layout.height = read32(metadata + 8);
 +    layout.dataSize = read32(metadata + 12);
@@ -600,14 +604,19 @@ new file mode 100644
 +        layout.count = Layout::kMaxTiles;
 +        for (size_t i = 0; i < layout.count; ++i) layout.byteCounts[i] = read32(metadata + 28 + 4 * i);
 +    }
++    if (!layout.linearRaw && (layout.tileWidth & 1)) {
++        return "Compressed Bayer DNG requires an even tile width";
++    }
++    const uint32_t jpegWidth = layout.linearRaw ? layout.tileWidth : layout.tileWidth / 2;
++    const uint8_t jpegComponents = layout.linearRaw ? 3 : 2;
 +    size_t offset = 0;
 +    for (size_t i = 0; i < layout.count; ++i) {
 +        const size_t count = layout.byteCounts[i];
 +        if (!count || count > layout.dataSize - offset) return "Compressed DNG tile exceeds image data";
 +        JpegFrame frame;
 +        if (!inspectJpeg(data + offset, count, &frame) || frame.coding != 0xc3 ||
-+                frame.precision != 16 || frame.components != 3 ||
-+                frame.width != layout.tileWidth || frame.height != layout.tileHeight ||
++                frame.precision != 16 || frame.components != jpegComponents ||
++                frame.width != jpegWidth || frame.height != layout.tileHeight ||
 +                frame.size != count) return "Invalid lossless JPEG tile in compressed DNG";
 +        offset += count;
 +    }

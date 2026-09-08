@@ -1,7 +1,29 @@
 diff --git a/media/audioaidlconversion/AidlConversionCppNdk.cpp b/media/audioaidlconversion/AidlConversionCppNdk.cpp
 --- a/media/audioaidlconversion/AidlConversionCppNdk.cpp
 +++ b/media/audioaidlconversion/AidlConversionCppNdk.cpp
-@@ -1422,6 +1422,13 @@
+@@ -411,6 +411,11 @@
+ const detail::AudioDevicePairs& getAudioDevicePairs() {
+     static const detail::AudioDevicePairs pairs = []() {
+         detail::AudioDevicePairs pairs = {{
++#ifdef NEZHA_AUDIO_VENDOR_ENUMS
++            // Retained Xiaomi converter: this is distinct from OUT_PROXY.
++            {AUDIO_DEVICE_OUT_MULTIROUTE,
++             make_AudioDeviceDescription(AudioDeviceType::OUT_DEVICE, "multiroute")},
++#endif
+             {
+                 AUDIO_DEVICE_NONE, AudioDeviceDescription{}
+             },
+@@ -624,6 +629,9 @@
+ 
+ const detail::AudioFormatPairs& getAudioFormatPairs() {
+     static const detail::AudioFormatPairs pairs = {{
++#ifdef NEZHA_AUDIO_VENDOR_ENUMS
++            {AUDIO_FORMAT_MIHC, make_AudioFormatDescription("audio/vnd.mi.mihc")},
++#endif
+             {AUDIO_FORMAT_INVALID,
+              make_AudioFormatDescription(AudioFormatType::SYS_RESERVED_INVALID)},
+             {AUDIO_FORMAT_DEFAULT, AudioFormatDescription{}},
+@@ -1422,6 +1430,13 @@
  
  ConversionResult<audio_output_flags_t> aidl2legacy_AudioOutputFlags_audio_output_flags_t(
          AudioOutputFlags aidl) {
@@ -15,7 +37,7 @@ diff --git a/media/audioaidlconversion/AidlConversionCppNdk.cpp b/media/audioaid
      switch (aidl) {
          case AudioOutputFlags::DIRECT:
              return AUDIO_OUTPUT_FLAG_DIRECT;
-@@ -1467,6 +1474,12 @@
+@@ -1467,6 +1482,12 @@
  
  ConversionResult<AudioOutputFlags> legacy2aidl_audio_output_flags_t_AudioOutputFlags(
          audio_output_flags_t legacy) {
@@ -28,7 +50,7 @@ diff --git a/media/audioaidlconversion/AidlConversionCppNdk.cpp b/media/audioaid
      switch (legacy) {
          case AUDIO_OUTPUT_FLAG_NONE:
              break; // shouldn't get here. must be listed  -Werror,-Wswitch
-@@ -1791,6 +1804,13 @@
+@@ -1791,6 +1812,13 @@
  
  ConversionResult<audio_usage_t>
  aidl2legacy_AudioUsage_audio_usage_t(AudioUsage aidl) {
@@ -42,7 +64,7 @@ diff --git a/media/audioaidlconversion/AidlConversionCppNdk.cpp b/media/audioaid
      switch (aidl) {
          case AudioUsage::INVALID:
              break;  // return error
-@@ -1846,6 +1866,12 @@
+@@ -1846,6 +1874,12 @@
  
  ConversionResult<AudioUsage>
  legacy2aidl_audio_usage_t_AudioUsage(audio_usage_t legacy) {

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "phone_fix_verified": false,
-  "document": "docs/camera-save-audio-compat-20260908.md",
-  "contract_id": "nezha-audio-vendor-enums-v1",
+  "document": "docs/camera-bayer-audio-compat-20260908.md",
+  "contract_id": "nezha-audio-vendor-enums-v2",
   "project": "frameworks/av",
   "repository": "https://github.com/Evolution-X/frameworks_av",
   "branch": "bka",
@@ -13,13 +13,13 @@
     "variable": "vendor_enums"
   },
   "patch": "patches/evolution/0035-nezha-audio-vendor-enums.patch",
-  "patch_sha256": "755623076e21aceb9a1a55bf8345d0631d70c61c217b3105fbb51c263d46e5ff",
+  "patch_sha256": "d01a914506b91e80063b5d41e7582ee99a5f6e8797fa099303ea86a1bc6c5a1f",
   "files": {
     "media/audioaidlconversion/AidlConversionCppNdk.cpp": {
       "before_sha256": "dba74d3acb4e68b7b418ae4030f4dffd2fc83f790c3e1ddbefc6620435e84d46",
-      "after_sha256": "aed309f9ac1ff2d3c17c0dc8e5e241e3dea315704438ac9563448a0a73237d2b",
+      "after_sha256": "3959dec059ede76a8477293fda76105c5ba792a69b026dd3a6f8ea4738c6bdfd",
       "before_bytes": 152821,
-      "after_bytes": 153539
+      "after_bytes": 153903
     },
     "media/audioaidlconversion/Android.bp": {
       "before_sha256": "c9c11f7cc9d388864fa994b09cf5d49b5cc5bd019064eb7de7d9ead41fa6b770",
@@ -31,9 +31,9 @@
   "product_file": {
     "path": "device/xiaomi/nezha/device.mk",
     "before_sha256": "92b7c904c2fb79875c8d5758e32be07d1696fc2c80a909e194a63e1b42a72851",
-    "after_sha256": "048147b46212884827b6606816df2e784158c38573306d9ef1c13e8ca31a5b94",
+    "after_sha256": "551aa42a317cd4c3cfb5cb1a514cc2b52fdccf9082f42a86489019150b3394f2",
     "before_bytes": 3968,
-    "after_bytes": 4107
+    "after_bytes": 4098
   },
   "vendor_values": {
     "output_flag": {
@@ -43,6 +43,17 @@
     "usage": {
       "aidl": 19,
       "legacy": 19
+    },
+    "multiroute": {
+      "aidl_type": "OUT_DEVICE",
+      "connection": "multiroute",
+      "legacy": 536870916
+    },
+    "mihc": {
+      "aidl_type": "DEFAULT",
+      "pcm": "DEFAULT",
+      "encoding": "audio/vnd.mi.mihc",
+      "legacy": 1073741824
     }
   },
   "factory_converter": {
@@ -55,15 +66,35 @@
     "sha256": "374aaa62ae35f64234a53d657ce2fa274765f1d548e3a16bddcfc78eee51608d",
     "size_bytes": 3028
   },
-  "host_evidence": [
+  "limits": [
+    "The Nezha selector admits the four measured factory extensions. Standard AOSP conversion behavior remains covered by the source tests.",
+    "Audio policy initialization, microphone/output and video recording require a successor phone test."
+  ],
+  "legacy_header_contract": "config/nezha-audio-device-format.json",
+  "additional_factory_mappings": [
+    {
+      "path": "reports/camera-completion-20260907/v13-investigation/factory-device-mapping-analysis.json",
+      "sha256": "241961c571e08ea331b6e91b8111be484ee0e81b5dd212925bd4fedf7d652882",
+      "size_bytes": 1237
+    },
+    {
+      "path": "reports/camera-completion-20260907/v13-investigation/factory-mihc-mapping-analysis.json",
+      "sha256": "55277bd2b660979d10a5de3aed69f0ba2c8f393f6f8f12aeced73886e2451744",
+      "size_bytes": 775
+    }
+  ],
+  "historical_v12_host_evidence": [
     {
       "path": "reports/camera-completion-20260907/v12-audio/behavior.json",
       "sha256": "e0f2c8c6d6f4e7284b46c9639b5cc4f125b99a8b1260958384dc2968cbcfecc7",
       "size_bytes": 346
     }
   ],
-  "limits": [
-    "Only the two measured extra values are admitted; standard AOSP named conversions retain their semantics.",
-    "Audio policy initialization, microphone/output and video recording require a successor phone test."
+  "host_evidence": [
+    {
+      "path": "reports/camera-completion-20260907/v13-audio/behavior/verification.json",
+      "sha256": "8856b4e664a58963cb6b692defbfb0478ab5e7e18e9e0a2f72a78c45fd0599ab",
+      "size_bytes": 4205
+    }
   ]
 }

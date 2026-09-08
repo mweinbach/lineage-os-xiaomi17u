@@ -15,15 +15,21 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def lossless_tile():
-    """Encode a 16x16, three-channel, 16-bit SOF3 tile with constant samples."""
+def lossless_tile(width=16, height=16, components=3):
+    """Encode a 16-bit SOF3 image with constant samples and predictor 1."""
     def segment(marker, body):
         return b'\xff' + bytes([marker]) + struct.pack('>H', len(body) + 2) + body
-    frame = bytes([16]) + struct.pack('>HHB', 16, 16, 3) + bytes([1, 0x11, 0, 2, 0x11, 0, 3, 0x11, 0])
+    frame = (bytes([16]) + struct.pack('>HHB', height, width, components)
+             + b''.join(bytes([i + 1, 0x11, 0]) for i in range(components)))
     huffman = bytes([0, 1]) + bytes(15) + bytes([0])
-    scan = bytes([3, 1, 0, 2, 0, 3, 0, 1, 0, 0])
+    scan = (bytes([components]) + b''.join(bytes([i + 1, 0]) for i in range(components))
+            + bytes([1, 0, 0]))
+    sample_count = width * height * components
+    entropy = bytes(sample_count // 8)
+    if sample_count % 8:
+        entropy += bytes([(1 << (8 - sample_count % 8)) - 1])
     return (b'\xff\xd8' + segment(0xc3, frame) + segment(0xc4, huffman)
-            + segment(0xda, scan) + bytes(16 * 16 * 3 // 8) + b'\xff\xd9')
+            + segment(0xda, scan) + entropy + b'\xff\xd9')
 
 
 def main():
@@ -49,10 +55,13 @@ def main():
         rows.append({'name': name, 'command': list(map(str, command)), 'exit_code': result.returncode,
                      'stdout': result.stdout.decode(errors='replace')})
     (out / 'tile.jpg').write_bytes(lossless_tile())
+    (out / 'bayer.jpg').write_bytes(lossless_tile(8, 16, 2))
+    (out / 'measured-size.jpg').write_bytes(lossless_tile(255, 384, 2))
     run('dng-compile', [args.cxx, '-std=c++17', '-Wall', '-Wextra', '-Werror',
                        '-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-I', templates,
                        fixtures / 'CompressedDngTest.cpp', '-o', out / 'dng-test'])
-    run('dng-test', [out / 'dng-test', out / 'tile.jpg'])
+    run('dng-test', [out / 'dng-test', out / 'tile.jpg', out / 'bayer.jpg',
+                     out / 'measured-size.jpg'])
     run('gainmap-compile', [args.javac, '-d', out, templates / 'NezhaNeutralGainmap.java',
                            fixtures / 'NeutralGainmapTest.java'])
     run('gainmap-test', [args.java, '-cp', out, 'NeutralGainmapTest'])

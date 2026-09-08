@@ -1,0 +1,42 @@
+diff --git a/audio/include/system/audio-hal-enums.h b/audio/include/system/audio-hal-enums.h
+--- a/audio/include/system/audio-hal-enums.h
++++ b/audio/include/system/audio-hal-enums.h
+@@ -372,6 +372,7 @@
+     V(AUDIO_DEVICE_OUT_BLE_HEADSET, 0x20000000u) \
+     V(AUDIO_DEVICE_OUT_BLE_SPEAKER, 0x20000001u) \
+     V(AUDIO_DEVICE_OUT_BLE_BROADCAST, 0x20000002u) \
++    V(AUDIO_DEVICE_OUT_MULTIROUTE, 0x20000004u) \
+     V(AUDIO_DEVICE_OUT_DEFAULT, AUDIO_DEVICE_BIT_DEFAULT) \
+     V(AUDIO_DEVICE_IN_COMMUNICATION, AUDIO_DEVICE_BIT_IN | 0x1u) \
+     V(AUDIO_DEVICE_IN_AMBIENT, AUDIO_DEVICE_BIT_IN | 0x2u) \
+@@ -651,6 +652,7 @@
+     V(AUDIO_FORMAT_DTS_UHD, 0x2E000000u) \
+     V(AUDIO_FORMAT_DRA, 0x2F000000u) \
+     V(AUDIO_FORMAT_APTX_ADAPTIVE_QLEA, 0x30000000u) \
++    V(AUDIO_FORMAT_MIHC, 0x40000000u) \
+     V(AUDIO_FORMAT_APTX_ADAPTIVE_R4, 0x31000000u) \
+     V(AUDIO_FORMAT_DTS_HD_MA, 0x32000000u) \
+     V(AUDIO_FORMAT_DTS_UHD_P2, 0x33000000u)        \
+diff --git a/audio/include/system/audio-base-utils.h b/audio/include/system/audio-base-utils.h
+--- a/audio/include/system/audio-base-utils.h
++++ b/audio/include/system/audio-base-utils.h
+@@ -188,6 +188,7 @@
+     AUDIO_DEVICE_OUT_BLE_HEADSET,               // 0x20000000u
+     AUDIO_DEVICE_OUT_BLE_SPEAKER,               // 0x20000001u
+     AUDIO_DEVICE_OUT_BLE_BROADCAST,             // 0x20000002u
++    AUDIO_DEVICE_OUT_MULTIROUTE,               // 0x20000004u
+     AUDIO_DEVICE_OUT_DEFAULT,                   // 0x40000000u, BIT_DEFAULT
+ };
+ 
+diff --git a/audio/include/system/audio.h b/audio/include/system/audio.h
+--- a/audio/include/system/audio.h
++++ b/audio/include/system/audio.h
+@@ -1816,6 +1816,8 @@
+ 
+ static inline bool audio_is_valid_format(audio_format_t format)
+ {
++    // The retained Xiaomi HAL advertises MIHC with no defined subformats.
++    if (format == AUDIO_FORMAT_MIHC) return true;
+     switch (format & AUDIO_FORMAT_MAIN_MASK) {
+     case AUDIO_FORMAT_PCM:
+         switch (format) {
