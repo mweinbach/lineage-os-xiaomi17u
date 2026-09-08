@@ -17,8 +17,9 @@ was not retried. **Full camera acceptance remains incomplete.**
 A [successor source candidate](camera-bayer-audio-compat-20260908.md) adds the
 measured compressed Bayer path and multiroute/MIHC audio mappings and validators.
 Its host image and conversion checks pass. Source revision 10 is applied as
-`nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows; build and phone validation
-remain pending.
+`nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows. Its component/full
+build, signed archive and eight-image bundle pass their checks. The [v13 package](camera-v13-package-20260908.md) awaits
+separate installation approval and phone validation.
 
 Source revision 9 has 668 rows. Its component/full build, signed archive and
 eight-image bundle are recorded in the [v12 package checkpoint](camera-v12-package-20260908.md).
@@ -84,13 +85,13 @@ The retained v11r1 sizing repair resolves the measured telephoto output
 truncation and Pro RAW configuration failure. V12 adds the save APIs; the
 traced UltraRAW Bayer format requires a separate container-path repair.
 
-The completed v12 runtime record passes 67 evidence-pin checks. The full
-offline suite passes 4,892 tests in 186.830 seconds plus shell checks;
-`make test-current` passes 939 tests in 28.347 seconds. The [save/audio source record](camera-save-audio-compat-20260908.md)
-contains the focused host behavior and full-image decoder evidence. The actual
-component, full ROM, signed archive and eight-image bundle checks are recorded
-in the [v12 package record](camera-v12-package-20260908.md). The installed v12
-runtime record contains the current measured device evidence.
+The completed v12 runtime record passes 67 evidence-pin checks. Following v13
+image admission, `make test-current` passes 939 tests in
+28.949 seconds and `make test` passes 4,892 tests in
+195.845 seconds plus shell checks. The [source behavior record](camera-bayer-audio-compat-20260908.md)
+and [v13 package record](camera-v13-package-20260908.md) bind the new host and
+build results. The installed v12 runtime record remains the measured phone
+evidence.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -126,16 +127,17 @@ successor ROM boot chain or OTA behavior.
 
 - **Camera:** V12 passes ordinary Xiaomi photos, main/telephoto 50 MP,
   telephoto 200 MP Ultra HDR, Xiaomi Pro RAW, all ten warm Aperture JPEG/Ultra
-  HDR cases and three physical RAW sensors. Implement the measured compressed
-  Bayer format 32 path for UltraRAW; its two-component lossless JPEG tiles
-  require CFA metadata and matching dimensions. Useful effect quality and
+  HDR cases and three physical RAW sensors. After separate approval, validate
+  the v13 compressed Bayer format 32 path with actual UltraRAW DNG and preview decoding. Its host and package
+  checks pass; successor capture remains unverified. Useful effect quality and
   sensor-native resolution remain unverified. Preserve the
   [v12 runtime record](camera-v12-install-validation-20260908.md).
 - **Video and audio:** V12 startup advances beyond the prior AIDL output-flag
-  and usage errors but rejects the factory multiroute descriptor. Audit its
-  factory mapping (`0x20000004`), the MIHC format (`0x40000000`) and their
-  validation paths before building the next repair. Audio policy remains null;
-  no valid video has been verified.
+  and usage errors but rejects the factory multiroute descriptor. The v13
+  package adds its factory mapping (`0x20000004`), MIHC (`0x40000000`) and legacy validators.
+  Verify successor audio-policy initialization before video capture. On the
+  installed v12 phone, audio policy remains null and no valid video has been
+  verified.
 - **Wallpaper process:** A concurrent crash during the first UltraRAW capture
   reports a missing `ClockProviderPlugin` dependency. Camera process identities
   remain unchanged. This separate failure remains unresolved.

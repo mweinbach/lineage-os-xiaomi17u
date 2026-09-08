@@ -1,5 +1,9 @@
 # Compressed Bayer DNG and audio descriptor compatibility — 2026-09-08
 
+**Later package checkpoint:** The revision-10 component/full build, signed archive
+and eight-image bundle pass their checks. See the [v13 package record](camera-v13-package-20260908.md).
+The source-stage evidence below is preserved; successor phone validation is pending.
+
 The installed [v12 validation](camera-v12-install-validation-20260908.md) identifies
 two remaining compatibility failures: Xiaomi UltraRAW supplies compressed Bayer
 format 32, and audio initialization rejects the factory multiroute descriptor.
