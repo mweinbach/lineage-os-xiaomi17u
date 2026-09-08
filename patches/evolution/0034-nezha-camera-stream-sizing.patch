@@ -1,0 +1,186 @@
+diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp
+--- a/services/camera/libcameraservice/device3/Camera3Device.cpp
++++ b/services/camera/libcameraservice/device3/Camera3Device.cpp
+@@ -508,7 +508,13 @@
+             (chosenMaxJpegResolution.width * chosenMaxJpegResolution.height);
+     ssize_t jpegBufferSize = scaleFactor * (maxJpegBufferSize - minJpegBufferSize) +
+             minJpegBufferSize;
+-    if (!mPrivilegedClient && jpegBufferSize > maxJpegBufferSize) {
++    bool clampToPublicMaximum = !mPrivilegedClient;
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    if (clampToPublicMaximum && nezha::CameraSessionHook::isMockCamera(mId)) {
++        clampToPublicMaximum = false;
++    }
++#endif
++    if (clampToPublicMaximum && jpegBufferSize > maxJpegBufferSize) {
+         ALOGI("%s: jpeg buffer size calculated is > maxJpeg bufferSize(%zd), clamping",
+                   __FUNCTION__, maxJpegBufferSize);
+         jpegBufferSize = maxJpegBufferSize;
+diff --git a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp
+--- a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp
++++ b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp
+@@ -59,6 +59,9 @@
+     using SetPackage = void (*)(CameraImpl*, const String16&, int, const String8&);
+     using ParseCustomization = void (*)(CameraImpl*, const String8&);
+     using MetadataWithId = void (*)(CameraImpl*, CameraMetadata&, const String8&);
++    using IsMockCamera = bool (*)(CameraImpl*, const String8&);
++    using CustomSize = void (*)(CameraImpl*, const CameraMetadata&, int, int, int,
++            const String8&, int&, int&);
+     using ExecuteScene = void (*)(CameraImpl*, CameraMetadata&,
+             camera3::camera_stream_configuration*, const String8&);
+     using DetachScene = void (*)(CameraImpl*, CameraMetadata&);
+@@ -75,6 +78,9 @@
+     MetadataWithId initializeDeviceInfo = nullptr;
+     MetadataWithId updateSessionParams = nullptr;
+     MetadataWithId createCustomDefaultRequest = nullptr;
++    IsMockCamera isMockCamera = nullptr;
++    CustomSize getCustomBestSize = nullptr;
++    CustomSize raiseDimensionsforCustomImageQuality = nullptr;
+     ExecuteScene executeSceneIdentify = nullptr;
+     DetachScene detachSceneIdentify = nullptr;
+     NotifySubmit notifyRequestSubmit = nullptr;
+@@ -131,6 +137,14 @@
+                         "_ZN10CameraImpl23parseCustomizedJsonDataERKN7android7String8E") ||
+                 !resolve(initializeDeviceInfo,
+                         "_ZN10CameraImpl20initializeDeviceInfoERN7android14CameraMetadataERKNS0_7String8E") ||
++                !resolve(isMockCamera,
++                        "_ZN10CameraImpl12isMockCameraERKN7android7String8E") ||
++                !resolve(getCustomBestSize,
++                        "_ZN10CameraImpl17getCustomBestSizeERKN7android14CameraMetadataEiii"
++                        "RKNS0_7String8ERiS7_") ||
++                !resolve(raiseDimensionsforCustomImageQuality,
++                        "_ZN10CameraImpl36raiseDimensionsforCustomImageQualityERKN7android14"
++                        "CameraMetadataEiiiRKNS0_7String8ERiS7_") ||
+                 !resolve(updateSessionParams,
+                         "_ZN10CameraImpl19updateSessionParamsERN7android14CameraMetadataERKNS0_7String8E") ||
+                 !resolve(createCustomDefaultRequest,
+@@ -227,6 +241,29 @@
+     hook.initializeDeviceInfo(hook.object, metadata, String8(cameraId.c_str()));
+ }
+ 
++bool CameraSessionHook::isMockCamera(const std::string& cameraId) {
++    const Api& hook = Api::get();
++    return hook.object != nullptr && hook.isMockCamera(hook.object, String8(cameraId.c_str()));
++}
++
++void CameraSessionHook::getCustomBestSize(const CameraMetadata& metadata,
++        int width, int height, int format, const std::string& cameraId,
++        int& bestWidth, int& bestHeight) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.getCustomBestSize(hook.object, metadata, width, height, format,
++            String8(cameraId.c_str()), bestWidth, bestHeight);
++}
++
++void CameraSessionHook::raiseDimensionsforCustomImageQuality(const CameraMetadata& metadata,
++        int width, int height, int format, const std::string& cameraId,
++        int& bestWidth, int& bestHeight) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.raiseDimensionsforCustomImageQuality(hook.object, metadata, width, height, format,
++            String8(cameraId.c_str()), bestWidth, bestHeight);
++}
++
+ void CameraSessionHook::updateSessionParams(CameraMetadata& metadata, const std::string& cameraId) {
+     const Api& hook = Api::get();
+     if (hook.object == nullptr) return;
+diff --git a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h
+--- a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h
++++ b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h
+@@ -36,6 +36,12 @@
+     static void registerClient(const std::string& packageName, int api,
+             const std::string& cameraId);
+     static void initializeDeviceInfo(CameraMetadata& metadata, const std::string& cameraId);
++    static bool isMockCamera(const std::string& cameraId);
++    static void getCustomBestSize(const CameraMetadata& metadata, int width, int height,
++            int format, const std::string& cameraId, int& bestWidth, int& bestHeight);
++    static void raiseDimensionsforCustomImageQuality(const CameraMetadata& metadata,
++            int width, int height, int format, const std::string& cameraId,
++            int& bestWidth, int& bestHeight);
+     static void updateSessionParams(CameraMetadata& metadata, const std::string& cameraId);
+     static void createCustomDefaultRequest(CameraMetadata& metadata, const std::string& cameraId);
+     static void executeSceneIdentify(CameraMetadata& metadata,
+diff --git a/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp b/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
+--- a/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
++++ b/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
+@@ -15,6 +15,10 @@
+  */
+ 
+ #include <cutils/properties.h>
++
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++#include "NezhaCameraSessionHook.h"
++#endif
+ 
+ #include "SessionConfigurationUtils.h"
+ #include <android/data_space.h>
+@@ -161,7 +165,8 @@
+ bool roundBufferDimensionNearest(int32_t width, int32_t height,
+         int32_t format, android_dataspace dataSpace,
+         const CameraMetadata& info, bool maxResolution, /*out*/int32_t* outWidth,
+-        /*out*/int32_t* outHeight, bool isPriviledgedClient) {
++        /*out*/int32_t* outHeight, bool isPriviledgedClient,
++        [[maybe_unused]] const std::string& cameraId) {
+     const int32_t depthSizesTag =
+             getAppropriateModeTag(ANDROID_DEPTH_AVAILABLE_DEPTH_STREAM_CONFIGURATIONS,
+                     maxResolution);
+@@ -189,9 +194,22 @@
+     int32_t bestWidth = -1;
+     int32_t bestHeight = -1;
+ 
+-    // Iterate through listed stream configurations and find the one with the smallest euclidean
+-    // distance from the given dimensions for the given format.
+-    for (size_t i = 0; i < streamConfigs.count; i += 4) {
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    // The factory's mock devices accept private stream sizes outside the public table.
++    // Keep the requested dimensions only when the library identifies this camera as mock.
++    if (nezha::CameraSessionHook::isMockCamera(cameraId)) {
++        if (outWidth != nullptr) *outWidth = width;
++        if (outHeight != nullptr) *outHeight = height;
++        return true;
++    }
++    nezha::CameraSessionHook::getCustomBestSize(info, width, height, format, cameraId,
++            bestWidth, bestHeight);
++#endif
++
++    // A custom exact match is final. Otherwise seed the normal nearest-size search
++    // with the factory candidate, retaining the existing public width cap.
++    for (size_t i = 0; (bestWidth != width || bestHeight != height) &&
++            i < streamConfigs.count; i += 4) {
+         int32_t fmt = streamConfigs.data.i32[i];
+         int32_t w = streamConfigs.data.i32[i + 1];
+         int32_t h = streamConfigs.data.i32[i + 2];
+@@ -244,6 +262,11 @@
+         bestWidth  = width;
+         bestHeight = height;
+     }
++
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    nezha::CameraSessionHook::raiseDimensionsforCustomImageQuality(info, width, height,
++            format, cameraId, bestWidth, bestHeight);
++#endif
+ 
+     if (bestWidth == -1) {
+         // Return false if no configurations for this format were listed
+@@ -573,7 +596,7 @@
+     if (flexibleConsumer && isPublicFormat(format) && !respectSurfaceSize &&
+             !SessionConfigurationUtils::roundBufferDimensionNearest(width, height,
+             format, dataSpace, physicalCameraMetadata, foundInMaxRes, /*out*/&width,
+-            /*out*/&height, isPriviledgedClient)) {
++            /*out*/&height, isPriviledgedClient, logicalCameraId)) {
+         std::string msg = fmt::sprintf("Camera %s: No supported stream configurations with "
+                 "format %#x defined, failed to create output stream",
+                 logicalCameraId.c_str(), format);
+diff --git a/services/camera/libcameraservice/utils/SessionConfigurationUtils.h b/services/camera/libcameraservice/utils/SessionConfigurationUtils.h
+--- a/services/camera/libcameraservice/utils/SessionConfigurationUtils.h
++++ b/services/camera/libcameraservice/utils/SessionConfigurationUtils.h
+@@ -99,7 +99,8 @@
+ // a width <= ROUNDING_WIDTH_CAP
+ bool roundBufferDimensionNearest(int32_t width, int32_t height, int32_t format,
+         android_dataspace dataSpace, const CameraMetadata& info, bool maxResolution,
+-        /*out*/int32_t* outWidth, /*out*/int32_t* outHeight, bool isPriviledgedClient);
++        /*out*/int32_t* outWidth, /*out*/int32_t* outHeight, bool isPriviledgedClient,
++        const std::string& cameraId);
+ 
+ // check if format is not custom format
+ bool isPublicFormat(int32_t format);

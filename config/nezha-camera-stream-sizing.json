@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-stream-sizing-v1",
+  "selector": "NEZHA_CAMERA_SESSION_INJECT",
+  "project": "frameworks/av",
+  "repository": "https://github.com/Evolution-X/frameworks_av",
+  "branch": "bka",
+  "revision": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
+  "requires_patch": "patches/evolution/0029-nezha-camera-session-inject.patch",
+  "patch": "patches/evolution/0034-nezha-camera-stream-sizing.patch",
+  "patch_sha256": "727d96a49cab2e224b407ed751cca6d45e70db72d651a00fe8e2a48a360404b5",
+  "files": {
+    "services/camera/libcameraservice/device3/Camera3Device.cpp": {
+      "before_sha256": "162fdfe882a93caf94ef47b96c08091a013395280252dca4c656ab107dcddb0b",
+      "before_bytes": 225959,
+      "after_sha256": "5e46beb1a0f6b49c5f9f0984c615824198d3a301db18858cd1e6f368854b8519",
+      "after_bytes": 226178
+    },
+    "services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp": {
+      "before_sha256": "d0eb41313213dbb7cd11aa90d9b56b30458000d3af7742456d775c9afc496175",
+      "before_bytes": 12718,
+      "after_sha256": "bcaaeb8365a3a94c04bae9d20b82fb0f9b5d2a8620267b9937e8e5971612dbc3",
+      "after_bytes": 14631
+    },
+    "services/camera/libcameraservice/utils/NezhaCameraSessionHook.h": {
+      "before_sha256": "44dc3db8fea759fb060b0bcdd4b25c43791f140aaf669c0a2af231baa9dddbde",
+      "before_bytes": 2050,
+      "after_sha256": "f27be4d838cca5a19114a80f527550f3616a3b30f8d8e3ee1036771e3279a357",
+      "after_bytes": 2492
+    },
+    "services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp": {
+      "before_sha256": "1c75f6e10959f2949e46d1e9a89c4aad852daca406e98c598b76f902cac0af0c",
+      "before_bytes": 60817,
+      "after_sha256": "8f886416b5cdbc4ac552ebaa38a2af042cb2b3ebbc4481bd786d60858a070d4b",
+      "after_bytes": 61750
+    },
+    "services/camera/libcameraservice/utils/SessionConfigurationUtils.h": {
+      "before_sha256": "34a847027fe39b18e9a9edc61cfa90d7095e12ca9cae7deb82d3d3f64d67b36f",
+      "before_bytes": 8606,
+      "after_sha256": "838b40da26cf4ea8205843834ff3996c15edeef45f7b0ef84a3aae3a84e576b4",
+      "after_bytes": 8643
+    }
+  },
+  "authored_templates": {
+    "templates/camera-stream-sizing/NezhaCameraSessionHook.h": {
+      "sha256": "f27be4d838cca5a19114a80f527550f3616a3b30f8d8e3ee1036771e3279a357",
+      "size_bytes": 2492
+    },
+    "templates/camera-stream-sizing/NezhaCameraSessionHook.cpp": {
+      "sha256": "bcaaeb8365a3a94c04bae9d20b82fb0f9b5d2a8620267b9937e8e5971612dbc3",
+      "size_bytes": 14631
+    }
+  },
+  "factory_cameraimpl_sha256": "403782350ef40558edec32ff63dda6ff9c4b8ab18573e30c4f2dab80842fc5c5",
+  "factory_cameraserver_sha256": "ab2b9ef0c93c17e8252e64932b6ebb8746e2d10d37c782051f2ee84f7c9ad118",
+  "factory_functions": [
+    {
+      "function": "android::Camera3Device::getJpegBufferSize",
+      "path": "reports/camera-completion-20260907/v10-validation/jpeg-buffer-diagnosis/getJpegBufferSize.factory.dis",
+      "sha256": "1d13b52a5d8ba6101c6c54448654de7acffd2329cfdb142aae4ac35f9d0b9798"
+    },
+    {
+      "function": "android::camera3::SessionConfigurationUtils::roundBufferDimensionNearest",
+      "path": "reports/camera-completion-20260907/v10-validation/jpeg-buffer-diagnosis/roundBufferDimensionNearest.factory.dis",
+      "sha256": "3f5217d9c651359f74923c44f818eb01a9a907d2dd33150ba5d5a377fff63d7f"
+    },
+    {
+      "function": "CameraStub::isMockCamera",
+      "path": "reports/camera-completion-20260907/v10-validation/jpeg-buffer-diagnosis/isMockCamera.factory.dis",
+      "sha256": "e7d91accec7fb741d9f59d052c4cb17e653045096bd94a3f752aea1ffabc0926"
+    },
+    {
+      "function": "CameraStub::getCustomBestSize",
+      "path": "reports/camera-completion-20260907/v10-validation/jpeg-buffer-diagnosis/getCustomBestSize.factory.dis",
+      "sha256": "bce049171367db83a73442405342fcacc5bc03adfae58bf8ebd2bc1f0e6189d0"
+    },
+    {
+      "function": "CameraStub::raiseDimensionsforCustomImageQuality",
+      "path": "reports/camera-completion-20260907/v10-validation/jpeg-buffer-diagnosis/raiseDimensionsforCustomImageQuality.factory.dis",
+      "sha256": "ae6c82665689143b9b771e746534fb292b7bbe31dd5f7961387e45c8439cd4b9"
+    }
+  ],
+  "behavior": {
+    "mock_camera_identity": "factory metadata-derived role map; no camera ID or package-name literal",
+    "mock_dimensions": "preserve requested dimensions before public rounding",
+    "custom_sizes": "seed nearest search; exact custom match skips it; quality adjustment after legacy privileged rules",
+    "jpeg_buffer": "preserve interpolation and privileged behavior; allow public-maximum extrapolation only for factory-identified mock cameras",
+    "unavailable_library": "existing no-op fallback with ordinary public rounding and JPEG clamp"
+  },
+  "status": "source-prepared-not-built-or-installed"
+}
