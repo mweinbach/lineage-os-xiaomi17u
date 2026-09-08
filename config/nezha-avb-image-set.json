@@ -72,7 +72,7 @@
   "dynamic_logical_budget_overrides": {
     "system_ext": {
       "stock_budget_bytes": 713158656,
-      "maximum_size_bytes": 792080384,
+      "maximum_size_bytes": 792690688,
       "measured_image": {
         "sha256": "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4",
         "size_bytes": 778199040
@@ -179,6 +179,18 @@
             "size_bytes": 7088
           },
           "build_number": "nezha.f2e3feac321f56f92d2ad7ea"
+        },
+        {
+          "measured_image": {
+            "sha256": "f3dc248fa14af6ea6c14926ccebd5549313e87be2156ad3705ceeed9788ca729",
+            "size_bytes": 792690688
+          },
+          "admission_record": {
+            "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v9-admit/admission.json",
+            "sha256": "d1d312030b894e9be072d01ecfacd11b4b58d44c6dd2ab326dd1a0f265942b8a",
+            "size_bytes": 7087
+          },
+          "build_number": "nezha.393aae12fba9ebe8627cdc38"
         }
       ]
     }

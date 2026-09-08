@@ -687,13 +687,13 @@ class PublicProfileTests(NoNativeTests):
         profile, _ = avb.load_profile()
         override = profile["dynamic_logical_budget_overrides"]["system_ext"]
         self.assertEqual(profile["image_budgets"]["system_ext"], 713158656)
-        self.assertEqual(avb.image_budget(profile, "system_ext"), 792080384)
+        self.assertEqual(avb.image_budget(profile, "system_ext"), 792690688)
         self.assertEqual(override["measured_image"], {
             "sha256": "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4",
             "size_bytes": 778199040})
         self.assertEqual(override["additional_measured_images"], list(avb.ADDITIONAL_MEASURED_SYSTEM_EXT))
         self.assertEqual([c["build_number"] for c in override["additional_measured_images"]],
-                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e", "nezha.88dd30980cd24ea68d6b701e", "nezha.cc551b14bc2cc72c2b138bb0", "nezha.e2b55ae5f0effd944736a6b0", "nezha.c6ad60080698a987390afc40", "nezha.f2e3feac321f56f92d2ad7ea"])
+                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e", "nezha.88dd30980cd24ea68d6b701e", "nezha.cc551b14bc2cc72c2b138bb0", "nezha.e2b55ae5f0effd944736a6b0", "nezha.c6ad60080698a987390afc40", "nezha.f2e3feac321f56f92d2ad7ea", "nezha.393aae12fba9ebe8627cdc38"])
         self.assertEqual(override["maximum_size_bytes"],
                          max(c["measured_image"]["size_bytes"] for c in override["additional_measured_images"]))
         avb.validate_image_budget(profile, "system_ext", override["measured_image"])

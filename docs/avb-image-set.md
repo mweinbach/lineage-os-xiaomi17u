@@ -176,6 +176,14 @@ system_ext camera libraries grow system_ext to 792,080,384 bytes with SHA256
 admitted as a seventh measured image and raises the system_ext logical
 maximum to that size. Every physical partition is unchanged.
 
+The Camera completion candidate (`nezha.393aae12fba9ebe8627cdc38`, delivery
+set v9) measures system_ext at 792,690,688 bytes with SHA256
+`f3dc248fa14af6ea6c14926ccebd5549313e87be2156ad3705ceeed9788ca729`.
+Its own package-admission record raises the logical maximum to those exact
+measured bytes and retains the earlier admissions. Physical partition limits
+are unchanged. This admission does not establish a device installation or
+camera acceptance; see the [camera completion record](camera-completion-20260907.md).
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting

@@ -307,6 +307,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "ea1b5b227e328bdfbdd935439bee2994bd2dc363af273229f8118bddd2eaf2c1", "size_bytes": 792080384},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v8-admit/admission.json", "sha256": "a863f6b1f479149958375ac5e7f6f2687f764e36cfe1f7c4b27809f784f95998", "size_bytes": 7088},
      "build_number": "nezha.f2e3feac321f56f92d2ad7ea"},
+    # Measured v9 platform Camera and CameraOpt system_ext
+    {"measured_image": {"sha256": "f3dc248fa14af6ea6c14926ccebd5549313e87be2156ad3705ceeed9788ca729", "size_bytes": 792690688},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v9-admit/admission.json", "sha256": "d1d312030b894e9be072d01ecfacd11b4b58d44c6dd2ab326dd1a0f265942b8a", "size_bytes": 7087},
+     "build_number": "nezha.393aae12fba9ebe8627cdc38"},
 )
 
 
