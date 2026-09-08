@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "operation": "nezha-camerax-extension-cache-backport-v1",
+  "upstream_repository": "https://android.googlesource.com/platform/frameworks/support",
+  "upstream_head": "ff1e2437ab0985eb3d490e56ae4d5ac2c5306356",
+  "upstream_file": "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/compat/Camera2MetadataCache.kt",
+  "published_version": "1.7.0-alpha03",
+  "source_before": {
+    "sha256": "fe371ebb9e2ad0401223fde22d099d2311e71a80fb46c53e05ac7b170f94df78",
+    "size_bytes": 11122
+  },
+  "template": "templates/camerax-extension-cache/Camera2MetadataCache.kt",
+  "template_identity": {
+    "sha256": "464543fd0af2d532aa0673f142c963f25f04254926fb1254ab35c9f12e179683",
+    "size_bytes": 11454
+  },
+  "patch": "patches/evolution/0033-camerax-extension-metadata-cache.patch",
+  "patch_identity": {
+    "sha256": "1159ad99b62a0778f3e8a37d7a1756ce49d2692e44c4b97b7293f5077f8f0b5d",
+    "size_bytes": 2457
+  },
+  "original_aar": {
+    "sha256": "9d3f3a679f06e3423fd51da1477a9a121e57235a90c5c096d8c3703d7303fe63",
+    "size_bytes": 1703242
+  },
+  "original_classes_jar": {
+    "sha256": "d68aa99b57d91939c824f55e6d632fd44c2024785951592073098f039e52cb56",
+    "size_bytes": 1835850
+  },
+  "dependency_jar": {
+    "sha256": "81d1fc16add5115b7737ee3b16d11dbd5ac599d1e9e7c4ea700337e57a6b3c76",
+    "size_bytes": 29925284
+  },
+  "compiler_jars": {
+    "kotlin-compiler.jar": {
+      "sha256": "cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790",
+      "size_bytes": 57697145
+    },
+    "kotlin-stdlib.jar": {
+      "sha256": "65d12d85a3b865c160db9147851712a64b10dadd68b22eea22a95bf8a8670dca",
+      "size_bytes": 1750373
+    },
+    "kotlin-script-runtime.jar": {
+      "sha256": "4ed97fd1e0c9bb1d0948ed5e63cc91456313a59518295b92b2c1514aef556150",
+      "size_bytes": 44759
+    },
+    "kotlin-reflect.jar": {
+      "sha256": "230d91c2e410e3cfca3a4dc73d255455f62ff52aac091a33397a6e30bde91bf7",
+      "size_bytes": 3298629
+    },
+    "trove4j.jar": {
+      "sha256": "c5fd725bffab51846bf3c77db1383c60aaaebfe1b7fe2f00d23fe1b7df0a439d",
+      "size_bytes": 572985
+    },
+    "kotlinx-coroutines-core-jvm.jar": {
+      "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5",
+      "size_bytes": 1548360
+    },
+    "annotations-13.0.jar": {
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478",
+      "size_bytes": 17536
+    }
+  },
+  "module_name": "camera-camera2-pipe",
+  "jvm_target": "11",
+  "classes": [
+    "androidx/camera/camera2/pipe/compat/Camera2MetadataCache.class",
+    "androidx/camera/camera2/pipe/compat/Camera2MetadataCache$getCameraMetadata$3.class",
+    "androidx/camera/camera2/pipe/compat/Camera2MetadataCache$getCameraExtensionMetadata$3.class"
+  ],
+  "guest_destination": "packages/apps/Aperture/app/libs/androidx/camera/camera-camera2-pipe/1.7.0-alpha03/camera-camera2-pipe-1.7.0-alpha03.aar",
+  "scope": "Backport only the upstream camera-and-extension cache key; preserve all other AAR members and JVM public interfaces. Generated public AndroidX derivative; source staging, Android build and device proof remain separate.",
+  "runtime_verified": false,
+  "android_jar": {
+    "sha256": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+    "size_bytes": 27768026
+  }
+}

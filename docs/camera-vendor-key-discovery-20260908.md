@@ -3,8 +3,9 @@
 **The v9 Camera now passes its original verifier, but its first rear Photo
 capture did not save a full image.** The app omitted the shot-name control that
 the vendor processing path expects. A guarded source candidate restores the
-factory app's registered-vendor-key discovery on this AOSP framework. It has
-not been built or installed.
+factory app's registered-vendor-key discovery on this AOSP framework. The source is staged as `nezha.8fb05f49f5a7e31a6a3a498b` (658 rows);
+its affected framework build passed with all 658 inventory rows unchanged.
+It has not been installed.
 
 ## Measured v9 failure
 
@@ -33,9 +34,8 @@ The retained log establishes this sequence:
 
 CameraOpt also recorded one call to the explicitly unported
 `reclaimMemoryForCamera`. That remains a separate compatibility gap; it is not
-proven to cause the missing shot-name metadata. Two Wallpaper app
-`ClockProviderPlugin` dependency crashes occurred during boot, before these
-camera tests, and remain separately recorded.
+proven to cause the missing shot-name metadata. Wallpaper app `ClockProviderPlugin` dependency crashes are separately
+recorded, including failures outside the camera capture window.
 
 Private evidence is under
 `reports/camera-completion-20260907/v9-validation/`, including

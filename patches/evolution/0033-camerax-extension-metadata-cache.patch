@@ -1,0 +1,44 @@
+diff --git a/camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/compat/Camera2MetadataCache.kt b/camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/compat/Camera2MetadataCache.kt
+--- a/camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/compat/Camera2MetadataCache.kt
++++ b/camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/compat/Camera2MetadataCache.kt
+@@ -60,7 +60,7 @@
+     @GuardedBy("cache") private val cache = ArrayMap<String, CameraMetadata>()
+ 
+     @GuardedBy("extensionCache")
+-    private val extensionCache = ArrayMap<String, CameraExtensionMetadata>()
++    private val extensionCache = ArrayMap<String, ArrayMap<Int, CameraExtensionMetadata>>()
+ 
+     @GuardedBy("extensionCharacteristicsCache")
+     private val extensionCharacteristicsCache = ArrayMap<String, CameraExtensionCharacteristics>()
+@@ -82,7 +82,7 @@
+         extension: Int,
+     ): CameraExtensionMetadata {
+         synchronized(extensionCache) {
+-            val existing = extensionCache[cameraId.value]
++            val existing = extensionCache[cameraId.value]?.get(extension)
+             if (existing != null) {
+                 return existing
+             }
+@@ -115,14 +115,19 @@
+         extension: Int,
+     ): CameraExtensionMetadata {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+-            return Debug.trace("$cameraId#awaitExtensionMetadata") {
++            return Debug.trace("$cameraId#awaitExtensionMetadata($extension)") {
+                 synchronized(extensionCache) {
+-                    val existing = extensionCache[cameraId.value]
++                    val existing = extensionCache[cameraId.value]?.get(extension)
+                     if (existing != null) {
+                         return@trace existing
+                     } else if (!isMetadataRedacted()) {
+                         val result = createCameraExtensionMetadata(cameraId, false, extension)
+-                        extensionCache[cameraId.value] = result
++                        var extensionMap = extensionCache[cameraId.value]
++                        if (extensionMap == null) {
++                            extensionMap = ArrayMap()
++                            extensionCache[cameraId.value] = extensionMap
++                        }
++                        extensionMap[extension] = result
+                         return@trace result
+                     }
+                 }

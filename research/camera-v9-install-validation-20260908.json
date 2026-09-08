@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-v9-install-validation-20260908",
+  "installed_build": "nezha.393aae12fba9ebe8627cdc38",
+  "delivery_set": "variant-opt-in-userdebug-20260906-v9",
+  "slot_suffix": "_a",
+  "selinux": "Enforcing",
+  "complete_camera_acceptance": false,
+  "installation": {
+    "authorized": true,
+    "eight_writes_acknowledged": true,
+    "boot_completed_seconds": 25.3,
+    "wipe_performed": false,
+    "slot_changed": false,
+    "approval": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/explicit-v9-authorization.json",
+      "sha256": "0c583822bf375ca76fa5f1c80d6f3fc22bed27d1da86f721971866858fa47d8b",
+      "size_bytes": 1264
+    },
+    "execution": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/execution.json",
+      "sha256": "90d33a94b7afbf1d454455c85eb0093a7abcf2be48eae4e5802977b260b48f9a",
+      "size_bytes": 3760
+    },
+    "boot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/boot-completed.json",
+      "sha256": "c61062c19b8623349d8c37f1d1c877f8186ec4468d2e8795fe352addce352cf6",
+      "size_bytes": 280
+    },
+    "reboot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/reboot-android.json",
+      "sha256": "fbe6640a4716ad80874dd958cbb1fb312ce2cb1e658783221ea94c0c3cb8e2cb",
+      "size_bytes": 271
+    }
+  },
+  "package_transition": {
+    "active_apk_sha256": "51b547ec258b645781f077b4a83da3bdf49caea7af32233417712848b71b8ac7",
+    "platform_signer_sha256": "c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8",
+    "retained_app_id": 10422,
+    "before_first_launch_data_identical": true,
+    "data_comparison": [
+      {
+        "kind": "ce",
+        "members": 501,
+        "sha256": "7aed963fa7636aa1be6480e04e7be5cf727f5e0292e23bd2dda92417b4191520",
+        "changed_count": 0
+      },
+      {
+        "kind": "de",
+        "members": 5,
+        "sha256": "1b29491a2ed1ec9eab50fda4e4c56962039b48291dce964ee80cde9a95ab6d42",
+        "changed_count": 0
+      }
+    ],
+    "receipt": {
+      "path": "reports/camera-completion-20260907/v9-validation/postboot-before-camera-v2/receipt.json",
+      "sha256": "ecde8e9745cd2e2b182b7a293edb0f07d98ddca6925fffa39649a5ab2d9906f2",
+      "size_bytes": 882
+    },
+    "runtime_selinux_domain_measured": true,
+    "runtime_selinux_domain": "u:r:platform_app:s0:c512,c768",
+    "domain_receipt": {
+      "path": "reports/camera-completion-20260907/v9-validation/runtime-domain/receipt.json",
+      "sha256": "29211a1d0ec0f9b97343db64574dad85b4899363953b784dc80ab782f0fb4b67",
+      "size_bytes": 189
+    }
+  },
+  "cameraopt": {
+    "boot_callback_completed": true,
+    "native_initialization_failure": null,
+    "last_original_verifier_result": true,
+    "verifier_modified": false,
+    "capture_api_calls": {
+      "adjBoost": 3,
+      "sendCameraEvent": 4,
+      "getSystemStatusJson": 1,
+      "getVerifyResult": 2
+    },
+    "unsupported_capture_api_calls": {
+      "reclaimMemoryForCamera": 1
+    },
+    "receipt": {
+      "path": "reports/camera-completion-20260907/v9-validation/xiaomi-cases/rear-photo/after-cameraopt.stdout",
+      "sha256": "a7de41ca40b4e7f9ed6ae2319b7064eca2ccfaf51b323f4ccc6e3bbbdcdce9b3",
+      "size_bytes": 777
+    }
+  },
+  "xiaomi_photo": {
+    "mode": "rear Photo 1x",
+    "single_shutter": true,
+    "full_image_saved": false,
+    "result": {
+      "path": "reports/camera-completion-20260907/v9-validation/xiaomi-cases/rear-photo/result.json",
+      "sha256": "1934a81752440012e4e63898a38d3907b0f956232d33dd4329577a8d3ea08ba9",
+      "size_bytes": 108
+    },
+    "observed_failure": "Shot-name vendor key omitted; final callback name differs from registered shot; capture times out.",
+    "diagnosis_document": "docs/camera-vendor-key-discovery-20260908.md",
+    "request_key_observations": {
+      "path": "reports/camera-completion-20260907/v9-validation/shot-metadata-diagnosis/advertised-request-keys.json",
+      "sha256": "c4a114e1f3f5cfeac7745e0bae9f3b557fc7da969467a85db7d8379a3568e57f",
+      "size_bytes": 22994
+    }
+  },
+  "probe_regressions": {
+    "cases": [
+      "rear-bokeh-jpegr",
+      "rear-telephoto-raw"
+    ],
+    "host_verification": {
+      "path": "reports/camera-completion-20260907/v9-validation/cases/host-decode-verification.json",
+      "sha256": "e93523ccb687dda5aad317087cadaed196882ef988d968d0ba429e01d829c3cf",
+      "size_bytes": 572
+    }
+  },
+  "aperture_effects": [
+    {
+      "case": "front-auto",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionAutoFront",
+        "ExtensionInfo"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-auto/media-0.stdout",
+        "sha256": "17be21d9ab9a1ea9a4cad819fcc7659125003c69015e1084d161b360d5bb4fc9",
+        "size_bytes": 4943591
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-auto/host-verification.json",
+        "sha256": "349a8a3bb738c6802b83fdf5a0cfc9132abc06c08d976e37579461eea6ac3324",
+        "size_bytes": 1573
+      }
+    },
+    {
+      "case": "front-bokeh",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionBokehFront",
+        "ExtensionInfo"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-bokeh/media-0.stdout",
+        "sha256": "21e5af5b7ba759eb48674d66a3b625c46e24bc14cca88407799e3e98b0a63337",
+        "size_bytes": 4662989
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-bokeh/host-verification.json",
+        "sha256": "83a962d60a1489b19aa4c98510cfaa273b6b7154d07741cdb1c99a4370d3ab1f",
+        "size_bytes": 1579
+      }
+    },
+    {
+      "case": "front-face-retouch",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionBeautyFront",
+        "ExtensionInfo"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-face-retouch/media-0.stdout",
+        "sha256": "ecea97cadb338c9e3fa674a33105fe3a4e3b874b484c53f9f9372a2a6b906cb9",
+        "size_bytes": 5071303
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-face-retouch/host-verification.json",
+        "sha256": "4def23e633d7486620af07e88bcb5243132ff3a409d3b5d4e217a95c22ec21a3",
+        "size_bytes": 1609
+      }
+    },
+    {
+      "case": "front-hdr",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionHdrFront"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-hdr/media-0.stdout",
+        "sha256": "6a69dbce7cd7d5cbeee15137de9da6d86c3ce0c69619e5efc89fcaba286f72c6",
+        "size_bytes": 4926598
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-hdr/host-verification.json",
+        "sha256": "2a21550f00eb22d640aad9bc74fa7d47349d39ae65862c9dcbf845864293317f",
+        "size_bytes": 1546
+      }
+    },
+    {
+      "case": "front-night",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionInfo",
+        "ExtensionNightFront"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-night/media-0.stdout",
+        "sha256": "92e77ef33c419087dd7119f7e27c4030f737caa13a0f52c571772c6ce4b2d13a",
+        "size_bytes": 4511050
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/front-night/host-verification.json",
+        "sha256": "d00e66afe8dd3b2cbb04163fae68ed2d241b283645956637fc5d0b1188c399ab",
+        "size_bytes": 1579
+      }
+    },
+    {
+      "case": "rear-auto",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionAuto"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-auto/media-0.stdout",
+        "sha256": "b6b1a123acc015f7d07bdee2dd2fb29a64fc03dd30a508e7178c91ebbde6099a",
+        "size_bytes": 2970685
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-auto/host-verification.json",
+        "sha256": "5edcd4e82473343b136e0c2bc4105b4b523d087995309a7a24e79626c747d3cc",
+        "size_bytes": 1515
+      }
+    },
+    {
+      "case": "rear-bokeh",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionBokehRearNormal",
+        "ExtensionInfo"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-bokeh/media-0.stdout",
+        "sha256": "36481db566b940fb76fb8c1564bfba1c5d47de30a8a6f7da1739deba7beff184",
+        "size_bytes": 4671566
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-bokeh/host-verification.json",
+        "sha256": "b2b72653de8a74e652160ffa3a8cd0f215bb07013cf5f9b3e443a79877e935d9",
+        "size_bytes": 1585
+      }
+    },
+    {
+      "case": "rear-face-retouch",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionBeauty",
+        "ExtensionInfo"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-face-retouch/media-0.stdout",
+        "sha256": "e270f563718a0797ab335bad6849880a2b1d60220e436be2cde68696655bf928",
+        "size_bytes": 2975427
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-face-retouch/host-verification.json",
+        "sha256": "aea2a8cceed4fb6a55f1f4faff8cbbabce8ee1ace37fc76f828e081aea3e49eb",
+        "size_bytes": 1570
+      }
+    },
+    {
+      "case": "rear-hdr-cold",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionHdr"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-hdr-cold/media-0.stdout",
+        "sha256": "55011922fb3d21154c7eae1b059b4c8cd52cff0e51a8e61250f7dd63046ec67a",
+        "size_bytes": 3123366
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-hdr-cold/host-verification.json",
+        "sha256": "85a6a3a081bf2a7428d81f1856fc918ecb6a8ef87e74500e591ed56561c42bad",
+        "size_bytes": 1530
+      }
+    },
+    {
+      "case": "rear-night",
+      "encoded_dimensions": [
+        3072,
+        4096
+      ],
+      "jpeg_decoded": true,
+      "ultra_hdr_decoded": true,
+      "vendor_routes": [
+        "ExtensionInfo",
+        "ExtensionNightRear"
+      ],
+      "image": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-night/media-0.stdout",
+        "sha256": "dbb30983f7aac4e04127ebb453990cb0e27d52e2e362eb6f375b6bbb0f070bbf",
+        "size_bytes": 2966142
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v9-validation/aperture-cases/rear-night/host-verification.json",
+        "sha256": "5307feacfb69981aa3e91eb16f94d1cb0f2855d582a32a0f55a4d41f5a1f7e33",
+        "size_bytes": 1573
+      }
+    }
+  ],
+  "limitations": [
+    "Each effect capture establishes saved-file and pixel decoding, not visual quality.",
+    "Rear effect transitions can select a preview size from another effect; None-to-Bokeh reproduced a 1440x1080 rejection. CameraX 1.7.0-alpha03 caches extension metadata by camera ID without the effect. Upstream already keys by both; a backport is in preparation.",
+    "Wallpaper ClockProviderPlugin crashes are separately retained; the whole boot crash buffer is not empty.",
+    "50/200 MP, processed Ultra RAW and complete Xiaomi Camera capture remain unverified."
+  ],
+  "successor": {
+    "build_number": "nezha.8fb05f49f5a7e31a6a3a498b",
+    "source_receipt": {
+      "path": "reports/camera-completion-20260907/source-revision-4/source-installed.json",
+      "sha256": "68364bc538b99bb3d3f0b9ea745198afff1163e23dbe0c9e28110ed7cd8c6b1a",
+      "size_bytes": 165365
+    },
+    "source_rows": 658,
+    "android_build_status": "affected framework component build passed, 658 source rows unchanged",
+    "component_result": {
+      "path": "reports/camera-completion-20260907/v10-component-run/result.json",
+      "sha256": "03de13032cd24749235455cd122b65940d5af49254d06264868640e30c18cbd5",
+      "size_bytes": 127
+    },
+    "installed": false,
+    "flash_authorized": false
+  },
+  "cleanup": {
+    "path": "reports/camera-completion-20260907/v9-validation/final-cleanup-v2/receipt.json",
+    "sha256": "e149e2aa4c67567acc13ae817ac673818a862ef6e740d5f5d7887188b376a859",
+    "size_bytes": 540
+  },
+  "extension_cache_backport": {
+    "document": "docs/camerax-extension-cache-20260908.md",
+    "materialization_receipt": {
+      "path": "artifacts/camerax-inputs/nezha-extension-cache-20260908-v1/receipt.json",
+      "sha256": "30726aecacec6db94e8838373becf758847f5ece1e46913016a5b213846f2878",
+      "size_bytes": 5868
+    },
+    "jvm_verification": {
+      "path": "artifacts/camerax-inputs/nezha-extension-cache-20260908-v1/jvm-verification.json",
+      "sha256": "8c42b859192fa8e796278eaac5d90ffd6b35265aad3a9ee96d00aedbcc2beb02",
+      "size_bytes": 317
+    },
+    "installed": false
+  },
+  "privacy": "Only derived facts, hashes and ignored evidence paths are tracked; personal images, raw logs and proprietary bytes remain private.",
+  "offline_tests": {
+    "full": {
+      "path": "reports/camera-completion-20260907/v9-validation/extension-transition-diagnosis/full-tests.log",
+      "sha256": "ab3b9081aaf4392456eda2b50f26229c18a308a1151dd2e10ab250d046d36ae5",
+      "size_bytes": 868775
+    },
+    "current": {
+      "path": "reports/camera-completion-20260907/v9-validation/extension-transition-diagnosis/current-tests.log",
+      "sha256": "10d0b98dad9f4d7d7b12a2a949f1e4b098059bc9ac895d3ddaabdd46a52cb6ec",
+      "size_bytes": 177298
+    }
+  }
+}

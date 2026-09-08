@@ -1,17 +1,19 @@
 # Camera capture progress and successor candidate, 2026-09-07
 
-**Installed v8 now has measured Aperture Ultra HDR and RAW capture, standard
-RAW from all three rear physical sensors, and 20 successful platform extension
-captures. Full camera acceptance remains incomplete.** Xiaomi Camera still
-needs its normal service integration and a successful capture; 50 MP, 200 MP,
-processed Ultra RAW and the proposed successor's runtime behavior are unverified.
+**V9 is now installed and passes the original CameraOpt verifier, but Xiaomi
+Camera's first rear Photo still failed to save.** The
+[v9 installation record](camera-v9-install-validation-20260908.md) contains the
+current runtime results, and the [vendor-key diagnosis](camera-vendor-key-discovery-20260908.md)
+tracks the selected successor. Full camera acceptance remains incomplete.
 
-These captures ran on `nezha.f2e3feac321f56f92d2ad7ea`, slot A, with SELinux
-Enforcing. They extend the earlier [native-hook checkpoint](camera-native-hook-20260907.md).
-The new CameraOpt, platform-signing, auxiliary-package and JPEG_R-default
-sources are a separate candidate. The [structured record](../research/camera-completion-20260907.json)
-pins retained measurements and source contracts. Original images, raw logs,
-proprietary inputs and device identifiers remain in ignored storage.
+The v8 measurements below ran on `nezha.f2e3feac321f56f92d2ad7ea`, slot A,
+with SELinux Enforcing. They extend the earlier
+[native-hook checkpoint](camera-native-hook-20260907.md). The CameraOpt,
+platform-signing, auxiliary-package and JPEG_R-default sources described here
+were subsequently built and installed as v9. The
+[structured record](../research/camera-completion-20260907.json) preserves the
+v8 capture measurements and v9 source/artifact contracts. Original images,
+raw logs, proprietary inputs and device identifiers remain in ignored storage.
 
 | Measured surface on v8 | Result | Scope limit |
 | --- | --- | --- |
@@ -180,13 +182,13 @@ configuration binding verifies 272 image files and all 98 audited policy files
 against the compiled unsigned inputs.
 
 The [read-only final preflight](../reports/camera-completion-20260907/final-preflight/receipt.json)
-reconfirms v8, slot A, Enforcing, Camera app ID 10422 and the existing bundled
-system Camera. Its separate review retains `flash_authorized=false` and
-`reboot_authorized=false`. Explicit bundle-specific approval and fresh fastboot
-preflight are required before installation. The prepared route retains userdata,
-does not change slots, and includes no uninstall, clear-data or automatic restore.
-V8 and its signed bundle remain preserved. This private bundle is not an OTA
-installer.
+recorded v8 before approval. That original unapproved review is preserved.
+The user later explicitly approved the concrete v9 bundle, reboot, camera tests
+and root diagnostics. Fresh fastboot preflight and all eight writes completed;
+v9 booted in 25.3 seconds on slot A, Enforcing, without a wipe or slot change.
+The [installation record](camera-v9-install-validation-20260908.md) supersedes
+this dossier's earlier pending installation gate. The private bundle is not an
+OTA installer.
 
 The [high-resolution source investigation](../reports/camera-completion-20260907/raw-highres/highres-mode-plan.md)
 identifies current Pixel/AlgoUp session mode `0x9004`; `0x80f3` is the legacy
@@ -199,7 +201,6 @@ must resolve that discrepancy. No measured result here establishes 50 MP or
 The ignored evidence is indexed through the structured record, including the
 physical RAW matrix, both extension matrices, independent artifact/gain-map
 audits, Aperture verification receipts, Bokeh log proof and candidate source
-handoff. Preserve the installed v8 and retained v7 rollback evidence while
-the remaining device gates are completed. The final app cleanup
-records effect None, RAW off, Ultra HDR on, USB stay-awake off and camera
-stopped, with v8, slot A and Enforcing reconfirmed.
+handoff. Preserve v8 and retained v7 rollback evidence. The recorded v8 cleanup
+left effect None, RAW off, Ultra HDR on, USB stay-awake off and camera stopped;
+current device results and cleanup belong to the later v9 record.

@@ -1,29 +1,28 @@
 # Current Nezha workspace status
 
-**Installed phone: v8 userdebug (`nezha.f2e3feac321f56f92d2ad7ea`),
-slot A, boot completed with SELinux Enforcing.** Aperture has now saved rear/front
-Ultra HDR and RAW photos. Standard RAW from all three rear physical sensors and
-all 20 platform extension combinations also passed capture and pixel decoding.
-Aperture Bokeh + Ultra HDR is measured separately. Xiaomi Camera capture,
-50/200 MP modes and processed Ultra RAW remain unverified; full camera acceptance
-is **not device-admitted**. See the [camera completion record](camera-completion-20260907.md).
+**Installed phone: v9 userdebug (`nezha.393aae12fba9ebe8627cdc38`),
+slot A, boot completed with SELinux Enforcing.** The approved eight-image
+installation completed without a wipe or slot change. Xiaomi Camera retained
+its app ID and byte-identical app data before first launch, and now passes its
+original CameraOpt verifier. Its first rear Photo capture still failed to save.
+See the [v9 installation and validation record](camera-v9-install-validation-20260908.md).
 
-The selected development source is `nezha.393aae12fba9ebe8627cdc38`, which adds
-the guarded CameraOpt service and native compatibility, platform-signed original
-Camera input, auxiliary-package selection and JPEG_R default. Its affected
-Android component and full target-files builds passed. The transferred archive
-passed Camera APK, JAR/API, classpath, native, configuration and normal policy
-compilation checks. The final signed archive and eight-image v9 bundle are
-verified. Read-only preflight reconfirmed v8, slot A and Enforcing; explicit
-v9 flash/reboot approval remains pending. No successor installation is claimed. The earlier product-configuration
-and dex-preoptimization failures and their one-file corrections are retained.
-The phone remains on v8, with Aperture effects
-and RAW off, Ultra HDR on, the original auxiliary property restored and USB
-stay-awake off.
+The selected development source is `nezha.8fb05f49f5a7e31a6a3a498b`, which adds
+the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md).
+All 658 source inventory rows are verified; its affected framework build passed. A separately prepared
+[CameraX cache backport](camerax-extension-cache-20260908.md) addresses the
+measured rear effect-switch failure. This successor has not been installed. The installed v9 bundle and
+prior v8/v7 bundles remain preserved.
 
-This page selects the current development baseline. Delivery set v7
-(`nezha.c6ad60080698a987390afc40`) is the retained immediate predecessor and
-rollback package. The [f9e installation](package7-f9e-install-20260906.md),
+Aperture Ultra HDR and RAW, three rear physical RAW captures, and all 20
+platform extension combinations were measured on v8. V9 regression tests have
+again saved and decoded Bokeh Ultra HDR and telephoto RAW, and all ten Aperture effect cases (five modes on rear and front) saved and
+fully decoded Ultra HDR photos. Xiaomi capture, 50/200 MP, processed Ultra
+RAW and full camera acceptance remain **not device-admitted**.
+
+This page selects the current development baseline. Delivery set v8
+(`nezha.f2e3feac321f56f92d2ad7ea`) is the retained immediate predecessor; v7
+(`nezha.c6ad60080698a987390afc40`) also remains a rollback package. The [f9e installation](package7-f9e-install-20260906.md),
 [a6d installation](package7-feature-successor-install-20260905.md) and
 [original Package7 first boot](package7-first-boot-20260905.md) remain historical
 device evidence. The old [status archive](workspace-status-history-20260905.md)
@@ -34,17 +33,17 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.f2e3feac321f56f92d2ad7ea` (userdebug opt-in, delivery set v8); last user-variant install remains `nezha.f9e30611efe01b882f9ed0cb` |
-| Installed source receipt | 613 rows; `reports/camera-native-hook-20260907/source-revision-2/source-installed.json`, SHA256 `254b42243742a8b3945fb064156a84a2b0d1e19db1990403f6da4d094fa1f651` |
-| Development source | `nezha.393aae12fba9ebe8627cdc38`, 652 inventory rows; `reports/camera-completion-20260907/source-revision-3/source-installed.json`, SHA256 `3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5`; full build, signed archive and bundle verified; installation approval pending |
-| Prepared v9 bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/`; manifest SHA256 `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958`; not installed |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v8/` |
-| Bundle manifest SHA256 | `2f0d1a033596a3649a674ae6a0359324c48cd3ec3b0234ec0947bf76f43f9631` |
-| Reconciled signed target-files SHA256 | `f34b286df2748e4b8f5958c6b905d2d4a3e396cf9b16ede31d34a5a3768e8da1` |
-| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; signing receipt SHA256 `409f958385fac3e9bedc928fafa92e00ba55f0c5c7ca73de42eabfb38cf0931d` |
-| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe or slot change; normal boot completed in 25.5 s |
+| Installed build identity | `nezha.393aae12fba9ebe8627cdc38` (userdebug, delivery set v9) |
+| Installed source receipt | 652 rows; `reports/camera-completion-20260907/source-revision-3/source-installed.json`, SHA256 `3136b92e8f651f139e57b21f682f0ad7b1ba0164724cd4749143a1cf2697a2f5` |
+| Development source | `nezha.8fb05f49f5a7e31a6a3a498b`, 658 inventory rows; `reports/camera-completion-20260907/source-revision-4/source-installed.json`, SHA256 `68364bc538b99bb3d3f0b9ea745198afff1163e23dbe0c9e28110ed7cd8c6b1a`; affected framework component build passed |
+| Installed v9 bundle | Installed; manifest SHA256 `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/` |
+| Bundle manifest SHA256 | `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958` |
+| Reconciled signed target-files SHA256 | `d38d841c96893f24cfa8068101612da2b62bac63a7aa8fa645611dc41ece854e` |
+| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; signing receipt SHA256 `ad608c216854a086feb6a553410761278b40b943bccff2f4f83aca75e7e43dcf` |
+| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe or slot change; normal boot completed in 25.3 s |
 | Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; final acceptance snapshot reconfirmed identity/slot/policy |
-| Camera acceptance observed | v8 native tags and ordinary JPEGs; rear/front Aperture Ultra HDR and RAW; three rear physical RAW captures; 20 extension cases and Aperture Bokeh + Ultra HDR decoded. Xiaomi capture and 50/200 MP remain unverified; not device-admitted |
+| Camera acceptance observed | Original CameraOpt verifier true; Xiaomi rear Photo save failed; v9 Bokeh Ultra HDR and telephoto RAW decoded, all ten Aperture effect cases saved and decoded Ultra HDR. Full acceptance incomplete |
 | Recovery | TWRP `working76`; preserve its `fix22ZJ-touchfix18` runtime/hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; measured current state is recorded above |
 
@@ -67,18 +66,18 @@ invocation opt-in, and normal Android SELinux must remain enforcing.
 The [native camera hook record](camera-native-hook-20260907.md) preserves the
 v8 implementation and installed baseline. The new [completion record](camera-completion-20260907.md)
 adds measured v8 capture results and the selected CameraOpt source candidate.
-Its original factory verifier and native boot hook remain unchanged; 22 service
-methods are explicitly unported. Final artifact signatures passed; installed
-package, runtime and high-resolution proof remain separate gates. The current generated product selects the five new
-guarded options in addition to `NEZHA_CAMERA_SESSION_INJECT`.
+Its original factory verifier and native boot hook remain unchanged. On v9 the
+boot callback and original verifier succeed, but the first Xiaomi Photo still
+times out. The vendor-key successor addresses a measured metadata-discovery
+mismatch. CameraOpt still has explicitly unported methods, including the
+`reclaimMemoryForCamera` call observed during that capture.
 
-The latest full offline suite passed 4,866 tests in 205.601 seconds plus shell
-checks. The final classpath qualification passed 268 affected tests, and
-`make test-current` passed 939 tests. The affected Android component build also
-passed, with identical 652-row before/after inventories. It compiled and
-preoptimized the service, built the native query export, and signed the original
-Camera payload with the platform key. Final signed-archive and bundle checks
-also passed; installation and device validation remain separate gates.
+The latest full offline suite passed 4,881 tests in 190.625 seconds plus shell
+checks; `make test-current` passed 939 tests. A separate host Java harness passed
+35 behavior assertions for vendor-key filtering and merging; the CameraX
+cache harness passed 24 assertions with the actual rebuilt classes. These checks do
+not establish the successor Android build or device behavior. V9's component,
+full target-files, signed archive and installation evidence remain preserved.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -99,9 +98,9 @@ also passed; installation and device validation remain separate gates.
    phone. Record build, package and device evidence separately.
 4. Record each observed device result in a focused issue note and update this
    selection when the evidence warrants it. Phone collection and changes need
-   the authorized device and scope. The September 7 v8 installation request
-   covers slot A through the established route, without a wipe or slot change;
-   it does not authorize later phone mutations.
+   the authorized device and scope. The explicit v9 approval
+   covered its installation, reboot, camera tests and root diagnostics without
+   a wipe or slot change. It does not authorize flashing the next bundle.
 
 For recovery changes, use `make recovery-build` and the
 [working recovery instructions](../recovery/twrp-working/README.md). This
@@ -112,18 +111,15 @@ successor ROM boot chain or OTA behavior.
 
 ## Remaining feature work
 
-- **Camera:** Rear/front Aperture Ultra HDR and RAW, three physical rear RAW captures,
-  20 platform extension combinations, and Aperture Bokeh + Ultra HDR are measured
-  on v8. The new source integrates the normal CameraOpt verifier, native query
-  ABI and platform-signed original Camera input; the component build passed.
-  Full target-files build, unsigned artifact and normal policy checks passed;
-  the final bundle is verified and installation approval remains pending. Xiaomi
-  capture, 50/200 MP, processed Ultra RAW and video
-  require their own measured results. The dark extension test scene establishes
-  capture and file decoding, not visual quality. Preserve the
-  [v7 diagnosis](camera-capture-diagnosis-20260907.md),
-  [v8 native hook](camera-native-hook-20260907.md) and
-  [current completion record](camera-completion-20260907.md) as separate evidence.
+- **Camera:** V8 established rear/front Aperture Ultra HDR and RAW, three rear
+  physical RAW captures and 20 platform extension combinations. V9 adds original
+  CameraOpt verifier success and further capture regressions, while Xiaomi
+  rear Photo still fails to save. The selected vendor-key framework build passed. The CameraX metadata-cache
+  backport is prepared; its source staging and app build remain pending. Its installation, 50/200 MP, processed Ultra RAW,
+  useful effect quality and video remain separate gates. Preserve the
+  [v9 runtime record](camera-v9-install-validation-20260908.md),
+  [vendor-key diagnosis](camera-vendor-key-discovery-20260908.md) and
+  [earlier capture evidence](camera-completion-20260907.md).
 
 - **Retained userdata, UDFPS and shade:** Camera apps opened and new JPEGs were written after dismissing the keyguard; retained personal userdata, UDFPS authentication and shade visual acceptance remain unverified.
   The user confirmed fingerprint enrollment on a6d; f9e loaded the measured

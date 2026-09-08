@@ -2,8 +2,8 @@
   "schema_version": 1,
   "record_id": "nezha-camera-completion-progress-20260907",
   "date": "2026-09-07",
-  "status": "Measured v8 capture progress; v9 full build, signed archive and eight-image bundle verified; explicit installation approval and complete camera acceptance pending",
-  "verification_scope": "Retained v8 device captures and independent artifact/decode checks; v9 source, full Android build, signed archive, Camera APK/JAR/native/configuration/policy checks and bundle verification. Read-only preflight confirms v8 remains installed. Successor runtime and complete camera acceptance remain unverified.",
+  "status": "Retained v8 captures; v9 installed and original CameraOpt verifier succeeds, but Xiaomi Photo save fails; vendor-key successor staged and building",
+  "verification_scope": "V8 capture/decode evidence and v9 source/build/signed archive evidence are preserved here. Current v9 installation, package-data preservation and runtime capture results are recorded in research/camera-v9-install-validation-20260908.json. Complete camera acceptance remains false.",
   "complete_camera_acceptance": false,
   "baseline": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v8",
@@ -1141,7 +1141,7 @@
     "source_findings_are_capture_results": false
   },
   "source_candidate": {
-    "status": "v9 built, signed, reconciled and eight-image bundle verified; read-only Android preflight complete; explicit installation approval pending",
+    "status": "v9 built, signed and installed; boot, platform signer/data transition and original verifier measured; Xiaomi full Photo save still fails",
     "first_installed_build": "nezha.af6d7a77320c30b10d63afd4",
     "first_installed_rows": 652,
     "first_installed_changed_files": 41,
@@ -1156,7 +1156,7 @@
     "revision_2_source_installed": true,
     "final_runtime_artifact_validation_passed": true,
     "successor_apk_signed": true,
-    "successor_flashed": false,
+    "successor_flashed": true,
     "successor_runtime_verified": false,
     "source_contracts": [
       {
@@ -1185,7 +1185,7 @@
         "sha256": "a0e7eca6456791c9ff38e0a0ef73963f4e95efe4ceef904639bffd72e7fd73bf"
       }
     ],
-    "factory_verifier": "Complete unchanged original Verifier including real PackageManagerInternal.isPlatformSigned, original native cached result and original phase-1000 callback. Runtime verdict remains unverified.",
+    "factory_verifier": "Complete unchanged original Verifier. On installed v9 the native boot callback succeeds and the real Camera app receives last_original_verifier_result=true.",
     "implemented_request_surfaces": [
       "adjBoost",
       "getSystemStatusJson",
@@ -1206,7 +1206,7 @@
     "unsupported_oneway_behavior": "Server-side diagnostics and counters; no synchronous negative client acknowledgment. Unported APIs are not assumed unused.",
     "process_policy_scope": "Temporary camera OOM cap; full MIUI native boost/reclamation and post-close work model are not implemented.",
     "prelaunch_event_producer_integrated": false,
-    "platform_signing_stage": "Final signed target-files Camera APK has the same signer as final framework-res and all 9491 original non-signature payload entries. Installed signer/data transition, grants, labels, original verifier result and capture remain unverified.",
+    "platform_signing_stage": "Installed v9 Camera APK and platform signer match the final archive; app ID and before-first-launch CE/DE data are preserved, and platform_app domain is measured. Complete grants/mode behavior and full Xiaomi photo saving remain separate.",
     "jpegr_default_limit": "Fresh persistent-property store only. Existing persisted values override the build default; a stored zero is not migrated. Current v8 captures used the existing factory initializer.",
     "retained_shrinker_requirement": "Final signed archive services.jar retains the public helper constructor and five public concrete methods; compiled CameraOptBinder has all 28 exact factory interface prototypes.",
     "selected_source_build": "nezha.393aae12fba9ebe8627cdc38",
@@ -1447,7 +1447,8 @@
       "path": "reports/camera-completion-20260907/config-artifacts-revision-3/signed-archive-v9/signed-configuration-policy-binding.json",
       "size_bytes": 79944,
       "sha256": "64ad199b4b811f92f0784d25c4f1ae36d989293e36d2bb7059e30d9306485621"
-    }
+    },
+    "successor_runtime_verified_scope": "Partial runtime evidence in the v9 installation record; complete camera acceptance remains false."
   },
   "tests": {
     "initial_combined_suite": {
@@ -1599,12 +1600,11 @@
     "selinux": "Enforcing"
   },
   "remaining": [
-    "Explicit v9 flash/reboot approval, fresh fastboot preflight and the prepared slot-A/shared-Super installation without wipe or slot change.",
-    "Original CameraOpt initialization/verdict, full required API behavior and a saved Xiaomi Camera capture while Enforcing.",
-    "Measure installed platform signer, retained Camera app ID/data, grants and labels on the successor before app acceptance.",
-    "First-session JPEG_R behavior for the selected boot default and combined auxiliary-package selection.",
-    "50 MP and 200 MP vendor capture, resolution-table discrepancy, native full-resolution readout, RAW + 200 MP and processed Ultra RAW.",
-    "Useful image quality and mode-specific effect behavior beyond the retained capture/decode windows."
+    "Stage and build the CameraX cache backport with the vendor-key successor; verify the final archive and obtain new explicit approval before installation.",
+    "Save a full Xiaomi Camera photo; the v9 verifier succeeds but its rear Photo times out with missing shot-name metadata.",
+    "Validate the prepared CameraX cache-key backport on device; all ten Aperture effect captures already save and decode Ultra HDR.",
+    "Measure 50 MP and 200 MP vendor capture, native full-resolution readout, RAW + 200 MP and processed Ultra RAW.",
+    "Useful image quality, video and sustained behavior beyond retained capture/decode windows."
   ],
   "evidence_receipts": [
     {
@@ -1787,7 +1787,7 @@
       "sha256": "4aaa96834a1d6ba856d01cf67670dc0ed38c3e3db45fcd9f3ea55b775a7b550e"
     },
     "pending_android_review": {
-      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/android-reviewed.json",
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/android-reviewed-before-explicit-approval.json",
       "size_bytes": 902,
       "sha256": "6973781df54f757c91db8ef47a546e3414aa29b02fbed04b1514a695facff9da"
     },
@@ -1795,9 +1795,27 @@
     "target_slot": "a",
     "userdata_retained": true,
     "slot_change": false,
-    "flash_authorized": false,
-    "reboot_authorized": false,
-    "installed": false,
-    "fastboot_preflight_after_approval_required": true
+    "flash_authorized": true,
+    "reboot_authorized": true,
+    "installed": true,
+    "fastboot_preflight_after_approval_required": false,
+    "pending_android_review_is_historical": true,
+    "explicit_approval": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v9-install/explicit-v9-authorization.json",
+      "size_bytes": 1264,
+      "sha256": "0c583822bf375ca76fa5f1c80d6f3fc22bed27d1da86f721971866858fa47d8b"
+    },
+    "installation_record": "research/camera-v9-install-validation-20260908.json"
+  },
+  "current_development_source": {
+    "build_number": "nezha.8fb05f49f5a7e31a6a3a498b",
+    "source_rows": 658,
+    "source_receipt": {
+      "path": "reports/camera-completion-20260907/source-revision-4/source-installed.json",
+      "size_bytes": 165365,
+      "sha256": "68364bc538b99bb3d3f0b9ea745198afff1163e23dbe0c9e28110ed7cd8c6b1a"
+    },
+    "status": "Affected framework component build passed; not installed. CameraX extension-cache backport prepared separately.",
+    "diagnosis_document": "docs/camera-vendor-key-discovery-20260908.md"
   }
 }
