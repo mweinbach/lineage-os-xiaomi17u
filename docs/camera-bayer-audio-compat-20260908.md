@@ -2,7 +2,10 @@
 
 **Later package checkpoint:** The revision-10 component/full build, signed archive
 and eight-image bundle pass their checks. See the [v13 package record](camera-v13-package-20260908.md).
-The source-stage evidence below is preserved; successor phone validation is pending.
+V13 was subsequently installed; its UltraRAW, audio/video and camera regression
+results are in the [runtime record](camera-v13-install-validation-20260908.md).
+The source-stage checkpoint below predates those results and is preserved as
+historical evidence.
 
 The installed [v12 validation](camera-v12-install-validation-20260908.md) identifies
 two remaining compatibility failures: Xiaomi UltraRAW supplies compressed Bayer

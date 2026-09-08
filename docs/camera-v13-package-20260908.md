@@ -1,10 +1,10 @@
 # Camera v13 package, 2026-09-08
 
-**V13 is built, signed and verified on the host. Installation and successor
-phone validation require separate approval.** The installed phone remains on
-[v12](camera-v12-install-validation-20260908.md). This package adds support for
-the compressed Bayer format measured during v12 UltraRAW capture and the
-factory multiroute/MIHC audio values. Full camera acceptance remains incomplete.
+**Host package checkpoint for V13.** Its subsequent separately approved
+installation and phone results are recorded in the
+[v13 runtime record](camera-v13-install-validation-20260908.md). This document
+preserves the pre-installation build and package checks. The package adds
+compressed Bayer UltraRAW support and factory multiroute/MIHC audio values.
 
 ## Source, components and behavior
 
@@ -74,7 +74,10 @@ removed to restore the 200 GiB build threshold. Source, output, cache and
 rollback bundles were preserved. Private inputs, source checkouts, device
 captures and keys remain ignored.
 
-## Pending device acceptance
+## Original device acceptance plan
+
+The separately approved installation and bounded capture matrix below have
+since passed; see the runtime record for results and remaining quality limits.
 
 V12 already passes fully decoded ordinary Xiaomi photos, main and telephoto
 50 MP, telephoto 200 MP Ultra HDR, Pro RAW, all three physical RAW sensors and

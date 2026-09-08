@@ -1,0 +1,756 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-v13-install-validation-20260908",
+  "build_number": "nezha.2c510f47f6d99b93f0c3ee11",
+  "source_rows": 671,
+  "delivery_set": "v13",
+  "installed": true,
+  "status": "Installed and booted; UltraRAW DNG and preview fully decode, audio policy initializes and video/audio fully decode; photo, physical RAW and ten warm CameraX effects pass",
+  "requested_capture_matrix_passed": true,
+  "complete_camera_acceptance": false,
+  "phone_accessed": true,
+  "document": "docs/camera-v13-install-validation-20260908.md",
+  "installation": {
+    "manifest_sha256": "129912c8f2f5d956b8c482a40e60ac11e10c9d03bc01b042649fd75ed676b7a4",
+    "acknowledged_images": 8,
+    "boot_seconds": 25.5,
+    "slot": "a",
+    "selinux": "Enforcing",
+    "wipe_performed": false,
+    "slot_changed": false,
+    "execution": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v13-install/execution.json",
+      "sha256": "6a2ec44559a9c43889a4066f33c3a1b1b92a112197dee4f8bcb5be307e721106",
+      "size_bytes": 3765
+    },
+    "authorization": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v13-install/explicit-authorization.json",
+      "sha256": "ff55977d78952b486e124d8c27c86028595a9b44b42461b7d3571600c088c031",
+      "size_bytes": 705
+    },
+    "reboot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v13-install/reboot-android.json",
+      "sha256": "fbe6640a4716ad80874dd958cbb1fb312ce2cb1e658783221ea94c0c3cb8e2cb",
+      "size_bytes": 271
+    },
+    "boot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v13-install/boot-completed.json",
+      "sha256": "62bae5ab77955ab0148371bbd7b054ef579bff46a00b518371ad736564445cd5",
+      "size_bytes": 280
+    },
+    "root": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v13-install/root-check.json",
+      "sha256": "0af37a9ee5f4df5c6a073f8f767226ca96a08eab4b4d588841b5fe80d0d8f196",
+      "size_bytes": 316
+    }
+  },
+  "app_data": {
+    "active_apk_sha256": "51b547ec258b645781f077b4a83da3bdf49caea7af32233417712848b71b8ac7",
+    "platform_signer_sha256": "c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8",
+    "ce_members": 513,
+    "de_members": 5,
+    "member_bytes_and_metadata_unchanged_before_first_launch": true,
+    "scope": "Xiaomi Camera CE and DE data only; no claim about all userdata",
+    "receipt": {
+      "path": "reports/camera-completion-20260907/v13-validation/postboot-before-camera/receipt.json",
+      "sha256": "957454e297e79335c0b2228bd24cfe4a253722849dcdb1900eec77a700ce136f",
+      "size_bytes": 1028
+    }
+  },
+  "installed_cameraserver_sha256": "2a13a9da8b192fede80098d1d4128017e21a2c2179457d9edb8bb41c9762a2a8",
+  "installed_payload_verification": {
+    "path": "reports/camera-completion-20260907/v13-validation/postboot-before-camera/installed-v13-payloads.json",
+    "sha256": "0cc4978e6ae23675f64a1233a70ad6b69f78307341ddda9f6cc05022d9643e52",
+    "size_bytes": 1040
+  },
+  "xiaomi_photo_cases": [
+    {
+      "case": "rear-photo",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/rear-photo/result.json",
+        "sha256": "ffddf09c8a605058a26d14671b6b43f8f456472a229094ecf2fe88d6bb34f8ac",
+        "size_bytes": 498
+      },
+      "media": [
+        {
+          "size_bytes": 3050230,
+          "sha256": "661151238608d5e43643fb845f73e85c3a764ad170e8ebe25734bac32cbc1630",
+          "format": "JPEG",
+          "dimensions": [
+            3072,
+            4096
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ],
+      "host_verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/rear-photo/host-verification.json",
+        "sha256": "2af7ebc0d27b282f5ecc6950ea71a63fd7f0482e11add24e4134f3b2fbc06667",
+        "size_bytes": 1634
+      },
+      "jpeg_and_ultra_hdr_passed": true
+    },
+    {
+      "case": "front-photo",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/front-photo/result.json",
+        "sha256": "d247c4d7665db3b5ccef0be666a4b3214104d2c3a7f22fecbf516a2056df9dc9",
+        "size_bytes": 497
+      },
+      "media": [
+        {
+          "size_bytes": 4930860,
+          "sha256": "31a8d9e644d7f4a88adcc72f485235f53b4bc486271b1b0c6e5396a7a4871b7a",
+          "format": "JPEG",
+          "dimensions": [
+            3072,
+            4096
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ],
+      "host_verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/front-photo/host-verification.json",
+        "sha256": "cfb9ef4aebf5215d78cab962fc13896e44da6575c4f34106fc4d1bd97a4d8797",
+        "size_bytes": 1638
+      },
+      "jpeg_and_ultra_hdr_passed": true
+    },
+    {
+      "case": "main-50mp",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/main-50mp/result.json",
+        "sha256": "f7f0c279725535293b27142eebd46686610808fb12573ef95ecb6c1d51b20a2f",
+        "size_bytes": 493
+      },
+      "media": [
+        {
+          "size_bytes": 5080611,
+          "sha256": "ab68fcff6b2ef609bb6bce670e78105c6c50d4a93f7892f256edf80565f2d6d2",
+          "format": "JPEG",
+          "dimensions": [
+            6144,
+            8192
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ],
+      "host_verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/main-50mp/host-verification.json",
+        "sha256": "b185f5bcf96338d5699eba4818b2217ed92424a111f7e3dd9a4ae85bdc6d807d",
+        "size_bytes": 1630
+      },
+      "jpeg_and_ultra_hdr_passed": true
+    },
+    {
+      "case": "telephoto-50mp",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/telephoto-50mp/result.json",
+        "sha256": "429dc0b9cbde5600dbfc3dcedc6f1406f58fbe018391e1ac0028f789302df37d",
+        "size_bytes": 503
+      },
+      "media": [
+        {
+          "size_bytes": 9020089,
+          "sha256": "b721a4e55bfdedf918a2105b48df2380a9b873fc0e9352bfffd1e863746c698e",
+          "format": "JPEG",
+          "dimensions": [
+            6144,
+            8160
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ],
+      "host_verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/telephoto-50mp/host-verification.json",
+        "sha256": "130055cfa22a34f9a48faebc3777aa50e58b2e25809e1507b93f47592bf04936",
+        "size_bytes": 1650
+      },
+      "jpeg_and_ultra_hdr_passed": true
+    },
+    {
+      "case": "telephoto-200mp",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/telephoto-200mp/result.json",
+        "sha256": "af5b0d1122c6dd5e1807c868b588f95eb6b6199b1e2cb24d635d25bbbedcaac6",
+        "size_bytes": 797
+      },
+      "media": [
+        {
+          "size_bytes": 19471969,
+          "sha256": "30f9b53309e40615c2bdc5996265a0c8b1a07e5fb9645e108018bf01ed821412",
+          "format": "JPEG",
+          "dimensions": [
+            16320,
+            12288
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ],
+      "host_verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/telephoto-200mp/host-verification.json",
+        "sha256": "34932c62589a8a0ef3240367df2825a9f5f2c8ddaad0b8709ca5117b93d14b87",
+        "size_bytes": 1778
+      },
+      "jpeg_and_ultra_hdr_passed": true
+    }
+  ],
+  "xiaomi_fully_decoded_ultra_hdr_photos": 5,
+  "xiaomi_raw_cases": [
+    {
+      "case": "pro-raw",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/pro-raw/result.json",
+        "sha256": "05fd9cb1d4629c0faa1970476808ffc415b1da0dd72d0678137d0bb9a28d0fe6",
+        "size_bytes": 728
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/pro-raw/dng-host-verification.json",
+        "sha256": "e15edb2bb0094ca5a494eafc93ffa6751ee63846ea2463602da5e9c05df23351",
+        "size_bytes": 729
+      },
+      "processes": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/pro-raw/process-verification.json",
+        "sha256": "4b41ee7fb46398ce8a6474c9a5197eb0d7585c674753c894e6a31bdb39b41552",
+        "size_bytes": 588
+      },
+      "dng_sha256": "f3d70a2c8d25182d9bb0ea39a7c417b8a30cf9b871d908029d985d8cae7e3801",
+      "size_bytes": 25097580,
+      "encoded_dimensions": [
+        4080,
+        3072
+      ],
+      "decoded_dimensions": [
+        3072,
+        4080
+      ],
+      "compressed_bayer": false,
+      "tiles": 0,
+      "embedded_preview": null
+    },
+    {
+      "case": "pro-ultra-raw",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/pro-ultra-raw/result.json",
+        "sha256": "72b8ac719829cfd4d35b758d244dca6a820084d879eea72991fcee138bbd3e93",
+        "size_bytes": 739
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/pro-ultra-raw/dng-host-verification.json",
+        "sha256": "36ae0fa62d3ba431d8e1ba0219bcc78cf731f8801ff05e6cc694a3fb01c41db9",
+        "size_bytes": 10333
+      },
+      "processes": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/pro-ultra-raw/process-verification.json",
+        "sha256": "4b41ee7fb46398ce8a6474c9a5197eb0d7585c674753c894e6a31bdb39b41552",
+        "size_bytes": 588
+      },
+      "dng_sha256": "a49772629b765c00c114c412499f4c594fccf06d4b800de3b369b817a6251ff6",
+      "size_bytes": 17656589,
+      "encoded_dimensions": [
+        4080,
+        3072
+      ],
+      "decoded_dimensions": [
+        3072,
+        4080
+      ],
+      "compressed_bayer": true,
+      "tiles": 64,
+      "embedded_preview": {
+        "dimensions": [
+          4080,
+          3072
+        ],
+        "size_bytes": 4197289,
+        "sha256": "1147d3f43da9b67de9fbb1f07b65a981fe3e64fc2834ba450ea2a7fefc6be5c3",
+        "fully_decoded": true
+      }
+    }
+  ],
+  "aperture_warm_effects": {
+    "cases": [
+      {
+        "case": "front-warm-auto",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-auto/result.json",
+          "sha256": "9c63e478365c102690286e5154b237a4ed83deef3e4b3816fa9260687f7c908a",
+          "size_bytes": 479
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-auto/host-verification.json",
+          "sha256": "9c0ee5a6641523c7380dbfa9ca5bf4c02c6ee74e8e6ab5f1301245d2340a701e",
+          "size_bytes": 1608
+        },
+        "image_sha256": "d08a7707723009fb81014a1cb3eb12d822299d327da64b8a3bd7ae8f75e0239c",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionAutoFront",
+          "ExtensionInfo"
+        ]
+      },
+      {
+        "case": "front-warm-bokeh",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-bokeh/result.json",
+          "sha256": "5c06948c5f0e650a6f0aa5de8a6fec3e5da0f08663c7156e8c4d4e4b889b6ccd",
+          "size_bytes": 481
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-bokeh/host-verification.json",
+          "sha256": "bed091c865212d63d41d336dbe947d440d61374ba1152270952c8de174db196a",
+          "size_bytes": 1614
+        },
+        "image_sha256": "ba82cbf0383f79714fbe098c73812e75e2d73835657bdd94a474969ad647e2a1",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionBokehFront",
+          "ExtensionInfo"
+        ]
+      },
+      {
+        "case": "front-warm-face-retouch",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-face-retouch/result.json",
+          "sha256": "7f2d18792d530a670eb8458ef2223c878f1b4f6b3fa783a357e27da9fbcd44ba",
+          "size_bytes": 495
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-face-retouch/host-verification.json",
+          "sha256": "c6846b093882a021d86c361fcf0124b8cddc9ebad802643b7b9f663e819e65c9",
+          "size_bytes": 1644
+        },
+        "image_sha256": "3f132160ee6f186b0f5b603fdeea7661280ee7f9a1de369b8fa61daccdb13703",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionBeautyFront",
+          "ExtensionInfo"
+        ]
+      },
+      {
+        "case": "front-warm-hdr",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-hdr/result.json",
+          "sha256": "bbb846264d5a3bdba2ce8fd89dc63cc558c3042789999ff31b02e99b0e063e48",
+          "size_bytes": 477
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-hdr/host-verification.json",
+          "sha256": "2711b028da9fef3fd535a43b2b0c0b8d164a299468f833e0bbfdd5abdce4f3e2",
+          "size_bytes": 1569
+        },
+        "image_sha256": "191266852a059052a0e9263acdb35009fd52fa050ee12399cdba8c13f3af076d",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionHdrFront"
+        ]
+      },
+      {
+        "case": "front-warm-night",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-night/result.json",
+          "sha256": "8b611789b0193c69fd6586f2ecd3fe4f4b32380f2fbe3e03f6c3c868d83ca50a",
+          "size_bytes": 481
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/front-warm-night/host-verification.json",
+          "sha256": "adf8c0a4da5382dbf459f73d6846d563dd579f7e9b44f7ac7980cb2dcfccdfb5",
+          "size_bytes": 1602
+        },
+        "image_sha256": "5c729f7748ce12936c9346c5a512aef7f6d53826fedcaab9a9c585979eea046d",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionInfo",
+          "ExtensionNightFront"
+        ]
+      },
+      {
+        "case": "rear-warm-auto",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-auto/result.json",
+          "sha256": "f0c012044b990389715639c89efdf7a58cb4b91aab176191aa5db244d5693602",
+          "size_bytes": 477
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-auto/host-verification.json",
+          "sha256": "ad468f593815f4df760e11952191631482a7d49f19b8bccbf9ba3a6084658db5",
+          "size_bytes": 1538
+        },
+        "image_sha256": "3ace211177a25bc8a49ce6a5a1ae49271e32b92b4221658b5bf903dbd2158ce0",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionAuto"
+        ]
+      },
+      {
+        "case": "rear-warm-bokeh",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-bokeh/result.json",
+          "sha256": "dc8b72b882c0be9aceedd729ad5290e1c3c97f31e6d2c2fe0d3c487700f047c1",
+          "size_bytes": 479
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-bokeh/host-verification.json",
+          "sha256": "ed9838474b5a8c4da33c83dd646e321777928b239c45c764b8c2c836b010f84e",
+          "size_bytes": 1608
+        },
+        "image_sha256": "03dca9943e15a3d1d7a0009fa9b6d52591410eced9a49694b3acaabd3b1fdc09",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionBokehRearNormal",
+          "ExtensionInfo"
+        ]
+      },
+      {
+        "case": "rear-warm-face-retouch",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-face-retouch/result.json",
+          "sha256": "1eaadbca3af4ded37a7c90ba53d1267e7e2a368fa1cbb35458a789f1b07927ae",
+          "size_bytes": 493
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-face-retouch/host-verification.json",
+          "sha256": "f03ef20b5ceb6dafd07000240e5be358b8bc8050be9a54c4460f36971ccfc01a",
+          "size_bytes": 1593
+        },
+        "image_sha256": "259477c92d39a5b2d091f9b1136882ec7881a82bc3c410f825d02f2842ceb36a",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionBeauty",
+          "ExtensionInfo"
+        ]
+      },
+      {
+        "case": "rear-warm-hdr",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-hdr/result.json",
+          "sha256": "618ea17aac0de545d9eb03e23dd224ed39cba6e6f722534144acf218a901657e",
+          "size_bytes": 475
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-hdr/host-verification.json",
+          "sha256": "99925219bf2d0f1397280ccd0dc345b1653aeb25235caae1f8916f4dc54c101e",
+          "size_bytes": 1533
+        },
+        "image_sha256": "91cde6f0b1ae5ee03c8e23892fd08be88bd15b92c79d8bb21af2f4aca9aac423",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionHdr"
+        ]
+      },
+      {
+        "case": "rear-warm-night",
+        "result": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-night/result.json",
+          "sha256": "bea8ef6e115724ce0a55ab66a267654288a46fdeb1613c08c0372d53a803c938",
+          "size_bytes": 479
+        },
+        "verification": {
+          "path": "reports/camera-completion-20260907/v13-validation/aperture-cases/rear-warm-night/host-verification.json",
+          "sha256": "3977909fc1a9c9c075ae7efcfb6063a341db4a6614976216b0143c9116ad43b8",
+          "size_bytes": 1596
+        },
+        "image_sha256": "840465bd1089c07fa4c088cdc89c01b659d6a2915c01c5147ad8e488cc892432",
+        "dimensions": [
+          3072,
+          4096
+        ],
+        "hdr_decoded": true,
+        "vendor_extension_tokens": [
+          "ExtensionInfo",
+          "ExtensionNightRear"
+        ]
+      }
+    ],
+    "count": 10,
+    "same_application_process": true,
+    "process_pid": 21501,
+    "process_starttime": "160416",
+    "rear_run": {
+      "path": "reports/camera-completion-20260907/v13-validation/warm-rear/results.json",
+      "sha256": "6317ce45bb1f2e48dfa3d18c78941ac8d50e70a787cd095c36675a85c4298fbb",
+      "size_bytes": 3544
+    },
+    "front_run": {
+      "path": "reports/camera-completion-20260907/v13-validation/warm-front/results.json",
+      "sha256": "22a92f8cf4e3e28dff73fdc3f0a42ce3fadb8761ab2d6faec43cae6a45fc968f",
+      "size_bytes": 3559
+    },
+    "all_full_jpeg_decoded": true,
+    "full_ultra_hdr_decodes": 10,
+    "all_full_jpeg_and_ultra_hdr_decoded": true,
+    "all_capture_crash_buffers_unchanged": true
+  },
+  "physical_raw_cases": [
+    {
+      "case": "raw-tele",
+      "physical_id": "4",
+      "dimensions": [
+        4080,
+        3072
+      ],
+      "dng_sha256": "b82f50abacd893ddfaf5e26ee9d37b3e95ea58d9030f9289e2103677b3854cea",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/cases/raw-tele/report.json",
+        "sha256": "c31e7a90b42c93aa494c84908d6e6000c7a60e23cef6878fd93a6bc9545ee7a8",
+        "size_bytes": 2022
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/cases/raw-tele/host-verification.json",
+        "sha256": "b53f8d23cad4a7eda228a160ade3bc3ba404f6da25f327dbf8fd0395fe818f66",
+        "size_bytes": 401
+      }
+    },
+    {
+      "case": "raw-ultrawide",
+      "physical_id": "3",
+      "dimensions": [
+        4096,
+        3072
+      ],
+      "dng_sha256": "3f4a1e1086fc410a9b523e32cbfe9039b048d2eff041e8c2e93a1c4d434c3c5b",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/cases/raw-ultrawide/report.json",
+        "sha256": "6821575ab757c453a669c94e388a9f2cc75ba40519a6667a0c833340d67978af",
+        "size_bytes": 2022
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/cases/raw-ultrawide/host-verification.json",
+        "sha256": "7af928e280376404466fc39fd3207106f6d2a19f7e94381a2d46922c11f74304",
+        "size_bytes": 406
+      }
+    },
+    {
+      "case": "raw-wide",
+      "physical_id": "2",
+      "dimensions": [
+        4096,
+        3072
+      ],
+      "dng_sha256": "9f9ef3bc6cfa8f148fd35c063b9688a765bf0474e2d4e83d0858fdfde00749eb",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/cases/raw-wide/report.json",
+        "sha256": "145ef66aea6725eb0dd0f2bb07726caae32ad66b0fce69ca56601d4b7c3c93e9",
+        "size_bytes": 2019
+      },
+      "verification": {
+        "path": "reports/camera-completion-20260907/v13-validation/cases/raw-wide/host-verification.json",
+        "sha256": "b847609b0b84d5de4bb216b0cece7ec55c02e37ee82f3c625a9ecc72bece9850",
+        "size_bytes": 401
+      }
+    }
+  ],
+  "video": {
+    "case": "rear-video-stop-button",
+    "result": {
+      "path": "reports/camera-completion-20260907/v13-validation/video-cases/rear-video-stop-button/result.json",
+      "sha256": "fcd9b4336fcb19842527dbd3e121852f3a609062ab287de80a8d312e90dde94f",
+      "size_bytes": 437
+    },
+    "verification": {
+      "path": "reports/camera-completion-20260907/v13-validation/video-cases/rear-video-stop-button/full-decode/verification.json",
+      "sha256": "60104f1c021e56e1e2ba19a327f52c5d6185e3b7aadcc32281396e505b638cfd",
+      "size_bytes": 5520
+    },
+    "processes": {
+      "path": "reports/camera-completion-20260907/v13-validation/video-cases/rear-video-stop-button/process-verification.json",
+      "sha256": "80ff4ac8f947941bb900ccd6e13eab8a48290ecfba643d92674d1c619fbcd5db",
+      "size_bytes": 588
+    },
+    "sha256": "fd3c4797128361885c47e5e1168398e0621e780ffc637cd292e67faa955cb809",
+    "size_bytes": 2905405,
+    "duration_seconds": 10.079489,
+    "video_codec": "hevc",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "decoded_video_frames": 242,
+    "audio_codec": "aac",
+    "sample_rate": 48000,
+    "audio_channels": 1,
+    "complete_video_and_audio_decode": true,
+    "audio_peak_dbfs": -29.144001,
+    "audio_rms_dbfs": -44.438238,
+    "microphone_acoustic_response_verified": false,
+    "dolby_vision_configuration": [
+      {
+        "side_data_type": "DOVI configuration record",
+        "dv_version_major": 1,
+        "dv_version_minor": 0,
+        "dv_profile": 8,
+        "dv_level": 4,
+        "rpu_present_flag": 1,
+        "el_present_flag": 0,
+        "bl_present_flag": 1,
+        "dv_bl_signal_compatibility_id": 4,
+        "dv_md_compression": "none"
+      }
+    ]
+  },
+  "audio_startup": {
+    "summary": {
+      "path": "reports/camera-completion-20260907/v13-validation/audio-v13-summary.json",
+      "sha256": "d9f6a2029d4cedded5bdd5c0ffc1230fc166620881c98f170cb5ac262b756266",
+      "size_bytes": 1166
+    },
+    "boot_audio": {
+      "path": "reports/camera-completion-20260907/v13-validation/boot-audio/receipt.json",
+      "sha256": "ca3ef9bed18820fa326c831bb782f997444dbf69206decf06b7cc33aea767ab4",
+      "size_bytes": 10796
+    },
+    "policy_checkpoints_seconds": [
+      15,
+      45,
+      75
+    ],
+    "primary_output_handle": 13
+  },
+  "resolved_predecessor_failures": [
+    "UltraRAW compressed Bayer format 32 now saves a fully decoded DNG and embedded preview",
+    "Audio policy initializes with factory multiroute and MIHC mappings",
+    "A bounded Xiaomi video recording saves completely decodable HEVC and AAC tracks"
+  ],
+  "remaining_measured_camera_failures": [],
+  "test_observations": [
+    {
+      "case": "rear-video",
+      "status": "Test harness stop action did not stop recording; no completed file collected",
+      "result": {
+        "path": "reports/camera-completion-20260907/v13-validation/video-cases/rear-video/result.json",
+        "sha256": "5cacafde75e3d22aa9f85764874ecf287c7f503fa5f66c71e799a6daa202b798",
+        "size_bytes": 173
+      },
+      "detail": "The screenshot still showed an active recording timer after Back. Bounded cleanup force-stopped Camera. The corrected stop-button case passes."
+    },
+    {
+      "case": "telephoto-200mp",
+      "status": "81 older files renamed to gallery trash during collection; excluded from the one-photo result",
+      "collection": {
+        "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/telephoto-200mp/collection-result.json",
+        "sha256": "7c2eef3d595c3f31484bc8673c2aa90a5a4a114b9723e88a22cb0bec9a7d601c",
+        "size_bytes": 30727
+      },
+      "detail": "Duplicate generated host copies removed; no device delete or restore command issued."
+    },
+    {
+      "case": "wallpaper",
+      "status": "Separate Wallpaper application crashes before capture",
+      "detail": "InvalidVersionException: Missing required dependency ClockProviderPlugin",
+      "private_log": {
+        "path": "reports/camera-completion-20260907/v13-validation/wallpaper-interruption/crash.log",
+        "sha256": "073c8a2514e62f49ce925c744d6fdd5bbb6d66161f2e20f8a4a8772025f4aca0",
+        "size_bytes": 14631
+      }
+    }
+  ],
+  "telephoto_200mp_decoder_provenance": {
+    "path": "reports/camera-completion-20260907/v13-validation/xiaomi-cases/telephoto-200mp/decoder-provenance.json",
+    "sha256": "e43ffe3948aa90541462d4d00966d8a9bcf94e5e5ad213cec40f3a65b79876b4",
+    "size_bytes": 563
+  },
+  "limits": [
+    "The scene is mostly dark and static. Useful effect quality, focus, stabilization and sensor-native resolution remain unverified.",
+    "200 MP denotes the selected mode and saved 16320x12288 image; sensor-native detail is unverified.",
+    "The retained unmodified libultrahdr 1.4.0 decoder is configured for a 16384 dimension limit.",
+    "Video validation covers one short 1080p HEVC recording with AAC audio. Other resolutions, rates, modes, sustained recording and microphone/playback quality remain unverified.",
+    "The video carries Dolby Vision configuration metadata; full HDR presentation quality is unverified.",
+    "Separate Wallpaper process crashes and intermittent UIAutomator collection failures remain recorded; full phone health is not claimed."
+  ],
+  "cleanup": {
+    "path": "reports/camera-completion-20260907/v13-validation/final-cleanup/receipt.json",
+    "sha256": "759788c6808f0729484130e5bc093e9d7e99b93055369b078e37ea3b70fbbc9c",
+    "size_bytes": 413
+  },
+  "privacy": "Device logs, images, app-data archives and proprietary analysis remain ignored; no redistribution.",
+  "source_receipt": {
+    "path": "reports/camera-completion-20260907/source-revision-10/source-installed.json",
+    "sha256": "1316c5392b530fff257d05088b8b841ba8279d647ffb1086c4f47c2a99715021",
+    "size_bytes": 168499
+  },
+  "package_record": {
+    "path": "research/camera-v13-package-20260908.json",
+    "sha256": "e42f8cc9c34edec622d3d24c49a7c34fa73c7009e64774398ab285831d5dee97",
+    "size_bytes": 12416
+  },
+  "offline_verification": {
+    "checks": [
+      {
+        "target": "test-current",
+        "started_utc": "2026-09-08T19:04:54.029848+00:00",
+        "returncode": 0,
+        "elapsed_seconds": 28.77,
+        "test_count": 939,
+        "suite_seconds": 28.142
+      },
+      {
+        "target": "test",
+        "started_utc": "2026-09-08T19:05:22.800118+00:00",
+        "returncode": 0,
+        "elapsed_seconds": 195.02,
+        "test_count": 4892,
+        "suite_seconds": 193.203
+      }
+    ],
+    "receipt": {
+      "path": "reports/camera-completion-20260907/v13-validation/offline-checks.json",
+      "sha256": "d9c20c0ac96945c76d8b5725121ae3817366c9cef36572d07ebbeea2c9cdde43",
+      "size_bytes": 390
+    },
+    "logs": [
+      {
+        "path": "reports/camera-completion-20260907/v13-validation/test-current.log",
+        "sha256": "786b67bcbb9a47f839c41a06695a6a09494e2a0ea1463ceac481266a7a64a2a8",
+        "size_bytes": 177298
+      },
+      {
+        "path": "reports/camera-completion-20260907/v13-validation/test.log",
+        "sha256": "cc938ca23af948b39c1f0924e00725e3bfb15db1ccf85795dc11e6978c9e6554",
+        "size_bytes": 870541
+      }
+    ],
+    "phone_accessed": false
+  },
+  "runtime_evidence_audit_path": "reports/camera-completion-20260907/v13-validation/runtime-evidence-audit.json"
+}

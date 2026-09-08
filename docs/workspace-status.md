@@ -1,33 +1,27 @@
 # Current Nezha workspace status
 
-**Installed phone: v12 userdebug (`nezha.0a0b5c6187d711a32aa3e46e`),
-slot A, boot completed with SELinux Enforcing.** The approved eight-image
-installation completed without a wipe or slot change. All ten warm rear/front
-Aperture effect captures fully decode as Ultra HDR. Xiaomi ordinary rear/front,
-main and telephoto 50 MP, telephoto 200 MP, Pro RAW and all three physical RAW
-sensors also pass their independent decoders. See the
-[v12 installation and validation record](camera-v12-install-validation-20260908.md).
+**Installed phone: v13 userdebug (`nezha.2c510f47f6d99b93f0c3ee11`),
+slot A, boot completed with SELinux Enforcing.** The separately approved
+eight-image installation completed without a wipe or slot change. UltraRAW
+DNG and embedded preview now fully decode, audio policy initializes, and a
+short Xiaomi video has fully decoded HEVC and AAC tracks. Ordinary rear/front
+photos, main/telephoto 50 MP, telephoto 200 MP, Pro RAW, three physical RAW
+sensors and all ten warm Aperture Ultra HDR effects pass. See the
+[v13 installation and validation record](camera-v13-install-validation-20260908.md).
 
-UltraRAW now reaches the implemented writer, but the measured capture uses
-compressed Bayer format 32; the installed writer supports linear RGB format 15.
-Early boot audio diagnostics advance past the previous flag/usage errors and
-now reject the factory multiroute device. Audio policy remains null, so video
-was not retried. **Full camera acceptance remains incomplete.**
+Source revision 10 is `nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows.
+Its component/full build, signed archive and eight-image bundle pass their
+checks, recorded in the [v13 package](camera-v13-package-20260908.md).
+The source adds the measured [compressed Bayer and factory audio paths](camera-bayer-audio-compat-20260908.md).
+Useful image/effect quality, sensor-native detail and sustained behavior remain
+unverified; **full camera acceptance remains incomplete.**
 
-A [successor source candidate](camera-bayer-audio-compat-20260908.md) adds the
-measured compressed Bayer path and multiroute/MIHC audio mappings and validators.
-Its host image and conversion checks pass. Source revision 10 is applied as
-`nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows. Its component/full
-build, signed archive and eight-image bundle pass their checks. The [v13 package](camera-v13-package-20260908.md) awaits
-separate installation approval and phone validation.
-
-Source revision 9 has 668 rows. Its component/full build, signed archive and
-eight-image bundle are recorded in the [v12 package checkpoint](camera-v12-package-20260908.md).
-That checkpoint's pending-installation state is historical; the runtime record
-above follows the separately approved installation. The installed source includes
-the [save/audio compatibility changes](camera-save-audio-compat-20260908.md),
-[stream-sizing repair](camera-stream-sizing-20260908.md),
-[vendor-key discovery fix](camera-vendor-key-discovery-20260908.md) and
+The [v12 runtime record](camera-v12-install-validation-20260908.md) preserves
+source revision 9 and its measured Bayer/audio failures, now resolved in the
+v13 capture matrix. The retained source also includes
+[save/audio compatibility](camera-save-audio-compat-20260908.md),
+[stream sizing](camera-stream-sizing-20260908.md),
+[vendor-key discovery](camera-vendor-key-discovery-20260908.md) and the
 [CameraX cache backport](camerax-extension-cache-20260908.md).
 [V11r1](camera-v11-install-validation-20260908.md) and
 [v10](camera-v10-install-validation-20260908.md) remain preserved predecessors.
@@ -46,15 +40,15 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.0a0b5c6187d711a32aa3e46e` (userdebug, delivery set v12) |
-| Installed source receipt | 668 rows; `reports/camera-completion-20260907/source-revision-9/source-installed.json`, SHA256 `ef5452f69c340ce714849f467c4cfe106e31769bc4c40d286d8e9cb0f4a26245` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v12/` |
-| Bundle manifest SHA256 | `45e4b0b034807b5f4f21a138f7a04244332fb698d8c661c55dc20367eabd28c8` |
-| Reconciled signed target-files SHA256 | `113b87cd7466590580e3a359d50c065bca623b6bdff2e5ad201e916d6ae3abc2` |
-| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [package checkpoint](camera-v12-package-20260908.md) |
+| Installed build identity | `nezha.2c510f47f6d99b93f0c3ee11` (userdebug, delivery set v13) |
+| Installed source receipt | 671 rows; `reports/camera-completion-20260907/source-revision-10/source-installed.json`, SHA256 `1316c5392b530fff257d05088b8b841ba8279d647ffb1086c4f47c2a99715021` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v13/` |
+| Bundle manifest SHA256 | `129912c8f2f5d956b8c482a40e60ac11e10c9d03bc01b042649fd75ed676b7a4` |
+| Reconciled signed target-files SHA256 | `5ec834aed93a0fe9acc288e24a3c3252a8ba4ec039b297d50b1eeaac37eb4b4d` |
+| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [package checkpoint](camera-v13-package-20260908.md) |
 | Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe or slot change; normal boot completed in 25.5 s |
 | Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; final cleanup reconfirmed build, slot and policy |
-| Camera acceptance observed | Five Xiaomi photos fully decode as Ultra HDR, including main/telephoto 50 MP and telephoto 200 MP; all ten warm Aperture JPEG/Ultra HDR decodes, Xiaomi Pro RAW and three physical RAW captures pass. UltraRAW Bayer save and audio/video remain incomplete |
+| Camera acceptance observed | Five Xiaomi Ultra HDR photos including main/telephoto 50 MP and telephoto 200 MP; Pro RAW, UltraRAW DNG/preview, three physical RAW sensors and all ten warm Aperture Ultra HDR effects pass; short HEVC/AAC video fully decodes |
 | Camera app data | All 513 CE and five DE members unchanged before first launch; active APK and signer unchanged; no claim about all userdata |
 | Recovery | TWRP `working76`; preserve its `fix22ZJ-touchfix18` runtime/hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; measured current state is recorded above |
@@ -82,16 +76,17 @@ resolves the measured vendor-key discovery failure and saves ordinary Xiaomi
 photos. CameraOpt still has explicitly unported methods, including
 `reclaimMemoryForCamera`, which is observed during successful captures too.
 The retained v11r1 sizing repair resolves the measured telephoto output
-truncation and Pro RAW configuration failure. V12 adds the save APIs; the
-traced UltraRAW Bayer format requires a separate container-path repair.
+truncation and Pro RAW configuration failure. V12 adds the save APIs. V13 adds
+the measured Bayer container path, now verified by full DNG and embedded preview
+decoding.
 
-The completed v12 runtime record passes 67 evidence-pin checks. Following v13
-image admission, `make test-current` passes 939 tests in
-28.949 seconds and `make test` passes 4,892 tests in
-195.845 seconds plus shell checks. The [source behavior record](camera-bayer-audio-compat-20260908.md)
-and [v13 package record](camera-v13-package-20260908.md) bind the new host and
-build results. The installed v12 runtime record remains the measured phone
-evidence.
+The [v13 runtime record](camera-v13-install-validation-20260908.md) is the current
+phone evidence. The [source behavior record](camera-bayer-audio-compat-20260908.md)
+and [v13 package record](camera-v13-package-20260908.md) retain the host/build
+checks and their offline test results. Artifact, installation and capture
+verification remain separate evidence. After the runtime record was added,
+`make test-current` passes 939 tests in 28.142 seconds and `make test` passes
+4,892 tests in 193.203 seconds plus shell checks.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -112,7 +107,7 @@ evidence.
    phone. Record build, package and device evidence separately.
 4. Record each observed device result in a focused issue note and update this
    selection when the evidence warrants it. Phone collection and changes need
-   the authorized device and scope. The explicit v12 approval
+   the authorized device and scope. The explicit v13 approval
    covered its installation, reboot, camera/audio/video tests and root diagnostics without
    a wipe or slot change. It does not authorize flashing the next bundle.
 
@@ -125,22 +120,20 @@ successor ROM boot chain or OTA behavior.
 
 ## Remaining feature work
 
-- **Camera:** V12 passes ordinary Xiaomi photos, main/telephoto 50 MP,
-  telephoto 200 MP Ultra HDR, Xiaomi Pro RAW, all ten warm Aperture JPEG/Ultra
-  HDR cases and three physical RAW sensors. After separate approval, validate
-  the v13 compressed Bayer format 32 path with actual UltraRAW DNG and preview decoding. Its host and package
-  checks pass; successor capture remains unverified. Useful effect quality and
-  sensor-native resolution remain unverified. Preserve the
-  [v12 runtime record](camera-v12-install-validation-20260908.md).
-- **Video and audio:** V12 startup advances beyond the prior AIDL output-flag
-  and usage errors but rejects the factory multiroute descriptor. The v13
-  package adds its factory mapping (`0x20000004`), MIHC (`0x40000000`) and legacy validators.
-  Verify successor audio-policy initialization before video capture. On the
-  installed v12 phone, audio policy remains null and no valid video has been
-  verified.
-- **Wallpaper process:** A concurrent crash during the first UltraRAW capture
-  reports a missing `ClockProviderPlugin` dependency. Camera process identities
-  remain unchanged. This separate failure remains unresolved.
+- **Camera:** V13 passes the requested capture matrix: ordinary rear/front
+  Xiaomi Ultra HDR photos, main/telephoto 50 MP, telephoto 200 MP, Pro RAW,
+  UltraRAW DNG and preview, three physical RAW sensors and all ten warm
+  Aperture Ultra HDR effects. Useful effect quality, focus, stabilization,
+  sensor-native detail and sustained behavior remain unverified. Preserve the
+  [v13 runtime record](camera-v13-install-validation-20260908.md).
+- **Video and audio:** Audio policy initializes with primary output handle 13
+  at all three later boot checkpoints. A 10.079-second 1080p HEVC video and
+  48 kHz mono AAC audio fully decode with a measured nonzero audio signal.
+  Other video resolutions/rates/modes, microphone response, playback quality
+  and sustained recording remain unverified.
+- **Wallpaper process:** Separate crashes before camera validation report a
+  missing `ClockProviderPlugin` dependency. This failure remains unresolved;
+  the completed camera capture checks have unchanged crash buffers.
 
 - **Retained userdata, UDFPS and shade:** Camera apps opened and new JPEGs were written after dismissing the keyguard; retained personal userdata, UDFPS authentication and shade visual acceptance remain unverified.
   The user confirmed fingerprint enrollment on a6d; f9e loaded the measured
