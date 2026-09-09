@@ -129,7 +129,11 @@ quoted.
   the HyperOS camera framework port, native camera session hooks, vendor-key
   discovery, stream sizing, compressed Bayer DNG, Xiaomi audio descriptors and
   the stale Flex clock removal. `user` is still the default variant; userdebug
-  needs its explicit opt-in. IMS and the workload classifier stay disabled.
+  needs its explicit opt-in. The workload classifier stays disabled.
+- Prepared, not installed: v15, `nezha.81c1b93277a1fa371a3efbb3` (source
+  revision 13), adds the exact-stock IMS provider with its restored
+  `vendor_qtelephony` domain and the display dim level 0.05. Its bundle sits
+  beside v14 until you approve the install; see `docs/tier1-ims-dim-20260909.md`.
 - Camera: the requested capture matrix passes on v13 and the v14 subset:
   rear and front Ultra HDR, main and telephoto 50 MP, telephoto 200 MP, Pro
   RAW, UltraRAW DNG, three physical RAW sensors, all ten Aperture effects and

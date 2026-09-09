@@ -29,7 +29,7 @@ CURRENT_TEST_MODULES = \
 	test_camera_task_profiles test_refresh_policy test_workload_classifier_inputs \
 	test_collect_performance test_performance_analysis \
 	test_input_closure test_release_workflow test_release_signing test_artifact_retention test_hardware_ledger_v14_record \
-	test_ims_integration \
+	test_ims_integration test_tier1_ims_dim_record \
 	test_ota_package test_delivery_route test_kernel_inputs
 
 .DEFAULT_GOAL := help

@@ -1,0 +1,149 @@
+{
+  "operation": "tier1-ims-dim-source-and-delivery-v1",
+  "date": "2026-09-09",
+  "predecessor_installed_build": "nezha.98d08f70d20e5a87a2777f81",
+  "source_revisions": [
+    {
+      "revision": 12,
+      "build_number": "nezha.d245ab49a15cb1810f41a419",
+      "inventory_rows": 702,
+      "changed_files": 35,
+      "added_files": 30,
+      "modified_files": 5,
+      "configuration_build": "failed: Kati duplicate install rules (three Java libraries, libimscamera_jni)"
+    },
+    {
+      "revision": 13,
+      "build_number": "nezha.81c1b93277a1fa371a3efbb3",
+      "inventory_rows": 702,
+      "changed_files": 2,
+      "added_files": 0,
+      "modified_files": 2,
+      "configuration_build": "passed",
+      "policy_build": "selinux_policy passed with neverallow and seapp checks",
+      "module_build": "ims, lib-imsvt, three in-tree Java libraries and XMLs, TeleService",
+      "target_files_build": "passed"
+    }
+  ],
+  "display": {
+    "dim_float_before": 0.0,
+    "dim_float_after": 0.05,
+    "approximate_nits_after": 26.3,
+    "contract": "nezha-normal-brightness-v2",
+    "calibration_xml_unchanged": true,
+    "compiled_value_in_framework_res": "0.05"
+  },
+  "ims": {
+    "api_gate": "TelephonyBaseUtilsStub already in guest source and in v14 framework.jar classes4.dex",
+    "policy": {
+      "system_ext_public_type": "vendor_qtelephony",
+      "attributes": [
+        "appdomain",
+        "netdomain",
+        "coredomain",
+        "domain",
+        "halclientdomain",
+        "hal_telephony_client"
+      ],
+      "service_finds": 9,
+      "selector": "user=_app seinfo=platform name=org.codeaurora.ims isPrivApp=true domain=vendor_qtelephony type=app_data_file levelFrom=all",
+      "not_restored": [
+        "vendor_hal_atfwd_client membership",
+        "vendor_hal_imsvthal_client membership",
+        "vendor_dpmd socket grants"
+      ],
+      "mapping_generated": true,
+      "permissive_domains_added": 0
+    },
+    "java_libraries": {
+      "provider": "vendor/codeaurora/telephony (QSSI 16.0.r1-13200)",
+      "library_types_referenced": 33,
+      "members_found": 146,
+      "members_delegated": 4,
+      "missing_types": 0,
+      "missing_methods": 0,
+      "missing_fields": 0,
+      "stock_jars_result": {
+        "library_types_referenced": 33,
+        "members_found": 146,
+        "members_delegated": 4
+      },
+      "jars": {
+        "ims-ext-common": {
+          "sha256": "d59795a3712c55b7f9b7d3d3810f4d662e9bc5f27ada0f602e04cb6e05396677",
+          "classes": 211
+        },
+        "qti-telephony-utils": {
+          "sha256": "631606ee99be3c5688516d5ff2d86d96775c4dbcd9c1d14bbaddcce6f569849a",
+          "classes": 14
+        },
+        "qti-telephony-hidl-wrapper": {
+          "sha256": "300966127312352499ce60038d720e618bea9ef535ae62e28b66627c9c6d55df",
+          "classes": 14
+        }
+      }
+    },
+    "jni": {
+      "shared_module": "nezha_cam_libimscamera_jni",
+      "byte_identical_to_ims_input": true
+    },
+    "private_inputs": {
+      "count": 20,
+      "bytes": 3899108,
+      "selected_native_libraries": 13,
+      "exact_stock_dex_copies_selected": 0
+    },
+    "mmtel_selector_compiled": true,
+    "modules_activated": 17,
+    "modules_dropped_as_duplicates": 7
+  },
+  "qmi": {
+    "daemon": "vendor_qmipriod",
+    "start_property": "persist.vendor.data.qmipriod_load",
+    "property_origin": "persisted userdata from HyperOS; not set by any build file",
+    "denial": "search on vendor_qmipriod_data_file (dir)",
+    "exit_status": 255,
+    "restart_interval_seconds": 5,
+    "stock_vendor_policy_has_rule": false,
+    "rom_fix": "vendor CIL addition through the vendor policy derivation and policy image rebuild; deferred",
+    "device_remedy": "clear the persisted property to 0 (needs authorization)"
+  },
+  "delivery_set": {
+    "artifact_set": "variant-opt-in-userdebug-20260906-v15",
+    "build_number": "nezha.81c1b93277a1fa371a3efbb3",
+    "unsigned_archive": {
+      "sha256": "32796697268e9ddcacc7c4bd84275933250197bd6209ea995c3563968ea2b3e1",
+      "size_bytes": 11324294454
+    },
+    "system_ext_measured": {
+      "sha256": "85e92161e857caf15a9f8ab9c2583c37120da58fc35c05c6a97df1524c98c26f",
+      "size_bytes": 793612288,
+      "delta_from_v14_bytes": 921600
+    },
+    "reconciled_archive": {
+      "sha256": "ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953",
+      "size_bytes": 11146481756
+    },
+    "super": {
+      "sha256": "60155e61a460641c6d3a1ce88b268e3baab26c6be82f8527bb219461c907cf2f",
+      "size_bytes": 9477810288
+    },
+    "bundle_manifest_sha256": "64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed",
+    "payloads": 8,
+    "gates": {
+      "unsigned_checks": 18,
+      "unsigned_passed": true,
+      "signed_checks": 18,
+      "signed_passed": true,
+      "guest_passed": true
+    },
+    "tests": {
+      "focused": 960,
+      "full": 4937
+    },
+    "phone_accessed": false,
+    "flash_authorized": false,
+    "installed": false
+  },
+  "not_established": "No IMS registration, call or SMS; the phone reports no SIM. Dim level verified as a compiled resource only. The library comparison is lexical. The QMI loop persists on the installed v14."
+}

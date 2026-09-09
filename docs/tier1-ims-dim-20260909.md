@@ -81,15 +81,28 @@ persisted property to `0` stops the loop and is a state change that needs
 your authorization. The rule addition is queued for the next vendor policy
 image cycle.
 
-## Delivery
+## Delivery set v15 (prepared, not installed)
 
-Delivery set v15 follows the same host stages as v14: package, transfer,
-guest and host gates, package admission and cascade, tests, retained manifest,
-signing, signed gates, bundle. The gates additionally require the exact-stock
-IMS APK bytes, the twelve native libraries, the registered libraries, the
-restored policy and selector in the signed archive, the unchanged calibration
-XML and the packet delivery check. Their results are recorded in the
-[status page](workspace-status.md) once the bundle exists.
+The host stages ran as for v14 and every gate passed. Nothing was flashed; the
+bundle needs your separate approval bound to its manifest hash.
+
+| Item | Value |
+| --- | --- |
+| Build identity | `nezha.81c1b93277a1fa371a3efbb3` (userdebug, source revision 13, 702 rows) |
+| Unsigned archive | SHA256 `32796697268e9ddcacc7c4bd84275933250197bd6209ea995c3563968ea2b3e1`, 11,324,294,454 bytes |
+| Measured system_ext | 793,612,288 bytes, 921,600 more than v14; admitted through the cascade |
+| Reconciled signed archive | SHA256 `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953`, 11,146,481,756 bytes |
+| Super | SHA256 `60155e61a460641c6d3a1ce88b268e3baab26c6be82f8527bb219461c907cf2f`, 9,477,810,288 bytes |
+| Bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/`, manifest SHA256 `64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed`, eight payloads, byte identities verified |
+| Boot image | unchanged from v14 (same kernel and ramdisk) |
+| Guest gates | `framework-res` compiles `config_screenBrightnessDimFloat` = 0.05; TeleService compiles `config_ims_mmtel_package` = `org.codeaurora.ims` |
+| Host gates | 18 checks on the unsigned archive and the same 18 on the signed archive: exact-stock IMS APK bytes, dexpreopt outputs, both JNI links, allowlist and group projection, the three registered libraries matching the compared jars, twelve exact-stock native libraries plus the diag NDK library, the domain, mapping and selector in the policy, no permissive domain, unchanged calibration XML, packet delivery check |
+| Tests during admission | 960 focused, 4,937 full, both green |
+| Release checker | every stage recognized for this identity |
+
+The retained-firmware references (`countrycode`, `pvmfw`) and the shared
+Super route are as in v14. The predecessor v14 bundle stays on the host as the
+installed set until v15 is installed and recorded.
 
 ## What this does not prove
 

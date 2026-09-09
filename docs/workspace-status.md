@@ -102,9 +102,9 @@ current phone evidence for the wallpaper fix and the camera subset; the
 camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-20260908.md)
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
-verification remain separate evidence. The Linux checkout now holds source
-revision 11 (`nezha.98d08f70d20e5a87a2777f81`): revision 10 plus the
-`vendor/extras/evolution.mk` Flex removal. After the v14 installation record
+verification remain separate evidence. The Linux checkout held source
+revision 11 (`nezha.98d08f70d20e5a87a2777f81`) for v14 and now holds revision 13
+(`nezha.81c1b93277a1fa371a3efbb3`) for the prepared v15. After the v14 installation record
 was added, `make test-current` passed 939 tests and `make test` passed 4,916
 tests plus shell checks. After the September 9 retention pass and checker
 update, `make test-current` passes 946 tests in 27.566 seconds and `make test`
@@ -140,6 +140,21 @@ reproduces the pinned working76 prebuilt derivative, not a fresh runtime source
 compilation. TWRP remains the required default recovery; missing or mismatched
 inputs must fail. Recovery success with stock companions does not prove the
 successor ROM boot chain or OTA behavior.
+
+## Prepared, not installed: v15 with the IMS provider and the dim fix (September 9)
+
+Delivery set v15 (`nezha.81c1b93277a1fa371a3efbb3`, source revision 13, 702
+rows) is built, signed and bundled under
+`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/`, manifest SHA256
+`64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed`, reconciled
+archive SHA256 `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953`.
+It adds the exact-stock IMS provider with the restored `vendor_qtelephony`
+domain and its factory selector, the MMTEL selector in TeleService, and the
+display dim level 0.05 instead of 0. Every host gate passed; nothing was flashed.
+See the [tier 1 record](tier1-ims-dim-20260909.md). The Linux checkout now
+holds source revision 13. Installing v15 needs your approval bound to that
+manifest hash, a SIM for any IMS result, and the v14 set is deleted only after
+v15 is installed and recorded.
 
 ## Tier 0 hardware ledger on v14 (September 9)
 
@@ -185,9 +200,11 @@ template is enrolled.
   [installation results](package7-f9e-install-20260906.md) remain preserved.
   Those results do not establish current rendering, authentication or userdata
   behavior. Preserve the approved normal status-bar geometry when refining shade.
-- **IMS and telephony:** the Android IMS provider is not integrated, and on
-  September 9 the modem reported no SIM in either slot, so data, SMS and voice
-  are untested. VoLTE, VoWiFi and emergency calling remain unverified. The workload classifier also
+- **IMS and telephony:** the exact-stock Android IMS provider is integrated in
+  source revision 13 and built into the prepared v15 set with its restored
+  `vendor_qtelephony` domain; it is not installed. On September 9 the modem
+  reported no SIM in either slot, so data, SMS and voice are untested. VoLTE,
+  VoWiFi and emergency calling remain unverified. The workload classifier also
   remains disabled; selected display, Dolby, haptics, camera-scheduling and
   refresh candidates still need their own measured device results.
 - **Other hardware and lifecycle:** track networking, display/touch, audio,

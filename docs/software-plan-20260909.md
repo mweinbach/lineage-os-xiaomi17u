@@ -50,6 +50,13 @@ suspend on USB, which feed tiers 1 and 3.
 
 ## Tier 1: daily-driver blockers, in order
 
+Status, September 9: the IMS slice is built into the prepared v15 set with the
+restored domain and selector (see the [tier 1 record](tier1-ims-dim-20260909.md));
+the dim level is fixed in the same set; the QMI daemon loop is diagnosed and
+waits for the vendor policy image cycle. Device gates for all three wait on
+the v15 installation and a SIM.
+
+
 1. **IMS, so calls and texts work the way the carrier expects.** This is the
    largest missing feature. The [IMS inputs](ims-private-inputs.md) already hold
    the 24 exact-stock modules, a build-time producer and the reviewed framework
