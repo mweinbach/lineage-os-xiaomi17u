@@ -1,0 +1,6 @@
+# Factory system_ext public IMS application domain. The retained vendor policy
+# names it as vendor_qtelephony_202504 and the stock versioned public policy in
+# vendor.img declares the same type; this system_ext declaration supplies the
+# 202504 mapping the shipped build lacked, exactly as vendor_hal_atfwd_hwservice
+# already does. Attributes and rules live in the private policy.
+type vendor_qtelephony, domain;

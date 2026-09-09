@@ -1,0 +1,28 @@
+# org.codeaurora.ims runs here, as on the factory build. Rules follow the
+# retained stock system_ext policy (factory extract of 2026-08-29): an ordinary
+# platform-signed application domain with network access, a telephony HAL
+# client, Binder and HwBinder use, and the same service lookups. The stock
+# memberships in vendor_hal_atfwd_client and vendor_hal_imsvthal_client and the
+# dpmd socket grants are not restored: the shipped vendor policy declares
+# neither attribute nor the dpmd types. Vendor-side grants keyed to
+# vendor_qtelephony_202504 (imsrtp, datafactory, perf, property reads) apply
+# through the mapping this domain now receives.
+typeattribute vendor_qtelephony coredomain;
+
+app_domain(vendor_qtelephony)
+net_domain(vendor_qtelephony)
+hal_client_domain(vendor_qtelephony, hal_telephony)
+binder_use(vendor_qtelephony)
+hwbinder_use(vendor_qtelephony)
+
+allow vendor_qtelephony {
+    app_api_service
+    system_api_service
+    radio_service
+    audioserver_service
+    cameraserver_service
+    drmserver_service
+    mediaserver_service
+    mediametrics_service
+    mediaextractor_service
+}:service_manager find;

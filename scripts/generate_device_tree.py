@@ -35,6 +35,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
 CAMERAOPT_SERVICE_FRAGMENT = DEVICE_PATH / "cameraopt-service.mk"
 CAMERAOPT_SERVICE_FRAGMENT_SHA256 = "15ead13db047761f6151dcc5e36ee2b9c154da5b5ce9b8355af85cbcee46100c"
+IMS_FRAGMENT = DEVICE_PATH / "ims.mk"
+IMS_FRAGMENT_SHA256 = "8933c2f92afb1dfb83aa6584ecf4201c0b8b15f6d74a7977f3bf85f17b030821"
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",
@@ -51,6 +53,14 @@ TEMPLATE_FILES = (
     "cameraopt-service.mk",
     "camera-vendor-keys.mk",
     "camera-vendor-keys/overlay/frameworks/base/core/res/res/values/config.xml",
+    "ims.mk",
+    "ims/Android.bp",
+    "ims/permissions/privapp-permissions-org.codeaurora.ims.xml",
+    "ims/permissions/qti_permissions.xml",
+    "ims/overlay/packages/services/Telephony/res/values/config.xml",
+    "ims/sepolicy/public/vendor_qtelephony.te",
+    "ims/sepolicy/private/vendor_qtelephony.te",
+    "ims/sepolicy/private/seapp_contexts",
     "cameraopt-service/Android.bp",
     "cameraopt-service/README.md",
     "cameraopt-service/compile-stubs/com/miui/cameraopt/ICameraOptManager.java",
@@ -4230,8 +4240,13 @@ def validate(output, *, purpose="configuration"):
             cameraopt_policy_fragment = (
                 name == CAMERAOPT_SERVICE_FRAGMENT.as_posix() and
                 hashlib.sha256(raw).hexdigest() == CAMERAOPT_SERVICE_FRAGMENT_SHA256)
+            # The IMS fragment owns only the restored vendor_qtelephony domain
+            # and its selector; it is pinned the same way.
+            ims_policy_fragment = (
+                name == IMS_FRAGMENT.as_posix() and
+                hashlib.sha256(raw).hexdigest() == IMS_FRAGMENT_SHA256)
             _require(name == board_name or (
-                         (cameraopt_policy_fragment or
+                         (cameraopt_policy_fragment or ims_policy_fragment or
                           not re.search(rb"\bSYSTEM_EXT_(?:PUBLIC|PRIVATE)_SEPOLICY_DIRS\b", raw)) and
                          not any(path.encode("ascii") in raw for path in OEM_PROPERTY_WIRING.values())),
                      "OEM property source selection may only use the reviewed generated board")

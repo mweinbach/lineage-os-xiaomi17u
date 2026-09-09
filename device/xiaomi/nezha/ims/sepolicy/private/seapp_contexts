@@ -1,0 +1,3 @@
+# Exact factory system_ext selector. The Xiaomi signer already carries platform
+# seinfo through the retained vendor MAC permissions; no signer change is made.
+user=_app seinfo=platform name=org.codeaurora.ims isPrivApp=true domain=vendor_qtelephony type=app_data_file levelFrom=all

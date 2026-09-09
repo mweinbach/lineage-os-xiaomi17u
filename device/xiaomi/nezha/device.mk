@@ -57,6 +57,9 @@ include $(NEZHA_DEVICE_PATH)/cameraopt-service.mk
 # Restore the factory Camera's registered vendor-key discovery on this AOSP base.
 include $(NEZHA_DEVICE_PATH)/camera-vendor-keys.mk
 
+# Exact-stock Android IMS provider with the restored system_ext application domain; explicit opt-in.
+include $(NEZHA_DEVICE_PATH)/ims.mk
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch.mk)
 $(call inherit-product, $(NEZHA_DEVICE_PATH)/generated/device-candidate.mk)
