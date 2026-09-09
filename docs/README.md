@@ -8,6 +8,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
 | [Roadmap](roadmap-20260906.md) | Workstreams, sequencing and decisions for moving from guarded bring-up to a maintainable release |
+| [Software plan](software-plan-20260909.md) | Prioritized plan for the ROM itself from the v14 baseline: ledger session, IMS, fingerprint, display, audio, power, camera completion, polish, graduation to a user build with OTA |
 | [Artifact retention](artifact-retention-20260909.md) | September 9 pass that kept only the installed v14 delivery set, what was verified before removal, what stays, and the guest candidates left alone |
 | [Release runbook](release-runbook.md) | The nine-stage source-to-bundle sequence the f9e build followed, its receipts and gates, and what the wrapper absorbs next |
 | [Update mechanism](update-mechanism-20260906.md) | What the built target-files declares: Virtual A/B, COW v3, dynamic partitions, care map; consequences for the both-slot route and OTA |
