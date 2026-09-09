@@ -135,7 +135,25 @@ ID `<name>-<date>-v<N>`.
 
 - Update `docs/workspace-status.md` with the identity, bundle path, manifest
   hash and reconciled archive hash. Add a dated page for anything measured.
-- Keep the predecessor bundle, its signed archive and the stock return inputs.
+- Keep the installed set, the stock return inputs and the working76 rescue
+  recovery. Remove the superseded set's bundle, signed archive and transfer
+  copy once the successor is installed and recorded; its hashes stay in the
+  dated record (see the [retention record](artifact-retention-20260909.md)).
+
+## Receipt locations the checker accepts
+
+`scripts/release_workflow.py check` reads two layouts. The f9e layout keeps
+`reports/<run>/source-installed.json`, a host device-candidate admission,
+`*-package-transfer-v*` and `*-super-transfer-v*` receipts. The per-set layout
+used from the userdebug sets onward keeps
+`reports/<topic>/source-revision-N/source-installed.json`, the package
+admission in `artifacts/build-validation/<set>-admit/`, one transfer receipt in
+`<set>-transfer/` carrying both the archive and the Super, a
+`<ver>-host-workflow-status.json` under the topic directory, and a delivery
+plan whose hash the bundle manifest names as `reviewed_plan_sha256`. The
+checker binds the transfer archive to the admission, the Super hash to the
+bundle, and the bundle to the plan's build number and artifact set; presence of
+these receipts is still not qualification or a device result.
 
 ## What the wrapper absorbs next
 
