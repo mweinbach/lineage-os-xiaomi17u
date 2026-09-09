@@ -331,6 +331,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "e14912d3645357c8ee8a525eea439c63cd9b55164d30a5f8c466a86f05756598", "size_bytes": 791797760},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v14-admit/admission.json", "sha256": "8d5eec4d9ac72489225e12ad9726989d8318ec0dab16a6c7206116623f3b97ac", "size_bytes": 7096},
      "build_number": "nezha.98d08f70d20e5a87a2777f81"},
+    # IMS provider slice with restored vendor_qtelephony domain and the framework dim level; measured v15 system_ext.
+    {"measured_image": {"sha256": "85e92161e857caf15a9f8ab9c2583c37120da58fc35c05c6a97df1524c98c26f", "size_bytes": 793612288},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v15-admit/admission.json", "sha256": "fa2633446505c0939b850d1f1854cdfc221a59f2af19ed8d2784ca4d5450a0cc", "size_bytes": 7121},
+     "build_number": "nezha.81c1b93277a1fa371a3efbb3"},
 )
 
 
