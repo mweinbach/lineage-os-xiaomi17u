@@ -59,6 +59,13 @@ class MappingTests(unittest.TestCase):
         self.assertIsNone(xml.find("highBrightnessMode"))
         self.assertEqual(len(xml.findall("screenBrightnessMap/point")), 9)
         overlay = ET.fromstring(files[panel.OVERLAY])
+        dim = overlay.find("item[@name='config_screenBrightnessDimFloat']")
+        # The dim policy must not drive the panel to its minimum; keep the framework default.
+        self.assertEqual(dim.text, "0.05")
+        self.assertEqual(Decimal(dim.text), panel.DIM_FLOAT)
+        self.assertGreater(Decimal(dim.text), Decimal(0))
+        self.assertLess(Decimal(dim.text), Decimal(details["normalized_default"]))
+        overlay = ET.fromstring(files[panel.OVERLAY])
         nits = overlay.find("array[@name='config_autoBrightnessDisplayValuesNits']")
         values = [Decimal(e.text) for e in nits]
         self.assertEqual(len(values), 133)
@@ -119,7 +126,7 @@ class DeliveryTests(unittest.TestCase):
             raw = b"fixture"
             (root / panel.DISPLAY).write_bytes(raw)
             hashes = {panel.DISPLAY: panel.sha(raw)}
-            (root / "display-panel-inputs.json").write_text(json.dumps({"contract": "nezha-normal-brightness-v1", "inputs": panel.INPUTS, "outputs": hashes}))
+            (root / "display-panel-inputs.json").write_text(json.dumps({"contract": panel.CONTRACT_ID, "inputs": panel.INPUTS, "outputs": hashes}))
             archive = root / "target.zip"
             with zipfile.ZipFile(archive, "w") as z, warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)

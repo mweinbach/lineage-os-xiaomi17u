@@ -73,9 +73,15 @@ not a new photometer measurement. The system default is explicitly renormalized:
 
 `(0.055854 - 0.000366256) / (0.374862654 - 0.000366256) = 0.148166296`.
 
-The dim level is normalized zero, corresponding to the factory minimum backlight
-and 1-nit calibration point. Both framework resources and DDC supply the
-normalized default. Existing saved slider values change physical meaning when
+The dim level was normalized zero in this packet, corresponding to the factory
+minimum backlight and 1-nit calibration point. **Superseded on September 9,
+2026:** the tier 0 session measured that the display's dim policy drove the
+panel to its minimum and that the keyguard reaches that policy after about
+ten seconds even while kept awake, so the lock screen went nearly black. The
+generator now emits the framework's normalized dim level, 0.05, about 26 nits
+on this panel, under contract `nezha-normal-brightness-v2`; the calibration
+XML is unchanged. Both framework resources and DDC supply the normalized
+default. Existing saved slider values change physical meaning when
 this narrower range is selected; there is no settings migration in this packet.
 
 ## Prepare and select after the existing build

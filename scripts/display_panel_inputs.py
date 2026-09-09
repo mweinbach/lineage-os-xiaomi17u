@@ -44,10 +44,12 @@ RECEIPT_PATHS = {
     "product-overlays": {"files/0001": "/overlay/AospFrameworkResOverlay.apk",
                          "files/0003": "/overlay/FrameworksResCommon_Sys.apk"},
 }
+DIM_FLOAT = Decimal("0.05")
+CONTRACT_ID = "nezha-normal-brightness-v2"
 OUTPUT_HASHES = {
     DISPLAY: "ae025443ec514cdc9fb4fae29586d754cea1f7967b3529f5aff815deba563b92",
-    OVERLAY: "f321d9919dfb1a5efd5f85f9d0a79d635a1757a308ad95596e91282aadb52439",
-    "display-product.mk": "5a26386768f78bc20a5650a9a83f6960e9ec341c747fee1cccc2351971e9ae44",
+    OVERLAY: "fc6bf9dd80d6ea675e24f87b06feacac916f2d22a71f2f5af0ea701b6b317534",
+    "display-product.mk": "e243b934be2ae29e56650cee6bed34d1e0ddc241a287157c627d50e76c15c371",
 }
 
 
@@ -124,7 +126,10 @@ def calibration(panel, dump, common, framework):
         "config_screenBrightnessSettingMinimumFloat": minimum,
         "config_screenBrightnessSettingMaximumFloat": cap,
         "config_screenBrightnessSettingDefaultFloat": normalized_default,
-        "config_screenBrightnessDimFloat": Decimal(0),
+        # Keep the framework's normalized dim level (Evolution config.xml: 0.05). On this
+        # panel it maps to about 26 nits. Zero, used until September 9, 2026, sent the
+        # dim policy to the panel minimum and blacked out the kept-awake lock screen.
+        "config_screenBrightnessDimFloat": DIM_FLOAT,
     }
     for name, value in values.items():
         ET.SubElement(overlay, "item", name=name, type="dimen", format="float").text = number(value)
@@ -194,7 +199,7 @@ def prepare(stock, output):
     outputs["display-product.mk"] = render_make(outputs)
     require({name: sha(raw) for name, raw in outputs.items()} == OUTPUT_HASHES,
             "derived outputs differ from reviewed normal-brightness contract")
-    receipt = {"schema_version": 1, "contract": "nezha-normal-brightness-v1", "inputs": INPUTS,
+    receipt = {"schema_version": 1, "contract": CONTRACT_ID, "inputs": INPUTS,
                "details": details, "outputs": {name: sha(raw) for name, raw in outputs.items()},
                "native_build_verified": False, "phone_accessed": False}
     outputs["display-panel-inputs.json"] = encoded(receipt)
@@ -222,7 +227,7 @@ def verify_delivery(target_files, packet):
     reader = Reader()
     receipt = json.loads(reader.read(Path(packet) / "display-panel-inputs.json"))
     raw = reader.read(Path(packet) / DISPLAY)
-    require(receipt.get("contract") == "nezha-normal-brightness-v1"
+    require(receipt.get("contract") == CONTRACT_ID
             and receipt.get("inputs") == INPUTS
             and receipt.get("outputs") == OUTPUT_HASHES
             and OUTPUT_HASHES[DISPLAY] == sha(raw), "invalid panel packet receipt")
