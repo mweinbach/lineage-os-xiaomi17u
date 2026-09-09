@@ -141,6 +141,21 @@ compilation. TWRP remains the required default recovery; missing or mismatched
 inputs must fail. Recovery success with stock companions does not prove the
 successor ROM boot chain or OTA behavior.
 
+## Tier 0 hardware ledger on v14 (September 9)
+
+The [tier 0 session](hardware-ledger-v14-20260909.md) ran the hardware ledger
+against the installed v14 over root ADB without a reboot, flash or wipe and
+restored every setting it touched. Five checks pass (`display.manual_curve`,
+`power.thermal`, `wifi.connectivity`, `camera.xiaomi.startup`, `mi_ext.mounts`),
+none fail, twenty-five need a person, a SIM, an accessory, open sky or unplugged
+time. Findings to act on: the modem reports no SIM in either slot, the dim
+brightness configuration is zero so the lock screen goes nearly black after
+its ten-second timeout, `vendor_qmipriod` is denied every five seconds on the
+enforcing build, kernel suspend never happened in 3.3 hours on USB, and the
+keyguard carrier text shows a fading edge on static text. Retained userdata is
+present (one account, 22 third-party packages, 151 media files); no fingerprint
+template is enrolled.
+
 ## Remaining feature work
 
 - **Camera:** V13 passes the requested capture matrix: ordinary rear/front
@@ -163,15 +178,16 @@ successor ROM boot chain or OTA behavior.
   changes, theme packs and the other six plugin clocks were not applied. See the
   [v14 runtime record](wallpaper-v14-install-validation-20260908.md).
 
-- **Retained userdata, UDFPS and shade:** Camera apps opened and new JPEGs were written after dismissing the keyguard; retained personal userdata, UDFPS authentication and shade visual acceptance remain unverified.
+- **Retained userdata, UDFPS and shade:** The tier 0 session found the user's account, third-party apps and media present on v14, no fingerprint template enrolled, and a fading edge on the keyguard carrier text; enrollment, unlock and shade acceptance by eye remain unverified.
   The user confirmed fingerprint enrollment on a6d; f9e loaded the measured
   pixel-pitch correction and shade configuration. Their
   [source/build measurements](package7-ui-camera-followup-20260905.md) and
   [installation results](package7-f9e-install-20260906.md) remain preserved.
   Those results do not establish current rendering, authentication or userdata
   behavior. Preserve the approved normal status-bar geometry when refining shade.
-- **IMS and telephony:** the Android IMS provider is not integrated. VoLTE,
-  VoWiFi and emergency calling remain unverified. The workload classifier also
+- **IMS and telephony:** the Android IMS provider is not integrated, and on
+  September 9 the modem reported no SIM in either slot, so data, SMS and voice
+  are untested. VoLTE, VoWiFi and emergency calling remain unverified. The workload classifier also
   remains disabled; selected display, Dolby, haptics, camera-scheduling and
   refresh candidates still need their own measured device results.
 - **Other hardware and lifecycle:** track networking, display/touch, audio,

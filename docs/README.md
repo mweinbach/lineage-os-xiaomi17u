@@ -10,6 +10,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | [Roadmap](roadmap-20260906.md) | Workstreams, sequencing and decisions for moving from guarded bring-up to a maintainable release |
 | [Software plan](software-plan-20260909.md) | Prioritized plan for the ROM itself from the v14 baseline: ledger session, IMS, fingerprint, display, audio, power, camera completion, polish, graduation to a user build with OTA |
 | [Artifact retention](artifact-retention-20260909.md) | September 9 pass that kept only the installed v14 delivery set, what was verified before removal, what stays, and the guest candidates left alone |
+| [Tier 0 hardware ledger on v14](hardware-ledger-v14-20260909.md) | Read-only and reversible session on the installed v14: 5 of 30 ledger checks pass, 25 need hands or a SIM; no SIM detected, dim brightness zero, recurring qmipriod denial, no suspend on USB, carrier-text fade |
 | [Release runbook](release-runbook.md) | The nine-stage source-to-bundle sequence the f9e build followed, its receipts and gates, and what the wrapper absorbs next |
 | [Update mechanism](update-mechanism-20260906.md) | What the built target-files declares: Virtual A/B, COW v3, dynamic partitions, care map; consequences for the both-slot route and OTA |
 | [Input closure](input-closure.md) | Manifest of every non-upstream build input by hash, with patch-contract binding and private receipt identities |

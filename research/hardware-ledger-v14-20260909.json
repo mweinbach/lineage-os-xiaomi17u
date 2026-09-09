@@ -1,0 +1,502 @@
+{
+  "operation": "hardware-ledger-session-v1",
+  "date": "2026-09-09",
+  "build_identity": "nezha.98d08f70d20e5a87a2777f81",
+  "installed_slot": "_a",
+  "build_type": "userdebug",
+  "selinux": "Enforcing",
+  "adb_root": true,
+  "uptime_hours_at_start": 3.4,
+  "evidence_directory": "evidence/hardware-ledger-v14-20260909",
+  "collectors": [
+    "scripts/collect_stock.py --feature-diagnostics (partial: /mi_ext bind absent)",
+    "reports/hardware-ledger-20260909/tier0_passive.py",
+    "tier0_active.py",
+    "tier0_display.py",
+    "tier0_load.py"
+  ],
+  "ledger": {
+    "validator": "scripts/hardware_qualification.py analyze",
+    "evidence_validation": "valid",
+    "counts": {
+      "pass": 5,
+      "fail": 0,
+      "not-run": 25
+    },
+    "checks": [
+      {
+        "id": "display.manual_curve",
+        "area": "display",
+        "status": "pass",
+        "evidence_files": 5
+      },
+      {
+        "id": "display.auto_brightness",
+        "area": "display",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "display.low_brightness_resume",
+        "area": "display",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "radio.data",
+        "area": "radio",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "radio.sms",
+        "area": "radio",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "radio.voice",
+        "area": "radio",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "audio.speaker",
+        "area": "audio",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "audio.microphones",
+        "area": "audio",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "audio.usb",
+        "area": "audio",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "sensors.motion",
+        "area": "sensors",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "sensors.proximity_als",
+        "area": "sensors",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "haptics.waveforms",
+        "area": "haptics",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "power.suspend",
+        "area": "power",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "power.wired",
+        "area": "power",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "power.wireless",
+        "area": "power",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "power.thermal",
+        "area": "power",
+        "status": "pass",
+        "evidence_files": 4
+      },
+      {
+        "id": "gnss.fixes",
+        "area": "gnss",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "nfc.tag",
+        "area": "nfc",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "wifi.connectivity",
+        "area": "wifi",
+        "status": "pass",
+        "evidence_files": 6
+      },
+      {
+        "id": "bluetooth.audio",
+        "area": "bluetooth",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "camera.aperture.mapping",
+        "area": "camera",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "camera.aperture.rear",
+        "area": "camera",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "camera.aperture.front",
+        "area": "camera",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "camera.xiaomi.startup",
+        "area": "camera",
+        "status": "pass",
+        "evidence_files": 10
+      },
+      {
+        "id": "camera.xiaomi.capture",
+        "area": "camera",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "camera.xiaomi.modes",
+        "area": "camera",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "mi_ext.mounts",
+        "area": "mi_ext",
+        "status": "pass",
+        "evidence_files": 6
+      },
+      {
+        "id": "mi_ext.properties_overlays",
+        "area": "mi_ext",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "vendor.cne_txpwr",
+        "area": "vendor",
+        "status": "not-run",
+        "evidence_files": 0
+      },
+      {
+        "id": "vendor.lazy_services",
+        "area": "vendor",
+        "status": "not-run",
+        "evidence_files": 0
+      }
+    ]
+  },
+  "device_state_changes": {
+    "settings_changed_and_restored": [
+      "system screen_brightness_mode",
+      "system screen_brightness",
+      "global stay_on_while_plugged_in"
+    ],
+    "restored_equals_baseline": true,
+    "wifi_toggled_off_then_on": true,
+    "vibrations_played": 4,
+    "cpu_load_seconds": 45,
+    "screenshots_taken": 9,
+    "keyguard_dismissed_swipe_only": true,
+    "reboot": false,
+    "flash": false,
+    "install": false,
+    "wipe": false,
+    "left_asleep": true
+  },
+  "measurements": {
+    "display": {
+      "ddc": "/product/etc/displayconfig/display_id_4630946639341352083.xml",
+      "normal_range_backlight_fraction": 0.37486264,
+      "max_nits": 600.0172,
+      "hbm_enabled": false,
+      "sweep_settings": [
+        1,
+        4,
+        8,
+        16,
+        32,
+        48,
+        64,
+        96,
+        128,
+        160,
+        192,
+        224,
+        255
+      ],
+      "brightness_clone": [
+        7,
+        79,
+        176,
+        369,
+        756,
+        1142,
+        1529,
+        2302,
+        3074,
+        3847,
+        4620,
+        5393,
+        6142
+      ],
+      "backlight_node": [
+        10,
+        86,
+        182,
+        396,
+        766,
+        1150,
+        1538,
+        2329,
+        3110,
+        3931,
+        4673,
+        5419,
+        6172
+      ],
+      "clone_max": 16383,
+      "strictly_monotonic": true,
+      "dim_float_config": 0.0,
+      "dim_int_config": 5,
+      "framework_brightness_dim": 0.0,
+      "keyguard_dim_after_seconds_about": 10,
+      "auto_brightness_sample": {
+        "lux": 12.7,
+        "brightness": 0.1798,
+        "clone": 1110
+      },
+      "luminance_meter": false
+    },
+    "thermal_load": {
+      "load": "4 x sha256sum /dev/zero for 45 s, screen off, USB attached",
+      "baseline_max_cpu_zone_c": 28.5,
+      "peak_max_cpu_zone_c": 52.1,
+      "recovery_45s_max_cpu_zone_c": 30.5,
+      "battery_c_before": 26.0,
+      "battery_c_after": 27.4,
+      "thermal_status_max": 0,
+      "little_cluster_khz": 2745600,
+      "big_cluster_khz": 2880000,
+      "stale_cached_cpu_temperatures_c": [
+        80.7,
+        91.9
+      ],
+      "live_idle_range_c": [
+        25,
+        28
+      ]
+    },
+    "wifi": {
+      "band_mhz": 6375,
+      "standard": "802.11be",
+      "security": "WPA3-SAE",
+      "rssi_dbm_range": [
+        -47,
+        -44
+      ],
+      "reconnect_seconds": 2.2,
+      "ping_loss_percent": 0,
+      "bands_not_tested": [
+        "2.4 GHz",
+        "5 GHz"
+      ]
+    },
+    "haptics": {
+      "effects_played": [
+        "CLICK",
+        "DOUBLE_CLICK",
+        "HEAVY_CLICK",
+        "oneshot 300 ms amplitude 200"
+      ],
+      "hal_reported_durations_ms": [
+        66,
+        71,
+        62,
+        319
+      ],
+      "amplitude_control": true,
+      "supported_primitives": 0,
+      "perceived_response_observed": false
+    },
+    "power": {
+      "suspend_success_count": 0,
+      "suspend_fail_count": 0,
+      "uptime_hours": 3.4,
+      "usb_attached": true,
+      "battery_level": 100,
+      "battery_status": "full",
+      "charging_current_measurable": false,
+      "partial_wake_lock_at_sample": "third-party WorkManager job",
+      "loadavg_at_idle": 9.8,
+      "uninterruptible_kernel_threads": 9
+    },
+    "radio": {
+      "sim_state": [
+        "ABSENT",
+        "ABSENT"
+      ],
+      "modem_card_state": "CARDSTATE_ABSENT on both slots at boot",
+      "subscriptions": 0,
+      "ims_feature_state": "UNAVAILABLE (IMS_SERVICE_DISCONNECTED)",
+      "status_bar_text": "Emergency calls only"
+    },
+    "fingerprint": {
+      "sensor_id": 5,
+      "provider": "FingerprintProvider/default",
+      "enrolled_templates": 0,
+      "keyguard_secure": false
+    },
+    "sensors": {
+      "listed_entries": 115,
+      "families": [
+        "accelerometer",
+        "gyroscope",
+        "magnetometer",
+        "light",
+        "proximity",
+        "pressure",
+        "gravity",
+        "rotation vectors",
+        "step detector/counter",
+        "significant motion",
+        "tilt",
+        "device orientation"
+      ]
+    },
+    "camera": {
+      "hal_devices": 9,
+      "xiaomi_camera_version": "6.3.007010.0",
+      "aperture_package_present": true,
+      "leftover_probe_app_installed": "org.nezha.cameracaptureprobe in /data/app"
+    },
+    "mi_ext": {
+      "mounted": true,
+      "filesystem": "erofs",
+      "vendor_fstab_overlay_entries": 22,
+      "overlays_mounted": 13,
+      "not_mounted_with_existing_lowerdir": [
+        "/product/lib",
+        "/product/lib64",
+        "/product/opcust",
+        "/product/data-app",
+        "/system/app",
+        "/system/priv-app",
+        "/system/framework",
+        "/system/etc/permissions",
+        "/product/etc/precust_theme"
+      ],
+      "bind_to_root_mi_ext": false,
+      "first_stage_fstab_overlay_lines": 0,
+      "runtime_overlays_enabled": 54,
+      "runtime_overlays_disabled": 184
+    },
+    "selinux": {
+      "enforcing": true,
+      "avc_lines_in_dmesg": 237,
+      "recurring_denial": {
+        "scontext": "vendor_qmipriod",
+        "tcontext": "vendor_qmipriod_data_file",
+        "tclass": "dir",
+        "permission": "search",
+        "count_in_buffer": 49,
+        "interval_seconds": 5
+      },
+      "other_denials": [
+        "vendor_location_xtra_daemon -> system_file (file), once",
+        "su domain filesystem getattr from the session's own df and mount (permissive domain)"
+      ]
+    },
+    "retained_userdata": {
+      "accounts": 1,
+      "third_party_packages": 22,
+      "media_files": 151,
+      "wiped": false
+    },
+    "keyguard_visuals": {
+      "carrier_text_fading_edge_on_static_text": true,
+      "status_bar_icons": "Wi-Fi and charging battery drawn right of the cutout",
+      "quick_settings_rendered": true,
+      "udfps_icon": "not applicable, no template enrolled"
+    },
+    "gnss": {
+      "provider_enabled": true,
+      "started_since_boot": false,
+      "ttff_reports": 0,
+      "capabilities_include": [
+        "SCHEDULING",
+        "MSB",
+        "MSA",
+        "GEOFENCING",
+        "SATELLITE_PVT"
+      ]
+    },
+    "nfc": {
+      "state": "on",
+      "secure_nfc": false
+    },
+    "bluetooth": {
+      "state": "on"
+    }
+  },
+  "hands_on_remaining": {
+    "needs_a_sim": [
+      "radio.data",
+      "radio.sms",
+      "radio.voice"
+    ],
+    "needs_the_user_or_an_accessory": [
+      "audio.speaker",
+      "audio.microphones",
+      "audio.usb",
+      "bluetooth.audio",
+      "nfc.tag",
+      "sensors.motion",
+      "sensors.proximity_als",
+      "haptics.waveforms (perceived response)",
+      "display.auto_brightness (cover and light the sensor)",
+      "display.low_brightness_resume (visual inspection)"
+    ],
+    "needs_unplugged_time": [
+      "power.suspend",
+      "power.wired (battery below full)",
+      "power.wireless"
+    ],
+    "needs_open_sky": [
+      "gnss.fixes"
+    ],
+    "needs_a_camera_session": [
+      "camera.aperture.mapping",
+      "camera.aperture.rear",
+      "camera.aperture.front",
+      "camera.xiaomi.capture (front video, lens transitions)",
+      "camera.xiaomi.modes"
+    ],
+    "needs_a_feature_trigger": [
+      "mi_ext.properties_overlays",
+      "vendor.cne_txpwr",
+      "vendor.lazy_services"
+    ]
+  },
+  "not_established": "Five passes are the checks whose procedure was completed without a person at the phone; they do not qualify calls, audio, sensors, power drain, GNSS, NFC, Bluetooth or the camera beyond startup. Suspend behaviour was not measurable on USB. Nothing here is a stock-parity or certification claim."
+}

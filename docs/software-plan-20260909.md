@@ -42,6 +42,12 @@ unlock, and shade visuals to the same session. Nothing is flashed. The ledger
 decides how much of tiers 1 and 3 is real work and how much already passes.
 Effort: one session, then a dated record.
 
+Status: the host-drivable half ran on September 9 and is recorded in the
+[tier 0 ledger session](hardware-ledger-v14-20260909.md): five checks pass,
+twenty-five wait on a SIM, a person or an accessory. It also surfaced a zero
+dim-brightness configuration, a recurring `vendor_qmipriod` denial and no kernel
+suspend on USB, which feed tiers 1 and 3.
+
 ## Tier 1: daily-driver blockers, in order
 
 1. **IMS, so calls and texts work the way the carrier expects.** This is the
