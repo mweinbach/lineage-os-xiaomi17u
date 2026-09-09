@@ -2,8 +2,9 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-Package7 `f9e` build is installed and boots with enforcing SELinux. Most of this
-repository is tooling, contracts and evidence records, not Android source.
+installed build is the v14 userdebug delivery set, which boots with enforcing
+SELinux and root ADB for diagnostics. Most of this repository is tooling,
+contracts and evidence records, not Android source.
 
 ## Read first
 
@@ -11,11 +12,16 @@ repository is tooling, contracts and evidence records, not Android source.
    test. Follow it; this file only adds orientation.
 2. `docs/workspace-status.md` selects the current baseline, identities, hashes
    and next development steps.
-3. `docs/roadmap-20260906.md` holds the workstreams, sequencing and the
-   decisions already taken (both slots populated, private audience, source
-   kernel as the design goal with prebuilt kept selectable).
+3. `docs/software-plan-20260909.md` is the prioritized plan for the ROM
+   itself. `docs/roadmap-20260906.md` holds the tooling, update and kernel
+   workstreams and the decisions already taken (both physical slots written,
+   Super single-copy with A/B updates, private audience, source kernel as the
+   design goal with prebuilt kept selectable).
 4. `docs/README.md` indexes every dated record. Old pages describe their own
    checkpoint; do not read a historical gate as a current one.
+5. Other sessions land work between your turns. Re-read `git log`, the status
+   page and `make apple-status` before resuming anything, and look for build
+   processes inside the VM before any guest step.
 
 ## Rules that bite
 
@@ -33,6 +39,10 @@ repository is tooling, contracts and evidence records, not Android source.
   resuming a build; never prune volumes or reset the checkout.
 - Keep verified facts separate from unresolved work in every doc and record.
   A passing test, a compile or a receipt never closes a device result.
+- A delivery set costs about 57 GB on the host. Only the installed set is
+  retained; remove a superseded set once its successor is installed and
+  recorded, and never delete stock return inputs, the working76 rescue
+  recovery, the signing key or private build inputs.
 
 ## Layout
 
@@ -41,26 +51,41 @@ repository is tooling, contracts and evidence records, not Android source.
 | `config/*.json` | Reviewed contracts: source lock, AVB profiles, construction descriptors, feature inputs. Scripts pin a contract's SHA256; editing a contract means updating the pin and recording why. |
 | `scripts/*.py` | Stdlib-only Python tools. Most expose `plan` / `check` / `verify` / `build` subcommands and a `--dry-run`. `plan` reads public inputs only. |
 | `tests/` | Offline unittest suite, stdlib only, phones and networks mocked. `support.py` holds shared walkers; discovery does not collect it. |
-| `device/xiaomi/nezha/` | Authored product and board source. The tracked `BoardConfig.mk` is a restricted template; `generate_device_tree.py` writes the buildable derivative into an ignored staging root. |
-| `kernel/xiaomi/nezha/` | Prebuilt kernel bundle consumer, kernel input contract and the ACK/MiCode config audit. |
-| `patches/evolution/`, `patches/twrp/` | Numbered upstream patches, each with a JSON contract holding its hash. |
+| `device/xiaomi/nezha/` | Authored product and board source, including the guarded camera, CameraOpt, audio and clock selections. The tracked `BoardConfig.mk` is a restricted template; `generate_device_tree.py` writes the buildable derivative into an ignored staging root. |
+| `kernel/xiaomi/nezha/` | Prebuilt kernel bundle consumer (provenance kind `prebuilt` or `source`), kernel input contract and the ACK/MiCode config audit. |
+| `patches/evolution/`, `patches/twrp/` | Numbered upstream patches, each with a JSON contract holding its hash. 0029 to 0039 are the camera, audio and clock-plugin work. |
 | `policy/nezha/` | Blueprint entry for the SELinux source integration; the policy inputs themselves are contracts under `config/` and ignored bundles. |
 | `recovery/twrp-working/` | The selected `working76` recovery repack workflow. `recovery/twrp-upstream/` and `recovery/twrp/` are preserved source experiments. |
 | `research/*.json` | Sanitized public records behind the docs. Tests recompute hashes, links and totals from them. |
 | `docs/` | Current status, runbooks and dated evidence pages named `topic-YYYYMMDD.md`. |
 | `containers/apple/` | Apple Container + Rosetta builder image for the Linux build volume. |
-| `tools/` | Small native probes built in the Android tree: camera metadata probe app, EROFS metadata reader, VINTF definition audit. |
-| `templates/` | Source templates for the guarded IMS and workload-classifier integrations. |
+| `tools/` | Small native probes built in the Android tree: camera metadata and capture probes, EROFS metadata reader, VINTF definition audit. |
+| `templates/` | Source templates for the guarded IMS, workload-classifier and camera integrations. |
 | `manifests/` | Deliberately empty. No local device manifest exists yet; the platform comes from the source lock and its snapshot under `research/source-snapshots/`. |
+
+## How a build is delivered today
+
+The pipeline that produced every installed set since v1 lives in the ignored
+`reports/variant-opt-in-20260906/` directory: `deliver_userdebug.py` with
+stages package, transfer, sign, bundle, preflight, install and observe, plus
+`admit_package.py`, `admit_cascade.py` and `make_retained_manifest.py`, all
+keyed by the `NEZHA_DELIVERY_SET` environment variable. Each set also gets
+prepare, verify, finish and record scripts under `reports/<topic>/`. None of
+that is in Git; absorbing it into `scripts/` is roadmap workstream A.
+`scripts/release_workflow.py check` recognizes its receipts, and
+`scripts/release_signing.py`, `ota_package.py` and `delivery_route.py` are the
+tracked pieces waiting to replace parts of it.
 
 ## Commands
 
 ```sh
 make help                 # every target with a one-line purpose
-make test-current         # focused Package7 suite, under a minute
-make test                 # full offline suite, about four minutes, run once before finishing
+make test-current         # focused suite, under a minute
+make test                 # full offline suite, about three minutes, run once before finishing
 python3 -m unittest discover -s tests -p 'test_NAME.py' -v   # one module, from repo root
 make apple-status         # who owns the Linux source volume
+make release-plan BUILD_NUMBER=nezha.<hash> ARTIFACT_SET=<set>   # runbook stages for one identity
+python3 -B scripts/release_workflow.py check --build-number nezha.<hash> --artifact-set <set>
 make recovery-plan        # working76 build and ROM recovery input contract
 python3 -B scripts/rom_construction.py plan --phase target-files
 ```
@@ -74,14 +99,16 @@ quoted.
 
 - New evidence gets a dated page under `docs/`, a sanitized JSON record under
   `research/` when there is structured data, and a row in `docs/README.md`.
-  Relative links in `README.md` and `docs/*.md` are tested.
+  Relative links in `README.md` and `docs/*.md` are tested, so never link into
+  a directory that a retention pass may remove; name the path in code instead.
 - Update `docs/workspace-status.md` when the selected baseline, identity or
   next step changes. Preserve superseded text in the dated archive rather than
   deleting history.
 - A record states what was checked, what was not, and what it does not prove.
   Use words like "unverified", "not device-admitted" and "off-device" exactly.
-- Every build gets a fresh source/build identity (`nezha.<hash>`). Keep the
-  predecessor bundle as rollback evidence.
+- Every build gets a fresh source/build identity (`nezha.<hash>`) and a new
+  delivery set number. The predecessor survives as hashes in its record, not as
+  bytes on the host.
 - Tests earn their place by exercising a script with synthetic input,
   recomputing a hash, link or total from an artifact, or pinning a measured
   value that carries a build decision. Do not write tests that restate a
@@ -92,12 +119,26 @@ quoted.
 
 ## Where things stand
 
-- Installed: `nezha.f9e30611efe01b882f9ed0cb`, bundle under
-  `artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/`.
-- Development source: `nezha.bc6311b1a714e310eaf1af56` in the existing Linux
-  checkout, with display, Dolby, haptics, camera scheduling and refresh
-  candidates selected and IMS and workload classifier disabled.
-- Open on device: post-unlock userdata, UDFPS icon, shade visuals, camera
-  role mapping, IMS. Camera evidence and the persisted-property experiment are
-  summarized in `docs/workspace-status.md`.
-- Not yet built: OTA packages, a both-slot delivery route, a source kernel.
+- Installed: v14, `nezha.98d08f70d20e5a87a2777f81`, userdebug, slot A,
+  Enforcing, bundle under
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/`. It is the
+  only delivery set retained on the host.
+- Source: revision 11 in the Linux checkout. It carries the merged feature
+  candidates (display brightness, Dolby, haptics, camera scheduling, refresh
+  policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
+  the HyperOS camera framework port, native camera session hooks, vendor-key
+  discovery, stream sizing, compressed Bayer DNG, Xiaomi audio descriptors and
+  the stale Flex clock removal. `user` is still the default variant; userdebug
+  needs its explicit opt-in. IMS and the workload classifier stay disabled.
+- Camera: the requested capture matrix passes on v13 and the v14 subset:
+  rear and front Ultra HDR, main and telephoto 50 MP, telephoto 200 MP, Pro
+  RAW, UltraRAW DNG, three physical RAW sensors, all ten Aperture effects and
+  a short HEVC/AAC video. Image quality, focus, stabilization, other video
+  modes and the microphone are unverified.
+- Open on device: retained userdata, UDFPS, shade visuals, IMS and VoLTE,
+  panel brightness and HBM policy, Dolby, haptics, refresh policy, workload
+  classifier, and the hardware ledger (radio, sensors, GNSS, NFC, Wi-Fi,
+  Bluetooth, suspend, charging, thermals).
+- Not yet built: OTA packages, the both-slot delivery route, a source kernel,
+  release keys. The tracked tools for those exist but have not run on a real
+  identity.
