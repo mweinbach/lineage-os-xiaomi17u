@@ -34,11 +34,15 @@ v13 capture matrix. The retained source also includes
 [vendor-key discovery](camera-vendor-key-discovery-20260908.md) and the
 [CameraX cache backport](camerax-extension-cache-20260908.md).
 [V11r1](camera-v11-install-validation-20260908.md) and
-[v10](camera-v10-install-validation-20260908.md) remain preserved predecessors.
+[v10](camera-v10-install-validation-20260908.md) remain preserved predecessor records.
 
 V9 (`nezha.393aae12fba9ebe8627cdc38`), v8
 (`nezha.f2e3feac321f56f92d2ad7ea`) and v7
-(`nezha.c6ad60080698a987390afc40`) remain preserved predecessor bundles.
+(`nezha.c6ad60080698a987390afc40`) remain recorded predecessors. Their bundles,
+signed archives and transfer copies were removed from the host in the
+[September 9 retention pass](artifact-retention-20260909.md), which keeps only
+the installed v14 set; every removed set is still identified by hash in its
+dated record.
 The [f9e installation](package7-f9e-install-20260906.md),
 [a6d installation](package7-feature-successor-install-20260905.md) and
 [original Package7 first boot](package7-first-boot-20260905.md) remain historical
@@ -52,7 +56,7 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
 | Installed build identity | `nezha.98d08f70d20e5a87a2777f81` (userdebug, delivery set v14) |
 | Installed source receipt | 672 rows; `reports/wallpaper-clock-plugin-20260908/source-revision-11/source-installed.json`, SHA256 `2227c605583e78d261bb4019c8f0a19dc057cf806980a4352f2eb1330301c484` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/` (v13 bundle retained as rollback evidence) |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/` (the only delivery set retained on the host; see the [retention record](artifact-retention-20260909.md)) |
 | Bundle manifest SHA256 | `b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0` |
 | Reconciled signed target-files SHA256 | `fee3f8e03fef7ca7c29faf63d492d28d99c72be47dc93ddc05eafd90e9bd390d` |
 | Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md) |
@@ -64,8 +68,10 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Normal Android policy | Enforcing source/build baseline; measured current state is recorded above |
 
 The private eight-image bundles and target-files ZIPs are not OTA or TWRP
-installers. Preserve the predecessor bundles, original Package7, working76
-rescue, stock return inputs, signing key and private build inputs. Artifact
+installers. Preserve the installed v14 set, the working76 rescue recovery,
+the stock return inputs, the signing key and the private build inputs.
+Superseded delivery sets are removed once their successor is installed and
+recorded; a removed set survives only as the hashes in its dated record. Artifact
 checks, installation results and feature validation are separate evidence.
 
 ## Resume development
@@ -99,8 +105,10 @@ checks and their offline test results. Artifact, installation and capture
 verification remain separate evidence. The Linux checkout now holds source
 revision 11 (`nezha.98d08f70d20e5a87a2777f81`): revision 10 plus the
 `vendor/extras/evolution.mk` Flex removal. After the v14 installation record
-was added, `make test-current` passes 939 tests in 28.262 seconds and
-`make test` passes 4,916 tests in 191.755 seconds plus shell checks.
+was added, `make test-current` passed 939 tests and `make test` passed 4,916
+tests plus shell checks. After the September 9 retention pass and checker
+update, `make test-current` passes 946 tests in 27.566 seconds and `make test`
+passes 4,923 tests in 187.054 seconds plus shell checks.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the

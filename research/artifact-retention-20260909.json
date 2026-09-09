@@ -1,0 +1,264 @@
+{
+  "operation": "artifact-retention-pass-v1",
+  "recorded_at": "2026-09-09",
+  "decision": "The user asked to keep only the most recent delivery set. Superseded delivery sets were removed from the host; their hashes stay in the dated records and research JSON that cite them.",
+  "kept_delivery_set": {
+    "artifact_set": "variant-opt-in-userdebug-20260906-v14",
+    "build_number": "nezha.98d08f70d20e5a87a2777f81",
+    "bundle_manifest_sha256": "b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0",
+    "reconciled_target_files_sha256": "fee3f8e03fef7ca7c29faf63d492d28d99c72be47dc93ddc05eafd90e9bd390d",
+    "verified_before_removal": [
+      "experimental_flash_bundle.py verify matched the manifest hash and all eight payloads",
+      "shasum -a 256 of reconciled-v1/target-files.zip matched the status page"
+    ],
+    "directories": [
+      "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v14",
+      "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14",
+      "artifacts/build-validation/variant-opt-in-userdebug-20260906-v14-admit",
+      "artifacts/build-validation/variant-opt-in-userdebug-20260906-v14-transfer"
+    ]
+  },
+  "allowed_parents": [
+    "artifacts/avb/nezha",
+    "artifacts/flash/nezha",
+    "artifacts/build-validation"
+  ],
+  "removal_threshold_kib": 1048576,
+  "removed": [
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1",
+      "kib": 10624852
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1",
+      "kib": 10625144
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-feature-fixes-20260905-v1",
+      "kib": 30014456
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-ui-camera-shade-20260906-v1",
+      "kib": 30014568
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v1",
+      "kib": 30086584
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v10",
+      "kib": 30117364
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v11r1",
+      "kib": 30117388
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v12",
+      "kib": 30117436
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v13",
+      "kib": 30117444
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v3",
+      "kib": 30086584
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v4",
+      "kib": 30086644
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v5",
+      "kib": 30086644
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v6",
+      "kib": 30086644
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v7",
+      "kib": 30115132
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v8",
+      "kib": 30115144
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v9",
+      "kib": 30117368
+    },
+    {
+      "path": "artifacts/flash/nezha/package7-20260904-v1",
+      "kib": 9414080
+    },
+    {
+      "path": "artifacts/flash/nezha/package7-feature-fixes-20260905-v1",
+      "kib": 9565228
+    },
+    {
+      "path": "artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1",
+      "kib": 9565220
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v1",
+      "kib": 9585732
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v10",
+      "kib": 9594724
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v11r1",
+      "kib": 9594732
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v12",
+      "kib": 9594744
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v13",
+      "kib": 9594744
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v3",
+      "kib": 9585732
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v4",
+      "kib": 9585752
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v5",
+      "kib": 9585752
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v6",
+      "kib": 9585752
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v7",
+      "kib": 9594100
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v8",
+      "kib": 9594104
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9",
+      "kib": 9594724
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v1-transfer",
+      "kib": 20290028
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v10-transfer",
+      "kib": 20312140
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v11-transfer",
+      "kib": 29576960
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v11r1-transfer",
+      "kib": 20312140
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v12-transfer",
+      "kib": 20312192
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v13-transfer",
+      "kib": 20312192
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v2-transfer",
+      "kib": 20290028
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v3-transfer",
+      "kib": 20290028
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v4-transfer",
+      "kib": 20290084
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v5-transfer",
+      "kib": 20290084
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v6-transfer",
+      "kib": 20290084
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v7-transfer",
+      "kib": 20310516
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v8-transfer",
+      "kib": 20310528
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v9-transfer",
+      "kib": 20312136
+    },
+    {
+      "path": "artifacts/build-validation/feature-successor-f9e-super-retained-20260908",
+      "kib": 9225104
+    }
+  ],
+  "removed_total_kib": 888888760,
+  "kept_small_receipt_directories": [
+    {
+      "path": "artifacts/avb/nezha/.package7-ui-camera-shade-20260906-v1-failed-attempts",
+      "kib": 56
+    },
+    {
+      "path": "artifacts/avb/nezha/package5-20260902-v1",
+      "kib": 96
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-feature-fixes-20260905-v1-failed-inventory-1",
+      "kib": 20
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-feature-fixes-20260905-v1-failed-inventory-2",
+      "kib": 28
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-feature-fixes-20260905-v1-failed-materialize-1",
+      "kib": 36
+    }
+  ],
+  "kept_admission_records": "every artifacts/build-validation/<set>-admit/admission.json stayed; config/nezha-avb-image-set.json pins them by hash",
+  "host_free_kib_before": 432044844,
+  "host_free_kib_after": 1311698892,
+  "removal_seconds": 15.0,
+  "not_removed_guest_candidates": [
+    {
+      "path": "/work/validation/nezha-oem-policy-integration-20260829",
+      "du_reported": "145G",
+      "note": "August policy integration run"
+    },
+    {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z",
+      "du_reported": "116G",
+      "note": "August user-policy output tree"
+    },
+    {
+      "path": "/work/out/nezha-framework-20260827T1835Z",
+      "du_reported": "13G",
+      "note": "August framework output tree"
+    },
+    {
+      "path": "/work/validation/variant-opt-in-super-20260906-v14/super.img",
+      "du_reported": "8.9G",
+      "note": "guest duplicate of the verified v14 Super"
+    }
+  ],
+  "guest_note": "Nothing in the VM was touched. The guest had 200 GB free and the one-writer rule applies to that volume.",
+  "not_proven": "Removal changes no build, record or device result. Any historical replay of a removed set must rebuild or restore it from its recorded hashes."
+}

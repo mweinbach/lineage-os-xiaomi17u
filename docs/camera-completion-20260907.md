@@ -176,10 +176,11 @@ fails the same 16 complete rule pairs as v8, with no new conflict and no added
 policy exception. Runtime labels, constraints, service access and global kernel
 enforcement still require the successor device test.
 
-The completed v9 candidate is retained at
-[`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/`](../artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/).
+The completed v9 candidate was retained at
+`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/` until the
+[September 9 retention pass](artifact-retention-20260909.md) removed it.
 Its eight payloads use the established shared-Super and seven slot-A image
-route. The [bundle manifest](../artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v9/manifest.json)
+route. Its bundle manifest
 has SHA256 `9db1e3e3e07411f9d884a7c25817e3a164f8e89ddfcf8ad7d2f43dd13c3da958`.
 The reconciled signed target-files archive has SHA256
 `d38d841c96893f24cfa8068101612da2b62bac63a7aa8fa645611dc41ece854e`.
