@@ -66,9 +66,16 @@ unchanged throughout.
 
 One mis-tap opened the Shortcuts editor; it was left with Navigate up and the
 Shortcuts entry still reads "Flashlight, Camera". The home-screen preview inside
-the picker showed a launcher widget "Something went wrong / Try again" card; it
-belongs to the previewed widget, not to plugin loading, and is unverified
-further.
+the picker showed a "Something went wrong / Try again" card. Follow-up on
+2026-09-09 traced it to the live Google Weather Current Forecast widget on the
+home screen, which the preview mirrors: the saved boot log shows its refresh
+process starting 3.5 seconds before Wi-Fi began connecting and its error
+layout posted 6 seconds before the first location fix. The widget's only
+automatic retry is an inexact 30-minute alarm, which fired 52 minutes after
+boot; the forecast then rendered and the live home screen showed it. Location
+permissions, providers, standby bucket and battery saver were ruled out. No
+plugin, picker or ROM component is involved, and no change was made; whether
+the race recurs on every boot is unverified.
 
 After the session the crash buffer holds no fatal exception and the main and
 system buffers hold no plugin rejection line.
@@ -91,7 +98,9 @@ stay-awake setting restored to 0.
 
 One session on one phone. Wallpaper changes, theme packs and the other six
 plugin clocks were not applied; sustained picker use is unmeasured. The camera
-subset is five captures, not the full v13 matrix. The
+subset is five captures, not the full v13 matrix. The Weather app is a release
+build that logs nothing, so the exact failure inside its boot refresh is
+inferred from timing, not observed. The
 [research record](../research/wallpaper-v14-install-validation-20260908.json)
 binds the authorization, preflight, execution, boot, post-boot, UI-session,
 capture and cleanup receipts by hash; screenshots, UI dumps, media, logs and

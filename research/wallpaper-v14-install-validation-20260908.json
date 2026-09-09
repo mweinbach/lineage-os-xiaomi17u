@@ -154,10 +154,10 @@
   "wallpaper_validation": {
     "ui_session": {
       "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/ui-session.json",
-      "sha256": "5d2a31c7d7ff14d15c0eb4c6f64df6cd9390990b2bcc04214c2c07d3e61e5fbc",
-      "size_bytes": 154423
+      "sha256": "743579923d127728de3f1ecfc5ac475179e4c562bf1dbb125c90b19ee84345a0",
+      "size_bytes": 157392
     },
-    "adb_commands": 517,
+    "adb_commands": 527,
     "wallpaper_process_pid_constant_across_session": true,
     "entry_routes": {
       "launcher_long_press": "com.google.android.apps.wallpaper/com.android.wallpaper.picker.customization.ui.CustomizationPickerActivity2",
@@ -213,7 +213,19 @@
     "shortcuts_editor_opened_by_mistake_and_left_without_apply": true,
     "crash_fatal_lines_after_session": 0,
     "plugin_rejection_lines_after_session": 0,
-    "home_preview_widget_error_card": "The home-screen preview inside the picker rendered a launcher widget \"Something went wrong / Try again\" card; it belongs to the previewed widget, not to plugin loading, and is unverified further."
+    "home_preview_widget_error_card": {
+      "explanation": "The \"Something went wrong / Try again\" card was the live Google Weather CurrentForecast widget on the home screen, mirrored by the picker preview. Its boot refresh ran while Wi-Fi was still connecting and before the first location fix, and its only automatic retry is an inexact 30-minute alarm that fired 52 minutes after boot, after which the forecast rendered. No plugin, picker or ROM component is involved.",
+      "timeline_receipt": {
+        "path": "reports/wallpaper-clock-plugin-20260908/widget-preview-card/timeline-receipt.json",
+        "sha256": "a18b8e497408fbcd3b301133693ecc117e7808a37e577470391e911571ddf0ac",
+        "size_bytes": 4004
+      },
+      "recovered_screenshot": {
+        "path": "reports/wallpaper-clock-plugin-20260908/widget-preview-card/home-widget-recovered.png",
+        "sha256": "f3a05de5d5f9bc804ed56be01a86a948a07b5fc660673355f8678827863003bc",
+        "size_bytes": 2155401
+      }
+    }
   },
   "camera_subset": {
     "xiaomi_rear_photo": {
@@ -353,7 +365,7 @@
   "limits": [
     "One session on one phone; sustained wallpaper picker use, wallpaper changes, theme packs and the other six plugin clocks were not applied.",
     "The camera subset is five captures (rear, front, UltraRAW, one Aperture effect, one short video); the full v13 matrix was not repeated.",
-    "The picker home-screen preview showed a widget error card that is unrelated to plugin loading and remains unexplained.",
+    "The Google Weather widget error card seen after boot is a boot-time refresh race inside that app; it recovered on its own, and whether it recurs on every boot is unverified.",
     "App-data equality covers the wallpaper picker only, before its first launch on v14."
   ],
   "privacy": "Screenshots, UI dumps, media, raw logs and app-data archives stay under ignored reports/ and evidence/ directories; only hashes, counts and identifiers are recorded here."
