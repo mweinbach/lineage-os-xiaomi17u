@@ -36,7 +36,7 @@ DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
 CAMERAOPT_SERVICE_FRAGMENT = DEVICE_PATH / "cameraopt-service.mk"
 CAMERAOPT_SERVICE_FRAGMENT_SHA256 = "15ead13db047761f6151dcc5e36ee2b9c154da5b5ce9b8355af85cbcee46100c"
 IMS_FRAGMENT = DEVICE_PATH / "ims.mk"
-IMS_FRAGMENT_SHA256 = "8933c2f92afb1dfb83aa6584ecf4201c0b8b15f6d74a7977f3bf85f17b030821"
+IMS_FRAGMENT_SHA256 = "3cea4616450e8174db224fea634b058349a9a8a721bfc66c5e971ed9875be069"
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",

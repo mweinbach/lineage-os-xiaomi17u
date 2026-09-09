@@ -16,12 +16,39 @@ STOCK_SELECTOR = ("user=_app seinfo=platform name=org.codeaurora.ims isPrivApp=t
                   "domain=vendor_qtelephony type=app_data_file levelFrom=all")
 
 
-def make(value, extra=""):
+REMOVED_FROM_TEMPLATE = {"nezha_ims_libimscamera_jni", "qti-telephony-hidl-wrapper", "nezha_ims_qti_telephony_hidl_wrapper_xml",
+                         "qti-telephony-utils", "nezha_ims_qti_telephony_utils_xml", "ims-ext-common", "nezha_ims_ims_ext_common_xml"}
+
+
+def make(value, extra="", fake_bundle=False):
     include = DEVICE / "ims.mk"
     text = (f"NEZHA_DEVICE_PATH := {DEVICE}\nTARGET_PRODUCT := lineage_nezha\n{extra}"
             f"NEZHA_IMS := {value}\ninclude {include}\nall:\n\t@true\n")
     with tempfile.TemporaryDirectory() as directory:
+        if fake_bundle:
+            bundle = Path(directory) / "vendor/xiaomi/nezha-ims"
+            (bundle / "tools").mkdir(parents=True)
+            (bundle / "Android.bp").write_text("soong_namespace {}\n")
+            (bundle / "tools/verify_inputs.py").write_text("pass\n")
         return subprocess.run(["make", "-f", "-", "all"], input=text, cwd=directory, text=True, capture_output=True)
+
+
+def modules(text):
+    """Map module name to its body lines, ignoring comments and blank lines."""
+    result, name, body = {}, None, []
+    for line in text.splitlines():
+        if line.startswith("//") or not line.strip():
+            continue
+        if re.match(r"^[a-z_]+ \{", line):
+            name, body = None, [line]
+            continue
+        body.append(line)
+        m = re.match(r'^    name: "([^"]+)"', line)
+        if m:
+            name = m.group(1)
+        if line == "}":
+            result[name or line] = body
+    return result
 
 
 class ImsFragmentTests(unittest.TestCase):
@@ -33,6 +60,13 @@ class ImsFragmentTests(unittest.TestCase):
         result = make("true")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("vendor/xiaomi/nezha-ims", result.stderr)
+
+    def test_true_requires_the_camera_framework_that_owns_the_shared_jni_library(self):
+        result = make("true", fake_bundle=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("NEZHA_CAMERA_FRAMEWORK", result.stderr)
+        result = make("true", extra="NEZHA_CAMERA_FRAMEWORK := true\n", fake_bundle=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_invalid_values_and_wrong_product_fail(self):
         for value in ("tru", "true false", "true true"):
@@ -47,7 +81,8 @@ class ImsFragmentTests(unittest.TestCase):
         text = (DEVICE / "ims.mk").read_text()
         packages = re.search(r"PRODUCT_PACKAGES \+= \\\n((?:    .*\\\n)*    .*\n)", text).group(1)
         names = [line.strip().rstrip("\\").strip() for line in packages.splitlines()]
-        self.assertEqual(names, ["ims", "qti-telephony-hidl-wrapper", "qti-telephony-utils", "ims-ext-common",
+        self.assertEqual(names, ["ims", "qti-telephony-hidl-wrapper", "qti_telephony_hidl_wrapper.xml",
+                                 "qti-telephony-utils", "qti_telephony_utils.xml", "ims-ext-common", "ims_ext_common.xml",
                                  "nezha_ims_libdiagatbparser_system"])
         for line in ("SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(NEZHA_DEVICE_PATH)/ims/sepolicy/public",
                      "SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(NEZHA_DEVICE_PATH)/ims/sepolicy/private",
@@ -59,22 +94,29 @@ class ImsFragmentTests(unittest.TestCase):
 
 
 class ActivatedModuleTests(unittest.TestCase):
-    def test_activated_definitions_are_the_template_minus_enabled_false(self):
-        template = TEMPLATE.read_text()
-        activated = ACTIVATED.read_text()
-        code = [l for l in activated.splitlines() if not l.startswith("//")]
+    def test_activated_definitions_are_the_template_minus_enabled_false_and_shared_providers(self):
+        template = modules(TEMPLATE.read_text())
+        activated = modules(ACTIVATED.read_text())
+        self.assertEqual(len(template), 24)  # the one-line namespace declaration is not a block
+        self.assertEqual(set(template) - set(activated), REMOVED_FROM_TEMPLATE)
+        self.assertEqual(len(activated), 17)
+        for name, body in activated.items():
+            if name.startswith("soong_namespace"):
+                continue
+            expected = [l for l in template[name] if "enabled: false" not in l]
+            if name == "nezha_ims_libimscamera_jni_app_link":
+                expected = [l.replace('"nezha_ims_libimscamera_jni"', '"nezha_cam_libimscamera_jni"') for l in expected]
+            self.assertEqual(body, expected, name)
+        code = [l for l in ACTIVATED.read_text().splitlines() if not l.startswith("//")]
         self.assertFalse(any("enabled" in l for l in code))
-        strip = lambda text: [l for l in text.splitlines() if not l.startswith("//") and "enabled: false" not in l]
-        self.assertEqual(strip(activated), strip(template))
-        names = re.findall(r'^    name: "([^"]+)"', activated, re.M)
-        self.assertEqual(len(names), 24)
-        self.assertEqual(len(set(names)), 24)
-        for name in ("ims", "qti-telephony-hidl-wrapper", "qti-telephony-utils", "ims-ext-common",
-                     "nezha_ims_libimscamera_jni_app_link", "nezha_ims_libimsmedia_jni_app_link"):
-            self.assertIn(name, names)
-        self.assertIn('presigned: true', activated)
-        self.assertIn('enforce_uses_libs: true', activated)
-        self.assertNotIn("optional_uses_libs: [\"", activated)
+        namespace = next(l for l in code if l.startswith("soong_namespace"))
+        self.assertIn('"vendor/xiaomi/nezha-camera-framework"', namespace)
+        text = ACTIVATED.read_text()
+        self.assertIn('presigned: true', text)
+        self.assertIn('enforce_uses_libs: true', text)
+        # The app still names the three libraries; the in-tree modules provide them.
+        self.assertIn('"qti-telephony-hidl-wrapper",\n        "qti-telephony-utils",\n        "ims-ext-common",', text)
+        self.assertNotIn("dex_import", text)
 
     def test_permission_and_overlay_files_match_the_reviewed_templates(self):
         contract = json.loads((ROOT / "config/nezha-ims.json").read_text())

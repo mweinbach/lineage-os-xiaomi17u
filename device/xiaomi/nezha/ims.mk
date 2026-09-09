@@ -23,16 +23,25 @@ endif
 ifeq ($(wildcard $(NEZHA_DEVICE_PATH)/ims/Android.bp),)
 $(error NEZHA_IMS requires the public IMS module definitions at $(NEZHA_DEVICE_PATH)/ims/Android.bp)
 endif
-# Both namespaces are needed: the public modules import the private filegroups.
+ifneq ($(strip $(NEZHA_CAMERA_FRAMEWORK)),true)
+$(error NEZHA_IMS requires NEZHA_CAMERA_FRAMEWORK=true, which installs the shared libimscamera_jni.so)
+endif
+# Both namespaces are needed: the public modules import the private filegroups
+# and reuse the camera-framework JNI library module.
 PRODUCT_SOONG_NAMESPACES += $(NEZHA_DEVICE_PATH)/ims vendor/xiaomi/nezha-ims
-# The app pulls its permission files, JNI links and lib-imsvt through required;
-# the three DEX libraries pull their registration XML the same way. The optional
-# diagnostics parser is selected explicitly to preserve the full reviewed set.
+# The app pulls its permission files, JNI links and lib-imsvt through required.
+# The three QTI Java libraries and their registration XMLs are the in-tree
+# CodeAurora modules (vendor/codeaurora/telephony); the exact-stock DEX copies in
+# the bundle stay unselected. The optional diagnostics parser is selected
+# explicitly to preserve the full reviewed native set.
 PRODUCT_PACKAGES += \
     ims \
     qti-telephony-hidl-wrapper \
+    qti_telephony_hidl_wrapper.xml \
     qti-telephony-utils \
+    qti_telephony_utils.xml \
     ims-ext-common \
+    ims_ext_common.xml \
     nezha_ims_libdiagatbparser_system
 # MMTEL provider selector only; no RCS or GBA provider is named.
 PRODUCT_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/ims/overlay

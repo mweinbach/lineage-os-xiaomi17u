@@ -2,30 +2,12 @@
 // templates under templates/ims (only the enabled: false lines were removed).
 // Installed only when device/xiaomi/nezha/ims.mk is selected with NEZHA_IMS=true;
 // the private bytes come from vendor/xiaomi/nezha-ims through its verified-input producer.
-soong_namespace { imports: ["vendor/xiaomi/nezha-ims"] }
-
-cc_prebuilt_library_shared {
-    name: "nezha_ims_libimscamera_jni",
-    stem: "libimscamera_jni",
-    system_ext_specific: true,
-    compile_multilib: "64",
-    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_libimscamera_jni_input"] } },
-    check_elf_files: true,
-    allow_undefined_symbols: false,
-    strip: { none: true },
-    stl: "none",
-    system_shared_libs: [],
-    shared_libs: [
-        "libnativehelper",
-        "libcutils",
-        "libutils",
-        "liblog",
-        "libc++",
-        "libc",
-        "libm",
-        "libdl",
-    ],
-}
+// The camera-framework namespace already installs the byte-identical
+// /system_ext/lib64/libimscamera_jni.so (nezha_cam_libimscamera_jni); the app link
+// requires that module instead of a second copy. The three QTI Java libraries
+// come from the in-tree CodeAurora sources under vendor/codeaurora/telephony,
+// selected by ims.mk, so no exact-stock DEX import is installed for them.
+soong_namespace { imports: ["vendor/xiaomi/nezha-ims", "vendor/xiaomi/nezha-camera-framework"] }
 
 cc_prebuilt_library_shared {
     name: "nezha_ims_libimsmedia_jni",
@@ -327,14 +309,13 @@ cc_prebuilt_library_shared {
     ],
 }
 
-
 // Exact stock JNI symlinks into the app directory; they require the public native modules.
 install_symlink {
     name: "nezha_ims_libimscamera_jni_app_link",
     system_ext_specific: true,
     installed_location: "priv-app/ims/lib/arm64/libimscamera_jni.so",
     symlink_target: "/system_ext/lib64/libimscamera_jni.so",
-    required: ["nezha_ims_libimscamera_jni"],
+    required: ["nezha_cam_libimscamera_jni"],
 }
 
 install_symlink {
@@ -343,60 +324,6 @@ install_symlink {
     installed_location: "priv-app/ims/lib/arm64/libimsmedia_jni.so",
     symlink_target: "/system_ext/lib64/libimsmedia_jni.so",
     required: ["nezha_ims_libimsmedia_jni"],
-}
-
-
-// Activated after the IMS API, privilege, policy and native component review.
-// These are original DEX JARs, not JVM .class JARs. Preserve the already
-// reviewed dex-import-uses-library.patch. No .odex/.vdex is imported.
-// Product selection lives in device/xiaomi/nezha/ims.mk.
-
-dex_import {
-    name: "qti-telephony-hidl-wrapper",
-    jars: ["//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_hidl_wrapper_jar"],
-    system_ext_specific: true,
-    required: ["nezha_ims_qti_telephony_hidl_wrapper_xml"],
-    // XML declares no transitive required libraries. Do not invent uses_libs.
-}
-
-prebuilt_etc {
-    name: "nezha_ims_qti_telephony_hidl_wrapper_xml",
-    src: "//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_hidl_wrapper_xml",
-    filename: "qti_telephony_hidl_wrapper.xml",
-    sub_dir: "permissions",
-    system_ext_specific: true,
-}
-
-dex_import {
-    name: "qti-telephony-utils",
-    jars: ["//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_utils_jar"],
-    system_ext_specific: true,
-    required: ["nezha_ims_qti_telephony_utils_xml"],
-    // XML declares no transitive required libraries. Do not invent uses_libs.
-}
-
-prebuilt_etc {
-    name: "nezha_ims_qti_telephony_utils_xml",
-    src: "//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_utils_xml",
-    filename: "qti_telephony_utils.xml",
-    sub_dir: "permissions",
-    system_ext_specific: true,
-}
-
-dex_import {
-    name: "ims-ext-common",
-    jars: ["//vendor/xiaomi/nezha-ims:nezha_ims_ims_ext_common_jar"],
-    product_specific: true,
-    required: ["nezha_ims_ims_ext_common_xml"],
-    // XML declares no transitive required libraries. Do not invent uses_libs.
-}
-
-prebuilt_etc {
-    name: "nezha_ims_ims_ext_common_xml",
-    src: "//vendor/xiaomi/nezha-ims:nezha_ims_ims_ext_common_xml",
-    filename: "ims_ext_common.xml",
-    sub_dir: "permissions",
-    product_specific: true,
 }
 
 // Public IMS application module; private bytes stay in vendor/xiaomi/nezha-ims.
