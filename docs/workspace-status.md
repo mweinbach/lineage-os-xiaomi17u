@@ -1,21 +1,23 @@
 # Current Nezha workspace status
 
-**Installed phone: v13 userdebug (`nezha.2c510f47f6d99b93f0c3ee11`),
-slot A, boot completed with SELinux Enforcing.** The separately approved
-eight-image installation completed without a wipe or slot change. UltraRAW
-DNG and embedded preview now fully decode, audio policy initializes, and a
-short Xiaomi video has fully decoded HEVC and AAC tracks. Ordinary rear/front
-photos, main/telephoto 50 MP, telephoto 200 MP, Pro RAW, three physical RAW
-sensors and all ten warm Aperture Ultra HDR effects pass. See the
-[v13 installation and validation record](camera-v13-install-validation-20260908.md).
+**Installed phone: v14 userdebug (`nezha.98d08f70d20e5a87a2777f81`, source
+revision 11, 672 rows), slot A, boot completed with SELinux Enforcing.** The
+separately approved eight-image installation completed without a wipe, slot
+change or data clear. V14 removes only the stale `SystemUIClocks-Flex` product
+selection whose pre-QPR2 plugin interface crashed Wallpaper & style; on the
+phone the picker now opens from the launcher and Settings, offers the default
+and seven Pixel plugin clocks, applies and restores a clock, and logs no plugin
+rejection or crash. A five-capture camera subset passes on the preserved v13
+camera baseline. See the
+[v14 installation and validation record](wallpaper-v14-install-validation-20260908.md)
+and the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md).
 
-**Prepared, not installed: v14 (`nezha.98d08f70d20e5a87a2777f81`, source
-revision 11, 672 rows).** It removes only the stale `SystemUIClocks-Flex`
-product selection whose pre-QPR2 plugin interface crashes Wallpaper & style;
-see the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md).
-Its signed archive and eight-image bundle pass the v13 gates plus a
-member-by-member archive comparison, and the seven camera/audio components are
-byte-identical to v13. Installing it needs a fresh explicit approval.
+The [v13 runtime record](camera-v13-install-validation-20260908.md) holds the
+full camera matrix: UltraRAW DNG and embedded preview decode, audio policy
+initializes, a short Xiaomi video has fully decoded HEVC and AAC tracks, and
+ordinary rear/front photos, main/telephoto 50 MP, telephoto 200 MP, Pro RAW,
+three physical RAW sensors and all ten warm Aperture Ultra HDR effects pass.
+V14's seven camera/audio components are byte-identical to v13.
 
 Source revision 10 is `nezha.2c510f47f6d99b93f0c3ee11`, with 671 recorded rows.
 Its component/full build, signed archive and eight-image bundle pass their
@@ -48,16 +50,16 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.2c510f47f6d99b93f0c3ee11` (userdebug, delivery set v13) |
-| Installed source receipt | 671 rows; `reports/camera-completion-20260907/source-revision-10/source-installed.json`, SHA256 `1316c5392b530fff257d05088b8b841ba8279d647ffb1086c4f47c2a99715021` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v13/` |
-| Bundle manifest SHA256 | `129912c8f2f5d956b8c482a40e60ac11e10c9d03bc01b042649fd75ed676b7a4` |
-| Reconciled signed target-files SHA256 | `5ec834aed93a0fe9acc288e24a3c3252a8ba4ec039b297d50b1eeaac37eb4b4d` |
-| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [package checkpoint](camera-v13-package-20260908.md) |
-| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe or slot change; normal boot completed in 25.5 s |
-| Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; final cleanup reconfirmed build, slot and policy |
-| Camera acceptance observed | Five Xiaomi Ultra HDR photos including main/telephoto 50 MP and telephoto 200 MP; Pro RAW, UltraRAW DNG/preview, three physical RAW sensors and all ten warm Aperture Ultra HDR effects pass; short HEVC/AAC video fully decodes |
-| Camera app data | All 513 CE and five DE members unchanged before first launch; active APK and signer unchanged; no claim about all userdata |
+| Installed build identity | `nezha.98d08f70d20e5a87a2777f81` (userdebug, delivery set v14) |
+| Installed source receipt | 672 rows; `reports/wallpaper-clock-plugin-20260908/source-revision-11/source-installed.json`, SHA256 `2227c605583e78d261bb4019c8f0a19dc057cf806980a4352f2eb1330301c484` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/` (v13 bundle retained as rollback evidence) |
+| Bundle manifest SHA256 | `b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0` |
+| Reconciled signed target-files SHA256 | `fee3f8e03fef7ca7c29faf63d492d28d99c72be47dc93ddc05eafd90e9bd390d` |
+| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md) |
+| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.5 s |
+| Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; Flex package absent, seven kept clocks present, no plugin rejection lines; final cleanup reconfirmed build, slot and policy |
+| Camera acceptance observed | On v14: rear/front photo, UltraRAW DNG/preview, one Aperture effect and a short HEVC/AAC video pass. On v13 (byte-identical camera components): five Xiaomi Ultra HDR photos including main/telephoto 50 MP and telephoto 200 MP, Pro RAW, three physical RAW sensors and all ten warm Aperture Ultra HDR effects pass |
+| App data | V14: all 28 CE and five DE wallpaper picker members unchanged before first launch. V13: all 513 CE and five DE camera members unchanged; no claim about all userdata |
 | Recovery | TWRP `working76`; preserve its `fix22ZJ-touchfix18` runtime/hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; measured current state is recorded above |
 
@@ -88,15 +90,17 @@ truncation and Pro RAW configuration failure. V12 adds the save APIs. V13 adds
 the measured Bayer container path, now verified by full DNG and embedded preview
 decoding.
 
-The [v13 runtime record](camera-v13-install-validation-20260908.md) is the current
-phone evidence. The [source behavior record](camera-bayer-audio-compat-20260908.md)
+The [v14 runtime record](wallpaper-v14-install-validation-20260908.md) is the
+current phone evidence for the wallpaper fix and the camera subset; the
+[v13 runtime record](camera-v13-install-validation-20260908.md) remains the full
+camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-20260908.md)
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
 verification remain separate evidence. The Linux checkout now holds source
 revision 11 (`nezha.98d08f70d20e5a87a2777f81`): revision 10 plus the
-`vendor/extras/evolution.mk` Flex removal. After the v14 record was added,
-`make test-current` passes 939 tests in 28.336 seconds and `make test` passes
-4,907 tests in 194.692 seconds plus shell checks.
+`vendor/extras/evolution.mk` Flex removal. After the v14 installation record
+was added, `make test-current` passes 939 tests in 28.262 seconds and
+`make test` passes 4,916 tests in 191.755 seconds plus shell checks.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -117,11 +121,10 @@ revision 11 (`nezha.98d08f70d20e5a87a2777f81`): revision 10 plus the
    phone. Record build, package and device evidence separately.
 4. Record each observed device result in a focused issue note and update this
    selection when the evidence warrants it. Phone collection and changes need
-   the authorized device and scope. The explicit v13 approval
-   covered its installation, reboot, camera/audio/video tests and root diagnostics without
-   a wipe or slot change. It does not authorize flashing the next bundle,
-   including the prepared v14 (`nezha.98d08f70d20e5a87a2777f81`, manifest
-   SHA256 `b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0`).
+   the authorized device and scope. The explicit v14 approval ("ok can you
+   install") covered its installation, reboot, wallpaper/clock tests, a camera
+   subset and root diagnostics without a wipe or slot change. It does not
+   authorize flashing any next bundle.
 
 For recovery changes, use `make recovery-build` and the
 [working recovery instructions](../recovery/twrp-working/README.md). This
@@ -143,14 +146,14 @@ successor ROM boot chain or OTA behavior.
   48 kHz mono AAC audio fully decode with a measured nonzero audio signal.
   Other video resolutions/rates/modes, microphone response, playback quality
   and sustained recording remain unverified.
-- **Wallpaper process:** The installed v13 still crashes Wallpaper & style
-  with a missing `ClockProviderPlugin` dependency. The measured cause is the
-  stale `SystemUIClocks-Flex` prebuilt (pre-QPR2 plugin package with a bundled
-  interface copy); v14 drops that product selection while SystemUI's default
-  provider keeps the Flex clock. The fix is built, signed and bundled but not
-  installed; opening Wallpaper & style, clock customization and fresh crash
-  buffers on v14 remain the device gate. See the
-  [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md).
+- **Wallpaper process:** Resolved on the installed v14. The measured cause was
+  the stale `SystemUIClocks-Flex` prebuilt (pre-QPR2 plugin package with a
+  bundled interface copy); v14 drops that product selection while SystemUI's
+  default provider keeps the Flex clock. On the phone, Wallpaper & style opens
+  from both routes, the clock chooser offers eight faces, a plugin clock applies
+  and the default restores, with no plugin rejection or crash. Wallpaper
+  changes, theme packs and the other six plugin clocks were not applied. See the
+  [v14 runtime record](wallpaper-v14-install-validation-20260908.md).
 
 - **Retained userdata, UDFPS and shade:** Camera apps opened and new JPEGs were written after dismissing the keyguard; retained personal userdata, UDFPS authentication and shade visual acceptance remain unverified.
   The user confirmed fingerprint enrollment on a6d; f9e loaded the measured

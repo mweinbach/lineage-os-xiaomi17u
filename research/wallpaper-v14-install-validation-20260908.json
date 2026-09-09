@@ -1,0 +1,360 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-wallpaper-v14-install-validation-20260908",
+  "document": "docs/wallpaper-v14-install-validation-20260908.md",
+  "status": "Installed and booted; Wallpaper & style opens from the launcher and Settings, the clock chooser offers the default and seven Pixel plugin clocks, a plugin clock applies and renders on the lock screen and the default is restored; no plugin rejection or crash; camera subset passes",
+  "build_number": "nezha.98d08f70d20e5a87a2777f81",
+  "delivery_set": "v14",
+  "installed_predecessor": "nezha.2c510f47f6d99b93f0c3ee11",
+  "installed": true,
+  "phone_accessed": true,
+  "wallpaper_fix_verified_on_device": true,
+  "prepared_record": "research/wallpaper-clock-plugin-20260908.json",
+  "prepared_record_sha256": "37724ff00a369fd34061d832efdcd9a0aba24bc101c1ebace64556677e81cc5e",
+  "installation": {
+    "manifest_sha256": "b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0",
+    "user_response": "ok can you install",
+    "authorization": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/explicit-authorization.json",
+      "sha256": "c288f430c10adff2f6003e7536191d91efaeaba030a624e4f80d2bb57d44c4c1",
+      "size_bytes": 874
+    },
+    "android_preflight": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/android-reviewed.json",
+      "sha256": "5721406d2c6acd13b339b2ba9458102d6b5573c521f6e3a69dd67894485b8397",
+      "size_bytes": 1185
+    },
+    "bootloader_review": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/bootloader-reviewed.json",
+      "sha256": "a42195830dad004e116758ea30810f739780cb4d99ed8c2521e1347817dfb397",
+      "size_bytes": 328
+    },
+    "bundle_reverify": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/bundle-reverified.json",
+      "sha256": "62b98709f299736c95c6a723eb311d23016236623dfe18702ddf68e650dda9f5",
+      "size_bytes": 214
+    },
+    "execution": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/execution.json",
+      "sha256": "3af0a3421d3fbe2c6cc3cbfb3267fa0166d1fc7af33e27dbab539d2e43462b5e",
+      "size_bytes": 3763
+    },
+    "acknowledged_images": 8,
+    "write_order": [
+      "super",
+      "dtbo",
+      "init_boot",
+      "vendor_boot",
+      "recovery",
+      "boot",
+      "vbmeta_system",
+      "vbmeta"
+    ],
+    "super_write_seconds": 242.824,
+    "reboot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/reboot-android.json",
+      "sha256": "fbe6640a4716ad80874dd958cbb1fb312ce2cb1e658783221ea94c0c3cb8e2cb",
+      "size_bytes": 271
+    },
+    "boot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/boot-completed.json",
+      "sha256": "07572e69772ad5a4032b23d81e9a89fdb60f5e270ab1d56141b5f8ec4c8fc969",
+      "size_bytes": 280
+    },
+    "boot_seconds": 25.5,
+    "root": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v14-install/root-check.json",
+      "sha256": "0af37a9ee5f4df5c6a073f8f767226ca96a08eab4b4d588841b5fe80d0d8f196",
+      "size_bytes": 316
+    },
+    "slot": "a",
+    "selinux": "Enforcing",
+    "build_type": "userdebug",
+    "wipe_performed": false,
+    "slot_changed": false,
+    "data_cleared": false
+  },
+  "pre_install_observation": {
+    "receipt": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/preinstall-state/receipt.json",
+      "sha256": "60d0d2bdb83a572a7889c2140e20271d4943f5d2a810e0ea4b163b2645fd098e",
+      "size_bytes": 1437
+    },
+    "build": "nezha.2c510f47f6d99b93f0c3ee11",
+    "flex_installed": true,
+    "clock_packages": 9,
+    "saved_wallpaper_crash_lines": 4,
+    "clock_face_setting": "null",
+    "wallpaper_app_data_backup": {
+      "receipt": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/preflash-app-data/backup-manifest.json",
+        "sha256": "575f735ccf5e6bfd932649f6415ee163f47db418c9795d45e7715f8131d91dd4",
+        "size_bytes": 11949
+      },
+      "ce_members": 28,
+      "de_members": 5
+    }
+  },
+  "post_boot_observation": {
+    "receipt": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/postboot-before-ui/receipt.json",
+      "sha256": "3155d4de8d8df94bf9f07b827577b428c9736871f99e143bd185fd76e9c1dbe4",
+      "size_bytes": 1079
+    },
+    "flex_absent": true,
+    "clock_packages": [
+      "com.android.systemui.clocks.bignum",
+      "com.android.systemui.clocks.calligraphy",
+      "com.android.systemui.clocks.growth",
+      "com.android.systemui.clocks.hideclock",
+      "com.android.systemui.clocks.inflate",
+      "com.android.systemui.clocks.metro",
+      "com.android.systemui.clocks.numoverlap",
+      "com.android.systemui.clocks.weather"
+    ],
+    "plugin_rejection_lines": 0,
+    "crash_fatal_lines": 0,
+    "installed_v13_camera_payloads_identical": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/postboot-before-ui/installed-v13-payloads-on-v14.json",
+      "sha256": "0cc4978e6ae23675f64a1233a70ad6b69f78307341ddda9f6cc05022d9643e52",
+      "size_bytes": 1040
+    },
+    "installed_plugin_and_host_apks_match_contract": {
+      "BigNum": "840210231d999760a8dc559b3f2c2cf7610c18a7167154bd8dc1bfc4c48cfdd1",
+      "Inflate": "35ec04bf12fb1af87666af3cd8a8b06b7b34caeef64c037c6f0e119bd5132827",
+      "Calligraphy": "806f98e783bb3378dfa172d3e6c27a40b689b9b07c6a108e428ce0a90b1a77e3",
+      "Weather": "f2c14fbfd35614364d07e42b0614c709724382fd8a09f5fdb68e9b8cf285d4b3",
+      "NumOverlap": "e9109c21c392e004d5334572beab9118e52351f27853363e04b79b7da1929838",
+      "Growth": "1813297234391d92389304b096b47e3441972fad12de8b1d1b5450a9408533b5",
+      "Metro": "fe2825acf00a4ef424de1851c97665951bb11b7467587538276a327131bc05f0",
+      "WallpaperPickerGoogleRelease": "15889abf03630a1a89a3228b799ae04b17f135ec564282de368b68278b028506"
+    },
+    "wallpaper_app_data_unchanged_before_first_launch": true,
+    "wallpaper_app_data_comparison": [
+      {
+        "kind": "ce",
+        "accessible": true,
+        "before_members": 28,
+        "after_members": 28,
+        "removed": [],
+        "added": [],
+        "changed": []
+      },
+      {
+        "kind": "de",
+        "accessible": true,
+        "before_members": 5,
+        "after_members": 5,
+        "removed": [],
+        "added": [],
+        "changed": []
+      }
+    ]
+  },
+  "wallpaper_validation": {
+    "ui_session": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/ui-session.json",
+      "sha256": "5d2a31c7d7ff14d15c0eb4c6f64df6cd9390990b2bcc04214c2c07d3e61e5fbc",
+      "size_bytes": 154423
+    },
+    "adb_commands": 517,
+    "wallpaper_process_pid_constant_across_session": true,
+    "entry_routes": {
+      "launcher_long_press": "com.google.android.apps.wallpaper/com.android.wallpaper.picker.customization.ui.CustomizationPickerActivity2",
+      "settings": "com.google.android.apps.wallpaper/com.android.wallpaper.picker.customization.ui.CustomizationPickerActivity2"
+    },
+    "wallpaper_preview_opened": "com.google.android.apps.wallpaper/com.android.wallpaper.picker.preview.ui.WallpaperPreviewActivity",
+    "lock_screen_options_seen": [
+      "Theme pack",
+      "Clock",
+      "Shortcuts",
+      "Notifications on lock screen",
+      "More lock screen settings"
+    ],
+    "clock_faces_offered": [
+      "Digital default",
+      "Digital overlapping numerals",
+      "Digital transit clock",
+      "Analog bold font",
+      "Digital calligraphy",
+      "Digital inflated",
+      "Digital with weather",
+      "Digital stenciling"
+    ],
+    "clock_face_count": 8,
+    "applied_plugin_clock": {
+      "clock_id": "DIGITAL_CLOCK_CALLIGRAPHY",
+      "lock_screen_state": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/ui/lockscreen-calligraphy/state.json",
+        "sha256": "2fc513cee5b9760872ec45060f1e10991ad226052682d72f1df629bb6ba4f909",
+        "size_bytes": 476
+      },
+      "lock_screen_screenshot": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/ui/lockscreen-calligraphy/screen.png",
+        "sha256": "4cf3fcaf132824606ac98d1486cf2222f80d66efcada9c054fb4e61fdbcfa2dc",
+        "size_bytes": 2282198
+      }
+    },
+    "restored_default_clock": {
+      "clock_id": "DEFAULT",
+      "lock_screen_state": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/ui/lockscreen-restored-default-2/state.json",
+        "sha256": "1dac39dbd7a319415625e08ca99b673f2b418f0653594fb75eef3ce378a8d0ac",
+        "size_bytes": 587
+      },
+      "lock_screen_screenshot": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/ui/lockscreen-restored-default-2/screen.png",
+        "sha256": "56994cfa3944da60714e0588491ec7bba75e61746d4b1c0e3d878bc3405ecec9",
+        "size_bytes": 2288878
+      }
+    },
+    "setting_restored_to_pre_install_value": "null",
+    "theme_overlays_unchanged": true,
+    "shortcuts_editor_opened_by_mistake_and_left_without_apply": true,
+    "crash_fatal_lines_after_session": 0,
+    "plugin_rejection_lines_after_session": 0,
+    "home_preview_widget_error_card": "The home-screen preview inside the picker rendered a launcher widget \"Something went wrong / Try again\" card; it belongs to the previewed widget, not to plugin loading, and is unverified further."
+  },
+  "camera_subset": {
+    "xiaomi_rear_photo": {
+      "case": "rear-photo",
+      "result": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/xiaomi-cases/rear-photo/result.json",
+        "sha256": "4dcdb4f7f90d91ad055ebea10690c361d85bdbb56c460f03765e1b4f5d648782",
+        "size_bytes": 493
+      },
+      "media": [
+        {
+          "size_bytes": 2984524,
+          "sha256": "018d341a1bf4165b0d1c0d6a6aeedbce1f4632c0215476e50f9264263a32de18",
+          "format": "JPEG",
+          "dimensions": [
+            3072,
+            4096
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ]
+    },
+    "xiaomi_front_photo": {
+      "case": "front-photo",
+      "result": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/xiaomi-cases/front-photo/result.json",
+        "sha256": "ccd42c1bc737d2d9798b47a3ce20ca2ce112eed08c17cf7d348c2a9c9eac59b3",
+        "size_bytes": 497
+      },
+      "media": [
+        {
+          "size_bytes": 4645562,
+          "sha256": "6685dce64a1da6d16e91ee50d57c8555669d56aef89407541084a1cf9839275e",
+          "format": "JPEG",
+          "dimensions": [
+            3072,
+            4096
+          ],
+          "mode": "RGB",
+          "decoded": true
+        }
+      ]
+    },
+    "xiaomi_ultra_raw": {
+      "case": "pro-ultra-raw",
+      "result": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/xiaomi-cases/pro-ultra-raw/result.json",
+        "sha256": "f1e535b89a0d321f4e47b3c914dcc6053216a42965c52becfa40d283f82d16ca",
+        "size_bytes": 739
+      },
+      "media": [
+        {
+          "size_bytes": 4001501,
+          "sha256": "200c3e6a62c7e0ff267b837b5a59284ee701861dcc1f1723e105fcfb63b6c116",
+          "format": "JPEG",
+          "dimensions": [
+            4080,
+            3072
+          ],
+          "mode": "RGB",
+          "decoded": true
+        },
+        {
+          "size_bytes": 16220211,
+          "sha256": "694d4934bf9dcb7291cd89ea0bbfccd0ba3208b23c7d7d5362fd30c67c09c0ca"
+        }
+      ],
+      "dng_verification": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/pro-ultra-raw-dng-verify.log",
+        "sha256": "ee4226a4da209592354d7dc4e6fb7e60d0ffc7c0808e4fda3bff073670df2566",
+        "size_bytes": 769
+      }
+    },
+    "aperture_rear_bokeh": {
+      "case": "rear-bokeh",
+      "result": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/aperture-cases/rear-bokeh/result.json",
+        "sha256": "cf49a917fb60b3d82310b1543d129097976124a797fe7c524f0908b5bc73d416",
+        "size_bytes": 471
+      },
+      "media": [
+        {
+          "size_bytes": 4662381,
+          "sha256": "c1ca45722c066a1efbda159dc68c4c9a06fd5cedf4d6cda88d7e2bcf5bc69c77",
+          "decoded": true,
+          "format": "JPEG",
+          "dimensions": [
+            3072,
+            4096
+          ],
+          "mode": "RGB"
+        }
+      ]
+    },
+    "xiaomi_rear_video": {
+      "case": "rear-video",
+      "result": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/video-cases/rear-video/result.json",
+        "sha256": "482124c656042d9ac1904eeb25d4c7e615a11ffb817cc1f931e6773c3a7bc550",
+        "size_bytes": 415
+      },
+      "media": [
+        {
+          "size_bytes": 2495970,
+          "sha256": "b53f2e5c347d3c32922fb15c435ba8df0a7f23f2c21b663f2a171da53e8d9b52"
+        }
+      ],
+      "verification": {
+        "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/video-cases/rear-video/host-verification/verification.json",
+        "sha256": "c543003fdeb82f0cf3efd16fdb5a29438c102d0c553aed3b83162a2778cad1a0",
+        "size_bytes": 5492
+      },
+      "duration_seconds": 10.079744,
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "audio_codec": "aac"
+    }
+  },
+  "cleanup": {
+    "receipt": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/final-cleanup/receipt.json",
+      "sha256": "289c560ba7622fb83679f0bc9eb273b7b30ff2c085ce639cc4c67ab445475798",
+      "size_bytes": 796
+    },
+    "xiaomi_final_mode": "rear Photo 1.0X",
+    "xiaomi_pro_format": "JPEG",
+    "aperture_final_effect": "NONE",
+    "usb_stay_awake": "0",
+    "final_lock_screen_screenshot": {
+      "path": "reports/wallpaper-clock-plugin-20260908/v14-validation/final-cleanup/lockscreen-final.png",
+      "sha256": "5b67e47d0878b0f28d4a050b9b76d229d163a0676c3332a2c578189fa6669fd3",
+      "size_bytes": 2285652
+    }
+  },
+  "limits": [
+    "One session on one phone; sustained wallpaper picker use, wallpaper changes, theme packs and the other six plugin clocks were not applied.",
+    "The camera subset is five captures (rear, front, UltraRAW, one Aperture effect, one short video); the full v13 matrix was not repeated.",
+    "The picker home-screen preview showed a widget error card that is unrelated to plugin loading and remains unexplained.",
+    "App-data equality covers the wallpaper picker only, before its first launch on v14."
+  ],
+  "privacy": "Screenshots, UI dumps, media, raw logs and app-data archives stay under ignored reports/ and evidence/ directories; only hashes, counts and identifiers are recorded here."
+}

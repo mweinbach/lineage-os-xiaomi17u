@@ -6,9 +6,10 @@ rejects it, and the Google wallpaper picker crashes on that rejection.** The
 fix drops that one product selection. The Flex clock itself stays available
 because QPR2 SystemUI's default clock provider already registers it. The other
 seven Pixel clock plugins, the wallpaper picker and SystemUI are unchanged.
-This page records the diagnosis, the source change and the host checks; the
-successor package has not been installed and the crash is not yet closed on
-the phone.
+This page records the diagnosis, the source change and the host checks as of
+the package checkpoint. The package was later installed with the user's
+separate approval; the device results are in the
+[v14 installation and validation record](wallpaper-v14-install-validation-20260908.md).
 
 ## Observed failure
 
