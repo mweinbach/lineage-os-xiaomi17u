@@ -1,16 +1,18 @@
 # Current Nezha workspace status
 
-**Installed phone: v14 userdebug (`nezha.98d08f70d20e5a87a2777f81`, source
-revision 11, 672 rows), slot A, boot completed with SELinux Enforcing.** The
-separately approved eight-image installation completed without a wipe, slot
-change or data clear. V14 removes only the stale `SystemUIClocks-Flex` product
-selection whose pre-QPR2 plugin interface crashed Wallpaper & style; on the
-phone the picker now opens from the launcher and Settings, offers the default
-and seven Pixel plugin clocks, applies and restores a clock, and logs no plugin
-rejection or crash. A five-capture camera subset passes on the preserved v13
-camera baseline. See the
-[v14 installation and validation record](wallpaper-v14-install-validation-20260908.md)
-and the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md).
+**Installed phone: v15 userdebug (`nezha.81c1b93277a1fa371a3efbb3`, source
+revision 13, 702 rows), slot A, boot completed in 25.4 s with SELinux Enforcing.**
+The separately approved eight-image installation completed without a wipe, slot
+change or data clear. V15 adds the exact-stock IMS provider, which runs in its
+restored `vendor_qtelephony` domain and is bound by the telephony process (no
+SIM is inserted, so no registration), and corrects the display dim level from
+0 to 0.05, measured on the keyguard as panel value 314 instead of the minimum.
+See the [v15 installation record](v15-install-validation-20260909.md) and the
+[tier 1 source record](tier1-ims-dim-20260909.md). V14
+(`nezha.98d08f70d20e5a87a2777f81`) remains the recorded predecessor: its
+[installation record](wallpaper-v14-install-validation-20260908.md) holds the
+wallpaper fix and the camera subset, and its bundle was removed after v15 was
+installed.
 
 The [v13 runtime record](camera-v13-install-validation-20260908.md) holds the
 full camera matrix: UltraRAW DNG and embedded preview decode, audio policy
@@ -54,14 +56,14 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.98d08f70d20e5a87a2777f81` (userdebug, delivery set v14) |
-| Installed source receipt | 672 rows; `reports/wallpaper-clock-plugin-20260908/source-revision-11/source-installed.json`, SHA256 `2227c605583e78d261bb4019c8f0a19dc057cf806980a4352f2eb1330301c484` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/` (the only delivery set retained on the host; see the [retention record](artifact-retention-20260909.md)) |
-| Bundle manifest SHA256 | `b36a0482e3b28be2c16d609f6cc6252b6c8b68ee25d0f87d624472df5b678ce0` |
-| Reconciled signed target-files SHA256 | `fee3f8e03fef7ca7c29faf63d492d28d99c72be47dc93ddc05eafd90e9bd390d` |
-| Signing/reconciliation result | Passed signing, reconciliation and eight-payload verification; receipts in the [wallpaper clock plugin record](wallpaper-clock-plugin-20260908.md) |
-| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.5 s |
-| Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; Flex package absent, seven kept clocks present, no plugin rejection lines; final cleanup reconfirmed build, slot and policy |
+| Installed build identity | `nezha.81c1b93277a1fa371a3efbb3` (userdebug, delivery set v15) |
+| Installed source receipt | 702 rows; `reports/tier1-20260909/source-revision-13/source-installed.json`, SHA256 `f5236e241c60c0e61d17e21e006477d23723cfd089da6d3be144b3f78035917f` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/` (the only delivery set retained on the host; see the [retention record](artifact-retention-20260909.md)) |
+| Bundle manifest SHA256 | `64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed` |
+| Reconciled signed target-files SHA256 | `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953` |
+| Signing/reconciliation result | Passed signing, reconciliation, 18 host gates and eight-payload verification; receipts in the [tier 1 record](tier1-ims-dim-20260909.md) |
+| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.4 s |
+| Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; IMS provider persistent in `vendor_qtelephony` and bound by telephony; no denials for the domain; dim policy lands at panel value 314 |
 | Camera acceptance observed | On v14: rear/front photo, UltraRAW DNG/preview, one Aperture effect and a short HEVC/AAC video pass. On v13 (byte-identical camera components): five Xiaomi Ultra HDR photos including main/telephoto 50 MP and telephoto 200 MP, Pro RAW, three physical RAW sensors and all ten warm Aperture Ultra HDR effects pass |
 | App data | V14: all 28 CE and five DE wallpaper picker members unchanged before first launch. V13: all 513 CE and five DE camera members unchanged; no claim about all userdata |
 | Recovery | TWRP `working76`; preserve its `fix22ZJ-touchfix18` runtime/hardware setup, permissive recovery policy and zero-vibration defaults |
@@ -141,21 +143,6 @@ compilation. TWRP remains the required default recovery; missing or mismatched
 inputs must fail. Recovery success with stock companions does not prove the
 successor ROM boot chain or OTA behavior.
 
-## Prepared, not installed: v15 with the IMS provider and the dim fix (September 9)
-
-Delivery set v15 (`nezha.81c1b93277a1fa371a3efbb3`, source revision 13, 702
-rows) is built, signed and bundled under
-`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/`, manifest SHA256
-`64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed`, reconciled
-archive SHA256 `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953`.
-It adds the exact-stock IMS provider with the restored `vendor_qtelephony`
-domain and its factory selector, the MMTEL selector in TeleService, and the
-display dim level 0.05 instead of 0. Every host gate passed; nothing was flashed.
-See the [tier 1 record](tier1-ims-dim-20260909.md). The Linux checkout now
-holds source revision 13. Installing v15 needs your approval bound to that
-manifest hash, a SIM for any IMS result, and the v14 set is deleted only after
-v15 is installed and recorded.
-
 ## Tier 0 hardware ledger on v14 (September 9)
 
 The [tier 0 session](hardware-ledger-v14-20260909.md) ran the hardware ledger
@@ -200,11 +187,10 @@ template is enrolled.
   [installation results](package7-f9e-install-20260906.md) remain preserved.
   Those results do not establish current rendering, authentication or userdata
   behavior. Preserve the approved normal status-bar geometry when refining shade.
-- **IMS and telephony:** the exact-stock Android IMS provider is integrated in
-  source revision 13 and built into the prepared v15 set with its restored
-  `vendor_qtelephony` domain; it is not installed. On September 9 the modem
-  reported no SIM in either slot, so data, SMS and voice are untested. VoLTE,
-  VoWiFi and emergency calling remain unverified. The workload classifier also
+- **IMS and telephony:** the exact-stock Android IMS provider is installed with
+  v15, runs in its restored `vendor_qtelephony` domain and is bound by the
+  telephony process. No SIM is inserted, so registration, data, SMS and voice
+  are untested. VoLTE, VoWiFi and emergency calling remain unverified. The workload classifier also
   remains disabled; selected display, Dolby, haptics, camera-scheduling and
   refresh candidates still need their own measured device results.
 - **Other hardware and lifecycle:** track networking, display/touch, audio,

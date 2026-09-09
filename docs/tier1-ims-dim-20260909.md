@@ -101,8 +101,8 @@ bundle needs your separate approval bound to its manifest hash.
 | Release checker | every stage recognized for this identity |
 
 The retained-firmware references (`countrycode`, `pvmfw`) and the shared
-Super route are as in v14. The predecessor v14 bundle stays on the host as the
-installed set until v15 is installed and recorded.
+Super route are as in v14. V15 was installed later the same day; the device
+results are in the [v15 installation record](v15-install-validation-20260909.md).
 
 ## What this does not prove
 

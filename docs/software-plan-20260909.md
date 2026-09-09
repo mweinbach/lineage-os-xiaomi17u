@@ -50,11 +50,10 @@ suspend on USB, which feed tiers 1 and 3.
 
 ## Tier 1: daily-driver blockers, in order
 
-Status, September 9: the IMS slice is built into the prepared v15 set with the
-restored domain and selector (see the [tier 1 record](tier1-ims-dim-20260909.md));
-the dim level is fixed in the same set; the QMI daemon loop is diagnosed and
-waits for the vendor policy image cycle. Device gates for all three wait on
-the v15 installation and a SIM.
+Status, September 9: v15 is installed. The IMS provider runs in its restored
+domain and is bound by telephony ([install record](v15-install-validation-20260909.md));
+its carrier gate waits on a SIM. The dim fix is measured on the panel. The QMI
+daemon loop stays as is until the ROM moves off the stock vendor policy images.
 
 
 1. **IMS, so calls and texts work the way the carrier expects.** This is the

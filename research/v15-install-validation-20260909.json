@@ -1,0 +1,154 @@
+{
+  "operation": "v15-install-validation-v1",
+  "date": "2026-09-09",
+  "build_number": "nezha.81c1b93277a1fa371a3efbb3",
+  "predecessor": "nezha.98d08f70d20e5a87a2777f81",
+  "bundle_manifest_sha256": "64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed",
+  "authorization": {
+    "bound_before_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "qmi_property_change": false,
+    "sim_present": false
+  },
+  "preflight": {
+    "android_passed": true,
+    "bootloader_passed": true,
+    "bootloader_values": {
+      "current-slot": "a",
+      "slot-count": "2",
+      "unlocked": "yes",
+      "snapshot-update-status": "none"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 242.032
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.986
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.365
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.661
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.772
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.669
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.151
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.14
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.4,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "slot": "_a",
+    "root_adb": true
+  },
+  "ims": {
+    "package_path": "package:/system_ext/priv-app/ims/ims.apk",
+    "apk_sha256": "56f103215b1aa301e65b6ecde29bb67318cba07f3f3d91d2196372fd14d44172",
+    "libraries": [
+      "library:ims-ext-common",
+      "library:qti-telephony-hidl-wrapper",
+      "library:qti-telephony-utils"
+    ],
+    "process_domain": "u:r:vendor_qtelephony:s0",
+    "persistent": true,
+    "supplementary_gids": [
+      1005,
+      2901
+    ],
+    "bound_by_phone_process": true,
+    "avc_denials_for_domain": 0,
+    "registration_attempted": false
+  },
+  "dim": {
+    "config_float": "0.05",
+    "framework_dim": "mBrightnessDim=0.05",
+    "keyguard_dim_panel_value": 314,
+    "panel_max": 16383,
+    "v14_dim_panel_value": 7,
+    "passed": true
+  },
+  "selinux": {
+    "enforcing": true,
+    "denial_lines_since_boot": 64
+  },
+  "crash_fatal": 0,
+  "retained_userdata": {
+    "accounts": 1,
+    "third_party_packages": 22,
+    "media_files": 153
+  },
+  "camera": {
+    "hal_devices": 9,
+    "cameraserver_running": true
+  },
+  "qmi_daemon_still_looping": true,
+  "retention": {
+    "removed": [
+      {
+        "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v14",
+        "kib": 30114348
+      },
+      {
+        "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14",
+        "kib": 9593860
+      },
+      {
+        "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v14-transfer",
+        "kib": 20309912
+      }
+    ],
+    "removed_total_kib": 60018120,
+    "kept": "variant-opt-in-userdebug-20260906-v15",
+    "host_free_kib_after": 1303387960
+  },
+  "device_changes_during_validation": [
+    "screen woken once and put back to sleep"
+  ],
+  "not_established": "No IMS registration, call or SMS (no SIM). Dim measured by panel readback only. Other ledger rows unchanged."
+}

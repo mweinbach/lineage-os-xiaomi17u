@@ -2,7 +2,7 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-installed build is the v14 userdebug delivery set, which boots with enforcing
+installed build is the v15 userdebug delivery set, which boots with enforcing
 SELinux and root ADB for diagnostics. Most of this repository is tooling,
 contracts and evidence records, not Android source.
 
@@ -119,21 +119,20 @@ quoted.
 
 ## Where things stand
 
-- Installed: v14, `nezha.98d08f70d20e5a87a2777f81`, userdebug, slot A,
+- Installed: v15, `nezha.81c1b93277a1fa371a3efbb3`, userdebug, slot A,
   Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v14/`. It is the
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/`. It is the
   only delivery set retained on the host.
-- Source: revision 11 in the Linux checkout. It carries the merged feature
+- Source: revision 13 in the Linux checkout. It carries the merged feature
   candidates (display brightness, Dolby, haptics, camera scheduling, refresh
   policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
   the HyperOS camera framework port, native camera session hooks, vendor-key
   discovery, stream sizing, compressed Bayer DNG, Xiaomi audio descriptors and
   the stale Flex clock removal. `user` is still the default variant; userdebug
   needs its explicit opt-in. The workload classifier stays disabled.
-- Prepared, not installed: v15, `nezha.81c1b93277a1fa371a3efbb3` (source
-  revision 13), adds the exact-stock IMS provider with its restored
-  `vendor_qtelephony` domain and the display dim level 0.05. Its bundle sits
-  beside v14 until you approve the install; see `docs/tier1-ims-dim-20260909.md`.
+- V15 adds the exact-stock IMS provider (running in its restored
+  `vendor_qtelephony` domain, no SIM yet) and the display dim level 0.05; see
+  `docs/tier1-ims-dim-20260909.md` and `docs/v15-install-validation-20260909.md`.
 - Camera: the requested capture matrix passes on v13 and the v14 subset:
   rear and front Ultra HDR, main and telephoto 50 MP, telephoto 200 MP, Pro
   RAW, UltraRAW DNG, three physical RAW sensors, all ten Aperture effects and
