@@ -130,6 +130,9 @@ def validate(contract: dict, original_input: Path, original_runtime: Path,
     services_classes = jar_classes(jar_members(services))
     require(contract["process_helper_class"] in services_classes,
             "services.jar does not contain the selected process-policy helper")
+    for helper in contract.get("reclaim_helper_classes", []):
+        require(helper in services_classes,
+                f"services.jar does not contain the selected reclaim helper {helper}")
     platform_duplicates = original_classes.intersection(services_classes)
     require(platform_duplicates <= set(contract.get("allowed_platform_duplicates", [])),
             "services.jar introduces an unreviewed duplicate of a factory class")

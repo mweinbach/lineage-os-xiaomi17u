@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "source_candidate_with_explicit_unported_apis",
+  "status": "source_candidate_with_four_app_reachable_methods_ported",
   "selector": "NEZHA_CAMERAOPT_SERVICE",
   "target_device": "nezha",
   "requires": [
@@ -17,7 +17,10 @@
     "Lcom/miui/cameraopt/ICameraOptManager;",
     "Lcom/miui/cameraopt/ICameraOptManager$Stub;",
     "Lcom/miui/cameraopt/ICameraOptManager$Stub$Proxy;",
-    "Lcom/miui/cameraopt/verify/Verifier;"
+    "Lcom/miui/cameraopt/verify/Verifier;",
+    "Lcom/miui/cameraopt/configs/JsonDisptcher;",
+    "Lcom/miui/cameraopt/configs/JsonDisptcher$DataCallback;",
+    "Lcom/miui/cameraopt/utils/FileUtils;"
   ],
   "adapter_required_classes": [
     "Lcom/android/server/cameraopt/NezhaCameraOptService;",
@@ -41,10 +44,14 @@
   "verification_failure_handling": "Original boot-hook or verifier linkage/runtime errors are retained as unavailable state and converted to thrown unavailability, never a replacement Boolean verdict. Failed startup removes its worker and process-policy observer.",
   "implemented_request_surfaces": [
     "adjBoost",
+    "boostCameraByThreshold",
     "getSystemStatusJson",
     "getVerifyResult",
+    "notifyCameraPerformanceTime",
     "notifyCameraPostProcessState",
-    "sendCameraEvent"
+    "reclaimMemoryForCamera",
+    "sendCameraEvent",
+    "updateCloudData"
   ],
   "process_policy_scope": "An authored temporary camera-owned OOM cap, not the full MIUI reclaim/performance policy. Camera close ends the sole cap; no post-close work model is inferred. Postprocessing completion can remove an explicit cap requested after close but does not release native handles or perform reclamation.",
   "factory_immediate_return_methods": [
@@ -57,21 +64,16 @@
     7,
     8
   ],
-  "unported_app_reachable_methods": [
-    "boostCameraByThreshold",
-    "reclaimMemoryForCamera",
-    "notifyCameraPerformanceTime",
-    "updateCloudData"
-  ],
-  "remaining_api_usage": "Unknown. Unported methods throw UnsupportedOperationException and retain diagnostic counts; none is claimed unused.",
+  "unported_app_reachable_methods": [],
+  "remaining_api_usage": "Eighteen methods remain unported and throw UnsupportedOperationException with diagnostic counts; none of them has a known app call path.",
   "prelaunch_history": "Not synthesized from camera client events. The sampler supports genuine activity-launch callbacks but no producer has yet been integrated.",
   "validation_boundaries": [
     "Host selector and artifact-ownership tests do not prove an Android build.",
     "A present Binder service does not prove original verification or JNI initialization.",
-    "Unsupported API attempts remain incomplete integration even when a capture succeeds.",
+    "The host planner harness proves decision logic on synthetic tables, not kills or reclaim on the phone.",
     "Capture, RAW, high-resolution, Ultra HDR, video and auxiliary ID evidence remain separate."
   ],
-  "contract_id": "nezha-cameraopt-service-v1",
+  "contract_id": "nezha-cameraopt-service-v2",
   "default_enabled": false,
   "fragment_sha256": "15ead13db047761f6151dcc5e36ee2b9c154da5b5ce9b8355af85cbcee46100c",
   "fragment_size_bytes": 2298,
@@ -100,6 +102,14 @@
     "device/xiaomi/nezha/cameraopt-service/process-policy/src/com/android/server/am/NezhaCameraProcessPolicy.java": {
       "sha256": "7e65a3f707391be6a4b42efa64db32969dfcc0c66a0b30c48f1fcb252b4430a5",
       "size_bytes": 18437
+    },
+    "device/xiaomi/nezha/cameraopt-service/process-policy/src/com/android/server/am/NezhaCameraReclaimPlanner.java": {
+      "sha256": "6f857297a1cc10d1309b85e96bb34aade69d400f0ae6f4eec15c3aa9c4040d16",
+      "size_bytes": 38868
+    },
+    "device/xiaomi/nezha/cameraopt-service/process-policy/src/com/android/server/am/NezhaCameraReclaimPolicy.java": {
+      "sha256": "f7ccfe99484bf0fd014e0547001008769883e8c7e1e86221a4dc3e7e352f05fc",
+      "size_bytes": 25621
     }
   },
   "effective_predecessor_service_array": {
@@ -117,5 +127,70 @@
   "system_server_jar_entries": [
     "system_ext:miui-cameraopt",
     "system_ext:nezha-cameraopt-service"
-  ]
+  ],
+  "reclaim_helper_classes": [
+    "Lcom/android/server/am/NezhaCameraReclaimPolicy;",
+    "Lcom/android/server/am/NezhaCameraReclaimPlanner;"
+  ],
+  "ported_app_reachable_methods": {
+    "reclaimMemoryForCamera": "capture scene of the device reclaim table once per duration_reclaim_capture; kills through ProcessRecord.killLocked, reclaim through cgroup v2 memory.reclaim and CachedAppOptimizer compaction",
+    "boostCameraByThreshold": "nonzero levels select the factory scene (video switch, 200 MP, live motion, Dolby) and run its kill_target actions; the zero level stays unported",
+    "notifyCameraPerformanceTime": "retains the last 32 events for dumps; the watcher behind persist.miui.camera.perfwatcher.enable is unported and counted when requested",
+    "updateCloudData": "bounded persist.vendor.camera.cloud property writes, JsonDisptcher.updateCloudData merge and callback redelivery; memory-reserve keys counted, not applied"
+  },
+  "reclaim_policy_deviations": [
+    "adjustment floor at ProcessList.SERVICE_B_ADJ: the table low-memory escalation to adjustment 0 is suppressed and counted",
+    "at most 8 kills per batch and 16 compaction requests per pass",
+    "processes with foreground services, visible activities, the home or previous process, persistent and isolated processes are never candidates",
+    "factory lmkd commands, MIUI process list, PSI monitor scenes (kill_once), memory-reserve writes and the intercept-restart hook are not reproduced",
+    "memcg v1 memory.reclaim_once is absent on this cgroup v2 build; the root memory.reclaim file is written instead"
+  ],
+  "configuration_source": "factory JsonDisptcher.loadJson over the on-device encrypted tables, CameraReclaim section by callback; no decrypted table is shipped",
+  "reclaim_patch": {
+    "patch": "patches/evolution/0040-nezha-cameraopt-reclaim-policy.patch",
+    "patch_sha256": "a3d3c8c3ba6e162f026ad134f080eb5fe01fc0ac5626d707565c830506511182",
+    "patch_size_bytes": 67141,
+    "project": "frameworks/base",
+    "files": {
+      "services/core/java/com/android/server/am/NezhaCameraReclaimPlanner.java": {
+        "before_sha256": null,
+        "after_sha256": "6f857297a1cc10d1309b85e96bb34aade69d400f0ae6f4eec15c3aa9c4040d16",
+        "after_bytes": 38868
+      },
+      "services/core/java/com/android/server/am/NezhaCameraReclaimPolicy.java": {
+        "before_sha256": null,
+        "after_sha256": "f7ccfe99484bf0fd014e0547001008769883e8c7e1e86221a4dc3e7e352f05fc",
+        "after_bytes": 25621
+      },
+      "services/proguard.flags": {
+        "before_sha256": "9f2b1511478dcb41e9c8ea6c89f15370c083aaf57d0b3e9f1d3bc6f11fc2ff07",
+        "after_sha256": "b48a81269d0de1f53efd014c169d343504d2c0414d2f18dce21b6acb308ce370",
+        "after_bytes": 8822
+      }
+    }
+  },
+  "compile_stubs": {
+    "com/miui/cameraopt/ICameraOptManager.java": {
+      "sha256": "1e89e4c5e436bf3a6b882685df43f7238b790b025bd2befb6e2b3f6b4de23142",
+      "size_bytes": 3241
+    },
+    "com/miui/cameraopt/configs/JsonDisptcher.java": {
+      "sha256": "732153ea379b2e01238e2a774a378afec673e206fdc485b94db46855e44b1886",
+      "size_bytes": 1353
+    },
+    "com/miui/cameraopt/verify/Verifier.java": {
+      "sha256": "d416d0df2a6357934f348accea08b513c796e1032652b84609a617229e99515b",
+      "size_bytes": 716
+    }
+  },
+  "service_sources": {
+    "com/android/server/cameraopt/NezhaCameraOptService.java": {
+      "sha256": "27c39067b930830983557ebc3065f025bdeeaca0a39d1c58fbb58ffe92c1b621",
+      "size_bytes": 28325
+    },
+    "com/android/server/cameraopt/CameraStatusSampler.java": {
+      "sha256": "812fff35d27f74403ee58dd75fa0ababaac017141cee635ea87d482867fb1e1a",
+      "size_bytes": 21170
+    }
+  }
 }
