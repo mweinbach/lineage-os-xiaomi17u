@@ -26,8 +26,8 @@
         },
         {
           "path": "scripts/avb_image_set.py",
-          "sha256": "4f9e60c2fd9bbde3cb1205f5531d0471eee6c3333703dbb837207a6e091abd69",
-          "size_bytes": 53543
+          "sha256": "a81a2eb707b910d1c77d38316578a7aa9c6867223c9445604aa711cb4be89006",
+          "size_bytes": 54094
         },
         {
           "path": "scripts/twrp_working.py",
@@ -41,8 +41,8 @@
         },
         {
           "path": "config/nezha-avb-image-set.json",
-          "sha256": "aef176b2fb6b2797e5d9773017f282aae33f1bc3e3f4d7cd31fecde706135c87",
-          "size_bytes": 13363
+          "sha256": "a424e3bf38ef04d7d15d5c0cafb05a10c6862d9fb5dcbed07f4fbe5721631878",
+          "size_bytes": 13887
         },
         {
           "path": "config/vendor-policy-correction.json",
@@ -242,8 +242,8 @@
         },
         {
           "path": "scripts/avb_image_set.py",
-          "sha256": "4f9e60c2fd9bbde3cb1205f5531d0471eee6c3333703dbb837207a6e091abd69",
-          "size_bytes": 53543
+          "sha256": "a81a2eb707b910d1c77d38316578a7aa9c6867223c9445604aa711cb4be89006",
+          "size_bytes": 54094
         },
         {
           "path": "scripts/twrp_working.py",
@@ -257,8 +257,8 @@
         },
         {
           "path": "config/nezha-avb-image-set.json",
-          "sha256": "aef176b2fb6b2797e5d9773017f282aae33f1bc3e3f4d7cd31fecde706135c87",
-          "size_bytes": 13363
+          "sha256": "a424e3bf38ef04d7d15d5c0cafb05a10c6862d9fb5dcbed07f4fbe5721631878",
+          "size_bytes": 13887
         },
         {
           "path": "config/vendor-policy-correction.json",
@@ -756,8 +756,8 @@
         },
         {
           "path": "scripts/avb_image_set.py",
-          "sha256": "4f9e60c2fd9bbde3cb1205f5531d0471eee6c3333703dbb837207a6e091abd69",
-          "size_bytes": 53543
+          "sha256": "a81a2eb707b910d1c77d38316578a7aa9c6867223c9445604aa711cb4be89006",
+          "size_bytes": 54094
         },
         {
           "path": "scripts/twrp_working.py",
@@ -771,8 +771,8 @@
         },
         {
           "path": "config/nezha-avb-image-set.json",
-          "sha256": "aef176b2fb6b2797e5d9773017f282aae33f1bc3e3f4d7cd31fecde706135c87",
-          "size_bytes": 13363
+          "sha256": "a424e3bf38ef04d7d15d5c0cafb05a10c6862d9fb5dcbed07f4fbe5721631878",
+          "size_bytes": 13887
         },
         {
           "path": "config/vendor-policy-correction.json",
@@ -1073,8 +1073,8 @@
         },
         {
           "path": "scripts/avb_image_set.py",
-          "sha256": "4f9e60c2fd9bbde3cb1205f5531d0471eee6c3333703dbb837207a6e091abd69",
-          "size_bytes": 53543
+          "sha256": "a81a2eb707b910d1c77d38316578a7aa9c6867223c9445604aa711cb4be89006",
+          "size_bytes": 54094
         },
         {
           "path": "scripts/twrp_working.py",
@@ -1088,8 +1088,8 @@
         },
         {
           "path": "config/nezha-avb-image-set.json",
-          "sha256": "aef176b2fb6b2797e5d9773017f282aae33f1bc3e3f4d7cd31fecde706135c87",
-          "size_bytes": 13363
+          "sha256": "a424e3bf38ef04d7d15d5c0cafb05a10c6862d9fb5dcbed07f4fbe5721631878",
+          "size_bytes": 13887
         },
         {
           "path": "config/vendor-policy-correction.json",

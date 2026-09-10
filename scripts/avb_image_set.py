@@ -339,6 +339,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "4d26934e99958d1cee7114b4008268114a740a92f5da5592ea454eaf3c3b7b30", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v16-admit/admission.json", "sha256": "df205531be620eaf81a00c5bd75e36ac21afa0ca2ae72b42a995e7eae200760f", "size_bytes": 7128},
      "build_number": "nezha.434625bd9b5cd7a8a7eabd84"},
+    # Always-on Leica Essential: ro.theme_customize=LCC and camera.debug.safe.check.disable=true baked into build.prop; measured v17 system_ext.
+    {"measured_image": {"sha256": "28b4c8d5e7e13b94285463b06421b361e0e4c15720e54b5e51edaee590c1f890", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v17-admit/admission.json", "sha256": "7cb34773c5170eaafb6496b4f84834957754fbd3469de7beec1881bdc6a9aaf1", "size_bytes": 7138},
+     "build_number": "nezha.11b0a26475073bca18f34c39"},
 )
 
 
