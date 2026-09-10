@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "project": "frameworks/av",
+  "repository": "https://github.com/Evolution-X/frameworks_av.git",
+  "branch": "bka",
+  "patch": "patches/evolution/nezha-hevc-length-prefixed-nal.patch",
+  "patch_sha256": "d065767ec1cfc0380c161747f51ac6c1557225b99d2d713f74bbedbfdaa078bb",
+  "file": {
+    "path": "frameworks/av/media/libstagefright/MPEG4Writer.cpp",
+    "before_sha256": "591539419f922db99c4dd93ba4320174418730327922e85799787627f92ca127",
+    "after_sha256": "f59d2245a2700ca0cc8dcf151f176cadb7298a2fae6696119d5a78f36df6d3fc",
+    "after_bytes": 217833,
+    "added_lines": 48
+  },
+  "problem": {
+    "symptom": "8K writes a non-decodable video track; 4K120 and sustained/long 4K60 abort MPEG4Writer with a FORTIFY write overflow (SIGABRT) about three seconds in, so no file and no thermal curve.",
+    "cause": "The Xiaomi HEVC recorder enables vendor.qti-ext-enc-nal-length-bs (num-bytes=4), so the vendor encoder emits length-prefixed NAL units (a 4-byte big-endian length before each NAL) instead of Annex-B start codes. MPEG4Writer's HEVC/AVC sample path (addMultipleLengthPrefixedSamples_l via getNextNALUnit) scans for 0x00000001 start codes. A NAL length in [256,511] is 00 00 01 xx, which looks like a 3-byte start code, so the parser misframes: with no real start code it writes the whole AU as one sample (non-decodable), and a false split makes nextNalStart - currentNalStart - 4 underflow to (size_t)-1, which the file write rejects with FORTIFY: write: count 18446744073709551615 > SSIZE_MAX.",
+    "evidence": {
+      "fortify_count": "18446744073709551615",
+      "crashing_thread": "MPEG4Writer",
+      "encoder_output_format_key": "vendor.qti-ext-enc-nal-length-bs.num-bytes = 4",
+      "measured_on": "v16 and v17; evidence/tier2-camera-v16-20260910/v16-sustained-4k60/"
+    }
+  },
+  "fix": {
+    "function": "ConvertLengthPrefixedNalToAnnexB",
+    "call_site": "MPEG4Writer::Track sample loop, immediately before StripStartcode(copy) for usePrefix (AVC/HEVC) tracks",
+    "mechanism": "Per access unit: if the buffer is exactly a chain of 4-byte length-prefixed NAL units, validated end to end (each length >= 2, fits the buffer, consumes the buffer exactly, and every NAL has forbidden_zero_bit == 0), rewrite each 4-byte length prefix in place as a 4-byte Annex-B start code (00 00 00 01). The existing, tested Annex-B logic (StripStartcode, addMultipleLengthPrefixedSamples_l, sample-size accounting) then handles it unchanged.",
+    "gate": "Self-validating per-buffer detection; no format-key plumbing. Only activates when the whole AU parses as length-prefixed. Annex-B input starts with a start code and never validates, so normal encoders are untouched.",
+    "does_not_touch": "Codec-specific data (hvcc/csd) path is unchanged; short 4K60 and 1080p already record and play, proving the csd is Annex-B.",
+    "safety": "A false positive would corrupt normal recording, so detection is strict; a 20000-buffer random Annex-B fuzz produced zero false positives (tests/test_hevc_length_prefixed.py). A false negative only reproduces the pre-existing bug."
+  },
+  "activation_allowed": true,
+  "remaining": [
+    "On-device confirmation that 8K, 4K120 and long 4K60 record decodable tracks with no MPEG4Writer abort",
+    "Whether 8K/120fps sustain thermally and at the encoder's real bitrate is a separate question from the writer fix"
+  ]
+}

@@ -1,0 +1,66 @@
+diff --git a/frameworks/av/media/libstagefright/MPEG4Writer.cpp b/frameworks/av/media/libstagefright/MPEG4Writer.cpp
+--- a/frameworks/av/media/libstagefright/MPEG4Writer.cpp
++++ b/frameworks/av/media/libstagefright/MPEG4Writer.cpp
+@@ -1742,7 +1742,51 @@
+         ALOGV("stripping start code");
+         buffer->set_range(
+                 buffer->range_offset() + 4, buffer->range_length() - 4);
++    }
++}
++
++// Some Qualcomm vendor video encoders emit length-prefixed NAL units (a 4-byte big-endian
++// length before each NAL) instead of Annex-B start codes when the recorder enables
++// vendor.qti-ext-enc-nal-length-bs (seen on the Xiaomi HEVC recorder at 8K, 4K120 and
++// sustained 4K60). The Annex-B sample path scans for 0x00000001 start codes; a NAL length in
++// [256,511] looks like a 00 00 01 start code, so it misparses the prefixes, which drops frames
++// (non-decodable track) or underflows a NAL size (nextNalStart - currentNalStart - 4) and
++// aborts MPEG4Writer with a FORTIFY write overflow. If the access unit is exactly a chain of
++// 4-byte length-prefixed NAL units (validated end to end, each with forbidden_zero_bit 0),
++// rewrite every prefix as a 4-byte start code in place so the existing Annex-B logic applies.
++static bool ConvertLengthPrefixedNalToAnnexB(uint8_t *data, size_t size) {
++    if (data == NULL || size < 6) {
++        return false;
++    }
++    // Validate a full 4-byte length-prefixed walk before modifying any bytes.
++    size_t offset = 0;
++    size_t nalCount = 0;
++    while (offset + 4 <= size) {
++        uint32_t nalLength = (uint32_t(data[offset]) << 24) | (uint32_t(data[offset + 1]) << 16) |
++                             (uint32_t(data[offset + 2]) << 8) | uint32_t(data[offset + 3]);
++        // A real NAL unit is at least a 2-byte header, fits in the buffer, and has
++        // forbidden_zero_bit == 0 (holds for both AVC and HEVC).
++        if (nalLength < 2 || nalLength > size - offset - 4 || (data[offset + 4] & 0x80) != 0) {
++            return false;
++        }
++        offset += 4 + nalLength;
++        ++nalCount;
+     }
++    if (offset != size || nalCount == 0) {
++        return false;
++    }
++    // Validated: overwrite each 4-byte length prefix with a 4-byte Annex-B start code.
++    offset = 0;
++    while (offset < size) {
++        uint32_t nalLength = (uint32_t(data[offset]) << 24) | (uint32_t(data[offset + 1]) << 16) |
++                             (uint32_t(data[offset + 2]) << 8) | uint32_t(data[offset + 3]);
++        data[offset] = 0x00;
++        data[offset + 1] = 0x00;
++        data[offset + 2] = 0x00;
++        data[offset + 3] = 0x01;
++        offset += 4 + nalLength;
++    }
++    return true;
+ }
+ 
+ void MPEG4Writer::addMultipleLengthPrefixedSamples_l(MediaBuffer *buffer) {
+@@ -3935,6 +3979,10 @@
+         }
+         bool usePrefix = this->usePrefix() && !isExif && !isGainmapMeta;
+         if (sampleFileOffset == -1 && usePrefix) {
++            // Normalize vendor length-prefixed NAL units to Annex-B before the
++            // start-code parsing below (vendor.qti-ext-enc-nal-length-bs).
++            ConvertLengthPrefixedNalToAnnexB(
++                    (uint8_t *)copy->data() + copy->range_offset(), copy->range_length());
+             StripStartcode(copy);
+         }
+         size_t sampleSize = copy->range_length();
