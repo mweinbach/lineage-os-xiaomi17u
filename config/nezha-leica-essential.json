@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-leica-essential-v1",
+  "selector": "NEZHA_LEICA_ESSENTIAL",
+  "fragment": "device/xiaomi/nezha/leica-essential.mk",
+  "purpose": "Enable the Xiaomi Leica Essential camera mode (the Leica M3 Monopan and Leica M9 film looks, module id 256) on this standard-edition Xiaomi 17 Ultra by setting the two properties that gate it, without changing the device model, market name or attestation identity.",
+  "properties": [
+    {
+      "name": "ro.theme_customize",
+      "value": "LCC",
+      "product_variable": "PRODUCT_SYSTEM_PROPERTIES",
+      "role": "Makes the MiuiCamera application run as the Leica edition. LegendaryEnter.support() (module id 256) returns true only when G7.b.O() is true, and O() is F6.d.s.equals(\"LCC\") && !F6.d.u, where F6.d.s reads ro.theme_customize and F6.d.u reads camera.debug.theme_customize.disabled.",
+      "stock_source": "On the factory build this is set by the per-hardware ODM property file /odm/etc/${ro.boot.product.hardware.sku}_${ro.boot.hwversion}.prop; the Leica Edition variants set ro.theme_customize=LCC. This standard unit (hwversion 5.9.0) has no matching ODM file, so the property is empty.",
+      "conflict_note": "This unit's ODM does not set ro.theme_customize, so declaring it in system properties does not double-set the read-only property. A future stock ODM that sets it would be ignored with a warning; revisit if the ODM changes."
+    },
+    {
+      "name": "camera.debug.safe.check.disable",
+      "value": "true",
+      "product_variable": "PRODUCT_SYSTEM_PROPERTIES",
+      "role": "Disables the MiuiCamera application's own native anti-tamper check so the app does not close itself when running as the Leica edition on an unlocked bootloader. F6.d.X reads this property; when F6.d.X is true the security check in D.W.run() is skipped.",
+      "scope_note": "This affects only the camera application's integrity self-check. It does not change platform verified boot, SELinux enforcement or any other application."
+    }
+  ],
+  "gate_mechanism": {
+    "source": "MiuiCamera.apk versionName 6.3.007010.0, versionCode 630070100 (system_ext/priv-app/NezhaXiaomiCameraPlatform), analyzed by apkanalyzer dex code and jadx.",
+    "support_check": "com.android.camera.features.mode.legendary.LegendaryEnter.support() returns G7.b.C0053b.a.K0() && G7.b.O(); getModuleId() returns 256. K0() is satisfied by this device's class; O() requires ro.theme_customize==LCC.",
+    "security_check": "com.android.camera.Camera resume posts the D.W runnable. D.W.run() calls com.camera.LSsdQFvLalapDwvA.RitIeKoenwCSqcPf() (a JNI method in libHawk); when it returns false it sends handler message 11, which ActivityBase logs as 'on APK version error, finish activity after 3 seconds' and shows CameraExitHintDialogFragment type 4. The whole check is guarded by 'if (F6.d.X || F6.d.j) skip', where F6.d.X reads camera.debug.safe.check.disable and F6.d.j reads camera.test.auto.",
+    "local_processing": "The Leica Essential looks are rendered on device, not in the cloud: /odm/etc/camera/styletrans_params.json (snpe runtime dsp, key 'legend') references /odm/etc/camera/styletrans/styletrans_{low,high,colorfix}.minn, and the pipeline uses /odm/lib64/camera/plugins/com.xiaomi.plugin.legendST.so, /odm/lib64/libmialgo_styletrans.so and /vendor/lib64/liblegendmsg.so, with /odm/etc/camera/xiaomi/legendsnapshot.json (M9) and legendmonopansnapshot.json (M3 Monopan)."
+  },
+  "measured_on_v16": {
+    "build_identity": "nezha.434625bd9b5cd7a8a7eabd84",
+    "before": "With no properties set, the Leica Essential mode is absent from the mode list and forcing only ro.theme_customize=LCC makes the app close after three seconds with the 'APK version error'.",
+    "after_minimal": "With ro.theme_customize=LCC and camera.debug.safe.check.disable=true (device model left at the stock 2512BPNDAC), the app stays open, the mode list contains ComponentDataItem{mDisplayName='Leica Essential' mValue='256'}, entering it makes the HAL run module 0x100 and the 'OEM Legend' processing path, and a capture through LegendaryModule (mid 256) saves a JPEG with EXIF customize=P1_Leica.",
+    "method": "Set at runtime via setprop and Magisk resetprop, then observed with uiautomator and logcat; not yet built into a delivery set.",
+    "offline": "The security check fails the same way with the device offline, confirming it is a local check and not a live cloud call."
+  },
+  "deviations_and_risks": [
+    "camera.debug.safe.check.disable permanently disables the camera application's native integrity self-check on this private build. It is a debug property read on a userdebug build; a future user-variant build should reconfirm the property is still honored.",
+    "ro.theme_customize=LCC switches the camera application to Leica branding (Leica watermark defaults, Leica Vibrant look) in addition to enabling Leica Essential; this is intended.",
+    "The device keeps its real model (2512BPNDAC) and attestation identity; no Leica Edition identity is spoofed. Play Integrity and other attestations are unaffected by these two properties.",
+    "Not device-admitted as a built delivery set; the measurements above are runtime observations on v16."
+  ],
+  "device_files_present": [
+    "/odm/etc/camera/styletrans/styletrans_low.minn",
+    "/odm/etc/camera/styletrans/styletrans_high.minn",
+    "/odm/etc/camera/styletrans/styletrans_colorfix.minn",
+    "/odm/lib64/camera/plugins/com.xiaomi.plugin.legendST.so",
+    "/odm/lib64/libmialgo_styletrans.so",
+    "/vendor/lib64/liblegendmsg.so",
+    "/odm/etc/camera/xiaomi/legendsnapshot.json",
+    "/odm/etc/camera/xiaomi/legendmonopansnapshot.json"
+  ],
+  "document": "docs/leica-essential-20260910.md"
+}

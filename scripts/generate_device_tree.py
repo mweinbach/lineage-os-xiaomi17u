@@ -54,6 +54,7 @@ TEMPLATE_FILES = (
     "camera-vendor-keys.mk",
     "camera-vendor-keys/overlay/frameworks/base/core/res/res/values/config.xml",
     "camera-video-profiles.mk",
+    "leica-essential.mk",
     "ims.mk",
     "ims/Android.bp",
     "ims/permissions/privapp-permissions-org.codeaurora.ims.xml",

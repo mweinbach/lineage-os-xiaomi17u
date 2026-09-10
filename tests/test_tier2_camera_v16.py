@@ -47,17 +47,19 @@ class Tier2CameraV16Tests(unittest.TestCase):
             adj = int(v.split("adj ")[1].split(")")[0])
             self.assertGreater(adj, rt["adj_floor"])
 
-    def test_leica_filters_enabled_but_m3_m9_edition_locked(self):
+    def test_leica_filters_enabled_and_m3_m9_finding_corrected(self):
         leica = self.record["leica"]
         self.assertEqual(leica["cloud_color_filters"]["state"], "enabled and cloud-delivered")
-        self.assertIn("locked", leica["m3_m9_leica_essential"]["state"])
-        self.assertIn("LCC", leica["m3_m9_leica_essential"]["gate"])
-        self.assertIn("security_check_fail_cloud", leica["m3_m9_leica_essential"]["forcing_result"])
+        m = leica["m3_m9_leica_essential"]
+        self.assertIn("enabled", m["state"])
+        self.assertIn("camera.debug.safe.check.disable", m["correction"])
+        self.assertIn("RitIeKoenwCSqcPf", m["correction"])
+        self.assertEqual(m["record"], "research/leica-essential-20260910.json")
 
     def test_document_and_index_name_the_record(self):
         page = (ROOT / self.record["document"]).read_text()
         self.assertIn("Leica Essential", page)
-        self.assertIn("cannot be unlocked by a property flip", page)
+        self.assertIn("leica-essential-20260910.md", page)
         self.assertIn(Path(self.record["document"]).name, (ROOT / "docs/README.md").read_text())
 
 

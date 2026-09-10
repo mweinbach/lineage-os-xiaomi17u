@@ -183,12 +183,17 @@ template is enrolled.
   still need a lit scene and a person.
 - **Leica looks:** The cloud Leica color filters (Leica Vibrant and the six
   Leica LUT looks) are enabled and cloud-delivered on v16. The Leica M3 and M9
-  "Leica Essential" film looks are locked to the Leica Edition hardware: the
-  mode requires `ro.theme_customize=='LCC'`, a property that exists only on the
-  Leica Edition ODM, and forcing it on this standard unit makes the stock camera
-  app fail its cloud security check and self-close. The M3/M9 looks cannot be
-  enabled by config on standard-edition hardware
-  ([tier 2 v16 page](tier2-camera-v16-20260910.md)).
+  "Leica Essential" film looks (module 256) are now enabled too: the gate was
+  two properties, not a hardware attestation. `ro.theme_customize=LCC` makes the
+  app run as the Leica edition, and `camera.debug.safe.check.disable=true` skips
+  the camera's native anti-tamper check that otherwise closes the app on an
+  unlocked bootloader. With both set, the mode captures and runs its on-device
+  style-transfer pipeline, and the device keeps its real identity. The guarded
+  fragment [`leica-essential.mk`](../device/xiaomi/nezha/leica-essential.mk)
+  bakes the two properties into the next build; the runtime recipe enables it on
+  the installed v16 until reboot
+  ([enablement record](leica-essential-20260910.md)). Not yet built into a
+  delivery set; the M9-versus-M3 look quality still needs a lit scene.
 - **Wallpaper process:** Resolved on the installed v14. The measured cause was
   the stale `SystemUIClocks-Flex` prebuilt (pre-QPR2 plugin package with a
   bundled interface copy); v14 drops that product selection while SystemUI's

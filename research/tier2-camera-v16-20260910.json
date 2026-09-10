@@ -116,10 +116,10 @@
    "filter_module_choice": "FilterDataSource selects camera_app_filter_leica when supportCvType is true, else camera_app_filter_none_leica"
   },
   "m3_m9_leica_essential": {
-   "state": "hardware-edition locked, not available and not unlockable by config",
-   "gate": "LegendaryEnter.support() requires G7.b.K0() (device class is the Leica-edition class) AND F6.d.s.equals('LCC') (ro.theme_customize=='LCC'); ro.theme_customize comes from the per-hardware ODM prop /odm/etc/${sku}_${hwversion}.prop, which on the standard Ultra (2512BPNDAC, hwversion 5.9.0) is absent, so the property is empty",
-   "forcing_result": "setting ro.theme_customize=LCC on this unit made the stock camera app run its cloud security check (MiuiCamera ExpPlatform /MiuiCamera/ExpLayer/ExpDomain/sec_chk, native libHawk attestation), report security_check_fail_cloud, and self-close after 3 seconds ('on APK version error, finish activity'). The M3/M9 looks cannot be enabled on this standard-edition hardware by a property flip.",
-   "reference": "The Leica Essential mode with the Leica M9 and M3 (Monopan 50) looks is a Leica Edition / Leitzphone feature; this unit is the standard Xiaomi 17 Ultra (ro.product.odm.model 2512BPNDAC), not the Leica Edition (25128PNA1C, 'Xiaomi 17 Ultra by Leica')."
+   "state": "initially reported edition-locked; subsequently enabled on this unit by two properties",
+   "first_finding": "Forcing only ro.theme_customize=LCC made the app run as the Leica edition but a native anti-tamper check closed it after 3s ('APK version error' / security_check_fail path); it fails the same way offline.",
+   "correction": "Deeper analysis of MiuiCamera bytecode showed the close is D.W.run() calling the libHawk native RitIeKoenwCSqcPf(), skipped when F6.d.X (camera.debug.safe.check.disable) is true. With ro.theme_customize=LCC and camera.debug.safe.check.disable=true, module 256 (Leica Essential) appears, the app stays open, and a capture runs the on-device 'OEM Legend' style-transfer pipeline. The device keeps its real model. See leica-essential-20260910.",
+   "record": "research/leica-essential-20260910.json"
   }
  },
  "device_state": "restored: ro.theme_customize cleared by a reboot, camera app relaunched normally, stay_on_while_plugged_in returned to 0, phone asleep",

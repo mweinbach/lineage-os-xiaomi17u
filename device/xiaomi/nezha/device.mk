@@ -59,6 +59,7 @@ include $(NEZHA_DEVICE_PATH)/camera-vendor-keys.mk
 
 # Factory camcorder profile selection (4K, 8K, DCI and high-speed video profiles).
 include $(NEZHA_DEVICE_PATH)/camera-video-profiles.mk
+include $(NEZHA_DEVICE_PATH)/leica-essential.mk
 
 # Exact-stock Android IMS provider with the restored system_ext application domain; explicit opt-in.
 include $(NEZHA_DEVICE_PATH)/ims.mk

@@ -141,10 +141,14 @@ quoted.
   microphone; 8K, 120 fps and long 4K60 runs fail on this build's media writer
   (no QTI length-prefixed-NAL handling), so a sustained 4K60 thermal curve is
   not available. The four CameraOpt methods run on real 4K events, killing only
-  cached apps above the adj floor. The cloud Leica color filters are enabled;
-  the Leica M3/M9 Essential looks are locked to the Leica Edition hardware
-  (`ro.theme_customize==LCC`) and not unlockable by a property flip. Image
-  quality, focus, stabilization and effect quality still need a lit scene
+  cached apps above the adj floor. The cloud Leica color filters are enabled.
+  The Leica M3/M9 Essential looks (module 256) are enabled by two properties,
+  `ro.theme_customize=LCC` and `camera.debug.safe.check.disable=true`: the gate
+  was the camera's native anti-tamper check (fails on an unlocked bootloader),
+  not a hardware attestation, and the device keeps its real identity. The
+  guarded fragment `device/xiaomi/nezha/leica-essential.mk` bakes it into the
+  next build (`docs/leica-essential-20260910.md`). Image quality, focus,
+  stabilization and the M9-vs-M3 look still need a lit scene
   (`docs/tier2-camera-v16-20260910.md`).
 - Open on device: retained userdata, UDFPS, shade visuals, IMS and VoLTE,
   panel brightness and HBM policy, Dolby, haptics, refresh policy, workload
