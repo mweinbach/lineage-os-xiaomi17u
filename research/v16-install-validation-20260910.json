@@ -1,0 +1,193 @@
+{
+  "operation": "v16-install-validation-v1",
+  "date": "2026-09-10",
+  "document": "docs/v16-install-validation-20260910.md",
+  "build_number": "nezha.434625bd9b5cd7a8a7eabd84",
+  "predecessor": "nezha.81c1b93277a1fa371a3efbb3",
+  "bundle_manifest_sha256": "5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d",
+  "authorization": {
+    "user_response": "ok why don't you install and test this, and make sure that we can also use the cloud leica processing for xiaomi M3/M9 and the leica modes are enabled on the device",
+    "bound_before_phone_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "explicit_authorization_sha256": "82348b236756430374ccb2e5204657b9987bffe6d3c48843499945b8b6d4c01c"
+  },
+  "preflight": {
+    "android_observation_status": "requested-observations-complete-not-device-admission",
+    "android_properties": {
+      "ro.product.device": "nezha",
+      "ro.build.version.incremental": "nezha.81c1b93277a1fa371a3efbb3",
+      "ro.boot.slot_suffix": "_a",
+      "ro.boot.vbmeta.device_state": "unlocked",
+      "ro.boot.verifiedbootstate": "orange",
+      "ro.crypto.state": "encrypted"
+    },
+    "bootloader_values": {
+      "product": "nezha",
+      "unlocked": "yes",
+      "current-slot": "a",
+      "slot-count": "2",
+      "is-userspace": "no",
+      "snapshot-update-status": "none",
+      "slot-unbootable:a": "no",
+      "slot-retry-count:a": "6"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 242.153,
+      "sha256": "f79ed975acbbbfbfaa9144394358877d1db01e4749a783504a1fb55dc0a95612",
+      "size_bytes": 9477851248,
+      "rehashed_identical": true
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 1.006,
+      "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+      "size_bytes": 33554432,
+      "rehashed_identical": true
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.322,
+      "sha256": "7306304299039ed3d727145cbc73025617f5bbc87cbad84c6bb2703726d4b9ca",
+      "size_bytes": 8388608,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.685,
+      "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.826,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "rehashed_identical": true
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.755,
+      "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.152,
+      "sha256": "20457b3d1ca8a6d6d919b469c85728d92782aaa0724ed40f5e3ec4b9677ba750",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.143,
+      "sha256": "181bc6895324872f0c0570f3b411d57717276e4d847cfde975cc028b2344ff12",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.4,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "root_adb": true,
+    "uptime_at_observation_s": 37.63,
+    "crash_fatal": 0,
+    "avc_denials_total": 47
+  },
+  "camcorder_profiles": {
+    "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml",
+    "codecs_variant": "_canoe_v2",
+    "canoe_v2_sha256": "c1cf4365e3361ff1de384f338ff0681e98bb6ae3004c6da07c8de992e8b0b6c5"
+  },
+  "cameraopt": {
+    "configuration_state": "configuration_state=loaded deliveries=1 failure=null",
+    "policy_line": "camera reclaim policy: configured=true updates=1 closed=false modeLevel=0x0 actions=28",
+    "service_property": [
+      "[ro.nezha.cameraopt.service]: [true]"
+    ]
+  },
+  "leica_edition_properties": {
+    "ro_theme_customize": "",
+    "ro_boot_product_theme_customize": "",
+    "ro_boot_hwversion": "5.9.0",
+    "hardware_sku": "nezha",
+    "odm_import_line_present": true,
+    "matching_odm_prop_file_present": false,
+    "odm_build": "ro.odm.build.version.incremental=OS3.0.309.0.WPACNXM"
+  },
+  "ims": {
+    "process_running_in_vendor_qtelephony": true,
+    "note": "org.codeaurora.ims observed in u:r:vendor_qtelephony at uptime 155 s; not bound at the 37 s observation, as on v15"
+  },
+  "dim": {
+    "config_float": "0.05"
+  },
+  "retained_userdata": {
+    "userdata_or_metadata_partition_written": false,
+    "wipe_requested": false,
+    "accounts": "1",
+    "third_party_packages": "22",
+    "dcim_camera_files": 123,
+    "note": "Retention is proven structurally: the eight-image write set contained no userdata or metadata partition and no wipe was requested. Account count is unchanged from v15. The pre-install find/pm counts were discarded as unreliable (permission-denied noise inflated them)."
+  },
+  "retention": {
+    "operation": "retention-after-v16-install",
+    "kept": "variant-opt-in-userdebug-20260906-v16",
+    "removed": [
+      {
+        "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v15",
+        "kib": 30120744
+      },
+      {
+        "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15",
+        "kib": 9595788
+      },
+      {
+        "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v15-transfer",
+        "kib": 20314564
+      }
+    ],
+    "removed_total_kib": 60031096,
+    "kept_admission_record": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v15-admit/admission.json",
+    "host_free_kib_before": 1213142792,
+    "host_free_kib_after": 1273174292,
+    "dry_run": false,
+    "recorded_at": "2026-09-10T16:47:51Z"
+  },
+  "device_changes_during_validation": [
+    "camera app watermark resource download accepted",
+    "recordings written to DCIM by the Xiaomi app during tests"
+  ],
+  "not_established": "No IMS registration, call or SMS (no SIM). Camera measurements are recorded separately."
+}

@@ -38,12 +38,13 @@ class ArtifactRetentionTests(unittest.TestCase):
         self.assertLess(freed, removed * 1.05)
 
     def test_kept_set_is_recorded_with_its_hashes(self):
-        # The pass kept the set installed at the time (v14); later installs retire it in turn,
-        # so the status page need only still name that build as a recorded predecessor.
+        # The pass kept the set installed at the time (v14); later installs retire it in turn.
+        # v14 is now a distant predecessor, so it survives in its own dated records rather than
+        # on the rolling status page.
         kept = self.record["kept_delivery_set"]
-        status = (ROOT / "docs/workspace-status.md").read_text()
         page = (ROOT / "docs/artifact-retention-20260909.md").read_text()
-        self.assertIn(kept["build_number"], status)
+        install_page = (ROOT / "docs/wallpaper-v14-install-validation-20260908.md").read_text()
+        self.assertIn(kept["build_number"], install_page)
         self.assertIn(kept["build_number"], page)
         for key in ("bundle_manifest_sha256", "reconciled_target_files_sha256"):
             self.assertRegex(kept[key], r"^[0-9a-f]{64}$")

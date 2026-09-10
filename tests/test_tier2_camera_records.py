@@ -94,9 +94,9 @@ if __name__ == "__main__":
 
 
 class PreparedDeliveryTests(unittest.TestCase):
-    """The prepared v16 set: both records carry the same hashes, and nothing claims installation or approval."""
+    """The v16 set: both records carry the same hashes and now resolve to the installed build."""
 
-    def test_records_share_one_prepared_delivery_that_is_not_installed(self):
+    def test_records_share_one_delivery_now_installed(self):
         first = json.loads(CAMERAOPT.read_text())["delivery_set"]
         second = json.loads(PROFILES.read_text())["delivery_set"]
         self.assertEqual(first, second)
@@ -106,13 +106,17 @@ class PreparedDeliveryTests(unittest.TestCase):
             self.assertGreater(first[key]["size_bytes"], 0)
         self.assertRegex(first["bundle_manifest_sha256"], r"^[0-9a-f]{64}$")
         self.assertLess(first["reconciled_archive"]["size_bytes"], first["unsigned_archive"]["size_bytes"])
-        self.assertFalse(first["installed"] or first["flash_authorized"] or first["phone_accessed"])
+        self.assertTrue(first["installed"] and first["flash_authorized"] and first["phone_accessed"])
         self.assertEqual(first["bundle_payloads"], 8)
+        # the delivery now points at its install record, which carries the same identity
+        install = json.loads((ROOT / first["install_record"]).read_text())
+        self.assertEqual(install["build_number"], first["build_number"])
+        self.assertEqual(install["bundle_manifest_sha256"], first["bundle_manifest_sha256"])
         status = (ROOT / "docs/workspace-status.md").read_text()
         self.assertIn(first["build_number"], status)
         self.assertIn(first["bundle_manifest_sha256"], status)
-        # The installed identity on the status page is still v15.
-        self.assertIn("| Installed build identity | `nezha.81c1b93277a1fa371a3efbb3`", status)
+        # the installed identity on the status page is now v16
+        self.assertIn("| Installed build identity | `" + first["build_number"] + "`", status)
         page = (ROOT / "docs/cameraopt-four-methods-20260909.md").read_text()
         for value in (first["build_number"], first["reconciled_archive"]["sha256"], first["bundle_manifest_sha256"]):
             self.assertIn(value, page)

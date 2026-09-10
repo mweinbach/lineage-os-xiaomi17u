@@ -12,7 +12,7 @@ ADB, described in [workspace status](workspace-status.md).
 | Area | Verified on the phone | Not verified or missing |
 | --- | --- | --- |
 | Boot, policy, storage | Boots enforcing in about 25 s, userdata retained across fourteen A-only installs, no data clear | Retained personal data after a wipe-free update is assumed, not audited |
-| Camera | Rear and front Ultra HDR, 50 and 200 MP, Pro RAW, UltraRAW DNG, three physical RAW sensors, ten Aperture effects, one HEVC/AAC video | Image quality, focus, stabilization, other video modes, microphone in video, sustained thermal behavior, four unported CameraOpt methods |
+| Camera | Rear and front Ultra HDR, 50 and 200 MP, Pro RAW, UltraRAW DNG, three physical RAW sensors, ten Aperture effects; on v16 the full video matrix, 4K60 and 1080p recording with live mic, the four CameraOpt methods running on real events, cloud Leica color filters | Image quality, focus, stabilization, effect quality; 8K/120 fps/long 4K60 (platform media writer); sustained thermal curve; Leica M3/M9 (edition-locked) |
 | Audio | Audio policy starts, decoded playback signal, 48 kHz mono AAC recording | Speaker, microphones, USB and Bluetooth audio, Dolby controls candidate |
 | Display | Boots at 120 Hz default, factory density loaded | 600-nit normal-brightness curve, automatic brightness, low-brightness resume, HBM policy, refresh policy behavior |
 | Fingerprint | Enrollment screen opened on a6d; user confirmed enrollment there | Enrollment acquisition, unlock, UDFPS icon geometry on the current build |
@@ -50,10 +50,11 @@ suspend on USB, which feed tiers 1 and 3.
 
 ## Tier 1: daily-driver blockers, in order
 
-Status, September 9: v15 is installed. The IMS provider runs in its restored
-domain and is bound by telephony ([install record](v15-install-validation-20260909.md));
-its carrier gate waits on a SIM. The dim fix is measured on the panel. The QMI
-daemon loop stays as is until the ROM moves off the stock vendor policy images.
+Status, September 10: v16 is installed and carries the v15 IMS provider
+unchanged. The provider runs in its restored domain and is bound by telephony
+([v15 install record](v15-install-validation-20260909.md)); its carrier gate
+waits on a SIM. The dim fix is measured on the panel. The QMI daemon loop stays
+as is until the ROM moves off the stock vendor policy images.
 
 
 1. **IMS, so calls and texts work the way the carrier expects.** This is the
@@ -106,14 +107,19 @@ The capture matrix passes, so this tier is quality and completeness.
 Effort: medium per item; each is a separate delivery set only when a source
 change is needed.
 
-Status, September 9: the four CameraOpt methods are ported in source revision 14
-([record](cameraopt-four-methods-20260909.md)); the video matrix stalled on v15
-because the platform loads the generic camcorder profile table, fixed in source
-by the [camcorder profile fragment](camera-video-profiles-20260909.md). Both
-wait for the next delivery set. The [v15 measurements](tier2-camera-v15-measurements-20260909.md) hold an
-eight-minute 1080p recording (steady 24 fps low-light auto frame rate, no drops,
-board +2.6 °C) and per-lens photos that all routed to the main sensor on the
-dark desk, so focus and lens behaviour need a lit scene.
+Status, September 10: both the CameraOpt port and the camcorder-profile fix are
+installed as v16 and measured on the phone
+([install record](v16-install-validation-20260910.md),
+[tier 2 v16 page](tier2-camera-v16-20260910.md)). The Xiaomi app now exposes the
+full video matrix; 4K60 and 1080p record and play with a live microphone, and
+the four CameraOpt methods run on real 4K events, killing only cached apps above
+the adjustment floor. Three items remain. First, 8K, 120 fps and long 4K60 runs
+fail on this build's media writer (no QTI length-prefixed-NAL handling), so a
+sustained 4K60 thermal curve is not yet available and needs the QTI-patched
+`MPEG4Writer` in source. Second, the cloud Leica color filters are enabled, but
+the Leica M3/M9 Essential looks are locked to the Leica Edition hardware and
+cannot be enabled by config on this standard unit. Third, effect quality, focus
+and stabilization still need a lit scene and a person.
 
 ## Tier 3: polish
 

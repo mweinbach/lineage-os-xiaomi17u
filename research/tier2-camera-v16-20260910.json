@@ -1,0 +1,131 @@
+{
+ "schema_version": 1,
+ "record_id": "tier2-camera-v16-20260910",
+ "date": "2026-09-10",
+ "status": "device_measured_on_v16",
+ "document": "docs/tier2-camera-v16-20260910.md",
+ "build_identity": "nezha.434625bd9b5cd7a8a7eabd84",
+ "predecessor": "nezha.81c1b93277a1fa371a3efbb3",
+ "camcorder_profiles": {
+  "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml",
+  "loaded_table": "media_profiles_canoe_v2.xml",
+  "canoe_v2_sha256": "c1cf4365e3361ff1de384f338ff0681e98bb6ae3004c6da07c8de992e8b0b6c5",
+  "probe": {
+   "v15_total": 29,
+   "v15_cam0": 15,
+   "v15_cam0_max": "1920x1080@30",
+   "v16_total": 118,
+   "v16_per_camera": {
+    "0": 23,
+    "1": 18,
+    "2": 27,
+    "3": 27,
+    "4": 23
+   },
+   "v16_cam0_max": "7680x4320@30",
+   "v16_cam0_has_2160p": true,
+   "v16_cam0_has_dci4k_24": true,
+   "v16_cam0_has_8k": true
+  }
+ },
+ "video_matrix": [
+  {
+   "case": "v16-4k60-short",
+   "app_setting": "4K 60FPS Dolby Vision",
+   "requested_s": 20,
+   "container": "hvc1 Dolby Vision profile Main10 HLG BT.2020",
+   "width": 3840,
+   "height": 2160,
+   "measured_fps": 30.04,
+   "frames": 585,
+   "max_gap_ms": 33.4,
+   "gaps_over_100ms": 0,
+   "mean_luma_255": 75.8,
+   "audio": "AAC 48k stereo, live",
+   "playable": true,
+   "note": "app requested 60 fps; HAL fps range 30-60; container reports ~30 fps because Dolby Vision base layer is 30 (dual-layer temporal). The camera restart reclaim scene fired here."
+  },
+  {
+   "case": "v16-8k-short",
+   "app_setting": "8K 30FPS",
+   "requested_s": 15,
+   "container": "HEVC Main tier, 7680x4320 in setup",
+   "playable": false,
+   "note": "encoder was configured 7680x4320 HEVC 74 Mbps and the file wrote (128 MB), but the video track is not decodable off-device: the muxer emitted length-prefixed NAL units (vendor.qti-ext-enc-nal-length-bs) that this platform's MPEG4Writer does not convert, and it is not in MediaStore. Container audio is silent-room. 8K recording is not usable as delivered."
+  },
+  {
+   "case": "v16-4k120-short",
+   "app_setting": "4K 120FPS",
+   "requested_s": 10,
+   "playable": false,
+   "note": "recorder started at 3840x2160@120 HEVC, then the app process aborted in MPEG4Writer with a FORTIFY write overflow (SIGABRT). No media produced. 120 fps recording crashes the stock app on this build."
+  },
+  {
+   "case": "v16-sustained-4k60",
+   "app_setting": "4K 60FPS Dolby Vision off",
+   "requested_s": 600,
+   "playable": false,
+   "note": "the ten-minute sustained run aborted the same way as 4K120 (MPEG4Writer FORTIFY SIGABRT) about 3 s in; no media. A sustained 4K60 thermal curve could not be captured because the recording does not survive on this build."
+  },
+  {
+   "case": "v16-1080p30-hevc-short",
+   "app_setting": "1080P 30FPS Dolby Vision off",
+   "requested_s": 10,
+   "container": "hvc1 HEVC 1920x1080",
+   "measured_fps": 24.01,
+   "playable": true,
+   "note": "plain HEVC 1080p records and plays; 24 fps is the low-light auto frame rate on the dark scene, matching v15."
+  }
+ ],
+ "microphone": {
+  "method": "phone played a 3 s DTMF tone through its own speaker starting 5 s into a 15 s recording; audio measured in 5 s windows",
+  "dolby_vision_on": {
+   "window_0_4s_peak_dbfs": -113.1,
+   "window_5_9s_peak_dbfs": -1.2,
+   "window_10_14s_peak_dbfs": -35.4
+  },
+  "dolby_vision_off": {
+   "window_5_9s_peak_dbfs": -1.0
+  },
+  "finding": "the microphone captures live audio and tracks the tone in both Dolby Vision and plain HEVC; the near-silent windows before/after confirm it is not a dead or looped track"
+ },
+ "cameraopt_runtime": {
+  "implemented_counts_after_use": {
+   "reclaimMemoryForCamera": 2,
+   "boostCameraByThreshold": 2,
+   "adjBoost": 3,
+   "sendCameraEvent": 10
+  },
+  "reclaim_scenes": 3,
+  "reclaim_kills": 5,
+  "reclaim_writes": 1,
+  "adj_floor": 800,
+  "victims": [
+   "com.google.android.gms.unstable (adj 935)",
+   "com.google.android.googlequicksearchbox:search (adj 915)",
+   "com.google.android.apps.messaging (adj 905)",
+   "com.google.android.tts (adj 935)",
+   "com.google.android.calendar (adj 955)"
+  ],
+  "finding": "the ported reclaimMemoryForCamera and boostCameraByThreshold ran on real camera events: entering 4K video raised the miuicam_video_switch_event scene, which killed only cached background apps above the service-B adj floor and wrote the cgroup reclaim once, exactly as the port intends"
+ },
+ "leica": {
+  "cloud_color_filters": {
+   "state": "enabled and cloud-delivered",
+   "detail": "the camera app's CloudConfig database carries the decrypted camera_app_filter_leica module (73 filters, 6 flagged isLeicaFilter=true: Leica Vibrant/Natural/Monochrome/Monochrome HC/Sepia/Blue), and the Video top bar shows the 'Leica Vibrant' look. These are LUT color filters delivered over Xiaomi's cloud filter service and they work on this device.",
+   "filter_module_choice": "FilterDataSource selects camera_app_filter_leica when supportCvType is true, else camera_app_filter_none_leica"
+  },
+  "m3_m9_leica_essential": {
+   "state": "hardware-edition locked, not available and not unlockable by config",
+   "gate": "LegendaryEnter.support() requires G7.b.K0() (device class is the Leica-edition class) AND F6.d.s.equals('LCC') (ro.theme_customize=='LCC'); ro.theme_customize comes from the per-hardware ODM prop /odm/etc/${sku}_${hwversion}.prop, which on the standard Ultra (2512BPNDAC, hwversion 5.9.0) is absent, so the property is empty",
+   "forcing_result": "setting ro.theme_customize=LCC on this unit made the stock camera app run its cloud security check (MiuiCamera ExpPlatform /MiuiCamera/ExpLayer/ExpDomain/sec_chk, native libHawk attestation), report security_check_fail_cloud, and self-close after 3 seconds ('on APK version error, finish activity'). The M3/M9 looks cannot be enabled on this standard-edition hardware by a property flip.",
+   "reference": "The Leica Essential mode with the Leica M9 and M3 (Monopan 50) looks is a Leica Edition / Leitzphone feature; this unit is the standard Xiaomi 17 Ultra (ro.product.odm.model 2512BPNDAC), not the Leica Edition (25128PNA1C, 'Xiaomi 17 Ultra by Leica')."
+  }
+ },
+ "device_state": "restored: ro.theme_customize cleared by a reboot, camera app relaunched normally, stay_on_while_plugged_in returned to 0, phone asleep",
+ "not_verified": [
+  "8K and 120 fps as usable recordings (they crash or produce a non-decodable track on this build)",
+  "sustained 4K60 thermal curve (recording does not survive)",
+  "per-lens focus, stabilization and effect quality (dark scene only; needs a lit scene and a person)"
+ ]
+}

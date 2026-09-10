@@ -64,9 +64,12 @@ class Tier1RecordTests(unittest.TestCase):
         self.assertEqual(display["dim_float_before"], 0.0)
 
     def test_status_page_and_index_name_the_delivery(self):
+        # v15 is now a recorded predecessor: its build number stays on the rolling status
+        # page, and its bundle manifest lives permanently in its dated install record.
         status = (ROOT / "docs/workspace-status.md").read_text()
         self.assertIn(self.record["delivery_set"]["build_number"], status)
-        self.assertIn(self.record["delivery_set"]["bundle_manifest_sha256"], status)
+        install_page = (ROOT / "docs/v15-install-validation-20260909.md").read_text()
+        self.assertIn(self.record["delivery_set"]["bundle_manifest_sha256"], install_page)
         self.assertIn("tier1-ims-dim-20260909.md", (ROOT / "docs/README.md").read_text())
         page = (ROOT / "docs/tier1-ims-dim-20260909.md").read_text()
         self.assertIn(self.record["delivery_set"]["reconciled_archive"]["sha256"], page)
