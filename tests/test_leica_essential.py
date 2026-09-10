@@ -53,6 +53,21 @@ class FragmentTests(unittest.TestCase):
         self.assertIn("camera.debug.safe.check.disable", page)
         self.assertIn(Path(record["document"]).name, (ROOT / "docs/README.md").read_text())
 
+    def test_built_and_installed_as_v17(self):
+        record = json.loads(RECORD.read_text())
+        self.assertEqual(record["status"], "built_and_installed_as_v17")
+        built = record["built_and_installed"]
+        self.assertEqual(built["delivery_set"], "v17")
+        self.assertEqual(built["build_identity"], "nezha.11b0a26475073bca18f34c39")
+        self.assertEqual(built["selector_enabled"], "NEZHA_LEICA_ESSENTIAL := true")
+        self.assertEqual(sorted(built["props_in_system_build_prop"]), ["camera.debug.safe.check.disable=true", "ro.theme_customize=LCC"])
+        self.assertTrue(built["present_after_clean_reboot_from_build_prop"])
+        self.assertFalse(built["runtime_resetprop_or_magisk_used"])
+        # the v17 install record it points at agrees
+        install = json.loads((ROOT / built["record"]).read_text())["leica_essential"]
+        self.assertTrue(install["present_after_clean_reboot_from_build_prop"])
+        self.assertTrue(install["mode_list_evidence_present"])
+
     def test_make_selector_emits_both_properties_only_when_true(self):
         make = shutil.which("make")
         if make is None:

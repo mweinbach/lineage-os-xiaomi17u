@@ -1,31 +1,45 @@
 {
- "schema_version": 1,
- "record_id": "leica-essential-20260910",
- "date": "2026-09-10",
- "status": "runtime_enabled_on_v16_not_built",
- "document": "docs/leica-essential-20260910.md",
- "contract": "config/nezha-leica-essential.json",
- "fragment": "device/xiaomi/nezha/leica-essential.mk",
- "build_identity": "nezha.434625bd9b5cd7a8a7eabd84",
- "properties": [
-  "ro.theme_customize=LCC",
-  "camera.debug.safe.check.disable=true"
- ],
- "module_id": 256,
- "module_display_name": "Leica Essential",
- "gate_bytecode": {
-  "support": "LegendaryEnter.support() = G7.b.K0() && G7.b.O(); O() = ro.theme_customize==\"LCC\" && !camera.debug.theme_customize.disabled",
-  "security": "D.W.run() calls LSsdQFvLalapDwvA.RitIeKoenwCSqcPf() (libHawk); false -> handler message 11 -> 'on APK version error' -> close; skipped when F6.d.X (camera.debug.safe.check.disable) or F6.d.j (camera.test.auto) is true"
- },
- "measured": {
-  "before": "mode absent; forcing only ro.theme_customize=LCC closes the app after 3s with APK version error, also offline",
-  "after_minimal_props_only": "app stays open, mode list contains Leica Essential(256), HAL runs module 0x100 and 'OEM Legend' path, capture via LegendaryModule mid 256 saved a JPEG with EXIF customize=P1_Leica, device model remained stock 2512BPNDAC",
-  "identity_spoof_needed": false
- },
- "local_models_present": true,
- "not_verified": [
-  "M9 vs M3 look selection and rendered quality",
-  "behaviour in a lit scene",
-  "as a built and installed delivery set"
- ]
+  "schema_version": 1,
+  "record_id": "leica-essential-20260910",
+  "date": "2026-09-10",
+  "status": "built_and_installed_as_v17",
+  "document": "docs/leica-essential-20260910.md",
+  "contract": "config/nezha-leica-essential.json",
+  "fragment": "device/xiaomi/nezha/leica-essential.mk",
+  "build_identity": "nezha.434625bd9b5cd7a8a7eabd84",
+  "properties": [
+    "ro.theme_customize=LCC",
+    "camera.debug.safe.check.disable=true"
+  ],
+  "module_id": 256,
+  "module_display_name": "Leica Essential",
+  "gate_bytecode": {
+    "support": "LegendaryEnter.support() = G7.b.K0() && G7.b.O(); O() = ro.theme_customize==\"LCC\" && !camera.debug.theme_customize.disabled",
+    "security": "D.W.run() calls LSsdQFvLalapDwvA.RitIeKoenwCSqcPf() (libHawk); false -> handler message 11 -> 'on APK version error' -> close; skipped when F6.d.X (camera.debug.safe.check.disable) or F6.d.j (camera.test.auto) is true"
+  },
+  "measured": {
+    "before": "mode absent; forcing only ro.theme_customize=LCC closes the app after 3s with APK version error, also offline",
+    "after_minimal_props_only": "app stays open, mode list contains Leica Essential(256), HAL runs module 0x100 and 'OEM Legend' path, capture via LegendaryModule mid 256 saved a JPEG with EXIF customize=P1_Leica, device model remained stock 2512BPNDAC",
+    "identity_spoof_needed": false
+  },
+  "local_models_present": true,
+  "not_verified": [
+    "M9 vs M3 look selection and rendered quality",
+    "behaviour in a lit scene"
+  ],
+  "built_and_installed": {
+    "delivery_set": "v17",
+    "build_identity": "nezha.11b0a26475073bca18f34c39",
+    "source_revision": 16,
+    "selector_enabled": "NEZHA_LEICA_ESSENTIAL := true",
+    "props_in_system_build_prop": [
+      "ro.theme_customize=LCC",
+      "camera.debug.safe.check.disable=true"
+    ],
+    "present_after_clean_reboot_from_build_prop": true,
+    "mode_in_selector": "Leica Essential (mValue 256)",
+    "app_stayed_open_no_apk_version_error": true,
+    "runtime_resetprop_or_magisk_used": false,
+    "record": "research/v17-install-validation-20260910.json"
+  }
 }

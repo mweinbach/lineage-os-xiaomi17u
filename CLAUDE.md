@@ -2,7 +2,7 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-installed build is the v15 userdebug delivery set, which boots with enforcing
+installed build is the v17 userdebug delivery set, which boots with enforcing
 SELinux and root ADB for diagnostics. Most of this repository is tooling,
 contracts and evidence records, not Android source.
 
@@ -119,36 +119,44 @@ quoted.
 
 ## Where things stand
 
-- Installed: v16, `nezha.434625bd9b5cd7a8a7eabd84`, userdebug, slot A,
+- Installed: v17, `nezha.11b0a26475073bca18f34c39`, userdebug, slot A,
   Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v16/`. It carries the
-  four ported CameraOpt methods and the factory camcorder profile selection; see
-  `docs/v16-install-validation-20260910.md` and `docs/tier2-camera-v16-20260910.md`.
-- Predecessor (removed from host): v15, `nezha.81c1b93277a1fa371a3efbb3`; it
-  survives as hashes in `docs/v15-install-validation-20260909.md`.
-- Source: revision 15 in the Linux checkout, now installed as v16. It carries the merged feature
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v17/`. It is v16 plus
+  the always-on Leica Essential selection, and still carries the four ported
+  CameraOpt methods and the factory camcorder profile selection; see
+  `docs/v17-install-validation-20260910.md`, `docs/leica-essential-20260910.md`
+  and `docs/tier2-camera-v16-20260910.md`.
+- Predecessor (removed from host): v16, `nezha.434625bd9b5cd7a8a7eabd84`; it
+  survives as hashes in `docs/v16-install-validation-20260910.md`. V15
+  (`nezha.81c1b93277a1fa371a3efbb3`) survives further back in
+  `docs/v15-install-validation-20260909.md`.
+- Source: revision 16 in the Linux checkout, now installed as v17. It carries the merged feature
   candidates (display brightness, Dolby, haptics, camera scheduling, refresh
   policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
   the HyperOS camera framework port, native camera session hooks, vendor-key
   discovery, stream sizing, compressed Bayer DNG, Xiaomi audio descriptors and
   the stale Flex clock removal. `user` is still the default variant; userdebug
   needs its explicit opt-in. The workload classifier stays disabled.
-- V15 (predecessor) carried the exact-stock IMS provider in its restored
+- V15 carried the exact-stock IMS provider in its restored
   `vendor_qtelephony` domain (no SIM) and the display dim level 0.05; those
-  remain in v16. See `docs/tier1-ims-dim-20260909.md`.
-- Camera: on v16 the Xiaomi app exposes the full video matrix (720p to 8K,
+  remain in v17. See `docs/tier1-ims-dim-20260909.md`.
+- Camera: on v17 the Xiaomi app exposes the full video matrix (720p to 8K,
   30/60/120 fps). 4K60 Dolby Vision and 1080p record and play with a live
   microphone; 8K, 120 fps and long 4K60 runs fail on this build's media writer
   (no QTI length-prefixed-NAL handling), so a sustained 4K60 thermal curve is
   not available. The four CameraOpt methods run on real 4K events, killing only
   cached apps above the adj floor. The cloud Leica color filters are enabled.
-  The Leica M3/M9 Essential looks (module 256) are enabled by two properties,
-  `ro.theme_customize=LCC` and `camera.debug.safe.check.disable=true`: the gate
-  was the camera's native anti-tamper check (fails on an unlocked bootloader),
-  not a hardware attestation, and the device keeps its real identity. The
-  guarded fragment `device/xiaomi/nezha/leica-essential.mk` bakes it into the
-  next build (`docs/leica-essential-20260910.md`). Image quality, focus,
-  stabilization and the M9-vs-M3 look still need a lit scene
+  The Leica M3/M9 Essential looks (module 256) are baked on in v17 by two
+  properties, `ro.theme_customize=LCC` and `camera.debug.safe.check.disable=true`:
+  the gate was the camera's native anti-tamper check (fails on an unlocked
+  bootloader), not a hardware attestation, and the device keeps its real
+  identity. The guarded fragment `device/xiaomi/nezha/leica-essential.mk`
+  (`NEZHA_LEICA_ESSENTIAL := true`) writes both into `build.prop`, so the mode is
+  present at boot with no runtime resetprop and no Magisk; on the installed v17
+  both properties read from the image after a clean reboot and the mode selector
+  lists `Leica Essential` (256) without the app self-closing
+  (`docs/leica-essential-20260910.md`, `docs/v17-install-validation-20260910.md`).
+  Image quality, focus, stabilization and the M9-vs-M3 look still need a lit scene
   (`docs/tier2-camera-v16-20260910.md`).
 - Open on device: retained userdata, UDFPS, shade visuals, IMS and VoLTE,
   panel brightness and HBM policy, Dolby, haptics, refresh policy, workload

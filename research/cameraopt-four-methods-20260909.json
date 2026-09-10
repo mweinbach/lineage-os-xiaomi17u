@@ -1,161 +1,164 @@
 {
- "schema_version": 1,
- "record_id": "cameraopt-four-methods-20260909",
- "date": "2026-09-09",
- "status": "source_built_packaged_as_v16_not_device_admitted",
- "document": "docs/cameraopt-four-methods-20260909.md",
- "contract": "config/nezha-cameraopt-service.json",
- "contract_id": "nezha-cameraopt-service-v2",
- "patch": "patches/evolution/0040-nezha-cameraopt-reclaim-policy.patch",
- "ported_methods": {
-  "reclaimMemoryForCamera": {
-   "app_call_sites": [
-    "photo capture path with mode identifier 163",
-    "video session start with mode identifier 162"
-   ],
-   "trailing_arguments": -1,
-   "factory_scene": "miuicam_capture_event",
-   "factory_scene_id": 9,
-   "factory_interval_key": "duration_reclaim_capture",
-   "factory_interval_default_ms": 60000,
-   "port": "same scene and interval; kills through ProcessRecord.killLocked, reclaim through cgroup v2 memory.reclaim and CachedAppOptimizer compaction"
+  "schema_version": 1,
+  "record_id": "cameraopt-four-methods-20260909",
+  "date": "2026-09-09",
+  "status": "source_built_packaged_as_v16_not_device_admitted",
+  "document": "docs/cameraopt-four-methods-20260909.md",
+  "contract": "config/nezha-cameraopt-service.json",
+  "contract_id": "nezha-cameraopt-service-v2",
+  "patch": "patches/evolution/0040-nezha-cameraopt-reclaim-policy.patch",
+  "ported_methods": {
+    "reclaimMemoryForCamera": {
+      "app_call_sites": [
+        "photo capture path with mode identifier 163",
+        "video session start with mode identifier 162"
+      ],
+      "trailing_arguments": -1,
+      "factory_scene": "miuicam_capture_event",
+      "factory_scene_id": 9,
+      "factory_interval_key": "duration_reclaim_capture",
+      "factory_interval_default_ms": 60000,
+      "port": "same scene and interval; kills through ProcessRecord.killLocked, reclaim through cgroup v2 memory.reclaim and CachedAppOptimizer compaction"
+    },
+    "boostCameraByThreshold": {
+      "app_levels": {
+        "0x101": "4K video",
+        "0x102": "8K video",
+        "0x201": "200 MP capture",
+        "0x202": "master live"
+      },
+      "factory_scenes": {
+        "0x101": "miuicam_video_switch_event",
+        "0x102": "miuicam_video_switch_event",
+        "0x103": "video_4k_dolby_event",
+        "0x201": "200M_scene_event",
+        "0x202": "live_motion_scene_event"
+      },
+      "zero_level": "unreachable from the app wrapper; drives the vendor performance wrapper and a delayed system-server GC; unported and counted"
+    },
+    "notifyCameraPerformanceTime": {
+      "factory": "log line; watcher behind persist.miui.camera.perfwatcher.enable, default off",
+      "port": "last 32 events retained in the dump; enabled watcher counted as unported"
+    },
+    "updateCloudData": {
+      "factory": "persist.vendor.camera.cloud.<module>.<key> properties, JsonDisptcher.updateCloudData version merge, memory-reserve refresh",
+      "port": "bounded property writes with denials counted, the same dispatcher merge and callback redelivery, memory-reserve keys counted and not applied",
+      "bounds": {
+        "payload_chars": 262144,
+        "properties_per_update": 64,
+        "property_value_chars": 91
+      }
+    }
   },
-  "boostCameraByThreshold": {
-   "app_levels": {
-    "0x101": "4K video",
-    "0x102": "8K video",
-    "0x201": "200 MP capture",
-    "0x202": "master live"
-   },
-   "factory_scenes": {
-    "0x101": "miuicam_video_switch_event",
-    "0x102": "miuicam_video_switch_event",
-    "0x103": "video_4k_dolby_event",
-    "0x201": "200M_scene_event",
-    "0x202": "live_motion_scene_event"
-   },
-   "zero_level": "unreachable from the app wrapper; drives the vendor performance wrapper and a delayed system-server GC; unported and counted"
+  "reclaim_engine": {
+    "planner_class": "com.android.server.am.NezhaCameraReclaimPlanner",
+    "policy_class": "com.android.server.am.NezhaCameraReclaimPolicy",
+    "configuration_source": "factory JsonDisptcher.loadJson over the on-device encrypted tables; CameraReclaim section by callback; no decoded table shipped",
+    "gap_rule": "max(total/4 - available, free_target - free) in kB, plus free_memory_threshold - free for the Xiaomi camera",
+    "capture_scene_free_target_kb": 409600,
+    "capture_scene_target_kb": 1228800,
+    "nominal_adj_threshold": 800,
+    "factory_low_memory_escalation": {
+      "trigger_key": "lowerAdj_freeMem_threshold",
+      "trigger_kb": 614400,
+      "escalated_adj": 0
+    },
+    "adj_floor": 800,
+    "max_kills_per_batch": 8,
+    "max_compactions_per_pass": 16,
+    "kernel_nodes": {
+      "factory": "/dev/memcg/memory.reclaim_once (absent: no memcg v1 mount)",
+      "port": "/sys/fs/cgroup/memory.reclaim"
+    },
+    "not_reproduced": [
+      "MIUI process list",
+      "lmkd camera-mode and kill commands",
+      "PSI monitor scenes (kill_once)",
+      "memory-reserve writes",
+      "intercept-restart hook"
+    ]
   },
-  "notifyCameraPerformanceTime": {
-   "factory": "log line; watcher behind persist.miui.camera.perfwatcher.enable, default off",
-   "port": "last 32 events retained in the dump; enabled watcher counted as unported"
+  "evidence": {
+    "planner_harness_checks": 78,
+    "planner_harness_gap_kb": 300000,
+    "offline_tests_before_revision": {
+      "focused": 980,
+      "full": 4957
+    },
+    "source_revision": {
+      "revision": 14,
+      "build_number": "nezha.b0cd50c12a3abae1bb26c3ff",
+      "inventory_rows": 707,
+      "changed_files": 9,
+      "added_files": 5,
+      "modified_files": 4
+    },
+    "component_build": {
+      "goals": [
+        "nezha-cameraopt-compile-stubs",
+        "nezha-cameraopt-service",
+        "services"
+      ],
+      "exit_code": 0,
+      "services_jar_defines": [
+        "Lcom/android/server/am/NezhaCameraReclaimPlanner;",
+        "Lcom/android/server/am/NezhaCameraReclaimPolicy;"
+      ],
+      "adapter_jar_classes": 7,
+      "adapter_leaked_factory_declarations": 0
+    },
+    "device_decode": "read-only reflection helper on v15 asked the factory JAR to decode the eleven CameraOpt tables; private evidence, not redistributed"
   },
-  "updateCloudData": {
-   "factory": "persist.vendor.camera.cloud.<module>.<key> properties, JsonDisptcher.updateCloudData version merge, memory-reserve refresh",
-   "port": "bounded property writes with denials counted, the same dispatcher merge and callback redelivery, memory-reserve keys counted and not applied",
-   "bounds": {
-    "payload_chars": 262144,
-    "properties_per_update": 64,
-    "property_value_chars": 91
-   }
+  "not_verified": [
+    "no kill, compaction or reclaim has run on the phone",
+    "service start with the new code and the factory loader inside system_server",
+    "the app's four calls against the new implementation",
+    "whether the capture scene helps or hurts the camera on this build"
+  ],
+  "delivery_set": {
+    "delivery_set": "variant-opt-in-userdebug-20260906-v16",
+    "build_number": "nezha.434625bd9b5cd7a8a7eabd84",
+    "source_revision": 15,
+    "inventory_rows": 708,
+    "unsigned_archive": {
+      "sha256": "f443a103f228d43e13c9fc64e8fcdbbd74558b4000258820170105bea8514909",
+      "size_bytes": 11324330533
+    },
+    "system_ext_measured": {
+      "size_bytes": 793632768,
+      "delta_from_v15_bytes": 20480,
+      "sha256": "4d26934e99958d1cee7114b4008268114a740a92f5da5592ea454eaf3c3b7b30"
+    },
+    "reconciled_archive": {
+      "sha256": "734c22b58e13ea3c0bc1c8c6f0b28139dc4f96ddf5b2b37a53aa5e40ce7e323c",
+      "size_bytes": 11146542546
+    },
+    "super": {
+      "sha256": "f79ed975acbbbfbfaa9144394358877d1db01e4749a783504a1fb55dc0a95612",
+      "size_bytes": 9477851248
+    },
+    "bundle_manifest_sha256": "5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d",
+    "bundle_payloads": 8,
+    "host_gates": {
+      "unsigned": 16,
+      "signed": 16,
+      "all_passed": true
+    },
+    "guest_gates": {
+      "dim_float": "0.05",
+      "mmtel_package": "org.codeaurora.ims"
+    },
+    "admission_tests": {
+      "focused": 994,
+      "full": 4971
+    },
+    "installed": true,
+    "flash_authorized": true,
+    "phone_accessed": true,
+    "retention": "v15 removed from host after v16 was installed and recorded (2026-09-10)",
+    "install_record": "research/v16-install-validation-20260910.json",
+    "carried_into": "research/v17-install-validation-20260910.json",
+    "carried_into_build": "nezha.11b0a26475073bca18f34c39",
+    "note_superseded": "v16 bundle retired after v17 was installed; these features are carried forward in the installed v17."
   }
- },
- "reclaim_engine": {
-  "planner_class": "com.android.server.am.NezhaCameraReclaimPlanner",
-  "policy_class": "com.android.server.am.NezhaCameraReclaimPolicy",
-  "configuration_source": "factory JsonDisptcher.loadJson over the on-device encrypted tables; CameraReclaim section by callback; no decoded table shipped",
-  "gap_rule": "max(total/4 - available, free_target - free) in kB, plus free_memory_threshold - free for the Xiaomi camera",
-  "capture_scene_free_target_kb": 409600,
-  "capture_scene_target_kb": 1228800,
-  "nominal_adj_threshold": 800,
-  "factory_low_memory_escalation": {
-   "trigger_key": "lowerAdj_freeMem_threshold",
-   "trigger_kb": 614400,
-   "escalated_adj": 0
-  },
-  "adj_floor": 800,
-  "max_kills_per_batch": 8,
-  "max_compactions_per_pass": 16,
-  "kernel_nodes": {
-   "factory": "/dev/memcg/memory.reclaim_once (absent: no memcg v1 mount)",
-   "port": "/sys/fs/cgroup/memory.reclaim"
-  },
-  "not_reproduced": [
-   "MIUI process list",
-   "lmkd camera-mode and kill commands",
-   "PSI monitor scenes (kill_once)",
-   "memory-reserve writes",
-   "intercept-restart hook"
-  ]
- },
- "evidence": {
-  "planner_harness_checks": 78,
-  "planner_harness_gap_kb": 300000,
-  "offline_tests_before_revision": {
-   "focused": 980,
-   "full": 4957
-  },
-  "source_revision": {
-   "revision": 14,
-   "build_number": "nezha.b0cd50c12a3abae1bb26c3ff",
-   "inventory_rows": 707,
-   "changed_files": 9,
-   "added_files": 5,
-   "modified_files": 4
-  },
-  "component_build": {
-   "goals": [
-    "nezha-cameraopt-compile-stubs",
-    "nezha-cameraopt-service",
-    "services"
-   ],
-   "exit_code": 0,
-   "services_jar_defines": [
-    "Lcom/android/server/am/NezhaCameraReclaimPlanner;",
-    "Lcom/android/server/am/NezhaCameraReclaimPolicy;"
-   ],
-   "adapter_jar_classes": 7,
-   "adapter_leaked_factory_declarations": 0
-  },
-  "device_decode": "read-only reflection helper on v15 asked the factory JAR to decode the eleven CameraOpt tables; private evidence, not redistributed"
- },
- "not_verified": [
-  "no kill, compaction or reclaim has run on the phone",
-  "service start with the new code and the factory loader inside system_server",
-  "the app's four calls against the new implementation",
-  "whether the capture scene helps or hurts the camera on this build"
- ],
- "delivery_set": {
-  "delivery_set": "variant-opt-in-userdebug-20260906-v16",
-  "build_number": "nezha.434625bd9b5cd7a8a7eabd84",
-  "source_revision": 15,
-  "inventory_rows": 708,
-  "unsigned_archive": {
-   "sha256": "f443a103f228d43e13c9fc64e8fcdbbd74558b4000258820170105bea8514909",
-   "size_bytes": 11324330533
-  },
-  "system_ext_measured": {
-   "size_bytes": 793632768,
-   "delta_from_v15_bytes": 20480,
-   "sha256": "4d26934e99958d1cee7114b4008268114a740a92f5da5592ea454eaf3c3b7b30"
-  },
-  "reconciled_archive": {
-   "sha256": "734c22b58e13ea3c0bc1c8c6f0b28139dc4f96ddf5b2b37a53aa5e40ce7e323c",
-   "size_bytes": 11146542546
-  },
-  "super": {
-   "sha256": "f79ed975acbbbfbfaa9144394358877d1db01e4749a783504a1fb55dc0a95612",
-   "size_bytes": 9477851248
-  },
-  "bundle_manifest_sha256": "5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d",
-  "bundle_payloads": 8,
-  "host_gates": {
-   "unsigned": 16,
-   "signed": 16,
-   "all_passed": true
-  },
-  "guest_gates": {
-   "dim_float": "0.05",
-   "mmtel_package": "org.codeaurora.ims"
-  },
-  "admission_tests": {
-   "focused": 994,
-   "full": 4971
-  },
-  "installed": true,
-  "flash_authorized": true,
-  "phone_accessed": true,
-  "retention": "v15 removed from host after v16 was installed and recorded (2026-09-10)",
-  "install_record": "research/v16-install-validation-20260910.json"
- }
 }

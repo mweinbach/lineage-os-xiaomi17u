@@ -1,21 +1,24 @@
 # Current Nezha workspace status
 
-**Installed phone: v16 userdebug (`nezha.434625bd9b5cd7a8a7eabd84`, source
-revision 15, 708 rows), slot A, boot completed in 25.4 s with SELinux Enforcing.**
+**Installed phone: v17 userdebug (`nezha.11b0a26475073bca18f34c39`, source
+revision 16, 709 rows), slot A, boot completed in 25.5 s with SELinux Enforcing.**
 The separately approved eight-image installation completed without a wipe, slot
-change or data clear, and userdata was retained. V16 carries the four ported
-CameraOpt methods and the factory camcorder-profile selection, so the Xiaomi
-app now exposes the full video resolution and frame-rate matrix and the reclaim
-policy runs on real 4K video events. 4K60 and 1080p record and play; 8K, 120 fps
-and long 4K60 runs fail on this build's media writer. The cloud Leica color
-filters are enabled; the Leica M3/M9 Essential looks are locked to the Leica
-Edition hardware and are not unlockable by a property flip. See the
-[v16 installation record](v16-install-validation-20260910.md) and the
-[tier 2 v16 camera page](tier2-camera-v16-20260910.md). V15
-(`nezha.81c1b93277a1fa371a3efbb3`) remains the recorded predecessor, carrying
-the exact-stock IMS provider in its restored `vendor_qtelephony` domain and the
-0.05 dim level; its bundle was removed after v16 was installed and recorded. No
-SIM is inserted, so no IMS registration is expected.
+change or data clear, and userdata was retained. V17 is v16 plus one change: the
+guarded `leica-essential.mk` fragment is enabled (`NEZHA_LEICA_ESSENTIAL := true`),
+so the Leica M3/M9 "Leica Essential" mode (module 256) is baked on at build time
+by two system properties (`ro.theme_customize=LCC` and
+`camera.debug.safe.check.disable=true`) — no runtime resetprop and no Magisk, and
+the device keeps its real identity. It also still carries the four ported
+CameraOpt methods and the factory camcorder-profile selection: the Xiaomi app
+exposes the full video matrix, 4K60 and 1080p record and play, and 8K/120 fps/long
+4K60 still fail on this build's media writer. The cloud Leica color filters are
+enabled. See the [v17 installation record](v17-install-validation-20260910.md),
+the [Leica Essential record](leica-essential-20260910.md) and the
+[tier 2 v16 camera page](tier2-camera-v16-20260910.md). V16
+(`nezha.434625bd9b5cd7a8a7eabd84`) is the recorded predecessor; its bundle was
+removed after v17 was installed and recorded, and V15
+(`nezha.81c1b93277a1fa371a3efbb3`) survives further back in its install record.
+No SIM is inserted, so no IMS registration is expected.
 
 The [v13 runtime record](camera-v13-install-validation-20260908.md) holds the
 full camera matrix: UltraRAW DNG and embedded preview decode, audio policy
@@ -59,11 +62,12 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.434625bd9b5cd7a8a7eabd84` (userdebug, delivery set v16) |
-| Recorded predecessor (removed from host) | v15 `nezha.81c1b93277a1fa371a3efbb3`; survives as hashes in its [install record](v15-install-validation-20260909.md) |
-| Installed source receipt | 708 rows; `reports/tier2-camera-20260909/source-revision-15/source-installed.json`, SHA256 `3d1c850f1cb8166ecd1ac3f1ade8edc92b6e8ec32f1ec0cdc701cf0aa8cd6081` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v16/` (the only delivery set retained on the host; see the [v16 install record](v16-install-validation-20260910.md)) |
-| Bundle manifest SHA256 | `5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d` |
+| Installed build identity | `nezha.11b0a26475073bca18f34c39` (userdebug, delivery set v17) |
+| Recorded predecessor (removed from host) | v16 `nezha.434625bd9b5cd7a8a7eabd84`; survives as hashes in its [install record](v16-install-validation-20260910.md) |
+| Earlier predecessor | v15 `nezha.81c1b93277a1fa371a3efbb3`; survives in its [install record](v15-install-validation-20260909.md) |
+| Installed source receipt | 709 rows; `reports/tier2-camera-20260909/source-revision-16/source-installed.json`, SHA256 `6a5d215761c40dd147ce351586ed9a1d3d7130302c381caf9e645e2c7f204ec1` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v17/` (the only delivery set retained on the host; see the [v17 install record](v17-install-validation-20260910.md)) |
+| Bundle manifest SHA256 | `6230582068c8133487c10af7097be7ff10dc52cd29c1cf0f6177961df4819ec0` |
 | Reconciled signed target-files SHA256 | `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953` |
 | Signing/reconciliation result | Passed signing, reconciliation, 18 host gates and eight-payload verification; receipts in the [tier 1 record](tier1-ims-dim-20260909.md) |
 | Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.4 s |
@@ -110,9 +114,10 @@ camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-2
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
 verification remain separate evidence. The Linux checkout holds source
-revision 15 (`nezha.434625bd9b5cd7a8a7eabd84`), which is now installed as v16
-and adds the four CameraOpt methods and the [factory camcorder profile selection](camera-video-profiles-20260909.md).
-The [v16 installation record](v16-install-validation-20260910.md) is the current
+revision 16 (`nezha.11b0a26475073bca18f34c39`), which is now installed as v17
+and adds the always-on [Leica Essential selection](leica-essential-20260910.md)
+over revision 15's four CameraOpt methods and [factory camcorder profile selection](camera-video-profiles-20260909.md).
+The [v17 installation record](v17-install-validation-20260910.md) is the current
 phone evidence, and the [tier 2 v16 page](tier2-camera-v16-20260910.md) holds
 the measured video matrix, microphone, CameraOpt runtime and Leica findings.
 
@@ -170,8 +175,8 @@ template is enrolled.
   Aperture Ultra HDR effects. Useful effect quality, focus, stabilization,
   sensor-native detail and sustained behavior remain unverified. Preserve the
   [v13 runtime record](camera-v13-install-validation-20260908.md).
-- **Video and audio:** The installed v16 exposes the full Xiaomi video matrix
-  (720p to 8K, 30/60/120 fps) because the stock `media.settings.xml` key now
+- **Video and audio:** The installed v17 exposes the full Xiaomi video matrix
+  (720p to 8K, 30/60/120 fps, unchanged from v16) because the stock `media.settings.xml` key now
   loads the vendor camcorder table. 4K60 Dolby Vision and 1080p HEVC record and
   play with a live microphone; 8K produces a non-decodable track, and 120 fps
   and long 4K60 runs abort the stock app in the platform media writer, which
@@ -182,18 +187,20 @@ template is enrolled.
   needs the QTI-patched `MPEG4Writer`; effect quality, focus and stabilization
   still need a lit scene and a person.
 - **Leica looks:** The cloud Leica color filters (Leica Vibrant and the six
-  Leica LUT looks) are enabled and cloud-delivered on v16. The Leica M3 and M9
-  "Leica Essential" film looks (module 256) are now enabled too: the gate was
-  two properties, not a hardware attestation. `ro.theme_customize=LCC` makes the
-  app run as the Leica edition, and `camera.debug.safe.check.disable=true` skips
-  the camera's native anti-tamper check that otherwise closes the app on an
-  unlocked bootloader. With both set, the mode captures and runs its on-device
-  style-transfer pipeline, and the device keeps its real identity. The guarded
+  Leica LUT looks) are enabled and cloud-delivered. The Leica M3 and M9
+  "Leica Essential" film looks (module 256) are now baked on in the installed
+  v17: the gate was two properties, not a hardware attestation.
+  `ro.theme_customize=LCC` makes the app run as the Leica edition, and
+  `camera.debug.safe.check.disable=true` skips the camera's native anti-tamper
+  check that otherwise closes the app on an unlocked bootloader. The guarded
   fragment [`leica-essential.mk`](../device/xiaomi/nezha/leica-essential.mk)
-  bakes the two properties into the next build; the runtime recipe enables it on
-  the installed v16 until reboot
-  ([enablement record](leica-essential-20260910.md)). Not yet built into a
-  delivery set; the M9-versus-M3 look quality still needs a lit scene.
+  (`NEZHA_LEICA_ESSENTIAL := true`) writes both into `build.prop`, so the mode is
+  present at boot with no runtime resetprop and no Magisk; after a clean flash and
+  reboot both properties read from the image and the mode selector lists
+  `Leica Essential` (256) without the app self-closing. The device keeps its real
+  identity ([enablement record](leica-essential-20260910.md),
+  [v17 install record](v17-install-validation-20260910.md)). The M9-versus-M3 look
+  quality still needs a lit scene.
 - **Wallpaper process:** Resolved on the installed v14. The measured cause was
   the stale `SystemUIClocks-Flex` prebuilt (pre-QPR2 plugin package with a
   bundled interface copy); v14 drops that product selection while SystemUI's

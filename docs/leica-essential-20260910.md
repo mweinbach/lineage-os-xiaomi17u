@@ -11,8 +11,9 @@ gate blocks it, but the gate turned out to be two properties, not a hardware
 attestation. A guarded source fragment
 ([`leica-essential.mk`](../device/xiaomi/nezha/leica-essential.mk),
 contract [`nezha-leica-essential.json`](../config/nezha-leica-essential.json))
-bakes the two properties into the next build; the runtime recipe below enables
-it on the currently installed v16 until the next reboot.
+bakes the two properties into the build; it is enabled in source revision 16 and
+built and installed as v17 (see "Built and installed as v17" below). The runtime
+recipe below is the equivalent toggle on an unmodified build.
 
 ## Why the first attempt failed
 
@@ -79,7 +80,21 @@ identity, and do not touch platform verified boot or SELinux;
 integrity self-check. The M9-versus-M3 look selection, the rendered image
 quality of each film look, and behaviour in a lit scene are not evaluated here;
 the dark-desk test only proves the mode opens, captures and runs its pipeline.
-The two properties are not yet built into a delivery set. The
-[contract](../config/nezha-leica-essential.json) holds the bytecode evidence
+The [contract](../config/nezha-leica-essential.json) holds the bytecode evidence
 and the device-file list; media and decompiled sources stay under the ignored
 evidence directory.
+
+## Built and installed as v17
+
+The two properties are no longer set at runtime. Source revision 16 enables the
+fragment (`NEZHA_LEICA_ESSENTIAL := true`), which writes both into the system
+`build.prop`, and that source is built and installed as v17
+(`nezha.11b0a26475073bca18f34c39`). After a clean flash and reboot — which clears
+any runtime resetprop values — the phone reads `ro.theme_customize=LCC` and
+`camera.debug.safe.check.disable=true` from the image, the camera app stays open
+past the three-second self-close window with no "APK version error", reports
+`phone is lcc_gl`, and its mode selector lists `Leica Essential` at `mValue=256`.
+So the mode is on at boot with no resetprop and no Magisk; root is the native
+userdebug `adb root`, unaffected. See the
+[v17 install record](v17-install-validation-20260910.md). The runtime recipe
+above remains only as a way to toggle the mode on an unmodified build.

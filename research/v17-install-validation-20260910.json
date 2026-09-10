@@ -1,0 +1,203 @@
+{
+  "operation": "v17-install-validation-v1",
+  "date": "2026-09-10",
+  "document": "docs/v17-install-validation-20260910.md",
+  "build_number": "nezha.11b0a26475073bca18f34c39",
+  "predecessor": "nezha.434625bd9b5cd7a8a7eabd84",
+  "bundle_manifest_sha256": "6230582068c8133487c10af7097be7ff10dc52cd29c1cf0f6177961df4819ec0",
+  "source_revision": 16,
+  "authorization": {
+    "user_response": "do it",
+    "bound_before_phone_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "explicit_authorization_sha256": "199ab1cd17e2923f6a5abdf5ab6319501c05e841a865dcfc183b9468c27033bc"
+  },
+  "preflight": {
+    "android_observation_status": "requested-observations-complete-not-device-admission",
+    "android_properties": {
+      "ro.product.device": "nezha",
+      "ro.build.version.incremental": "nezha.434625bd9b5cd7a8a7eabd84",
+      "ro.boot.slot_suffix": "_a",
+      "ro.boot.vbmeta.device_state": "unlocked",
+      "ro.boot.verifiedbootstate": "orange",
+      "ro.crypto.state": "encrypted"
+    },
+    "bootloader_values": {
+      "product": "nezha",
+      "unlocked": "yes",
+      "current-slot": "a",
+      "slot-count": "2",
+      "is-userspace": "no",
+      "snapshot-update-status": "none",
+      "slot-unbootable:a": "no",
+      "slot-retry-count:a": "6"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 243.025,
+      "sha256": "6909bad7a66b59d9d0e1eb55c96a5b33b29dd02a8aae670b0a2259be4bad9d8c",
+      "size_bytes": 9477851248,
+      "rehashed_identical": true
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.955,
+      "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+      "size_bytes": 33554432,
+      "rehashed_identical": true
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.323,
+      "sha256": "9d982803ddcf70c05ed6eaef61e91987491128593d6087b7d6a2e43c7406ba31",
+      "size_bytes": 8388608,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.711,
+      "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.812,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "rehashed_identical": true
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.716,
+      "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.134,
+      "sha256": "5b68905d1ec0a3698381f15fffe01a9ef17001533a350e0330205ab13fd5ce62",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.144,
+      "sha256": "1384f86e7c1e2d630d9f28171c5af9f3fb46e743e60bedbdad7634a23c47bc91",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.5,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "root_adb": true,
+    "uptime_at_observation_s": 67.34,
+    "crash_fatal": 0,
+    "avc_denials_total": 54
+  },
+  "leica_essential": {
+    "headline": "The Leica Essential (M3/M9) mode is baked on at build time, not runtime.",
+    "selector": "NEZHA_LEICA_ESSENTIAL",
+    "fragment": "device/xiaomi/nezha/leica-essential.mk",
+    "system_build_prop_props": {
+      "ro.theme_customize": "LCC",
+      "camera.debug.safe.check.disable": "true"
+    },
+    "present_after_clean_reboot_from_build_prop": true,
+    "mode_in_selector": "Leica Essential (mValue 256) present in MCAM_ModeSelectView init mItems",
+    "mode_list_evidence_present": true,
+    "app_stayed_open_no_apk_version_error": true,
+    "wm_model": "lcc_gl",
+    "note": "Runtime resetprop and Magisk are no longer used for Leica: the two properties the mode needs are in the system image build.prop. Behavior was first proven on v16 with runtime props; v17 makes it permanent. Real device model, market name and attestation identity unchanged."
+  },
+  "camcorder_profiles": {
+    "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml",
+    "codecs_variant": "_canoe_v2",
+    "canoe_v2_sha256": "c1cf4365e3361ff1de384f338ff0681e98bb6ae3004c6da07c8de992e8b0b6c5"
+  },
+  "cameraopt": {
+    "configuration_state": "configuration_state=loaded deliveries=1 failure=null",
+    "service_property": [
+      "[ro.nezha.cameraopt.service]: [true]"
+    ]
+  },
+  "leica_edition_properties": {
+    "ro_theme_customize": "LCC",
+    "odm_import_line_present": true,
+    "matching_odm_prop_file_present": false
+  },
+  "ims": {
+    "process_running_in_vendor_qtelephony": false,
+    "note": "No SIM present; IMS binds later as on v15/v16. Not bound at this early observation."
+  },
+  "dim": {
+    "config_float": "0.05"
+  },
+  "retained_userdata": {
+    "userdata_or_metadata_partition_written": false,
+    "wipe_requested": false,
+    "accounts": "1",
+    "third_party_packages": "22",
+    "dcim_camera_files": "124",
+    "note": "Retention is proven structurally: the eight-image write set contained no userdata or metadata partition and no wipe was requested. Account count (1) is unchanged from v16. Third-party count 22 is the reliable root post-boot value."
+  },
+  "retention": {
+    "operation": "retention-after-v17-install",
+    "kept": "variant-opt-in-userdebug-20260906-v17",
+    "removed": [
+      {
+        "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v16",
+        "kib": 30120884
+      },
+      {
+        "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v16",
+        "kib": 9595828
+      },
+      {
+        "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v16-transfer",
+        "kib": 20314640
+      }
+    ],
+    "removed_total_kib": 60031352,
+    "kept_admission_record": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v16-admit/admission.json",
+    "host_free_kib_before": 1200106828,
+    "host_free_kib_after": 1260138556,
+    "dry_run": false,
+    "recorded_at": "2026-09-10T21:54:56Z"
+  },
+  "device_changes_during_validation": [
+    "camera app launched read-only to confirm the Leica Essential mode; force-stopped after"
+  ],
+  "not_established": "No IMS registration, call or SMS (no SIM). Rendered Leica look quality and the M9-vs-M3 selection still need a lit scene with a person; camera video matrix is recorded separately and unchanged from v16."
+}
