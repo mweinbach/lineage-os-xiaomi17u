@@ -688,13 +688,13 @@ class PublicProfileTests(NoNativeTests):
         override = profile["dynamic_logical_budget_overrides"]["system_ext"]
         self.assertEqual(profile["image_budgets"]["system_ext"], 713158656)
         # Effective budget is the largest admitted system_ext image; v15 (IMS provider) is 793,612,288 bytes.
-        self.assertEqual(avb.image_budget(profile, "system_ext"), 793612288)
+        self.assertEqual(avb.image_budget(profile, "system_ext"), 793632768)
         self.assertEqual(override["measured_image"], {
             "sha256": "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4",
             "size_bytes": 778199040})
         self.assertEqual(override["additional_measured_images"], list(avb.ADDITIONAL_MEASURED_SYSTEM_EXT))
         self.assertEqual([c["build_number"] for c in override["additional_measured_images"]],
-                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e", "nezha.88dd30980cd24ea68d6b701e", "nezha.cc551b14bc2cc72c2b138bb0", "nezha.e2b55ae5f0effd944736a6b0", "nezha.c6ad60080698a987390afc40", "nezha.f2e3feac321f56f92d2ad7ea", "nezha.393aae12fba9ebe8627cdc38", "nezha.0c10ad024d3033691a2825cc", "nezha.130611bac9232625e0066968", "nezha.0a0b5c6187d711a32aa3e46e", "nezha.2c510f47f6d99b93f0c3ee11", "nezha.98d08f70d20e5a87a2777f81", "nezha.81c1b93277a1fa371a3efbb3"])
+                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e", "nezha.88dd30980cd24ea68d6b701e", "nezha.cc551b14bc2cc72c2b138bb0", "nezha.e2b55ae5f0effd944736a6b0", "nezha.c6ad60080698a987390afc40", "nezha.f2e3feac321f56f92d2ad7ea", "nezha.393aae12fba9ebe8627cdc38", "nezha.0c10ad024d3033691a2825cc", "nezha.130611bac9232625e0066968", "nezha.0a0b5c6187d711a32aa3e46e", "nezha.2c510f47f6d99b93f0c3ee11", "nezha.98d08f70d20e5a87a2777f81", "nezha.81c1b93277a1fa371a3efbb3", "nezha.434625bd9b5cd7a8a7eabd84"])
         self.assertEqual(override["maximum_size_bytes"],
                          max(c["measured_image"]["size_bytes"] for c in override["additional_measured_images"]))
         avb.validate_image_budget(profile, "system_ext", override["measured_image"])

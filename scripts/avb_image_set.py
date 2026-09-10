@@ -335,6 +335,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "85e92161e857caf15a9f8ab9c2583c37120da58fc35c05c6a97df1524c98c26f", "size_bytes": 793612288},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v15-admit/admission.json", "sha256": "fa2633446505c0939b850d1f1854cdfc221a59f2af19ed8d2784ca4d5450a0cc", "size_bytes": 7121},
      "build_number": "nezha.81c1b93277a1fa371a3efbb3"},
+    # Four app-reachable CameraOpt methods and the factory camcorder profile selection; measured v16 system_ext.
+    {"measured_image": {"sha256": "4d26934e99958d1cee7114b4008268114a740a92f5da5592ea454eaf3c3b7b30", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v16-admit/admission.json", "sha256": "df205531be620eaf81a00c5bd75e36ac21afa0ca2ae72b42a995e7eae200760f", "size_bytes": 7128},
+     "build_number": "nezha.434625bd9b5cd7a8a7eabd84"},
 )
 
 
