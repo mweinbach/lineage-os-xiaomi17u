@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-video-profiles-v1",
+  "selector": "NEZHA_CAMERA_VIDEO_PROFILES",
+  "fragment": "device/xiaomi/nezha/camera-video-profiles.mk",
+  "property": {
+    "name": "media.settings.xml",
+    "value": "/vendor/etc/media_profiles_vendor.xml",
+    "partition": "system",
+    "product_variable": "PRODUCT_SYSTEM_PROPERTIES"
+  },
+  "purpose": "Restore the factory camcorder profile selection so the platform exposes the 4K, 8K, DCI and high-speed video profiles that the Xiaomi camera application lists for its resolution and frame-rate controls.",
+  "stock_evidence": {
+    "factory_system_build_prop": {
+      "path": "artifacts/camera-analysis/factory-extract/system/system/build.prop",
+      "sha256": "2c2811af2c883b7c114d8de2b217e2643f57cbecbd464ade00c31b3d6e81071f",
+      "line": 100,
+      "text": "media.settings.xml=/vendor/etc/media_profiles_vendor.xml"
+    },
+    "factory_vendor_profile_tables": [
+      "media_profiles.xml",
+      "media_profiles_V1_0.xml",
+      "media_profiles_canoe_sku1.xml",
+      "media_profiles_canoe_sku2.xml",
+      "media_profiles_canoe_sku3.xml",
+      "media_profiles_canoe_v1.xml",
+      "media_profiles_canoe_v2.xml"
+    ],
+    "media_profiles_vendor_xml": "absent on the factory vendor image and on the phone; the loader treats the key as a /vendor/etc marker and upgrades to the codec-variant table"
+  },
+  "loader": {
+    "source": "frameworks/av/media/libmedia/MediaProfiles.cpp",
+    "semantics": "With media.settings.xml unset, getXmlPaths() searches product, odm, vendor and system for media_profiles<ro.media.xml_variant.profiles>.xml, defaulting to _V1_0. With media.settings.xml set to a /vendor/etc path, the QTI branch replaces it by /vendor/etc/media_profiles<ro.media.xml_variant.codecs>.xml when that file exists.",
+    "codec_variant_property": "ro.media.xml_variant.codecs",
+    "codec_variant_on_phone": "_canoe_v2",
+    "codec_variant_source": "/vendor/etc/init/init.qti.media.rc copies vendor.media.target_variant into ro.media.xml_variant.codecs and ro.media.xml_variant.codecs_performance"
+  },
+  "measured_on_v15": {
+    "build_identity": "nezha.81c1b93277a1fa371a3efbb3",
+    "media_settings_xml": "unset",
+    "ro_media_xml_variant_profiles": "unset",
+    "loaded_table": "/vendor/etc/media_profiles_V1_0.xml",
+    "loaded_table_sha256": "691e26812e542fa58b8a9cc9fab93b709c19aca0b2aef44a7842f0812cfed6bb",
+    "loaded_table_camera0_profiles": 13,
+    "loaded_table_camera0_highest": "1920x1080@30",
+    "loaded_table_camera1_highest": "1920x1080@30",
+    "loaded_table_high_speed_profiles": 0,
+    "factory_table": "/vendor/etc/media_profiles_canoe_v2.xml",
+    "factory_table_sha256": "c1cf4365e3361ff1de384f338ff0681e98bb6ae3004c6da07c8de992e8b0b6c5",
+    "factory_table_camera0_profiles": 24,
+    "factory_table_camera0_qualities": [
+      "2160p 3840x2160@30",
+      "4kdci 4096x2160@24",
+      "8kuhd 7680x4320@30",
+      "timelapse2160p",
+      "timelapse8kuhd"
+    ],
+    "factory_table_high_speed": {
+      "camera2": [
+        "1080p@120",
+        "720p@240",
+        "480p@240"
+      ],
+      "camera3": [
+        "1080p@120",
+        "720p@120",
+        "480p@120"
+      ]
+    },
+    "camcorder_probe": "CamcorderProfile.hasProfile/get and getAll by reflection from a root app_process on the phone: cameras 0 and 1 expose qualities 0-7 and 1000-1006 only, highest 1920x1080@30, no 2160p, 8K or high-speed quality",
+    "camera_application": "In Video mode the Resolution (1080P) and Frame rate (30FPS) controls accept no tap, with Dolby Vision on or off; a long press opens only the control-rearrange panel",
+    "hal_metadata": "Every rear device advertises 60 fps target ranges and 120/240 fps high-speed configurations, so the 1080p30 ceiling is the platform profile table, not the HAL",
+    "evidence": "evidence/tier2-camera-v15-20260909/capabilities/ (camcorder-profiles.txt, media-camera.txt, both profile tables)"
+  },
+  "not_verified": [
+    "the Xiaomi application's resolution and frame-rate controls after the property lands (its list may also depend on its own configuration)",
+    "4K, 8K and high-speed sessions on the camera HAL from this framework",
+    "Dolby Vision, stabilization and microphone behaviour at the new resolutions",
+    "other readers of the camcorder profile table (MediaRecorder clients such as Aperture)"
+  ]
+}

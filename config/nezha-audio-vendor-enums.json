@@ -31,15 +31,21 @@
   "product_file": {
     "path": "device/xiaomi/nezha/device.mk",
     "before_sha256": "92b7c904c2fb79875c8d5758e32be07d1696fc2c80a909e194a63e1b42a72851",
-    "after_sha256": "16952c8de64fc44b06d105c7938caa9c3251b819e319ea731a4c1c157885afd4",
+    "after_sha256": "12e6c4b72f6b54af0fe7fbef7eebf26c90dea95252feab9bb8a5e8468f5d602a",
     "before_bytes": 3968,
-    "after_bytes": 4236,
+    "after_bytes": 4374,
     "history": [
       {
         "after_sha256": "551aa42a317cd4c3cfb5cb1a514cc2b52fdccf9082f42a86489019150b3394f2",
         "after_bytes": 4098,
         "superseded_on": "2026-09-09",
         "reason": "device.mk gained the guarded IMS include (device/xiaomi/nezha/ims.mk); the audio selector lines this contract binds are unchanged."
+      },
+      {
+        "after_sha256": "16952c8de64fc44b06d105c7938caa9c3251b819e319ea731a4c1c157885afd4",
+        "after_bytes": 4236,
+        "superseded_on": "2026-09-09",
+        "reason": "device.mk gained the guarded camcorder-profile include (device/xiaomi/nezha/camera-video-profiles.mk); the audio selector lines this contract binds are unchanged."
       }
     ]
   },

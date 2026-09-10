@@ -53,6 +53,7 @@ TEMPLATE_FILES = (
     "cameraopt-service.mk",
     "camera-vendor-keys.mk",
     "camera-vendor-keys/overlay/frameworks/base/core/res/res/values/config.xml",
+    "camera-video-profiles.mk",
     "ims.mk",
     "ims/Android.bp",
     "ims/permissions/privapp-permissions-org.codeaurora.ims.xml",
