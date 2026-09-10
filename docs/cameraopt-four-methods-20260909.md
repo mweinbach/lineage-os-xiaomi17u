@@ -7,7 +7,8 @@ implementations in the authored service, built from the factory bytecode and
 the device's own encrypted reclaim tables.** Source revision 14 builds
 `services.jar` and the adapter JAR with them; the host planner harness passes
 78 checks. Nothing on this page is a device result: the phone still runs v15,
-where these four calls are counted as unsupported. The
+where these four calls are counted as unsupported, and the prepared v16
+bundle below waits for your installation approval. The
 [completion record](camera-completion-20260907.md) describes the state before
 this work; the CameraOpt service itself is described in
 `device/xiaomi/nezha/cameraopt-service/README.md`.
@@ -80,6 +81,28 @@ Deviations from the factory, all visible in `dumpsys cameraopt`:
 The phone-side decode of the tables is private evidence under
 `evidence/cameraopt-config-20260909/`; the tables are Xiaomi's and are not
 reproduced here beyond the values needed to explain the port.
+
+## Delivery set v16 (prepared, not installed)
+
+The host stages ran as for v15 and every gate passed. Nothing was flashed;
+the bundle needs your separate approval bound to its manifest hash, and it
+carries both this port and the [camcorder profile selection](camera-video-profiles-20260909.md).
+
+| Item | Value |
+| --- | --- |
+| Build identity | `nezha.434625bd9b5cd7a8a7eabd84` (userdebug, source revision 15, 708 rows) |
+| Unsigned archive | SHA256 `f443a103f228d43e13c9fc64e8fcdbbd74558b4000258820170105bea8514909`, 11,324,330,533 bytes |
+| Measured system_ext | 793,632,768 bytes, 20,480 more than v15; admitted through the cascade |
+| Reconciled signed archive | SHA256 `734c22b58e13ea3c0bc1c8c6f0b28139dc4f96ddf5b2b37a53aa5e40ce7e323c`, 11,146,542,546 bytes |
+| Super | SHA256 `f79ed975acbbbfbfaa9144394358877d1db01e4749a783504a1fb55dc0a95612`, 9,477,851,248 bytes |
+| Bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v16/`, manifest SHA256 `5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d`, eight payloads, byte identities verified |
+| Guest gates | `framework-res` still compiles `config_screenBrightnessDimFloat` = 0.05; TeleService still compiles `config_ims_mmtel_package` = `org.codeaurora.ims` |
+| Host gates | 16 checks on the unsigned archive and the same 16 on the signed archive: the stock `media.settings.xml` line once in the system build.prop and no profile-variant override, CameraOpt artifact ownership over the packaged system-server classpath (factory JAR bytes, clean adapter, both reclaim classes in services.jar, five known HIDL duplicates only), dexpreopt outputs, the CameraOpt selector property, the IMS APK bytes, domain, mapping and selector, no permissive domain, unchanged calibration XML, display packet delivery |
+| Tests during admission | 994 focused, 4,971 full, both green |
+| Release checker | every stage recognized for this identity |
+
+The v15 set stays on the host until v16 is installed and recorded; the
+retention rule then removes v15.
 
 ## What this does not prove
 

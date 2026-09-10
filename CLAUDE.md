@@ -121,9 +121,14 @@ quoted.
 
 - Installed: v15, `nezha.81c1b93277a1fa371a3efbb3`, userdebug, slot A,
   Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/`. It is the
-  only delivery set retained on the host.
-- Source: revision 13 in the Linux checkout. It carries the merged feature
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/`.
+- Prepared, not installed: v16, `nezha.434625bd9b5cd7a8a7eabd84` (source
+  revision 15), bundle manifest SHA256 `5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d`.
+  It carries the four ported CameraOpt methods and the factory camcorder
+  profile selection (`docs/cameraopt-four-methods-20260909.md`,
+  `docs/camera-video-profiles-20260909.md`). Flashing it needs a fresh explicit
+  request; once it is installed and recorded, remove the v15 set.
+- Source: revision 15 in the Linux checkout (revision 13 is the installed v15). It carries the merged feature
   candidates (display brightness, Dolby, haptics, camera scheduling, refresh
   policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
   the HyperOS camera framework port, native camera session hooks, vendor-key
@@ -136,8 +141,11 @@ quoted.
 - Camera: the requested capture matrix passes on v13 and the v14 subset:
   rear and front Ultra HDR, main and telephoto 50 MP, telephoto 200 MP, Pro
   RAW, UltraRAW DNG, three physical RAW sensors, all ten Aperture effects and
-  a short HEVC/AAC video. Image quality, focus, stabilization, other video
-  modes and the microphone are unverified.
+  a short HEVC/AAC video. On v15 the Xiaomi app offers only 1080p because the
+  platform loads the generic camcorder profile table (fixed in v16). An
+  unattended eight-minute 1080p recording ran at a steady 24 fps with no
+  drops. Image quality, focus, stabilization, 4K/60 fps/slow motion and the
+  microphone response are unverified (`docs/tier2-camera-v15-measurements-20260909.md`).
 - Open on device: retained userdata, UDFPS, shade visuals, IMS and VoLTE,
   panel brightness and HBM policy, Dolby, haptics, refresh policy, workload
   classifier, and the hardware ledger (radio, sensors, GNSS, NFC, Wi-Fi,

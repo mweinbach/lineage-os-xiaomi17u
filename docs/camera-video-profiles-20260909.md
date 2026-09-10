@@ -8,7 +8,11 @@ build.prop sets it, and the QTI-patched profile loader then upgrades to
 high-speed profiles.** The guarded fragment
 `device/xiaomi/nezha/camera-video-profiles.mk` restores the property; its
 contract is `config/nezha-camera-video-profiles.json`. This is a source
-finding; the corrected build is not yet installed.
+finding; the corrected build is packaged as delivery set v16 (identity
+`nezha.434625bd9b5cd7a8a7eabd84`, bundle manifest SHA256
+`5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d`, see the
+[CameraOpt record](cameraopt-four-methods-20260909.md) for the gates) and is
+not yet installed.
 
 ## How it was found
 

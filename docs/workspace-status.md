@@ -57,6 +57,7 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
 | Installed build identity | `nezha.81c1b93277a1fa371a3efbb3` (userdebug, delivery set v15) |
+| Prepared successor (not installed) | v16 `nezha.434625bd9b5cd7a8a7eabd84`, source revision 15 (708 rows), bundle manifest SHA256 `5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d`; needs a separate installation approval; see the [CameraOpt record](cameraopt-four-methods-20260909.md) |
 | Installed source receipt | 702 rows; `reports/tier1-20260909/source-revision-13/source-installed.json`, SHA256 `f5236e241c60c0e61d17e21e006477d23723cfd089da6d3be144b3f78035917f` |
 | Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v15/` (the only delivery set retained on the host; see the [retention record](artifact-retention-20260909.md)) |
 | Bundle manifest SHA256 | `64e5741d37eabcee872d6a64553e4ba7e99442465396fe2190431172bc22f4ed` |
@@ -91,8 +92,9 @@ v8 implementation and installed baseline. The new [completion record](camera-com
 adds measured v8 capture results and the selected CameraOpt source candidate.
 Its original factory verifier and native boot hook remain unchanged. V10
 resolves the measured vendor-key discovery failure and saves ordinary Xiaomi
-photos. CameraOpt still has explicitly unported methods, including
-`reclaimMemoryForCamera`, which is observed during successful captures too.
+photos. CameraOpt's four app-reachable methods, including `reclaimMemoryForCamera`,
+are ported in source revision 14 ([record](cameraopt-four-methods-20260909.md));
+eighteen methods without a known app call path stay explicitly unported.
 The retained v11r1 sizing repair resolves the measured telephoto output
 truncation and Pro RAW configuration failure. V12 adds the save APIs. V13 adds
 the measured Bayer container path, now verified by full DNG and embedded preview
@@ -105,8 +107,9 @@ camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-2
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
 verification remain separate evidence. The Linux checkout held source
-revision 11 (`nezha.98d08f70d20e5a87a2777f81`) for v14 and now holds revision 13
-(`nezha.81c1b93277a1fa371a3efbb3`) for the prepared v15. After the v14 installation record
+revision 13 (`nezha.81c1b93277a1fa371a3efbb3`) for the installed v15 and now
+holds revision 15 (`nezha.434625bd9b5cd7a8a7eabd84`) for the prepared v16, which
+adds the four CameraOpt methods and the [factory camcorder profile selection](camera-video-profiles-20260909.md). After the v14 installation record
 was added, `make test-current` passed 939 tests and `make test` passed 4,916
 tests plus shell checks. After the September 9 retention pass and checker
 update, `make test-current` passes 946 tests in 27.566 seconds and `make test`
@@ -169,8 +172,13 @@ template is enrolled.
 - **Video and audio:** Audio policy initializes with primary output handle 13
   at all three later boot checkpoints. A 10.079-second 1080p HEVC video and
   48 kHz mono AAC audio fully decode with a measured nonzero audio signal.
-  Other video resolutions/rates/modes, microphone response, playback quality
-  and sustained recording remain unverified.
+  On v15 the app offers no other resolution or frame rate because the platform
+  loads the generic camcorder profile table; the stock `media.settings.xml`
+  key is restored in the prepared v16. An unattended eight-minute 1080p
+  recording on v15 ran at a steady 24 fps (low-light auto frame rate) with no
+  dropped frame and a 2.6 °C board rise ([measurements](tier2-camera-v15-measurements-20260909.md)).
+  4K, 8K, 60 fps, slow motion, microphone response and playback quality remain
+  unverified.
 - **Wallpaper process:** Resolved on the installed v14. The measured cause was
   the stale `SystemUIClocks-Flex` prebuilt (pre-QPR2 plugin package with a
   bundled interface copy); v14 drops that product selection while SystemUI's

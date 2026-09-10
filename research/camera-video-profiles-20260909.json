@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_id": "camera-video-profiles-20260909",
   "date": "2026-09-09",
-  "status": "source_change_prepared_not_device_admitted",
+  "status": "source_change_packaged_as_v16_not_device_admitted",
   "document": "docs/camera-video-profiles-20260909.md",
   "contract": "config/nezha-camera-video-profiles.json",
   "measured_build": "nezha.81c1b93277a1fa371a3efbb3",
@@ -17,13 +17,92 @@
     "loaded_on_stock": "/vendor/etc/media_profiles_canoe_v2.xml via ro.media.xml_variant.codecs=_canoe_v2"
   },
   "tables": {
-    "media_profiles_V1_0.xml": {"camera0_profiles": 13, "camera0_highest": "1920x1080@30", "camera1_highest": "1920x1080@30", "high_speed_profiles": 0},
-    "media_profiles_canoe_v2.xml": {"camera0_profiles": 24, "camera0_highest": "7680x4320@30", "camera0_has_2160p": true, "camera0_has_4kdci": true,
-                                    "high_speed": {"camera2": ["1080p@120", "720p@240", "480p@240"], "camera3": ["1080p@120", "720p@120", "480p@120"]}}
+    "media_profiles_V1_0.xml": {
+      "camera0_profiles": 13,
+      "camera0_highest": "1920x1080@30",
+      "camera1_highest": "1920x1080@30",
+      "high_speed_profiles": 0
+    },
+    "media_profiles_canoe_v2.xml": {
+      "camera0_profiles": 24,
+      "camera0_highest": "7680x4320@30",
+      "camera0_has_2160p": true,
+      "camera0_has_4kdci": true,
+      "high_speed": {
+        "camera2": [
+          "1080p@120",
+          "720p@240",
+          "480p@240"
+        ],
+        "camera3": [
+          "1080p@120",
+          "720p@120",
+          "480p@120"
+        ]
+      }
+    }
   },
-  "camcorder_probe": {"method": "CamcorderProfile.hasProfile/get/getAll by reflection from a root app_process", "cameras_0_and_1_highest": "1920x1080@30", "high_speed_qualities": 0},
-  "hal_metadata": {"rear_devices_advertise_60fps_ranges": true, "high_speed_configurations_present": true},
-  "fix": {"fragment": "device/xiaomi/nezha/camera-video-profiles.mk", "selector": "NEZHA_CAMERA_VIDEO_PROFILES", "product_variable": "PRODUCT_SYSTEM_PROPERTIES",
-          "device_mk_include": "include $(NEZHA_DEVICE_PATH)/camera-video-profiles.mk"},
-  "not_verified": ["application lists after the property lands", "4K, 8K and high-speed sessions on this framework", "Dolby Vision, stabilization and microphone at those resolutions", "other MediaRecorder clients"]
+  "camcorder_probe": {
+    "method": "CamcorderProfile.hasProfile/get/getAll by reflection from a root app_process",
+    "cameras_0_and_1_highest": "1920x1080@30",
+    "high_speed_qualities": 0
+  },
+  "hal_metadata": {
+    "rear_devices_advertise_60fps_ranges": true,
+    "high_speed_configurations_present": true
+  },
+  "fix": {
+    "fragment": "device/xiaomi/nezha/camera-video-profiles.mk",
+    "selector": "NEZHA_CAMERA_VIDEO_PROFILES",
+    "product_variable": "PRODUCT_SYSTEM_PROPERTIES",
+    "device_mk_include": "include $(NEZHA_DEVICE_PATH)/camera-video-profiles.mk"
+  },
+  "not_verified": [
+    "application lists after the property lands",
+    "4K, 8K and high-speed sessions on this framework",
+    "Dolby Vision, stabilization and microphone at those resolutions",
+    "other MediaRecorder clients"
+  ],
+  "delivery_set": {
+    "delivery_set": "variant-opt-in-userdebug-20260906-v16",
+    "build_number": "nezha.434625bd9b5cd7a8a7eabd84",
+    "source_revision": 15,
+    "inventory_rows": 708,
+    "unsigned_archive": {
+      "sha256": "f443a103f228d43e13c9fc64e8fcdbbd74558b4000258820170105bea8514909",
+      "size_bytes": 11324330533
+    },
+    "system_ext_measured": {
+      "size_bytes": 793632768,
+      "delta_from_v15_bytes": 20480,
+      "sha256": "4d26934e99958d1cee7114b4008268114a740a92f5da5592ea454eaf3c3b7b30"
+    },
+    "reconciled_archive": {
+      "sha256": "734c22b58e13ea3c0bc1c8c6f0b28139dc4f96ddf5b2b37a53aa5e40ce7e323c",
+      "size_bytes": 11146542546
+    },
+    "super": {
+      "sha256": "f79ed975acbbbfbfaa9144394358877d1db01e4749a783504a1fb55dc0a95612",
+      "size_bytes": 9477851248
+    },
+    "bundle_manifest_sha256": "5c57a12ff14d98349742ce59e6214d2ab2377c0c5e18edc2265b9b27b7188c3d",
+    "bundle_payloads": 8,
+    "host_gates": {
+      "unsigned": 16,
+      "signed": 16,
+      "all_passed": true
+    },
+    "guest_gates": {
+      "dim_float": "0.05",
+      "mmtel_package": "org.codeaurora.ims"
+    },
+    "admission_tests": {
+      "focused": 994,
+      "full": 4971
+    },
+    "installed": false,
+    "flash_authorized": false,
+    "phone_accessed": false,
+    "retention": "v15 remains the installed and retained set until v16 is installed and recorded"
+  }
 }
