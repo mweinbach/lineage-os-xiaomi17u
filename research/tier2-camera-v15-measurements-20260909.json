@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "record_id": "tier2-camera-v15-measurements-20260909",
+  "date": "2026-09-09",
+  "status": "device_measured_on_v15",
+  "document": "docs/tier2-camera-v15-measurements-20260909.md",
+  "build_identity": "nezha.81c1b93277a1fa371a3efbb3",
+  "scene": "phone flat on a desk in a dark room, on USB, unattended",
+  "system_state_changes": "none; camera app Dolby Vision toggled off and back on, app left in rear Photo mode, stay-awake setting restored",
+  "sustained_recording": {
+    "case": "sustained-1080p30-dv-v15",
+    "app_settings": "Video mode defaults: 1080P, 30FPS, Dolby Vision on",
+    "requested_seconds": 480,
+    "duration_seconds": 479.616,
+    "size_bytes": 133658268,
+    "video": {"codec": "hevc", "width": 1920, "height": 1080, "dolby_vision_profile": 8, "color_transfer": "arib-std-b67", "color_primaries": "bt2020"},
+    "audio": {"codec": "aac", "sample_rate": 48000, "channels": 1, "peak_dbfs": -8.12, "rms_dbfs": -41.94},
+    "frames_decoded": 11515,
+    "fps_every_30s": 24.01,
+    "gaps_over_100ms": 0,
+    "frame_rate_note": "app announced 30 fps; HAL range 24-30 in the log; the app's auto frame rate lowers it in low light",
+    "board_c": {"start": 33.552, "end": 36.112, "max": 36.112},
+    "battery_c": {"start": 32.7, "end": 35.7},
+    "battery_current_ma_range": [23, 55],
+    "thermal_status_max": 0,
+    "cpu_mhz": {"policy0_range": [1113, 1900], "policy6": 883},
+    "gpu_mhz": 160,
+    "cpu_psi_some_avg10_typical": 33,
+    "samples": 96
+  },
+  "per_zoom_photos": {
+    "steps": ["0.6X", "1.0X", "2.0X", "3.2X", "4.3X", "8.6X"],
+    "focal_mm": [2.13, 8.71, 8.71, 8.71, 8.71, 8.71],
+    "focal_35mm": [14, 23, 46, 75, 100, 200],
+    "size": "3072x4096",
+    "exposure_s": 0.33,
+    "iso": [4000, 3200, 3200, 3200, 3200, 3200],
+    "mean_luma_max": 0.05,
+    "ultra_hdr_metadata": true,
+    "maker_note": true,
+    "subject_distance_in_exif": false,
+    "finding": "every telephoto step stayed on the main sensor crop in this dark scene; lens routing, focus and exposure need a lit scene"
+  },
+  "not_verified": [
+    "frame rate, exposure, focus, stabilization and effect quality in light",
+    "4K, 8K, 60 fps and slow motion (unavailable on v15)",
+    "thermal behaviour under real load",
+    "microphone response beyond a live track"
+  ]
+}

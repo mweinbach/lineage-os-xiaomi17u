@@ -110,8 +110,10 @@ Status, September 9: the four CameraOpt methods are ported in source revision 14
 ([record](cameraopt-four-methods-20260909.md)); the video matrix stalled on v15
 because the platform loads the generic camcorder profile table, fixed in source
 by the [camcorder profile fragment](camera-video-profiles-20260909.md). Both
-wait for the next delivery set. Per-lens photos on the dark desk scene all
-routed to the main sensor, so focus and lens behaviour need a lit scene.
+wait for the next delivery set. The [v15 measurements](tier2-camera-v15-measurements-20260909.md) hold an
+eight-minute 1080p recording (steady 24 fps low-light auto frame rate, no drops,
+board +2.6 °C) and per-lens photos that all routed to the main sensor on the
+dark desk, so focus and lens behaviour need a lit scene.
 
 ## Tier 3: polish
 
