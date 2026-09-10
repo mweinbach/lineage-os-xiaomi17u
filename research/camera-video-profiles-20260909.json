@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "record_id": "camera-video-profiles-20260909",
+  "date": "2026-09-09",
+  "status": "source_change_prepared_not_device_admitted",
+  "document": "docs/camera-video-profiles-20260909.md",
+  "contract": "config/nezha-camera-video-profiles.json",
+  "measured_build": "nezha.81c1b93277a1fa371a3efbb3",
+  "symptom": "Xiaomi Camera Video mode: Resolution 1080P and Frame rate 30FPS controls accept no tap with Dolby Vision on or off; long press opens the rearrange panel",
+  "cause": {
+    "property": "media.settings.xml",
+    "stock_value": "/vendor/etc/media_profiles_vendor.xml",
+    "stock_source": "system build.prop line 100 of the factory image",
+    "on_v15": "unset",
+    "loader": "frameworks/av/media/libmedia/MediaProfiles.cpp",
+    "loaded_on_v15": "/vendor/etc/media_profiles_V1_0.xml",
+    "loaded_on_stock": "/vendor/etc/media_profiles_canoe_v2.xml via ro.media.xml_variant.codecs=_canoe_v2"
+  },
+  "tables": {
+    "media_profiles_V1_0.xml": {"camera0_profiles": 13, "camera0_highest": "1920x1080@30", "camera1_highest": "1920x1080@30", "high_speed_profiles": 0},
+    "media_profiles_canoe_v2.xml": {"camera0_profiles": 24, "camera0_highest": "7680x4320@30", "camera0_has_2160p": true, "camera0_has_4kdci": true,
+                                    "high_speed": {"camera2": ["1080p@120", "720p@240", "480p@240"], "camera3": ["1080p@120", "720p@120", "480p@120"]}}
+  },
+  "camcorder_probe": {"method": "CamcorderProfile.hasProfile/get/getAll by reflection from a root app_process", "cameras_0_and_1_highest": "1920x1080@30", "high_speed_qualities": 0},
+  "hal_metadata": {"rear_devices_advertise_60fps_ranges": true, "high_speed_configurations_present": true},
+  "fix": {"fragment": "device/xiaomi/nezha/camera-video-profiles.mk", "selector": "NEZHA_CAMERA_VIDEO_PROFILES", "product_variable": "PRODUCT_SYSTEM_PROPERTIES",
+          "device_mk_include": "include $(NEZHA_DEVICE_PATH)/camera-video-profiles.mk"},
+  "not_verified": ["application lists after the property lands", "4K, 8K and high-speed sessions on this framework", "Dolby Vision, stabilization and microphone at those resolutions", "other MediaRecorder clients"]
+}

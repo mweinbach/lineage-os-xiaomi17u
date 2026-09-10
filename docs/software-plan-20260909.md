@@ -106,6 +106,13 @@ The capture matrix passes, so this tier is quality and completeness.
 Effort: medium per item; each is a separate delivery set only when a source
 change is needed.
 
+Status, September 9: the four CameraOpt methods are ported in source revision 14
+([record](cameraopt-four-methods-20260909.md)); the video matrix stalled on v15
+because the platform loads the generic camcorder profile table, fixed in source
+by the [camcorder profile fragment](camera-video-profiles-20260909.md). Both
+wait for the next delivery set. Per-lens photos on the dark desk scene all
+routed to the main sensor, so focus and lens behaviour need a lit scene.
+
 ## Tier 3: polish
 
 - Shade visuals and status-bar geometry on the current build; the approved

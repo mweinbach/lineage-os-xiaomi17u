@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "record_id": "cameraopt-four-methods-20260909",
+  "date": "2026-09-09",
+  "status": "source_built_not_device_admitted",
+  "document": "docs/cameraopt-four-methods-20260909.md",
+  "contract": "config/nezha-cameraopt-service.json",
+  "contract_id": "nezha-cameraopt-service-v2",
+  "patch": "patches/evolution/0040-nezha-cameraopt-reclaim-policy.patch",
+  "ported_methods": {
+    "reclaimMemoryForCamera": {
+      "app_call_sites": ["photo capture path with mode identifier 163", "video session start with mode identifier 162"],
+      "trailing_arguments": -1,
+      "factory_scene": "miuicam_capture_event",
+      "factory_scene_id": 9,
+      "factory_interval_key": "duration_reclaim_capture",
+      "factory_interval_default_ms": 60000,
+      "port": "same scene and interval; kills through ProcessRecord.killLocked, reclaim through cgroup v2 memory.reclaim and CachedAppOptimizer compaction"
+    },
+    "boostCameraByThreshold": {
+      "app_levels": {"0x101": "4K video", "0x102": "8K video", "0x201": "200 MP capture", "0x202": "master live"},
+      "factory_scenes": {"0x101": "miuicam_video_switch_event", "0x102": "miuicam_video_switch_event", "0x103": "video_4k_dolby_event", "0x201": "200M_scene_event", "0x202": "live_motion_scene_event"},
+      "zero_level": "unreachable from the app wrapper; drives the vendor performance wrapper and a delayed system-server GC; unported and counted"
+    },
+    "notifyCameraPerformanceTime": {
+      "factory": "log line; watcher behind persist.miui.camera.perfwatcher.enable, default off",
+      "port": "last 32 events retained in the dump; enabled watcher counted as unported"
+    },
+    "updateCloudData": {
+      "factory": "persist.vendor.camera.cloud.<module>.<key> properties, JsonDisptcher.updateCloudData version merge, memory-reserve refresh",
+      "port": "bounded property writes with denials counted, the same dispatcher merge and callback redelivery, memory-reserve keys counted and not applied",
+      "bounds": {"payload_chars": 262144, "properties_per_update": 64, "property_value_chars": 91}
+    }
+  },
+  "reclaim_engine": {
+    "planner_class": "com.android.server.am.NezhaCameraReclaimPlanner",
+    "policy_class": "com.android.server.am.NezhaCameraReclaimPolicy",
+    "configuration_source": "factory JsonDisptcher.loadJson over the on-device encrypted tables; CameraReclaim section by callback; no decoded table shipped",
+    "gap_rule": "max(total/4 - available, free_target - free) in kB, plus free_memory_threshold - free for the Xiaomi camera",
+    "capture_scene_free_target_kb": 409600,
+    "capture_scene_target_kb": 1228800,
+    "nominal_adj_threshold": 800,
+    "factory_low_memory_escalation": {"trigger_key": "lowerAdj_freeMem_threshold", "trigger_kb": 614400, "escalated_adj": 0},
+    "adj_floor": 800,
+    "max_kills_per_batch": 8,
+    "max_compactions_per_pass": 16,
+    "kernel_nodes": {"factory": "/dev/memcg/memory.reclaim_once (absent: no memcg v1 mount)", "port": "/sys/fs/cgroup/memory.reclaim"},
+    "not_reproduced": ["MIUI process list", "lmkd camera-mode and kill commands", "PSI monitor scenes (kill_once)", "memory-reserve writes", "intercept-restart hook"]
+  },
+  "evidence": {
+    "planner_harness_checks": 78,
+    "planner_harness_gap_kb": 300000,
+    "offline_tests_before_revision": {"focused": 980, "full": 4957},
+    "source_revision": {"revision": 14, "build_number": "nezha.b0cd50c12a3abae1bb26c3ff", "inventory_rows": 707, "changed_files": 9, "added_files": 5, "modified_files": 4},
+    "component_build": {"goals": ["nezha-cameraopt-compile-stubs", "nezha-cameraopt-service", "services"], "exit_code": 0,
+                        "services_jar_defines": ["Lcom/android/server/am/NezhaCameraReclaimPlanner;", "Lcom/android/server/am/NezhaCameraReclaimPolicy;"],
+                        "adapter_jar_classes": 7, "adapter_leaked_factory_declarations": 0},
+    "device_decode": "read-only reflection helper on v15 asked the factory JAR to decode the eleven CameraOpt tables; private evidence, not redistributed"
+  },
+  "not_verified": [
+    "no kill, compaction or reclaim has run on the phone",
+    "service start with the new code and the factory loader inside system_server",
+    "the app's four calls against the new implementation",
+    "whether the capture scene helps or hurts the camera on this build"
+  ]
+}
