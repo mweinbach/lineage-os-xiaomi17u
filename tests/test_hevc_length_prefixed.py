@@ -13,6 +13,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "patches/evolution/nezha-hevc-length-prefixed-nal.json"
 PATCH = ROOT / "patches/evolution/nezha-hevc-length-prefixed-nal.patch"
+CSD_CONTRACT = ROOT / "patches/evolution/nezha-hevc-recorder-csd-duplicate.json"
+CSD_PATCH = ROOT / "patches/evolution/nezha-hevc-recorder-csd-duplicate.patch"
 
 
 def convert_length_prefixed_to_annexb(data: bytearray) -> bool:
@@ -152,6 +154,20 @@ class PatchContractTests(unittest.TestCase):
         self.assertTrue(contract["activation_allowed"])
         self.assertRegex(contract["file"]["before_sha256"], r"^[0-9a-f]{64}$")
         self.assertRegex(contract["file"]["after_sha256"], r"^[0-9a-f]{64}$")
+
+    def test_csd_duplicate_patch_applies_on_top_and_matches_its_contract(self):
+        contract = json.loads(CSD_CONTRACT.read_text())
+        patch_bytes = CSD_PATCH.read_bytes()
+        self.assertEqual(hashlib.sha256(patch_bytes).hexdigest(), contract["patch_sha256"])
+        # it applies on top of the length-prefixed patch's result
+        self.assertEqual(contract["applies_on_top_of"], "patches/evolution/nezha-hevc-length-prefixed-nal.patch")
+        self.assertEqual(contract["file"]["before_sha256"], json.loads(CONTRACT.read_text())["file"]["after_sha256"])
+        text = patch_bytes.decode()
+        self.assertIn("+++ b/frameworks/av/media/libstagefright/MPEG4Writer.cpp", text)
+        self.assertIn("+                if (mGotAllCodecSpecificData) {", text)
+        self.assertIn("+                    free(mCodecSpecificData);", text)
+        self.assertIn("Already have codec specific data", contract["problem"]["evidence"]["log_error"])
+        self.assertEqual(contract["problem"]["evidence"]["track_status"], "Video track stopped. Status:-1007")
 
 
 if __name__ == "__main__":

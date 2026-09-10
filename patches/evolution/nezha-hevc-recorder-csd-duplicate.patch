@@ -1,0 +1,20 @@
+diff --git a/frameworks/av/media/libstagefright/MPEG4Writer.cpp b/frameworks/av/media/libstagefright/MPEG4Writer.cpp
+--- a/frameworks/av/media/libstagefright/MPEG4Writer.cpp
++++ b/frameworks/av/media/libstagefright/MPEG4Writer.cpp
+@@ -3813,6 +3813,16 @@
+                 ALOGI("ignoring additional CSD for video track after first frame");
+             } else {
+                 mMeta = mSource->getFormat(); // get output format after format change
++                // A codec-config buffer that arrives before the first frame supersedes any
++                // codec-specific data taken from the track input format. Release the earlier
++                // copy so re-parsing does not fail with "Already have codec specific data",
++                // which would mark the track malformed and drop its sample table.
++                if (mGotAllCodecSpecificData) {
++                    free(mCodecSpecificData);
++                    mCodecSpecificData = NULL;
++                    mCodecSpecificDataSize = 0;
++                    mGotAllCodecSpecificData = false;
++                }
+                 status_t err;
+                 if (mIsAvc) {
+                     err = makeAVCCodecSpecificData(

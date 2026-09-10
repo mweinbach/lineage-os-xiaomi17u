@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "project": "frameworks/av",
+  "repository": "https://github.com/Evolution-X/frameworks_av.git",
+  "branch": "bka",
+  "patch": "patches/evolution/nezha-hevc-recorder-csd-duplicate.patch",
+  "patch_sha256": "c157b5c357ba9b42837d505882d139baf95659abf0c710d9e6b408a138ab731b",
+  "applies_on_top_of": "patches/evolution/nezha-hevc-length-prefixed-nal.patch",
+  "file": {
+    "path": "frameworks/av/media/libstagefright/MPEG4Writer.cpp",
+    "before_sha256": "f59d2245a2700ca0cc8dcf151f176cadb7298a2fae6696119d5a78f36df6d3fc",
+    "after_sha256": "1b12b5129eb96b2a63a3e4c75ec93b47a1fdcb717bc5f587b95e44e10bd1fd93",
+    "after_bytes": 218456,
+    "added_lines": 10
+  },
+  "problem": {
+    "symptom": "After the length-prefixed-NAL fix removed the crash, 8K, 4K120 and long 4K60 record a large file with thousands of encoded video frames but the video track is non-decodable: the mp4 mdat holds the samples yet the video trak has an empty sample table (stbl 8 bytes), so no codec, dimensions or samples are exposed.",
+    "cause": "MPEG4Writer::Track takes the HEVC codec-specific data from the track input format at track addition (getCodecSpecificDataFromInputFormatIfPossible sets mGotAllCodecSpecificData), because the Xiaomi encoder's output format carries csd-0. The encoder then also sends a codec-config buffer (BUFFER_FLAG_CODEC_CONFIG) before the first frame. With nActualFrames == 0 the writer does not take the ignore branch, calls makeHEVCCodecSpecificData again, and it returns ERROR_MALFORMED with 'Already have codec specific data'. That error runs the track-error path (mIsMalformed = true, mSource->stop()), so the video sample table is never written and the track ends with Status -1007.",
+    "evidence": {
+      "log_error": "MPEG4Writer: Already have codec specific data",
+      "track_status": "Video track stopped. Status:-1007",
+      "empty_video_stbl_bytes": 8,
+      "measured_on": "v18; evidence/tier2-camera-v18-20260910/v18-4k60-long/"
+    }
+  },
+  "fix": {
+    "mechanism": "In the codec-config handling, a codec-config buffer that arrives before the first frame supersedes any codec-specific data taken from the input format: release the earlier malloc-allocated copy and clear mGotAllCodecSpecificData before re-parsing, so makeHEVCCodecSpecificData rebuilds a valid hvcc from the encoder's VPS/SPS/PPS instead of failing. This matches the original intent (a pre-frame codec-config buffer replaces the format CSD) without the fatal double-parse.",
+    "memory_safety": "mCodecSpecificData is malloc-allocated (makeHEVC/AVC/copyCodecSpecificData) and freed with free(); the reset uses free() to match.",
+    "scope": "Only the pre-first-frame path changes; additional codec-config after the first frame is still ignored as before."
+  },
+  "activation_allowed": true,
+  "remaining": [
+    "On-device confirmation that 4K120 and long 4K60 now record a decodable track",
+    "8K may need additional handling (its output format also shows a 2-byte csd)"
+  ]
+}
