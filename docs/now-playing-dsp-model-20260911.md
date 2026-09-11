@@ -85,6 +85,14 @@ else: no HAL, SELinux, vendor or identity change. `tests/test_now_playing_dsp_mo
 exercises the selector, the admission and the copy with synthetic bundles, so
 the offline suite never needs the proprietary files.
 
+The verifier's change-during-read guard compares only the stat fields a rewrite
+or replacement changes (mode, inode, device, link count, size, mtime). Its first
+version compared whole `stat` results, which include the access time a read
+bumps on APFS and relatime ext4, so an unchanged file was refused whenever the
+read crossed a clock tick; that flake surfaced in the v21 host test gate. The
+v21 guest build ran the first version and admitted the bundle, and the produced
+image is identical either way, since the check only decides whether Make copies.
+
 ## What this page does not prove
 
 That the Qualcomm firmware loads the model, that recognition triggers, or that a

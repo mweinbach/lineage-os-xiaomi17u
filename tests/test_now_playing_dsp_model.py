@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 FRAGMENT = ROOT / "device/xiaomi/nezha/now-playing-dsp-model.mk"
@@ -96,6 +97,25 @@ class VerifierTests(unittest.TestCase):
             bad = tmp / "bad.json"; bad.write_text(json.dumps({"files": [{"name": "../x", "size_bytes": 1, "sha256": "0" * 64}]}))
             with self.assertRaises(ValueError):
                 verify.verify(bundle, bad)
+
+    def test_tolerates_the_access_time_update_a_read_causes_but_not_a_rewrite(self):
+        # Reading a member bumps st_atime on APFS and relatime ext4; the verifier must compare only the
+        # fields a rewrite or replacement changes. Both cases are simulated so the test is deterministic.
+        verify = load_verify(); real_read = Path.read_bytes
+
+        def read_bumping_atime(self):
+            raw = real_read(self); st = self.lstat(); os.utime(self, ns=(st.st_atime_ns + 5_000_000_000, st.st_mtime_ns)); return raw
+
+        def read_then_rewrite(self):
+            raw = real_read(self); st = self.lstat(); os.utime(self, ns=(st.st_atime_ns, st.st_mtime_ns + 5_000_000_000)); return raw
+
+        with tempfile.TemporaryDirectory(dir=REAL_TMP) as d:
+            bundle, contract = synthetic_bundle(Path(d))
+            with mock.patch.object(Path, "read_bytes", read_bumping_atime):
+                self.assertEqual(verify.verify(bundle, contract), verify.TOKEN)
+            with mock.patch.object(Path, "read_bytes", read_then_rewrite):
+                with self.assertRaisesRegex(ValueError, "changed during verification"):
+                    verify.verify(bundle, contract)
 
     def test_real_contract_pins_agree_with_the_bundle_when_present(self):
         # The real blobs are ignored inputs; when staged locally, the pins must match them exactly.

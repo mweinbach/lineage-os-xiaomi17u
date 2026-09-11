@@ -10,11 +10,19 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import stat
 
 TOKEN = "verified-now-playing-dsp-model"
 MAX_BYTES = 4 * 1024 * 1024
+
+
+def identity(st: os.stat_result) -> tuple:
+    """The stat fields a rewrite or replacement changes. Access time is left out on purpose:
+    reading the file updates it on most file systems, so a whole-stat comparison would refuse
+    an unchanged file whenever the read crosses a clock tick."""
+    return (st.st_mode, st.st_ino, st.st_dev, st.st_nlink, st.st_size, st.st_mtime_ns)
 
 
 def read_regular(path: Path) -> bytes:
@@ -26,7 +34,7 @@ def read_regular(path: Path) -> bytes:
     if not stat.S_ISREG(before.st_mode) or before.st_size > MAX_BYTES:
         raise ValueError("bundle member must be a bounded regular file: " + path.name)
     raw = path.read_bytes()
-    if before != path.lstat() or len(raw) != before.st_size:
+    if identity(before) != identity(path.lstat()) or len(raw) != before.st_size:
         raise ValueError("bundle member changed during verification: " + path.name)
     return raw
 
