@@ -347,6 +347,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "964993996e265fe5d57bb1ceb6aee7f2354d1bd5cc6306619f1896759f3baf67", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v18-admit/admission.json", "sha256": "c4d38b30cfda2396a65575fe3b78b488a9b2f80a488a3cd2343bc1983481cd44", "size_bytes": 7143},
      "build_number": "nezha.dc8af84c0f0728b7a2de471c"},
+    # HEVC recorder codec-config double-parse fix over v18 (length-prefixed fix + Leica + CameraOpt + camcorder retained); measured v19 system_ext.
+    {"measured_image": {"sha256": "b770232645074899999b9104b434aad82e30a73cf98a24107d8424e381fc9e58", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v19-admit/admission.json", "sha256": "5b86a52605cacbdc43e60184218561f311cb9585426560485984293f850d80e4", "size_bytes": 7131},
+     "build_number": "nezha.613930978f6706c35296cd90"},
 )
 
 
