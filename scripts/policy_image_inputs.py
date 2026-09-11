@@ -44,10 +44,10 @@ POLICY3_CONTRACT_ID = "nezha-five-file-policy-image-inputs-policy3-evolution-v1"
 PROFILE_CONTRACT_IDS = {HISTORICAL_PROFILE: CONTRACT_ID, EXPORT4_PROFILE: EXPORT4_CONTRACT_ID,
                         PROVIDER_PROFILE: PROVIDER_CONTRACT_ID, POLICY3_PROFILE: POLICY3_CONTRACT_ID}
 PROFILE_CONTRACT_SHA256 = {
-    HISTORICAL_PROFILE: "e1cb07ca0ef5028f56dd613598cd7e46e3f43585610f4cb59750d8773bb412b6",
-    EXPORT4_PROFILE: "36c3f9b18db0fb5dd9e27dd8218f4546441138825298a7499e7c1a69fef9767d",
-    PROVIDER_PROFILE: "89f6855a0a1b76d095e2b5afd56d9de63f677e56d76fd891d670ae90e364aaed",
-    POLICY3_PROFILE: "ea913d77aa0fa9ca08037a69b1af5592cce1fd962903ee4332daf6d4e47fdc71",
+    HISTORICAL_PROFILE: "6d72fedf152c21e745d22c6d8b3d8b5c53520ef3489f890aa2f4f732f1c2b561",
+    EXPORT4_PROFILE: "6298deceb94fb966f92d239962d0fe6a6d8c24f9e2d0717c704afb120ff477c0",
+    PROVIDER_PROFILE: "ceb5f7cff774abc50950366e437fb24a1a90cd154bad1b2cb8d5faf532b05bf5",
+    POLICY3_PROFILE: "9dbbad5fa0c342bdedd1771a72eb1d16e3bfa235458dbb5623b3fa2be2670930",
 }
 TEXT = 8 << 20
 PROVIDER_EVIDENCE = 16 << 20
@@ -228,7 +228,7 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
         required |= {"config/evolution-policy-base.json", "config/nezha-framework-provider-policy.json"}
     require(paths == required, "implementation source pins are incomplete")
     profile, profile_sha = avb.load_profile()
-    require(profile_sha == "241bf7d77ff47b31bff979b20bd5f3075b3043473e8b10c96ff61a4b6e846989",
+    require(profile_sha == "62459664ba17d3b5a7b3d79c95ef43dd5598aab48837e87de8080d89583429dd",
             "immutable AVB image-set profile changed")
     factory, _ = read_json(ROOT / "research/factory-firmware-validation.json")
     require(c["factory_package_sha256"] == factory["package"]["sha256"], "factory package selection differs")

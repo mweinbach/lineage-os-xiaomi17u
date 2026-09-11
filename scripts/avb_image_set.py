@@ -363,6 +363,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "5f9afa5b160b284c1c16e5804930d8dc0c2dc99ef76761ca376d4120196a37bc", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v22-admit/admission.json", "sha256": "569d2479bcabb74e57c34a04df2b56a148eccabeecfe9c2e4716ef960dae5848", "size_bytes": 7141},
      "build_number": "nezha.b68e83ef070c648895e3881e"},
+    # AICore feature declaration from this phone global firmware over v22 (music-trigger shim + UDFPS icon + DSP model files + HEVC recorder fix + Leica retained); measured v23 product.
+    {"measured_image": {"sha256": "60da2a9e3ed2a07de6eeaffeeddce5645582125f656e8ebcb2abf6f6435fc68e", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v23-admit/admission.json", "sha256": "ddad086f5178b1ebbda91a0c7f41ec3324812710d362edcac3de31499fd0b7bd", "size_bytes": 7129},
+     "build_number": "nezha.2fa2ea3549a2fc869a4c79df"},
 )
 
 
