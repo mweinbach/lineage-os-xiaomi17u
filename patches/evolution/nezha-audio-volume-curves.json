@@ -6,21 +6,13 @@
   "branch": "bka",
   "revision": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
   "patch": "patches/evolution/nezha-audio-volume-curves.patch",
-  "patch_sha256": "5d04892e79d9d7b2878bce39f469ee1484ab14e8c97147d9a633be5d0d927bb1",
+  "patch_sha256": "a82bca1aaee5b984166aee73fb2f8abafe490e4dd1971c8df131ce6d0d648bc1",
   "files": {
-    "frameworks/av/services/audiopolicy/engine/config/src/EngineConfig.cpp": {
-      "before_sha256": "2a611b673bf20a701500123fdfb36bd0c9d01c3f62bbb2f81be86906e5998448",
-      "before_bytes": 38082,
-      "after_sha256": "7cfbdf0da43f906f14046e1e351446d9592be7ee4426f53bdf0817bacf4f6fc4",
-      "after_bytes": 38959,
-      "added_lines": 18,
-      "removed_lines": 2
-    },
     "frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp": {
       "before_sha256": "2b213bc77eaf0a9690d39790e5e7261fc354c5e39dc726d0e81b91f1a0e3cbdd",
       "before_bytes": 38383,
-      "after_sha256": "282c7d49a6b4df9afe4b8cff3d8b3dbcc74305da81367b554154853628e424c9",
-      "after_bytes": 39178,
+      "after_sha256": "8200a4c749cafda626c2583fa7b274934637c62bb915267e03e35a844c8e2d7e",
+      "after_bytes": 39216,
       "added_lines": 12,
       "removed_lines": 0
     }
@@ -49,20 +41,27 @@
     }
   },
   "fix": {
-    "mechanism": "Convert the AIDL volume curves one at a time and skip the ones whose device category this framework cannot represent, instead of discarding the whole engine configuration. A group that ends up with no usable curve is still an error. As a second line of defence, EngineBase fills empty volume groups from the legacy volume tables, which is what the XML path already does when it finds no engine configuration.",
-    "result_expected": "The engine keeps Xiaomi's twelve volume groups and eight product strategies with their real curves for the five categories AOSP defines. The 33 Xiaomi-only curves are dropped; AOSP's Volume::getDeviceCategory already routes A2DP and USB headsets to DEVICE_CATEGORY_HEADSET, USB devices to DEVICE_CATEGORY_EXT_MEDIA and A2DP speakers to DEVICE_CATEGORY_SPEAKER, and every group in the file carries a curve for all three.",
-    "scope": "Audio policy engine configuration only. No HAL, SELinux, vendor or identity change."
+    "mechanism": "When the converted HAL engine configuration has no volume groups, fill them from the legacy volume tables before building the engine, exactly as the XML path does when it finds no engine configuration at all. The AIDL conversion itself is left upstream, so the product strategies stay the AOSP defaults.",
+    "result_expected": "Every volume group is built with the curves in /vendor/etc/audio_policy_volumes.xml and default_volume_tables.xml, whose group names (AUDIO_STREAM_MUSIC and the rest) are exactly the names the default product strategies reference, so every stream attenuates again.",
+    "scope": "One function in the audio policy engine. No HAL, SELinux, vendor or identity change, and no change to which product strategies the framework uses."
   },
   "safety": {
-    "duplicate_stream_check": "processParsingResult() aborts if a legacy stream is assigned to two volume groups. The Xiaomi strategies assign each of the twelve streams exactly once, and all twelve volume group names they reference exist, so the newly used path does not trip that assertion.",
-    "internal_groups": "AUDIO_STREAM_REROUTING and AUDIO_STREAM_PATCH keep the curveless full-scale behaviour they already have on the AIDL path; that is also what gSystemVolumeGroups defines for them."
+    "product_strategies_unchanged": "the AIDL conversion still fails exactly as upstream, so the engine keeps the AOSP default strategies that v23 boots with",
+    "duplicate_stream_check": "processParsingResult() aborts if a legacy stream is assigned to two volume groups. The legacy tables name one group per stream type, which is what the default strategies expect."
   },
   "activation_allowed": true,
   "not_device_admitted": true,
   "remaining": [
     "On-device confirmation that the media slider attenuates and that index 0 is silent",
-    "Which Xiaomi category the HAL sends first is inferred from the XML, not read out of the AIDL payload",
+    "The curves now come from the AOSP legacy tables, not from Xiaomi's tuned per-category ones, so absolute levels will not match stock exactly",
     "Ring, alarm, notification and call volumes were broken the same way and need the same check"
   ],
-  "document": "docs/audio-volume-curves-20260911.md"
+  "document": "docs/audio-volume-curves-20260911.md",
+  "superseded_attempt": {
+    "shipped_as": "v24, nezha.d2ff2fe2133ee17a0fb46d7f, source revision 26+27",
+    "what_it_did": "also patched EngineConfig.cpp to skip volume curves whose device category the framework cannot represent, so the whole HAL engine configuration was accepted instead of discarded",
+    "why_it_was_wrong": "accepting the configuration also adopted the HAL product strategies, which come from Xiaomi's /odm/etc/audio_policy_engine_product_strategies_mi.xml and declare usages the framework cannot expose (AUDIO_USAGE_BLUETOOTH_SCO and the three deprecated NOTIFICATION_COMMUNICATION_* ones)",
+    "measured_failure": "system_server boot loop: java.lang.IllegalArgumentException: Invalid usage 19 at AudioAttributes$Builder.setUsage, from AudioProductStrategy.native_list_audio_product_strategies via AudioSystemAdapter.getAllProductStrategies in the AudioService constructor",
+    "lesson": "the volume groups and the product strategies arrive in the same payload, and only the volume groups are safe to take from this HAL"
+  }
 }

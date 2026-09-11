@@ -1,7 +1,8 @@
 # Volume does nothing: the engine has no volume curves, September 11, 2026
 
-**Cause measured on the installed v23. The fix is a reviewed source change and has
-not run on the phone.**
+**Cause measured on the installed v23. The first fix shipped as v24 and boot-looped
+the phone; the corrected fix below is a reviewed source change that has not run on
+the phone.**
 
 ## What was reported
 
@@ -99,35 +100,69 @@ the AIDL path simply does not use it.
 ## The fix
 
 [`patches/evolution/nezha-audio-volume-curves.patch`](../patches/evolution/nezha-audio-volume-curves.patch),
-two files, pinned by
+one file, pinned by
 [`nezha-audio-volume-curves.json`](../patches/evolution/nezha-audio-volume-curves.json):
 
-- `EngineConfig.cpp`: convert a group's curves one at a time and skip the ones
-  whose device category cannot be represented, logging each. A group left with
-  no usable curve is still an error.
-- `EngineBase.cpp`: if a converted configuration has no volume groups at all,
-  fill them from the legacy volume tables before building the engine, the same
-  way the XML path does when it finds no engine configuration.
+`EngineBase.cpp` — if a converted configuration has no volume groups at all, fill
+them from the legacy volume tables before the engine is built, which is exactly
+what the XML path already does when it finds no engine configuration.
 
-The first part is the fix: the engine keeps Xiaomi's twelve volume groups and
-eight product strategies with their real curves for the five categories AOSP
-does define. The second is a guard so a configuration with no curves can never
-reach the volume code again.
+The AIDL conversion itself is left upstream. It still fails on the first
+unrepresentable device category, so the framework keeps the AOSP default product
+strategies it has always used here. **That is deliberate, and it is the whole
+lesson of the first attempt** (below).
 
-Dropping the Xiaomi-only curves leaves no output without a curve.
-`Volume::getDeviceCategory()` already routes A2DP headphones and USB headsets to
-`DEVICE_CATEGORY_HEADSET`, USB devices and line out to
-`DEVICE_CATEGORY_EXT_MEDIA`, and A2DP speakers to `DEVICE_CATEGORY_SPEAKER`;
-every group in the file carries a curve for all three. What is lost is Xiaomi's
-separate tuning for those paths — for the music group the A2DP curve is about
-17 dB louder at the bottom of the range than the headset curve it will now use
-(`1,-4900` against `1,-6630`) — so Bluetooth and USB levels will not match stock
-exactly. Speaker, earpiece and wired output are unaffected.
+The names line up by construction. `parseLegacyVolumes()` builds one group per
+stream type found in `/vendor/etc/audio_policy_volumes.xml`, named by
+`audio_stream_type_to_string` — `AUDIO_STREAM_MUSIC`, `AUDIO_STREAM_RING` and so
+on — and those are precisely the names the default strategies ask for. Fourteen
+of the fifteen match; only `AUDIO_STREAM_CALL_ASSISTANT` has no legacy entry and
+keeps the curveless full-scale behaviour it has today, and it carries no audio on
+this phone.
 
-Before switching the framework to the vendor's strategies, the two assertions
-that path can trip were checked against the file: `processParsingResult()` aborts
-if a legacy stream is assigned to two volume groups, and Xiaomi's strategies
-assign each of the twelve streams exactly once to a group name that exists.
+What is lost is Xiaomi's per-category tuning. The curves now come from the AOSP
+legacy tables, so absolute levels will not match stock exactly. They attenuate,
+which is the thing that was broken.
+
+## The first attempt, and why it boot-looped
+
+The first version of this fix also patched `EngineConfig.cpp` so that a curve
+whose device category cannot be represented is skipped instead of failing the
+whole conversion. That looked better — it kept Xiaomi's twelve volume groups and
+their real curves — and it shipped as **v24**
+(`nezha.d2ff2fe2133ee17a0fb46d7f`). The install was clean: eight images written
+and reverified to slot A, no wipe. The phone then never finished booting.
+
+```
+FATAL EXCEPTION IN SYSTEM PROCESS: main
+java.lang.RuntimeException: Failed to create service com.android.server.audio.AudioService$Lifecycle
+Caused by: java.lang.IllegalArgumentException: Invalid usage 19
+    at android.media.AudioAttributes$Builder.setUsage(AudioAttributes.java:948)
+    at android.media.audiopolicy.AudioProductStrategy.native_list_audio_product_strategies(Native Method)
+    at com.android.server.audio.AudioSystemAdapter.getAllProductStrategies
+    at com.android.server.audio.AudioDeviceBroker.<init>
+    at com.android.server.audio.AudioService.<init>
+```
+
+The volume groups and the product strategies arrive in the **same** payload.
+Accepting the configuration adopted the strategies too, and those come from
+Xiaomi's `/odm/etc/audio_policy_engine_product_strategies_mi.xml`, which declares
+four usages the vendor's own file does not:
+
+```
+AUDIO_USAGE_BLUETOOTH_SCO
+AUDIO_USAGE_NOTIFICATION_COMMUNICATION_REQUEST
+AUDIO_USAGE_NOTIFICATION_COMMUNICATION_INSTANT
+AUDIO_USAGE_NOTIFICATION_COMMUNICATION_DELAYED
+```
+
+`AudioAttributes.Builder.setUsage()` refuses them, so the first thing
+`AudioService` does with the strategy list throws, and `system_server` restarts
+forever.
+
+Only the volume groups are safe to take from this HAL. The corrected patch takes
+neither — it does not touch the conversion at all — and gets its curves from the
+legacy tables instead.
 
 ## What this page does not prove
 

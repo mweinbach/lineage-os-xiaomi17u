@@ -78,21 +78,21 @@
   "fix": {
     "patch": "patches/evolution/nezha-audio-volume-curves.patch",
     "contract": "patches/evolution/nezha-audio-volume-curves.json",
-    "patch_sha256": "5d04892e79d9d7b2878bce39f469ee1484ab14e8c97147d9a633be5d0d927bb1",
+    "patch_sha256": "a82bca1aaee5b984166aee73fb2f8abafe490e4dd1971c8df131ce6d0d648bc1",
     "parts": [
-      "Convert AIDL volume curves one at a time and skip the ones whose device category cannot be represented, instead of discarding the whole engine configuration.",
-      "If a converted configuration still has no volume groups, fill them from the legacy volume tables, which is what the XML path already does when it finds no engine configuration."
+      "When the converted HAL engine configuration has no volume groups, fill them from the legacy volume tables before the engine is built, which is what the XML path already does when it finds no engine configuration at all."
     ],
-    "expected_result": "the engine keeps Xiaomi's twelve volume groups and eight strategies with their real curves for the five categories AOSP defines"
+    "left_alone": "The AIDL conversion itself. It still fails on the first unrepresentable device category, so the framework keeps the AOSP default product strategies, exactly as on v23.",
+    "expected_result": "every volume group is built with real curve points and every stream attenuates again"
   },
   "rejected_alternatives": {
     "replace_the_engine_xml": "The file the HAL reads lives on /vendor and /odm, which this project does not build, and the framework never reads it on the AIDL path anyway.",
     "runtime_workaround": "None exists. The curves are built once when audioserver starts the audio policy manager; nothing writable from the shell changes them."
   },
   "not_established": [
+    "That the fix restores attenuation on the phone. That is a device result for the delivery set that carries it",
     "Which Xiaomi device category the HAL sends first: the AIDL payload is not readable from the device, so the category list is read out of the ODM XML instead",
-    "That the fix restores attenuation on the phone. That is a device result for the delivery set that carries the patch",
-    "Whether any Xiaomi-only category carries tuning that the five AOSP categories do not already cover for the speaker, earpiece, wired headset, Bluetooth and USB paths"
+    "Whether the AOSP legacy curves sound the same as Xiaomi's per-category tuning; they are not the same numbers"
   ],
   "document": "docs/audio-volume-curves-20260911.md",
   "aosp_device_category_mapping": {
@@ -248,5 +248,83 @@
     },
     "speaker_volume_db_without_a_curve": 0.0,
     "computed_by": "tests/test_audio_volume_curves.py, a port of VolumeCurve::volIndexToDb"
+  },
+  "fallback": {
+    "mechanism": "engineConfig::parseLegacyVolumes() reads the legacy audio policy configuration file and builds one volume group per stream type found in its <volumes> section, named by audio_stream_type_to_string.",
+    "legacy_tables": {
+      "policy_file": "/vendor/etc/audio/sku_canoe/audio_policy_configuration.xml",
+      "found_by": "audio_get_audio_policy_config_file(), first match in /odm/etc, /vendor/etc/audio/sku_canoe, /vendor/etc/audio, /vendor/etc, /system/etc",
+      "included": [
+        "/vendor/etc/audio_policy_volumes.xml",
+        "/vendor/etc/default_volume_tables.xml"
+      ],
+      "xinclude_paths_are_absolute": true
+    },
+    "legacy_table_streams": [
+      "ACCESSIBILITY",
+      "ALARM",
+      "ASSISTANT",
+      "BLUETOOTH_SCO",
+      "DTMF",
+      "ENFORCED_AUDIBLE",
+      "MUSIC",
+      "NOTIFICATION",
+      "PATCH",
+      "REROUTING",
+      "RING",
+      "SYSTEM",
+      "TTS",
+      "VOICE_CALL"
+    ],
+    "legacy_table_streams_source": "frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml at the pinned revision; the device reads the vendor copy of the same file, which was confirmed present and XIncluded by the sku_canoe policy file",
+    "default_strategy_volume_group_names": [
+      "AUDIO_STREAM_VOICE_CALL",
+      "AUDIO_STREAM_BLUETOOTH_SCO",
+      "AUDIO_STREAM_RING",
+      "AUDIO_STREAM_ALARM",
+      "AUDIO_STREAM_ENFORCED_AUDIBLE",
+      "AUDIO_STREAM_ACCESSIBILITY",
+      "AUDIO_STREAM_NOTIFICATION",
+      "AUDIO_STREAM_ASSISTANT",
+      "AUDIO_STREAM_MUSIC",
+      "AUDIO_STREAM_SYSTEM",
+      "AUDIO_STREAM_DTMF",
+      "AUDIO_STREAM_CALL_ASSISTANT",
+      "AUDIO_STREAM_TTS",
+      "AUDIO_STREAM_REROUTING",
+      "AUDIO_STREAM_PATCH"
+    ],
+    "matched_groups": [
+      "AUDIO_STREAM_ACCESSIBILITY",
+      "AUDIO_STREAM_ALARM",
+      "AUDIO_STREAM_ASSISTANT",
+      "AUDIO_STREAM_BLUETOOTH_SCO",
+      "AUDIO_STREAM_DTMF",
+      "AUDIO_STREAM_ENFORCED_AUDIBLE",
+      "AUDIO_STREAM_MUSIC",
+      "AUDIO_STREAM_NOTIFICATION",
+      "AUDIO_STREAM_PATCH",
+      "AUDIO_STREAM_REROUTING",
+      "AUDIO_STREAM_RING",
+      "AUDIO_STREAM_SYSTEM",
+      "AUDIO_STREAM_TTS",
+      "AUDIO_STREAM_VOICE_CALL"
+    ],
+    "unmatched_group": "AUDIO_STREAM_CALL_ASSISTANT, which has no legacy entry and keeps the curveless full-scale behaviour it has today; it carries no audio on this phone",
+    "curves_are_the_aosp_tables_not_xiaomis": "the per-category tuning in the ODM file is not used, so absolute levels will not match stock exactly"
+  },
+  "superseded_attempt": {
+    "shipped_as": "v24, nezha.d2ff2fe2133ee17a0fb46d7f, source revisions 26 and 27",
+    "what_it_did": "also patched EngineConfig.cpp to skip volume curves whose device category the framework cannot represent, so the whole HAL engine configuration was accepted instead of discarded",
+    "install": "clean: eight images written and reverified to slot A, no wipe, no slot change",
+    "measured_failure": "system_server boot loop. FATAL EXCEPTION IN SYSTEM PROCESS: java.lang.IllegalArgumentException: Invalid usage 19 at android.media.AudioAttributes$Builder.setUsage, raised from AudioProductStrategy.native_list_audio_product_strategies via AudioSystemAdapter.getAllProductStrategies in AudioDeviceBroker, inside the AudioService constructor. sys.boot_completed never set; zygote reported restarting.",
+    "why_it_was_wrong": "the volume groups and the product strategies arrive in one payload. Accepting the configuration adopted the HAL strategies too, and those come from Xiaomi's ODM XML, which declares AUDIO_USAGE_BLUETOOTH_SCO and the three deprecated NOTIFICATION_COMMUNICATION_* usages that the Java AudioAttributes API refuses to expose",
+    "usages_only_in_the_odm_strategies": [
+      "AUDIO_USAGE_BLUETOOTH_SCO",
+      "AUDIO_USAGE_NOTIFICATION_COMMUNICATION_REQUEST",
+      "AUDIO_USAGE_NOTIFICATION_COMMUNICATION_INSTANT",
+      "AUDIO_USAGE_NOTIFICATION_COMMUNICATION_DELAYED"
+    ],
+    "recovery": "the phone was left in fastboot with slot A still current, not successful, not unbootable, six retries remaining; the corrected build was installed over it"
   }
 }

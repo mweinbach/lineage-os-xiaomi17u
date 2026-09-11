@@ -1,33 +1,3 @@
-diff --git a/frameworks/av/services/audiopolicy/engine/config/src/EngineConfig.cpp b/frameworks/av/services/audiopolicy/engine/config/src/EngineConfig.cpp
---- a/frameworks/av/services/audiopolicy/engine/config/src/EngineConfig.cpp
-+++ b/frameworks/av/services/audiopolicy/engine/config/src/EngineConfig.cpp
-@@ -152,8 +152,24 @@
-     legacy.name = aidl.name;
-     legacy.indexMin = aidl.minIndex;
-     legacy.indexMax = aidl.maxIndex;
--    legacy.volumeCurves = VALUE_OR_RETURN(convertContainer<VolumeCurves>(
--                    aidl.volumeCurves, aidl2legacy_AudioHalVolumeCurve_VolumeCurve));
-+    // A HAL may describe device categories this framework does not define. Losing one curve is
-+    // recoverable; losing the whole engine configuration is not, because every volume group is
-+    // then built without curves and VolumeCurves::volIndexToDb() answers 0 dB for every index,
-+    // so all streams play at full scale and the volume control does nothing.
-+    for (const auto& aidlCurve : aidl.volumeCurves) {
-+        ConversionResult<VolumeCurve> curve =
-+                aidl2legacy_AudioHalVolumeCurve_VolumeCurve(aidlCurve);
-+        if (!curve.ok()) {
-+            ALOGW("%s: volume group %s: skipped a curve with unsupported device category %d",
-+                  __func__, aidl.name.c_str(), static_cast<int>(aidlCurve.deviceCategory));
-+            continue;
-+        }
-+        legacy.volumeCurves.push_back(std::move(curve.value()));
-+    }
-+    if (legacy.volumeCurves.empty()) {
-+        ALOGE("%s: volume group %s has no usable volume curve", __func__, aidl.name.c_str());
-+        return base::unexpected(BAD_VALUE);
-+    }
-     return legacy;
- }
- }  // namespace
 diff --git a/frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp b/frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp
 --- a/frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp
 +++ b/frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp
@@ -39,8 +9,8 @@ diff --git a/frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp
 +    }
 +    // A configuration with no volume groups is not usable: processParsingResult() gives every
 +    // group an empty curve set, and a group with no curve for the device reports 0 dB, i.e. full
-+    // scale at every index. Fall back to the legacy volume tables, as the XML path already does
-+    // when it finds no engine configuration at all.
++    // scale at every index, so the volume control does nothing. Fill them from the legacy volume
++    // tables, exactly as the XML path does when it finds no engine configuration at all.
 +    if (result.parsedConfig->volumeGroups.empty()) {
 +        ALOGW("%s: no volume groups in the HAL configuration, using the legacy volume tables",
 +              __func__);

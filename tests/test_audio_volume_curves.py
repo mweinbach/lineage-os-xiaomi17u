@@ -1,10 +1,10 @@
 """The audio volume curve fix: why every index played at full scale, and what the patch changes.
 
-The two ports below follow frameworks/av at the pinned revision:
-VolumeCurve::volIndexToDb (engine/common/src/VolumeCurve.cpp), VolumeCurves::volIndexToDb
-(engine/common/include/VolumeCurve.h) and aidl2legacy_AudioHalVolumeGroup_VolumeGroup
-(engine/config/src/EngineConfig.cpp) before and after
-patches/evolution/nezha-audio-volume-curves.patch. Keep them in step with the patch.
+The ports below follow frameworks/av at the pinned revision: VolumeCurve::volIndexToDb
+(engine/common/src/VolumeCurve.cpp) and VolumeCurves::volIndexToDb
+(engine/common/include/VolumeCurve.h). The first attempt at this fix also patched
+EngineConfig.cpp so the HAL's engine configuration was accepted whole; that shipped as v24 and
+boot-looped, and the regression tests below pin why.
 """
 
 import hashlib
@@ -20,6 +20,7 @@ CONTRACT = ROOT / "patches/evolution/nezha-audio-volume-curves.json"
 PATCH = ROOT / "patches/evolution/nezha-audio-volume-curves.patch"
 RECORD = ROOT / "research/audio-volume-curves-20260911.json"
 STAGED = ROOT / "artifacts/audio-volume-curves"
+RECORD_DATA = json.loads(RECORD.read_text())
 
 VOLUME_MIN_DB = -758.0
 # The five categories android.media.audio.common.AudioHalVolumeCurve.DeviceCategory defines.
@@ -64,24 +65,9 @@ def group_vol_index_to_db(curves, category, index_in_ui, index_min, index_max):
     return vol_index_to_db(curves[category], index_in_ui, index_min, index_max)
 
 
-def convert_group_before(aidl_curves):
-    """All or nothing: convertContainer fails the group on the first unconvertible curve."""
-    converted = {}
-    for category, points in aidl_curves:
-        if category not in AOSP_CATEGORIES:
-            return None
-        converted[category] = points
-    return converted
-
-
-def convert_group_after(aidl_curves):
-    """Patched: skip what cannot be represented, fail only if nothing is left."""
-    converted = {}
-    for category, points in aidl_curves:
-        if category not in AOSP_CATEGORIES:
-            continue
-        converted[category] = points
-    return converted or None
+def legacy_group_name(stream):
+    """audio_stream_type_to_string: what parseLegacyVolumes names a group it builds."""
+    return "AUDIO_STREAM_" + stream
 
 
 def patch_line_counts(text):
@@ -132,42 +118,51 @@ class MeasuredBehaviourTests(unittest.TestCase):
         self.assertEqual([self.index_min, self.index_max], [0, 150])
 
 
-class ConversionPolicyTests(unittest.TestCase):
+class FallbackTests(unittest.TestCase):
+    """The fix fills empty volume groups from the legacy tables, and those names line up."""
+
+    def test_the_legacy_group_names_are_exactly_what_the_default_strategies_ask_for(self):
+        # gDefaultEngineConfig's strategies reference their volume groups by stream name, and
+        # parseLegacyVolumes builds one group per stream named the same way, so they match.
+        wanted = RECORD_DATA["fallback"]["default_strategy_volume_group_names"]
+        built = [legacy_group_name(s) for s in RECORD_DATA["fallback"]["legacy_table_streams"]]
+        self.assertEqual(sorted(set(wanted) & set(built)), sorted(RECORD_DATA["fallback"]["matched_groups"]))
+        self.assertIn("AUDIO_STREAM_MUSIC", RECORD_DATA["fallback"]["matched_groups"])
+        # only the call-assistant group has no legacy entry; it carries no audio on this phone
+        self.assertEqual(sorted(set(wanted) - set(built)), ["AUDIO_STREAM_CALL_ASSISTANT"])
+        self.assertIn("AUDIO_STREAM_CALL_ASSISTANT", RECORD_DATA["fallback"]["unmatched_group"])
+
+    def test_the_legacy_tables_are_reachable_on_this_device(self):
+        source = RECORD_DATA["fallback"]["legacy_tables"]
+        self.assertTrue(source["policy_file"].endswith("audio_policy_configuration.xml"))
+        self.assertTrue(any(i.endswith("/audio_policy_volumes.xml") for i in source["included"]), source)
+        self.assertTrue(any(i.endswith("/default_volume_tables.xml") for i in source["included"]), source)
+        self.assertTrue(all(i.startswith("/vendor/") for i in source["included"]), source)
+
+
+class RegressionTests(unittest.TestCase):
+    """v24 boot-looped. These pin the cause so the wider change is not tried again by accident."""
+
     def setUp(self):
-        # One group as the HAL serves it: the five AOSP categories plus Xiaomi's own.
-        self.aidl_curves = [
-            ("DEVICE_CATEGORY_HEADSET", [(1, -6630), (100, -290)]),
-            ("DEVICE_CATEGORY_USB", [(1, -6500), (100, -50)]),
-            ("DEVICE_CATEGORY_A2DP", [(1, -4900), (100, -50)]),
-            ("DEVICE_CATEGORY_SPEAKER", [(0, -75800), (150, -30)]),
-            ("DEVICE_CATEGORY_EARPIECE", [(1, -6000), (100, -300)]),
-            ("DEVICE_CATEGORY_EXT_MEDIA", [(1, -5800), (100, 0)]),
-            ("DEVICE_CATEGORY_HEARING_AID", [(1, -12800), (100, 0)]),
-        ]
+        self.contract = json.loads(CONTRACT.read_text())
+        self.superseded = self.contract["superseded_attempt"]
 
-    def test_one_unknown_category_used_to_discard_the_whole_group(self):
-        self.assertIsNone(convert_group_before(self.aidl_curves))
+    def test_the_patch_no_longer_touches_the_conversion(self):
+        self.assertEqual(list(self.contract["files"]),
+                         ["frameworks/av/services/audiopolicy/engine/common/src/EngineBase.cpp"])
+        self.assertNotIn("EngineConfig.cpp", PATCH.read_text())
 
-    def test_the_patch_keeps_every_category_it_can_represent(self):
-        converted = convert_group_after(self.aidl_curves)
-        self.assertEqual(set(converted), AOSP_CATEGORIES)
-        # and the surviving curves are unchanged
-        self.assertEqual(converted["DEVICE_CATEGORY_SPEAKER"], [(0, -75800), (150, -30)])
+    def test_the_boot_loop_and_its_cause_are_recorded(self):
+        self.assertIn("Invalid usage 19", self.superseded["measured_failure"])
+        self.assertIn("AudioService", self.superseded["measured_failure"])
+        self.assertIn("product strategies", self.superseded["why_it_was_wrong"])
+        self.assertIn("v24", self.superseded["shipped_as"])
+        # the usages that cannot be exposed are named, not just alluded to
+        self.assertIn("AUDIO_USAGE_BLUETOOTH_SCO", self.superseded["why_it_was_wrong"])
 
-    def test_a_group_with_nothing_representable_is_still_an_error(self):
-        self.assertIsNone(convert_group_after([("DEVICE_CATEGORY_USB_SPATIALIZER_CE", [(1, -100)])]))
-
-    def test_only_aosp_categories_survive_and_no_output_is_left_uncovered(self):
-        converted = convert_group_after(self.aidl_curves)
-        mapping = json.loads(RECORD.read_text())["aosp_device_category_mapping"]
-        for category in ("DEVICE_CATEGORY_HEADSET", "DEVICE_CATEGORY_EXT_MEDIA", "DEVICE_CATEGORY_SPEAKER"):
-            self.assertIn(category, converted)
-            self.assertTrue(mapping[category], category)
-        # the dropped Bluetooth and USB categories land on categories that survived
-        self.assertIn("BLUETOOTH_A2DP", mapping["DEVICE_CATEGORY_HEADSET"])
-        self.assertIn("USB_HEADSET", mapping["DEVICE_CATEGORY_HEADSET"])
-        self.assertIn("USB_DEVICE", mapping["DEVICE_CATEGORY_EXT_MEDIA"])
-        self.assertIn("BLUETOOTH_A2DP_SPEAKER", mapping["DEVICE_CATEGORY_SPEAKER"])
+    def test_the_product_strategies_are_left_alone(self):
+        self.assertIn("product strategies stay the AOSP defaults", self.contract["fix"]["mechanism"])
+        self.assertIn("AOSP default strategies", self.contract["safety"]["product_strategies_unchanged"])
 
 
 class PatchPinTests(unittest.TestCase):
@@ -181,7 +176,7 @@ class PatchPinTests(unittest.TestCase):
         self.assertEqual(self.contract["patch"], "patches/evolution/nezha-audio-volume-curves.patch")
         self.assertEqual(self.contract["project"], "frameworks/av")
 
-    def test_the_patch_touches_exactly_the_two_pinned_files_with_the_pinned_line_counts(self):
+    def test_the_patch_touches_exactly_the_pinned_file_with_the_pinned_line_counts(self):
         counts = patch_line_counts(self.text)
         self.assertEqual(set(counts), set(self.contract["files"]))
         for path, pinned in self.contract["files"].items():
@@ -189,11 +184,10 @@ class PatchPinTests(unittest.TestCase):
             self.assertEqual(counts[path]["removed_lines"], pinned["removed_lines"], path)
 
     def test_the_patch_body_matches_what_the_contract_says_it_does(self):
-        # the all-or-nothing convertContainer call is what goes away
-        self.assertIn("-    legacy.volumeCurves = VALUE_OR_RETURN(convertContainer<VolumeCurves>(", self.text)
-        self.assertIn("+        legacy.volumeCurves.push_back(std::move(curve.value()));", self.text)
+        # the fallback is the whole patch; nothing is removed
         self.assertIn("+        if (engineConfig::parseLegacyVolumes(result.parsedConfig->volumeGroups) != NO_ERROR) {",
                       self.text)
+        self.assertNotIn("\n-", self.text.split("@@", 1)[1])
         self.assertIn("legacy volume tables", self.contract["fix"]["mechanism"])
 
     def test_the_staged_sources_reproduce_the_pinned_hashes(self):
