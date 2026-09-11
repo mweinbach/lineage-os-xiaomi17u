@@ -371,6 +371,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "0ec37a05f1e2aa4e69e6def84d094a01f75b27b3326a6d879b5146ff3f088a8f", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v24-admit/admission.json", "sha256": "d1926109d7a2d1c084c09d3a45d86294140c567d55d6b742a6151079dec552e8", "size_bytes": 7135},
      "build_number": "nezha.d2ff2fe2133ee17a0fb46d7f"},
+    # Corrected volume-curve fallback (EngineBase only; the v24 conversion change that boot-looped is reverted) plus the camera split-module SELinux rule, over v23; measured v25 product.
+    {"measured_image": {"sha256": "c269b3b285dd70f5a3359b2c1a58b53e4a02e50ce5b25601bddab99d82eb5689", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v25-admit/admission.json", "sha256": "0a6afca76eff6d53b6688371e4c84699abb6bdab244eee7abdc4e430890a2d71", "size_bytes": 7139},
+     "build_number": "nezha.b2c99443fe9e90a4a7954eac"},
 )
 
 
