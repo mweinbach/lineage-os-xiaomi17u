@@ -5,8 +5,13 @@
     <dimen name="rounded_corner_content_padding">100px</dimen>
     <dimen name="status_bar_padding_top">38px</dimen>
     <!-- Micrometres per native panel pixel: 25400 / 419.25723 dpi.
-         A float, not a dp/px dimension; used for the 6000 um UDFPS icon. -->
+         A float, not a dp/px dimension; divides udfps_icon_size below. -->
     <item name="pixel_pitch" format="float" type="dimen">60.583</item>
+    <!-- Physical UDFPS icon width in micrometres. Upstream fixes this at 6000 (6 mm),
+         which draws a 99 px icon inside the 148 px sensor square with 24 px of padding
+         per side; too small for this panel. 8000 (8 mm) gives 132 px with 8 px per side,
+         still inside the sensor (the ceiling is 148 px, about 8966 um). -->
+    <dimen name="udfps_icon_size" format="float">8000</dimen>
     <!-- Keep the shade header centered on the approved cutout-aware status bar. -->
     <bool name="config_alignShadeHeaderWithStatusBar">true</bool>
 </resources>

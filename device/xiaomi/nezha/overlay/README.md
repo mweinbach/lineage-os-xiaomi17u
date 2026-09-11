@@ -69,3 +69,17 @@ under `evidence/feature-successor-install-20260905-v1/` and
 This correction has offline geometry/resource regression coverage. It still
 requires a rebuilt SystemUI and visual verification on the phone; it is not yet
 a measured device UI fix.
+
+### Icon width
+
+`UdfpsOverlayInteractor` computes the icon width as
+`udfps_icon_size / pixel_pitch` and centres it in the sensor with
+`(sensorWidth - iconWidth) / 2` pixels of padding, clamped at zero. Upstream fixes
+`udfps_icon_size` at 6000 micrometres (6 mm), which on this 60.583 um/px panel is
+99 px inside the 148 px sensor square — a small icon with 24 px of padding per
+side. The overlay raises it to **8000 micrometres (8 mm): 132 px, 8 px of padding
+per side**, still inside the sensor. The ceiling is the 148 px sensor width
+(about 8966 um); beyond that the padding would clamp to zero and the icon would
+be clipped. The sensor location and size come from the fingerprint HAL and are
+unchanged. The resource is the same `format="float"` dimen upstream declares.
+Like the pitch, this needs a rebuilt SystemUI and a look at the phone to judge.
