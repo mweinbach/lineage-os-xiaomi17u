@@ -2,7 +2,7 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-installed build is the v22 userdebug delivery set, which boots with enforcing
+installed build is the v23 userdebug delivery set, which boots with enforcing
 SELinux and root ADB for diagnostics. Most of this repository is tooling,
 contracts and evidence records, not Android source.
 
@@ -119,16 +119,26 @@ quoted.
 
 ## Where things stand
 
-- Installed: v22, `nezha.b68e83ef070c648895e3881e`, userdebug, slot A,
+- Installed: v23, `nezha.2fa2ea3549a2fc869a4c79df`, userdebug, slot A,
   Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v22/`. It is v21 plus
-  the Now Playing music-trigger shim and the 8 mm lock-screen UDFPS icon, and it
-  carries v21's Pixel `music_detector` files, v20's three-part MPEG4Writer fix,
-  the always-on Leica Essential selection, the four ported CameraOpt methods and
-  the factory camcorder profile selection; see
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v23/`. It is v22 plus
+  the AICore feature declaration from this phone's own global firmware, and it
+  carries the Now Playing music-trigger shim, the 8 mm UDFPS icon, v21's Pixel
+  `music_detector` files, v20's three-part MPEG4Writer fix, the always-on Leica
+  Essential selection, the four ported CameraOpt methods and the factory
+  camcorder profile selection; see `docs/v23-install-validation-20260911.md`,
   `docs/v22-install-validation-20260911.md`,
-  `docs/v21-install-validation-20260911.md`,
   `docs/v20-install-validation-20260910.md` and `docs/leica-essential-20260910.md`.
+- Two measured faults are fixed in source and waiting on a delivery set (v24):
+  source revision 26 restores the volume curves the AIDL engine path discards, so
+  until it lands every stream plays at full scale at every index including 0 and
+  the slider does nothing (`docs/audio-volume-curves-20260911.md`); source
+  revision 27 adds one SELinux rule so the Xiaomi camera can `dlopen` the native
+  libraries of its downloadable modes (`docs/camera-split-modules-20260911.md`).
+- Gemini Nano: AICore itself is installed and running from Play, but the model
+  weights come over Google's attestation-gated protected download, which refuses
+  this phone (`INVALID_ARGUMENT`, `verifiedbootstate=orange`). Nothing in the
+  build changes that; see `docs/v23-install-validation-20260911.md`.
 - Now Playing works. The Qualcomm HAL cannot load Google's music model (PAL has
   no platform entry for vendor UUID `9f6ad62a…`; the Pixel entry names a Google
   ADSP firmware module), and on v21 every attempt rebooted the audio HAL. The

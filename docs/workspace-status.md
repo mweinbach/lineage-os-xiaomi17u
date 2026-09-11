@@ -1,7 +1,27 @@
 # Current Nezha workspace status
 
-**Installed phone: v22 userdebug (`nezha.b68e83ef070c648895e3881e`, source
-revision 22), slot A, boot completed in 25.6 s with SELinux Enforcing.**
+**Installed phone: v23 userdebug (`nezha.2fa2ea3549a2fc869a4c79df`, source
+revision 25), slot A, boot completed in 25.6 s with SELinux Enforcing.**
+V23 is v22 plus the AICore feature declaration taken from this phone's own
+global firmware. It works as far as Google allows: `pm list features` now lists
+`AICORE_QC` and `AICORE_QC_SM8850`, Play changed from *"isn't compatible"* to
+**Update**, and the real 336 MB Qualcomm AICore installed and runs with
+`libQnnHtpV81Skel.so` for this NPU — but no model weight ever arrives, because
+every `GetManifestConfig` is refused `INVALID_ARGUMENT` on Google's
+attestation-gated protected-download route and this phone reports
+`ro.boot.verifiedbootstate=orange`. See the
+[v23 install record](v23-install-validation-20260911.md).
+
+**Two measured faults are fixed in source and waiting on a delivery set (v24).**
+Source revision 26 restores the volume curves the AIDL engine path throws away —
+until then every stream plays at full scale at every index, including 0, and the
+slider does nothing ([record](audio-volume-curves-20260911.md)). Source revision
+27 adds one SELinux rule so the Xiaomi camera can `dlopen` the native libraries
+of its downloadable modes, which download correctly today and are then deleted
+when the load is refused ([record](camera-split-modules-20260911.md)). Neither
+has run on the phone.
+
+Everything below about v22 is carried unchanged into v23.
 The separately approved eight-image installation completed without a wipe, slot
 change or data clear, and userdata was retained. **Now Playing works on this phone.** V22 adds the
 [music-trigger shim](now-playing-trigger-20260911.md) over v21's Pixel

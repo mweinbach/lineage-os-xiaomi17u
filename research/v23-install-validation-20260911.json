@@ -1,0 +1,239 @@
+{
+  "operation": "v23-install-validation-v1",
+  "date": "2026-09-11",
+  "document": "docs/v23-install-validation-20260911.md",
+  "build_number": "nezha.2fa2ea3549a2fc869a4c79df",
+  "predecessor": "nezha.b68e83ef070c648895e3881e",
+  "source_revision": 25,
+  "bundle_manifest_sha256": "6b75fe320ef5d849aeb06adc063964539734a2612bba5a0eaaf73c35990a19c4",
+  "authorization": {
+    "user_response": "ok get it working! you may need to do some more work on this but that's ok",
+    "bound_before_phone_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "explicit_authorization_sha256": "a7c2bf5f0cc599de094aea1cd980308285787fe67c69260ee48f50f62f1a9fda"
+  },
+  "preflight": {
+    "android_observation_status": "requested-observations-complete-not-device-admission",
+    "android_properties": {
+      "ro.product.device": "nezha",
+      "ro.build.version.incremental": "nezha.b68e83ef070c648895e3881e",
+      "ro.boot.slot_suffix": "_a",
+      "ro.boot.vbmeta.device_state": "unlocked",
+      "ro.boot.verifiedbootstate": "orange",
+      "ro.crypto.state": "encrypted"
+    },
+    "bootloader_values": {
+      "product": "nezha",
+      "unlocked": "yes",
+      "current-slot": "a",
+      "slot-count": "2",
+      "is-userspace": "no",
+      "snapshot-update-status": "none",
+      "slot-unbootable:a": "no",
+      "slot-retry-count:a": "6"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 243.524,
+      "sha256": "f4234ce14bf06caa12f0d10af0b405c145f1b0e4b0c2dd0bc6f00ee659f9de0f",
+      "size_bytes": 9477896304,
+      "rehashed_identical": true
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.993,
+      "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+      "size_bytes": 33554432,
+      "rehashed_identical": true
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.322,
+      "sha256": "e1d66c404bc6c3005ffc5981e77f0d906c1710dbb01048080264429832956a9d",
+      "size_bytes": 8388608,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.682,
+      "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.806,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "rehashed_identical": true
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.719,
+      "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.126,
+      "sha256": "5270be02e7b044bcedf4249c34ada46979712852aa82334b02dc9645dcbe15c9",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.15,
+      "sha256": "69ad3602cf1beb087fa89e6027005adc6761ac130158418a0879f0c7e9eb2969",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.6,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "root_adb": true,
+    "uptime_at_observation_s": 19591.72,
+    "crash_fatal": 0,
+    "avc_denials_total": 250
+  },
+  "aicore": {
+    "headline": "the feature declaration opened Play, the real Qualcomm AICore installed and runs, and the model download is refused by Google",
+    "contract": "config/nezha-aicore.json",
+    "selector": "NEZHA_AICORE",
+    "fragment": "device/xiaomi/nezha/aicore.mk",
+    "features_declared_on_device": [
+      "com.google.android.feature.AICORE_QC",
+      "com.google.android.feature.AICORE_QC_SM8850"
+    ],
+    "features_declared_before": 0,
+    "play_verdict_before": "Your device isn't compatible with this version.",
+    "play_verdict_after": "Update",
+    "installed": {
+      "package": "com.google.android.aicore",
+      "version_code": 513248,
+      "version_name": "0.thirdpartyexperimental.qc.ffdf_aicore_20260820.00_RC09.974378940",
+      "megabytes": 336,
+      "splits": [
+        "base.apk",
+        "split_config.arm64_v8a.apk",
+        "split_config.en.apk",
+        "split_config.xxhdpi.apk"
+      ],
+      "stub_it_replaced": {
+        "version_code": 395591,
+        "version_name": "0.stub.oem.stub_aicore_20260302.01_RC00.877448964"
+      }
+    },
+    "runtime_present": {
+      "qnn_skels": [
+        "libQnnHtpV73Skel.so",
+        "libQnnHtpV75Skel.so",
+        "libQnnHtpV79Skel.so",
+        "libQnnHtpV81Skel.so",
+        "libQnnHtpV85Skel.so"
+      ],
+      "this_npu": "libQnnHtpV81Skel.so",
+      "other": [
+        "libQnnHtp.so",
+        "libQnnSystem.so",
+        "libLiteRt.so",
+        "libLiteRtDispatch_Qualcomm.so",
+        "libgoogle3.so"
+      ]
+    },
+    "framework_wiring": "dumpsys on_device_intelligence names com.google.android.aicore/...AiCoreIntelligenceService and ...AiCoreIsolatedService",
+    "model_download": {
+      "state": "no model file group was ever registered",
+      "mdd_groups_pref_bytes": 65,
+      "app_files_kib": 44,
+      "server_call": "GetManifestConfig for client com.google.android.aicore:18103149225492435673",
+      "server_answer": "INVALID_ARGUMENT: Request contains an invalid argument.",
+      "immediately_before": "keystore asks servicemanager for android.hardware.security.keymint.IRemotelyProvisionedComponent/default",
+      "path": "GMS ProtectedDownloadProcessorImpl, the attestation-gated protected download route",
+      "attempts": 3,
+      "flag_experiment": {
+        "flags": [
+          "AicModels__protected_download_v2_enabled=false",
+          "AicModels__protected_download_v1_enabled=true",
+          "AicCommon__allow_dev_preview_access=true"
+        ],
+        "result": "identical failure",
+        "restored": true
+      },
+      "device_state": {
+        "ro.boot.verifiedbootstate": "orange",
+        "ro.boot.flash.locked": "0",
+        "vbmeta.device_state": "unlocked"
+      },
+      "reading": "the model weights travel over a protected download that is gated on device attestation; an unlocked bootloader cannot satisfy it, and the bootloader has to stay unlocked to run this build",
+      "developer_preview_consent": "accepted by the user on the phone at 10:50 local; pref_user_opted_in_for_preview is true and it changed nothing"
+    },
+    "not_from_this_phone": "nothing was borrowed from another model: the three installed files come from this phone's own global firmware, nezha_eea_global OS3.0.336.0.XPAEUXM"
+  },
+  "carried_forward": {
+    "now_playing": {
+      "model_files_present": true,
+      "setting": "1",
+      "mode_property": "acd"
+    },
+    "leica_essential": {
+      "props_from_build_prop_after_reboot": true,
+      "props": [
+        "LCC",
+        "true"
+      ]
+    },
+    "camcorder_profiles": {
+      "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml"
+    },
+    "cameraopt": {
+      "configuration_state": "configuration_state=loaded deliveries=1 failure=null"
+    },
+    "dim": {
+      "config_float": "0.05"
+    }
+  },
+  "retained_userdata": {
+    "userdata_or_metadata_partition_written": false,
+    "wipe_requested": false,
+    "accounts": "2",
+    "third_party_packages": "23",
+    "note": "Retention is structural: the write set contained no userdata or metadata partition and no wipe was requested."
+  },
+  "device_changes_during_validation": [
+    "Play was used to install AICore, and its Developer Preview consent was accepted by the user",
+    "three aicore device_config flags were set for one experiment and restored",
+    "audioserver was restarted once while diagnosing the volume fault recorded separately"
+  ],
+  "not_established": "That any Gemini Nano feature runs. No model is on the device, so nothing downstream of the runtime has been exercised. Whether a locked bootloader would change the server answer is untested and untestable here."
+}
