@@ -355,6 +355,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "a9659729e8beef861e109e7475d143b505ba59387b413321347b58ddceb55ecb", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v20-admit/admission.json", "sha256": "e703885f416c384613f93181d6b142b8c1698fdb9642a49d1919385b931f111b", "size_bytes": 7138},
      "build_number": "nezha.d5894f355e27f7d2f503f519"},
+    # Now Playing Qualcomm-DSP music-detector model in /product/etc/firmware over v20 (HEVC recorder fix + Leica + CameraOpt + camcorder retained); measured v21 system_ext.
+    {"measured_image": {"sha256": "b6837d804cf5a9c92d7515d3b09f448c07ed6364ac610856332a176c6ad7e391", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v21-admit/admission.json", "sha256": "7985a717cbd6fb959d9df8ff497de1fbf5b4b202f717966f23b254fc6c454a54", "size_bytes": 7137},
+     "build_number": "nezha.34aee22f376f606d9ed52909"},
 )
 
 
