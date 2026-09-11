@@ -1,0 +1,747 @@
+/*
+ * Copyright (C) 2026 The Android Open Source Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+package com.android.server.soundtrigger_middleware;
+
+import android.media.audio.common.AudioChannelLayout;
+import android.media.audio.common.AudioConfig;
+import android.media.audio.common.AudioConfigBase;
+import android.media.audio.common.AudioFormatDescription;
+import android.media.audio.common.AudioFormatType;
+import android.media.audio.common.AudioOffloadInfo;
+import android.media.audio.common.PcmType;
+import android.media.soundtrigger.ModelParameterRange;
+import android.media.soundtrigger.PhraseRecognitionExtra;
+import android.media.soundtrigger.PhraseSoundModel;
+import android.media.soundtrigger.Properties;
+import android.media.soundtrigger.RecognitionConfig;
+import android.media.soundtrigger.RecognitionEvent;
+import android.media.soundtrigger.RecognitionStatus;
+import android.media.soundtrigger.SoundModel;
+import android.media.soundtrigger.SoundModelType;
+import android.media.soundtrigger.Status;
+import android.media.soundtrigger_middleware.PhraseRecognitionEventSys;
+import android.media.soundtrigger_middleware.RecognitionEventSys;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.ParcelFileDescriptor;
+import android.os.RemoteException;
+import android.os.SharedMemory;
+import android.os.SystemClock;
+import android.os.SystemProperties;
+import android.util.Slog;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Nezha: a music-trigger shim for the Pixel "Now Playing" sound models.
+ *
+ * Android System Intelligence asks the sound-trigger HAL to load Google's music-detector model
+ * (vendor UUID {@link #GOOGLE_MUSIC_DETECTOR}). That model runs inside a Google-specific ADSP
+ * module that only Pixel firmware carries; the Qualcomm HAL on this device has no platform entry
+ * for it, fails the load with INTERNAL_ERROR, and the framework then restarts the audio HAL on
+ * every retry. This layer sits directly above the HAL and takes those models over:
+ *
+ * <ul>
+ *   <li>{@code acd} mode loads Qualcomm's own on-DSP Acoustic Context Detection with the
+ *       AMBIENCE_MUSIC context in place of the Google model and translates its context events into
+ *       the "music" / "neg_music" generic events the Pixel model would have produced;</li>
+ *   <li>{@code periodic} mode needs no vendor support at all and raises a "music" event on a
+ *       timer while recognition is armed;</li>
+ *   <li>{@code off} (the default) refuses the load with a recoverable OPERATION_NOT_SUPPORTED so
+ *       the HAL is never rebooted over a model it cannot run.</li>
+ * </ul>
+ *
+ * Every other model, including the assistant hotword, is passed through untouched. The mode and
+ * its timings are system properties so they can be changed on a running device.
+ */
+final class NezhaMusicTriggerHal implements ISoundTriggerHal {
+    private static final String TAG = "NezhaMusicTrigger";
+
+    /** Google's music-detector model UUID; ASI also uses it as the vendor UUID. */
+    static final String GOOGLE_MUSIC_DETECTOR = "9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15";
+    /** Alternate detector UUID ASI selects for its TFLite DSP model format. */
+    static final String GOOGLE_MUSIC_DETECTOR_TFLITE = "6ac81359-2dc2-4fea-a0a0-bd378ed6da4f";
+    /** The optional "music break" companion model. */
+    static final String GOOGLE_MUSIC_BREAK = "12caddb1-acdb-4dce-8cb0-2e95a2313aee";
+    /** Qualcomm Acoustic Context Detection stream configuration (QC_ACD in the PAL platform). */
+    static final String QC_ACD_VENDOR_UUID = "4e93281b-296e-4d73-9833-2710c3c7c1db";
+    /** ACD context id AMBIENCE_MUSIC from the PAL resource manager XML. */
+    static final int ACD_CONTEXT_AMBIENCE_MUSIC = 0x08001336;
+
+    // st_param_header keys (PAL SoundTriggerUtils.h enum st_param_key).
+    static final int ST_PARAM_KEY_CONTEXT_RECOGNITION_INFO = 5;
+    static final int ST_PARAM_KEY_CONTEXT_EVENT_INFO = 6;
+    // AUDIO_CONTEXT_EVENT_TYPE.
+    static final int ACD_EVENT_STOPPED = 0;
+    static final int ACD_EVENT_STARTED = 1;
+    static final int ACD_EVENT_DETECTED = 2;
+    static final int ACD_RECOGNITION_CFG_VERSION = 1;
+
+    static final String PROP_MODE = "persist.sys.nezha.nowplaying.mode";
+    static final String PROP_INTERVAL_S = "persist.sys.nezha.nowplaying.interval_s";
+    static final String PROP_FIRST_DELAY_S = "persist.sys.nezha.nowplaying.first_delay_s";
+    static final String PROP_RETRIGGER_S = "persist.sys.nezha.nowplaying.retrigger_s";
+    static final String PROP_MIN_GAP_S = "persist.sys.nezha.nowplaying.min_gap_s";
+    static final String PROP_DEBOUNCE_MS = "persist.sys.nezha.nowplaying.debounce_ms";
+    static final String PROP_ACD_THRESHOLD = "persist.sys.nezha.nowplaying.acd_threshold";
+    static final String PROP_ACD_STEP = "persist.sys.nezha.nowplaying.acd_step";
+    static final String PROP_POLL = "persist.sys.nezha.nowplaying.poll";
+
+    static final String MODE_OFF = "off";
+    static final String MODE_ACD = "acd";
+    static final String MODE_PERIODIC = "periodic";
+
+    static final byte[] DATA_MUSIC = "music".getBytes(StandardCharsets.US_ASCII);
+    static final byte[] DATA_NEG_MUSIC = "neg_music".getBytes(StandardCharsets.US_ASCII);
+
+    /** Handles for models that never reach the HAL; far above any HAL session handle. */
+    private static final int SYNTHETIC_HANDLE_BASE = 0x4E5A0000;
+
+    private final ISoundTriggerHal mUnderlying;
+    private final Object mLock = new Object();
+    private final Map<Integer, Model> mModels = new HashMap<>();
+    private HandlerThread mThread;
+    private Handler mHandler;
+    private int mNextSynthetic = SYNTHETIC_HANDLE_BASE;
+
+    private static final class Model {
+        final int handle;
+        final String uuid;
+        final boolean detector;
+        final boolean viaAcd;
+        final ModelCallback callback;
+        boolean armed;
+        boolean underlyingActive;
+        boolean music;
+        boolean everDelivered;
+        long lastDeliveryUptime;
+        int deliveries;
+
+        Model(int handle, String uuid, boolean detector, boolean viaAcd, ModelCallback callback) {
+            this.handle = handle;
+            this.uuid = uuid;
+            this.detector = detector;
+            this.viaAcd = viaAcd;
+            this.callback = callback;
+        }
+    }
+
+    static ISoundTriggerHal wrap(ISoundTriggerHal underlying) {
+        return new NezhaMusicTriggerHal(underlying);
+    }
+
+    private NezhaMusicTriggerHal(ISoundTriggerHal underlying) {
+        mUnderlying = underlying;
+    }
+
+    // ---- configuration -------------------------------------------------------------------
+
+    static String mode() {
+        String mode = SystemProperties.get(PROP_MODE, MODE_OFF).trim().toLowerCase(Locale.ROOT);
+        if (MODE_ACD.equals(mode) || MODE_PERIODIC.equals(mode)) {
+            return mode;
+        }
+        return MODE_OFF;
+    }
+
+    private static long seconds(String prop, int def) {
+        return Math.max(1, SystemProperties.getInt(prop, def)) * 1000L;
+    }
+
+    static boolean isMusicModel(SoundModel model) {
+        return isGoogleMusicUuid(model.uuid) || isGoogleMusicUuid(model.vendorUuid);
+    }
+
+    static boolean isGoogleMusicUuid(String uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        String u = uuid.trim().toLowerCase(Locale.ROOT);
+        return GOOGLE_MUSIC_DETECTOR.equals(u) || GOOGLE_MUSIC_DETECTOR_TFLITE.equals(u)
+                || GOOGLE_MUSIC_BREAK.equals(u);
+    }
+
+    static boolean isDetectorUuid(String uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        String u = uuid.trim().toLowerCase(Locale.ROOT);
+        return GOOGLE_MUSIC_DETECTOR.equals(u) || GOOGLE_MUSIC_DETECTOR_TFLITE.equals(u);
+    }
+
+    // ---- ISoundTriggerHal: pass-through ----------------------------------------------------
+
+    @Override
+    public Properties getProperties() {
+        return mUnderlying.getProperties();
+    }
+
+    @Override
+    public void registerCallback(GlobalCallback callback) {
+        mUnderlying.registerCallback(callback);
+    }
+
+    @Override
+    public int loadPhraseSoundModel(PhraseSoundModel soundModel, ModelCallback callback) {
+        return mUnderlying.loadPhraseSoundModel(soundModel, callback);
+    }
+
+    @Override
+    public String interfaceDescriptor() {
+        return mUnderlying.interfaceDescriptor();
+    }
+
+    @Override
+    public void linkToDeath(IBinder.DeathRecipient recipient) {
+        mUnderlying.linkToDeath(recipient);
+    }
+
+    @Override
+    public void unlinkToDeath(IBinder.DeathRecipient recipient) {
+        mUnderlying.unlinkToDeath(recipient);
+    }
+
+    @Override
+    public void flushCallbacks() {
+        mUnderlying.flushCallbacks();
+    }
+
+    @Override
+    public void clientAttached(IBinder token) {
+        mUnderlying.clientAttached(token);
+    }
+
+    @Override
+    public void clientDetached(IBinder token) {
+        mUnderlying.clientDetached(token);
+    }
+
+    @Override
+    public void reboot() {
+        mUnderlying.reboot();
+    }
+
+    @Override
+    public void detach() {
+        HandlerThread thread;
+        synchronized (mLock) {
+            mModels.clear();
+            thread = mThread;
+            mThread = null;
+            mHandler = null;
+        }
+        if (thread != null) {
+            thread.quitSafely();
+        }
+        mUnderlying.detach();
+    }
+
+    // ---- ISoundTriggerHal: intercepted models --------------------------------------------
+
+    @Override
+    public int loadSoundModel(SoundModel soundModel, ModelCallback callback) {
+        if (!isMusicModel(soundModel)) {
+            return mUnderlying.loadSoundModel(soundModel, callback);
+        }
+        final String mode = mode();
+        final boolean detector = isDetectorUuid(soundModel.uuid);
+        Slog.i(TAG, "Intercepting Now Playing model " + soundModel.uuid + " (vendor "
+                + soundModel.vendorUuid + ", " + soundModel.dataSize + " bytes), mode=" + mode);
+        if (MODE_OFF.equals(mode)) {
+            // Never let this model reach a HAL that cannot run it: the framework would reboot
+            // the HAL (and with it the whole audio HAL process) on the resulting INTERNAL_ERROR.
+            throw new RecoverableException(Status.OPERATION_NOT_SUPPORTED,
+                    "Now Playing music trigger is off (" + PROP_MODE + ")");
+        }
+        if (!detector || MODE_PERIODIC.equals(mode)) {
+            synchronized (mLock) {
+                int handle = mNextSynthetic++;
+                mModels.put(handle, new Model(handle, soundModel.uuid, detector, false, callback));
+                Slog.i(TAG, "Software model " + soundModel.uuid + " -> handle " + handle
+                        + (detector ? " (periodic trigger)" : " (music break, inert)"));
+                return handle;
+            }
+        }
+        // acd: load Qualcomm's context detection in place of the Google model.
+        SoundModel acd = new SoundModel();
+        acd.type = SoundModelType.GENERIC;
+        acd.uuid = soundModel.uuid;
+        acd.vendorUuid = QC_ACD_VENDOR_UUID;
+        byte[] opaque = new byte[16];
+        acd.data = toSharedMemory(opaque, "NezhaMusicTrigger ACD");
+        acd.dataSize = opaque.length;
+        final int handle;
+        try {
+            handle = mUnderlying.loadSoundModel(acd, new AcdCallback());
+        } catch (RuntimeException e) {
+            throw recoverable("QC ACD load failed", e);
+        }
+        synchronized (mLock) {
+            mModels.put(handle, new Model(handle, soundModel.uuid, true, true, callback));
+        }
+        Slog.i(TAG, "QC ACD music context loaded for " + soundModel.uuid + " -> handle " + handle);
+        return handle;
+    }
+
+    @Override
+    public void unloadSoundModel(int modelHandle) {
+        Model m;
+        synchronized (mLock) {
+            m = mModels.remove(modelHandle);
+        }
+        if (m == null) {
+            mUnderlying.unloadSoundModel(modelHandle);
+            return;
+        }
+        cancelTimers(m);
+        if (m.viaAcd) {
+            boolean active;
+            synchronized (m) {
+                active = m.underlyingActive;
+                m.underlyingActive = false;
+                m.armed = false;
+            }
+            if (active) {
+                try {
+                    mUnderlying.stopRecognition(modelHandle);
+                } catch (RuntimeException e) {
+                    Slog.w(TAG, "QC ACD stop before unload failed: " + e);
+                }
+            }
+            try {
+                mUnderlying.unloadSoundModel(modelHandle);
+            } catch (RuntimeException e) {
+                throw recoverable("QC ACD unload failed", e);
+            }
+        }
+        Slog.i(TAG, "Unloaded Now Playing model handle " + modelHandle);
+    }
+
+    @Override
+    public void startRecognition(int modelHandle, int deviceHandle, int ioHandle,
+            RecognitionConfig config) {
+        Model m = model(modelHandle);
+        if (m == null) {
+            mUnderlying.startRecognition(modelHandle, deviceHandle, ioHandle, config);
+            return;
+        }
+        boolean needUnderlyingStart = false;
+        synchronized (m) {
+            m.armed = true;
+            if (m.viaAcd && !m.underlyingActive) {
+                needUnderlyingStart = true;
+            }
+        }
+        if (needUnderlyingStart) {
+            try {
+                mUnderlying.startRecognition(modelHandle, deviceHandle, ioHandle,
+                        acdRecognitionConfig());
+            } catch (RuntimeException e) {
+                synchronized (m) {
+                    m.armed = false;
+                }
+                throw recoverable("QC ACD start failed", e);
+            }
+            synchronized (m) {
+                m.underlyingActive = true;
+            }
+            Slog.i(TAG, "QC ACD music detection started for handle " + modelHandle
+                    + " (threshold " + acdThreshold() + ", step " + acdStep() + ")");
+        }
+        if (!m.detector) {
+            return; // the music-break model is inert
+        }
+        if (m.viaAcd) {
+            boolean music;
+            synchronized (m) {
+                music = m.music;
+            }
+            if (music) {
+                // Music is still playing according to the DSP: keep the Pixel cadence of a
+                // fresh trigger while it continues.
+                schedule(m, seconds(PROP_RETRIGGER_S, 75), "acd-retrigger");
+            }
+        } else {
+            final boolean first;
+            synchronized (m) {
+                first = !m.everDelivered;
+            }
+            schedule(m, first ? seconds(PROP_FIRST_DELAY_S, 15) : seconds(PROP_INTERVAL_S, 90),
+                    "periodic");
+        }
+    }
+
+    @Override
+    public void stopRecognition(int modelHandle) {
+        Model m = model(modelHandle);
+        if (m == null) {
+            mUnderlying.stopRecognition(modelHandle);
+            return;
+        }
+        cancelTimers(m);
+        boolean stopUnderlying = false;
+        synchronized (m) {
+            m.armed = false;
+            if (m.viaAcd && m.underlyingActive) {
+                m.underlyingActive = false;
+                stopUnderlying = true;
+            }
+        }
+        if (stopUnderlying) {
+            try {
+                mUnderlying.stopRecognition(modelHandle);
+                Slog.i(TAG, "QC ACD music detection stopped for handle " + modelHandle);
+            } catch (RuntimeException e) {
+                throw recoverable("QC ACD stop failed", e);
+            }
+        }
+    }
+
+    @Override
+    public void forceRecognitionEvent(int modelHandle) {
+        Model m = model(modelHandle);
+        if (m == null) {
+            mUnderlying.forceRecognitionEvent(modelHandle);
+            return;
+        }
+        // ASI polls the model state when the screen turns on. The Qualcomm HAL does not
+        // implement forceRecognitionEvent at all, so answer from here.
+        final boolean music = pollState(m);
+        Slog.i(TAG, "Model state poll for handle " + modelHandle + " -> "
+                + (music ? "music" : "neg_music"));
+        handler().post(() -> deliver(m, RecognitionStatus.FORCED, music));
+    }
+
+    @Override
+    public ModelParameterRange queryParameter(int modelHandle, int param) {
+        if (model(modelHandle) == null) {
+            return mUnderlying.queryParameter(modelHandle, param);
+        }
+        return null;
+    }
+
+    @Override
+    public int getModelParameter(int modelHandle, int param) {
+        if (model(modelHandle) == null) {
+            return mUnderlying.getModelParameter(modelHandle, param);
+        }
+        throw new RecoverableException(Status.OPERATION_NOT_SUPPORTED,
+                "Now Playing trigger has no model parameters");
+    }
+
+    @Override
+    public void setModelParameter(int modelHandle, int param, int value) {
+        if (model(modelHandle) == null) {
+            mUnderlying.setModelParameter(modelHandle, param, value);
+            return;
+        }
+        throw new RecoverableException(Status.OPERATION_NOT_SUPPORTED,
+                "Now Playing trigger has no model parameters");
+    }
+
+    // ---- the Qualcomm ACD side -----------------------------------------------------------
+
+    /** Events from the QC ACD model loaded in place of the Google detector. */
+    private final class AcdCallback implements ModelCallback {
+        @Override
+        public void recognitionCallback(int modelHandle, RecognitionEventSys eventSys) {
+            Model m = model(modelHandle);
+            if (m == null || eventSys == null || eventSys.recognitionEvent == null) {
+                return;
+            }
+            RecognitionEvent ev = eventSys.recognitionEvent;
+            if (ev.status == RecognitionStatus.ABORTED) {
+                Slog.w(TAG, "QC ACD recognition aborted for handle " + modelHandle);
+                cancelTimers(m);
+                synchronized (m) {
+                    m.underlyingActive = false;
+                    m.music = false;
+                }
+                // Tell the framework so ASI re-arms, which restarts the ACD stream.
+                handler().post(() -> deliver(m, RecognitionStatus.ABORTED, false));
+                return;
+            }
+            if (ev.status != RecognitionStatus.SUCCESS && ev.status != RecognitionStatus.FORCED) {
+                return;
+            }
+            Boolean music = parseAcdMusic(ev.data, acdThreshold());
+            if (music == null) {
+                Slog.d(TAG, "QC ACD event without the music context ("
+                        + (ev.data == null ? 0 : ev.data.length) + " bytes)");
+                return;
+            }
+            boolean deliverNow = false;
+            boolean keepTicking = false;
+            synchronized (m) {
+                boolean was = m.music;
+                m.music = music;
+                if (music) {
+                    long since = SystemClock.uptimeMillis() - m.lastDeliveryUptime;
+                    deliverNow = m.armed && (!was || !m.everDelivered
+                            || since >= seconds(PROP_MIN_GAP_S, 30));
+                    keepTicking = m.armed && !deliverNow;
+                }
+            }
+            Slog.i(TAG, "QC ACD says " + (music ? "music" : "no music") + " for handle "
+                    + modelHandle + (deliverNow ? " -> trigger" : ""));
+            if (!music) {
+                cancelTimers(m);
+            } else if (deliverNow) {
+                schedule(m, Math.max(0, SystemProperties.getInt(PROP_DEBOUNCE_MS, 1500)),
+                        "acd-start");
+            } else if (keepTicking) {
+                schedule(m, seconds(PROP_RETRIGGER_S, 75), "acd-retrigger");
+            }
+        }
+
+        @Override
+        public void phraseRecognitionCallback(int modelHandle, PhraseRecognitionEventSys event) {
+            // Never expected for a generic model.
+        }
+
+        @Override
+        public void modelUnloaded(int modelHandle) {
+            Model m;
+            synchronized (mLock) {
+                m = mModels.remove(modelHandle);
+            }
+            if (m != null) {
+                cancelTimers(m);
+                m.callback.modelUnloaded(modelHandle);
+            }
+        }
+    }
+
+    /**
+     * The recognition config for the QC_ACD stream: an st_param_header carrying an
+     * acd_recognition_cfg with the single AMBIENCE_MUSIC context (all little-endian, packed).
+     */
+    static RecognitionConfig acdRecognitionConfig() {
+        RecognitionConfig config = new RecognitionConfig();
+        config.captureRequested = false;
+        config.phraseRecognitionExtras = new PhraseRecognitionExtra[0];
+        config.audioCapabilities = 0;
+        config.data = acdRecognitionData(ACD_CONTEXT_AMBIENCE_MUSIC, acdThreshold(), acdStep());
+        return config;
+    }
+
+    static byte[] acdRecognitionData(int contextId, int threshold, int step) {
+        final int cfgBytes = 8 + 12; // acd_recognition_cfg + one acd_per_context_cfg
+        ByteBuffer b = ByteBuffer.allocate(8 + cfgBytes).order(ByteOrder.LITTLE_ENDIAN);
+        b.putInt(ST_PARAM_KEY_CONTEXT_RECOGNITION_INFO);
+        b.putInt(cfgBytes);
+        b.putInt(ACD_RECOGNITION_CFG_VERSION);
+        b.putInt(1); // num_contexts
+        b.putInt(contextId);
+        b.putInt(threshold);
+        b.putInt(step);
+        return b.array();
+    }
+
+    /**
+     * Reads a QC ACD event payload (st_param_header + acd_context_event +
+     * acd_per_context_event_info[]) and reports the AMBIENCE_MUSIC state it carries, or null
+     * when the payload does not mention that context.
+     */
+    static Boolean parseAcdMusic(byte[] data, int threshold) {
+        if (data == null || data.length < 8 + 16) {
+            return null;
+        }
+        ByteBuffer b = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
+        int key = b.getInt();
+        b.getInt(); // payload_size
+        if (key != ST_PARAM_KEY_CONTEXT_EVENT_INFO) {
+            return null;
+        }
+        b.getInt(); // acd_context_event.version
+        b.getLong(); // detection_ts
+        int contexts = b.getInt();
+        Boolean music = null;
+        for (int i = 0; i < contexts && b.remaining() >= 20; i++) {
+            int contextId = b.getInt();
+            int type = b.getInt();
+            int confidence = b.getInt();
+            b.getLong(); // per-context detection_ts
+            if (contextId != ACD_CONTEXT_AMBIENCE_MUSIC) {
+                continue;
+            }
+            Slog.i(TAG, "ACD AMBIENCE_MUSIC event type " + type + " confidence " + confidence);
+            switch (type) {
+                case ACD_EVENT_STARTED:
+                    music = Boolean.TRUE;
+                    break;
+                case ACD_EVENT_DETECTED:
+                    music = confidence >= threshold;
+                    break;
+                case ACD_EVENT_STOPPED:
+                default:
+                    music = Boolean.FALSE;
+                    break;
+            }
+        }
+        return music;
+    }
+
+    static int acdThreshold() {
+        return Math.min(100, Math.max(0, SystemProperties.getInt(PROP_ACD_THRESHOLD, 50)));
+    }
+
+    static int acdStep() {
+        return Math.min(100, Math.max(1, SystemProperties.getInt(PROP_ACD_STEP, 20)));
+    }
+
+    // ---- event delivery ------------------------------------------------------------------
+
+    private boolean pollState(Model m) {
+        String poll = SystemProperties.get(PROP_POLL, "").trim().toLowerCase(Locale.ROOT);
+        if ("music".equals(poll)) {
+            return true;
+        }
+        if ("neg_music".equals(poll)) {
+            return false;
+        }
+        if (!m.viaAcd) {
+            return true; // periodic mode has no detector; let a screen-on attempt run
+        }
+        synchronized (m) {
+            return m.music;
+        }
+    }
+
+    private void schedule(Model m, long delayMs, String why) {
+        Handler h = handler();
+        h.removeCallbacksAndMessages(m);
+        h.postDelayed(() -> {
+            boolean armed;
+            synchronized (m) {
+                armed = m.armed;
+            }
+            if (!armed || model(m.handle) != m) {
+                return;
+            }
+            Slog.i(TAG, "Raising music trigger for handle " + m.handle + " (" + why + ")");
+            deliver(m, RecognitionStatus.SUCCESS, true);
+        }, m, delayMs);
+    }
+
+    private void cancelTimers(Model m) {
+        Handler h;
+        synchronized (mLock) {
+            h = mHandler;
+        }
+        if (h != null) {
+            h.removeCallbacksAndMessages(m);
+        }
+    }
+
+    private void deliver(Model m, int status, boolean music) {
+        deliverEvent(m, status, music ? DATA_MUSIC : DATA_NEG_MUSIC);
+    }
+
+    private void deliverEvent(Model m, int status, byte[] data) {
+        if (model(m.handle) != m) {
+            return; // unloaded meanwhile
+        }
+        RecognitionEvent ev = new RecognitionEvent();
+        ev.status = status;
+        ev.type = SoundModelType.GENERIC;
+        ev.captureAvailable = true;
+        ev.captureDelayMs = 0;
+        ev.capturePreambleMs = 0;
+        ev.triggerInData = false;
+        ev.audioConfig = audioConfig16kMono();
+        ev.data = data;
+        // The contract only allows an event to leave recognition active when it is FORCED.
+        ev.recognitionStillActive = status == RecognitionStatus.FORCED;
+        RecognitionEventSys sys = new RecognitionEventSys();
+        sys.recognitionEvent = ev;
+        sys.halEventReceivedMillis = SystemClock.elapsedRealtimeNanos();
+        synchronized (m) {
+            if (status != RecognitionStatus.FORCED) {
+                if (!m.armed) {
+                    return;
+                }
+                m.armed = false;
+                m.everDelivered = true;
+                m.deliveries++;
+                m.lastDeliveryUptime = SystemClock.uptimeMillis();
+            }
+        }
+        try {
+            m.callback.recognitionCallback(m.handle, sys);
+        } catch (RuntimeException e) {
+            Slog.w(TAG, "Delivering Now Playing event failed: " + e);
+        }
+    }
+
+    static AudioConfig audioConfig16kMono() {
+        AudioConfig cfg = new AudioConfig();
+        cfg.base = configBase16kMono();
+        cfg.offloadInfo = new AudioOffloadInfo();
+        cfg.offloadInfo.base = configBase16kMono();
+        cfg.frameCount = 0;
+        return cfg;
+    }
+
+    private static AudioConfigBase configBase16kMono() {
+        AudioConfigBase base = new AudioConfigBase();
+        base.sampleRate = 16000;
+        base.channelMask = AudioChannelLayout.layoutMask(AudioChannelLayout.LAYOUT_MONO);
+        base.format = new AudioFormatDescription();
+        base.format.type = AudioFormatType.PCM;
+        base.format.pcm = PcmType.INT_16_BIT;
+        base.format.encoding = "";
+        return base;
+    }
+
+    // ---- helpers -------------------------------------------------------------------------
+
+    private Model model(int handle) {
+        synchronized (mLock) {
+            return mModels.get(handle);
+        }
+    }
+
+    private Handler handler() {
+        synchronized (mLock) {
+            if (mHandler == null) {
+                mThread = new HandlerThread(TAG);
+                mThread.start();
+                mHandler = new Handler(mThread.getLooper());
+            }
+            return mHandler;
+        }
+    }
+
+    /** Keep HAL deaths visible to the module; turn every other failure into a recoverable one. */
+    private static RuntimeException recoverable(String what, RuntimeException e) {
+        if (e instanceof RecoverableException || e.getCause() instanceof RemoteException) {
+            return e;
+        }
+        Slog.e(TAG, what + ": " + e);
+        return new RecoverableException(Status.INTERNAL_ERROR, what + ": " + e.getMessage());
+    }
+
+    private static ParcelFileDescriptor toSharedMemory(byte[] data, String name) {
+        try {
+            SharedMemory shmem = SharedMemory.create(name, data.length);
+            ByteBuffer buffer = shmem.mapReadWrite();
+            buffer.put(data);
+            SharedMemory.unmap(buffer);
+            ParcelFileDescriptor fd = shmem.getFdDup();
+            shmem.close();
+            return fd;
+        } catch (Exception e) {
+            throw new RecoverableException(Status.INTERNAL_ERROR,
+                    "shared memory for the ACD model: " + e);
+        }
+    }
+}

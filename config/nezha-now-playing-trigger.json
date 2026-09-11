@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-now-playing-trigger-v1",
+  "device": "nezha",
+  "project": "frameworks/base",
+  "repository": "https://github.com/Evolution-X/frameworks_base.git",
+  "branch": "bka",
+  "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "selector": "persist.sys.nezha.nowplaying.mode",
+  "patch": "patches/evolution/nezha-now-playing-trigger.patch",
+  "patch_sha256": "00a045c61f908d0c110e921964376a3551cb9b90a0c06063f1d636b42e5013a4",
+  "files": {
+    "frameworks/base/services/voiceinteraction/java/com/android/server/soundtrigger_middleware/NezhaMusicTriggerHal.java": {
+      "before_sha256": null,
+      "after_sha256": "1aafce2b36d5fe8be1f8d06d2296a76ee39859547faa38c9e8080da0a955a682",
+      "after_bytes": 28513
+    },
+    "frameworks/base/services/voiceinteraction/java/com/android/server/soundtrigger_middleware/SoundTriggerModule.java": {
+      "before_sha256": "1928ae92ead4a78a9b1cf6cbd40b781ce40b1671852f234a4a23f54c37aafad2",
+      "after_sha256": "52fdeccf72889d57420466110f342d05160d71781414d3e0f87afa7ae9965681",
+      "after_bytes": 22160,
+      "added_lines": 1
+    }
+  },
+  "authored_templates": {
+    "templates/now-playing-trigger/NezhaMusicTriggerHal.java": {
+      "sha256": "1aafce2b36d5fe8be1f8d06d2296a76ee39859547faa38c9e8080da0a955a682",
+      "size_bytes": 28513
+    }
+  },
+  "problem": {
+    "symptom": "On the installed v21 the two Pixel music_detector files are present at their pinned hashes and ASI's Now Playing switch is enabled and turns on, but every attempt to arm it fails: LOAD_MODEL (\"9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15\") -> ServiceSpecificException INTERNAL_ERROR (code 5), startRecognition failed error=-2147483648, and the framework then reboots the sound-trigger HAL, which restarts audioserver and the QTI audio HAL. ASI retries every 5 s, so the audio HAL restarts every 5 s for as long as Now Playing is on.",
+    "cause": "The Qualcomm STHAL routes a GenericSoundModel to PAL by its vendor UUID. PAL's StreamSoundTrigger looks the vendor UUID up in the device's sound-model platform information and refuses what it does not find: 'Input vendor uuid : 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15' followed by 'Failed to get sound model platform info'. The resource-manager XML on this device declares QC Voice UI (68ab2d40), Google hotword (7038ddc8), QC ACD (4e93281b), sensor PCM and MMA stream configs, but no Google Music Detection entry. On the Snapdragon Pixels the model comes from, sound_trigger_platform_info.xml carries an explicit 'Google Music Detection' sound_model_config for exactly that UUID with execution_type ADSP and library 'none', i.e. the model is executed by a Google module inside the Pixel ADSP image. That module is firmware this device does not have, so no configuration file alone can make this model load.",
+    "evidence": {
+      "pal_refusal": "PAL: StreamSoundTrigger ProcessEvent: 2163: Failed to get sound model platform info",
+      "framework": "SoundTriggerHalEnforcer: Exception caught from HAL, rebooting HAL",
+      "measured_on": "v21, 2026-09-11; evidence/tier2-camera-v21-20260911/"
+    }
+  },
+  "fix": {
+    "mechanism": "A new ISoundTriggerHal decorator, NezhaMusicTriggerHal, is inserted directly above the real HAL in SoundTriggerModule.attachToHal. It claims the three Google music UUIDs and passes every other model, including the assistant hotword, straight through.",
+    "modes": {
+      "off": "Default. The music model is refused with a RecoverableException(OPERATION_NOT_SUPPORTED), which SoundTriggerHalEnforcer passes through without rebooting the HAL. Now Playing stays unavailable, but turning it on no longer restarts the audio HAL every five seconds.",
+      "acd": "Loads Qualcomm's own on-DSP Acoustic Context Detection stream (vendor UUID 4e93281b, model music.eai, context AMBIENCE_MUSIC 0x08001336) in place of the Google model and translates its context events into the 'music' and 'neg_music' generic events the Pixel model would have produced.",
+      "periodic": "Needs no vendor support: raises a 'music' event on a timer while recognition is armed, so ASI runs its own on-device matcher against the ambient-music shard database."
+    },
+    "scope": "Sound-trigger middleware only. No vendor, HAL, SELinux or identity change; no new permission; the assistant hotword path is untouched."
+  },
+  "wire_format": {
+    "source": "arpal-lx utils/inc/SoundTriggerUtils.h (packed structs) and stream/src/StreamACD.cpp PopulateCallbackPayload",
+    "st_param_key_context_recognition_info": 5,
+    "st_param_key_context_event_info": 6,
+    "context_id_ambience_music": 134222646,
+    "recognition_config_example": {
+      "threshold": 50,
+      "step_size": 20,
+      "hex": "05000000140000000100000001000000361300083200000014000000"
+    },
+    "event_example": {
+      "context_id": 134222646,
+      "event_type": 1,
+      "confidence_score": 87,
+      "hex": "06000000240000000100000015cd5b07000000000100000036130008010000005700000015cd5b0700000000"
+    }
+  },
+  "activation_allowed": true,
+  "not_device_admitted": true,
+  "remaining": [
+    "Whether QC ACD accepts a recognition config from a generic sound-trigger client and reports AMBIENCE_MUSIC on this unit",
+    "Whether ASI's HOTWORD AudioRecord returns usable audio when the trigger did not come from a Google DSP model",
+    "Whether the on-device matcher identifies a real song"
+  ],
+  "document": "docs/now-playing-trigger-20260911.md"
+}
