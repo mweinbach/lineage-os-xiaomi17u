@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-aicore-global-v1",
+  "selector": "NEZHA_AICORE",
+  "fragment": "device/xiaomi/nezha/aicore.mk",
+  "verifier": "device/xiaomi/nezha/aicore/verify.py",
+  "bundle": "vendor/xiaomi/nezha-aicore/proprietary",
+  "destination_partition": "product",
+  "purpose": "Declare this device's Google AICore support the way its own global firmware does, so Play recognises it and can deliver the functional AICore that hosts Gemini Nano.",
+  "files": [
+    {
+      "name": "AiCore.apk",
+      "destination": "priv-app/AiCore/AiCore.apk",
+      "size_bytes": 21019,
+      "sha256": "ca12f6a813582b59ba352e76a6b2ad1ea15d695d1805a480b872f70f09a2920b"
+    },
+    {
+      "name": "google_aicore.xml",
+      "destination": "etc/sysconfig/google_aicore.xml",
+      "size_bytes": 185,
+      "sha256": "466ba0bb1a230dfca47d065b60d23bc738ab879bde4ff39058a93285ac72f7c6"
+    },
+    {
+      "name": "privapp-permissions-aicore-product.xml",
+      "destination": "etc/permissions/privapp-permissions-aicore-product.xml",
+      "size_bytes": 976,
+      "sha256": "0c0b842de597e1917d8534c5c366de729af2d9dc1045a376a7efe41c7c167587"
+    }
+  ],
+  "provenance": {
+    "device": "nezha_eea_global (Xiaomi 17 Ultra EEA) \u2014 the global SKU of this same phone",
+    "build": "OS3.0.336.0.XPAEUXM, Android 17.0, 2026-08-28",
+    "archive_url": "https://cdnorg.d.miui.com/OS3.0.336.0.XPAEUXM/nezha_eea_global-ota_full-OS3.0.336.0.XPAEUXM-user-17.0-7a537f7858.zip",
+    "archive_md5_published_by_xiaomi": "7a537f7858df429601d84f489c37726d",
+    "product_img_sha256": "35521909f5f4ae9bdab5a70301fb00695477052d7ad99c0293c0550e023e5220",
+    "extraction": "A/B payload manifest parsed; only the product partition operation ranges were fetched (3.01 GB of a 9.58 GB archive), then EROFS-extracted.",
+    "note": "Same phone model, global regional SKU. No other device identity is involved."
+  },
+  "gate_analysis": {
+    "measured_before": "Play refused com.google.android.aicore on this build: \"Your device isn't compatible with this version.\"",
+    "cause": "AICore is gated on a declared system feature. The global firmware ships /product/etc/sysconfig/google_aicore.xml declaring com.google.android.feature.AICORE_QC_SM8850 and com.google.android.feature.AICORE_QC. This build declared neither; it declares 24 other com.google.android.feature.* entries and zero AICore ones.",
+    "significance": "AICORE_QC_SM8850 names this exact SoC, so Google does support Gemini Nano on this silicon.",
+    "framework_already_wired": "PixelConfigOverlayCommon already points config_defaultOnDeviceIntelligenceService at com.google.android.aicore."
+  },
+  "deviations_and_risks": [
+    "The shipped AiCore.apk is a 21 KB Google-signed OEM stub; the functional application is a Play update. Whether Play serves it once the feature is declared is the device result this set exists to measure.",
+    "Three permissions the global privapp file lists do not exist in this build: ACCESS_NPU_MODEL_MANAGER_API, MANAGE_AISEAL_VIRTUAL_MACHINE and ATTRIBUTE_WORK_TO_OTHER_APPS. They are Qualcomm/Xiaomi framework additions; unknown names in a privapp allowlist are ignored, but an AICore path that needs the NPU model manager may not work.",
+    "This build reports a Pixel fingerprint (google/mustang_beta/mustang). Declaring a Qualcomm AICore feature alongside it is inconsistent, and Play may key on more than the feature alone."
+  ],
+  "not_device_admitted": true,
+  "document": "docs/aicore-global-20260911.md"
+}

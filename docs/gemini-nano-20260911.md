@@ -1,14 +1,20 @@
-# Gemini Nano on nezha — measured unavailable, September 11, 2026
+# Gemini Nano on nezha — the gate is a feature declaration, September 11, 2026
 
-**Gemini Nano cannot run on this device, and the reason is not something this
-workspace can fix.** Google's distribution refuses the application to this phone,
-the only publicly shipped AICore binary is a stub, and no published Gemini Nano
-model is compiled for this phone's NPU. The structured record is the
-[availability JSON](../research/gemini-nano-20260911.json).
+**Corrected.** This page first concluded that Gemini Nano could never run here.
+That was wrong. The blocker is that **this build never declares it supports
+AICore**: the global SKU of this same phone declares
+`com.google.android.feature.AICORE_QC_SM8850`, and this build declares no AICore
+feature at all, so Play has nothing to match and refuses the application. That
+feature name is Google's own, and it names this exact SoC — so Gemini Nano *is*
+built for this NPU. The correction and what was wrong about the original
+reasoning are recorded in the
+[availability JSON](../research/gemini-nano-20260911.json); the fix is in
+[the AICore record](aicore-global-20260911.md).
 
-This page exists because the answer is counter-intuitive: the framework on the
-installed v22 is already wired for Gemini Nano, and the hardware is more than
-capable. Everything is ready except the one part only Google can supply.
+The framework on the installed v22 is already wired for Gemini Nano and the
+hardware is more than capable. What follows is the measurement trail, including
+the two arguments that first led to the wrong answer, kept with what is actually
+wrong about them.
 
 ## What is already in place
 
@@ -43,9 +49,16 @@ at all — the GMS package set ships ASI, Astrea, SettingsIntelligence and
 AiIcons, but no AICore. Gemini Nano runs inside AICore, so nothing can work
 without it.
 
-Three independent measurements say that gap cannot be closed here.
+Three measurements were taken. The first two were over-read at the time; the
+third is what actually matters, and its answer changes once the feature is
+declared.
 
-### 1. Google's own flags name the target silicon, and this chip is not among them
+### 1. The flag list names other silicon — but it is not the model catalogue
+
+**This argument does not hold.** The list below is a binary-transparency
+verification set, not the complete set of model groups, and the global firmware
+declares `AICORE_QC_SM8850` regardless. It is kept because the measurement is
+real and the client list is informative.
 
 `AicModels__file_group_binary_transparency_allowlist`, read off this device,
 lists the model file groups AICore knows about:
@@ -58,10 +71,16 @@ llm_mt6897_xxs_it    llm_mt6989_xxs_it                                    ← Me
 ```
 
 AICore is genuinely cross-vendor — its client quota list on this device includes
-vivo, Sharp, Lenovo and Sony applications — but the Snapdragon groups target
-**SM8635** and **SM8650**. There is no SM8850 group.
+vivo, Sharp, Lenovo and Sony applications. The Snapdragon groups here name
+SM8635 and SM8650 and no SM8850, but that absence proves nothing: the list
+governs transparency verification, and the global firmware for this phone
+declares `AICORE_QC_SM8850` anyway.
 
-### 2. The models are per-NPU binaries, so another chip's weights cannot be borrowed
+### 2. The models are per-NPU binaries (true, and not a blocker)
+
+This part stands as a fact and explains why no *other* device's weights could be
+copied in. It does not show that Google lacks an HTP v81 build — and
+`AICORE_QC_SM8850` shows it has one.
 
 These are not portable weight files. A Gemini Nano file group is a QNN context
 binary compiled for one Hexagon HTP version: SM8635 is HTP v73 and SM8650 is
@@ -74,7 +93,7 @@ This is the same shape of problem as the Now Playing model, one level harder.
 There the blocker was a Google module inside the Pixel ADSP image; here it is a
 multi-gigabyte graph that has never been compiled for this NPU.
 
-### 3. The shipped APK is a stub, and Play refuses the real one
+### 3. The shipped APK is a stub, and Play refuses the real one (on this build)
 
 `product.img` was range-fetched out of the official Google factory image
 `mustang-cp2a.260805.005.a1` (published SHA256 `0eeb93e8…`; only the 2.78 GB
@@ -99,22 +118,33 @@ answer is still no.)
 
 ## Conclusion
 
-Nothing short of Google publishing an SM8850 build of AICore and an HTP v81
-model would change this. Sideloading the stub would add a Google-signed package
-with no runtime behind it; sideloading a functional AICore from another vendor's
-firmware would still find no model group for this SoC.
+The gap is a declaration this build does not make. Pulled from the official
+`nezha_eea_global` OS3.0.336.0.XPAEUXM OTA — the global SKU of this same phone,
+Android 17, product partition SHA256 `35521909…` — the global firmware carries
+exactly three AICore pieces:
 
-The device's own on-NPU LLM runtime is idle and usable, so on-device generative
-AI is achievable here through stacks that publish weights for this silicon —
-that is a separate piece of work, and it would not be Gemini Nano.
+| File | What it is |
+| --- | --- |
+| `/product/etc/sysconfig/google_aicore.xml` | declares `com.google.android.feature.AICORE_QC_SM8850` and `…AICORE_QC` |
+| `/product/etc/permissions/privapp-permissions-aicore-product.xml` | twelve privileged permissions for `com.google.android.aicore` |
+| `/product/priv-app/AiCore/AiCore.apk` | 21,019 bytes, `versionName 0.stub.oem.stub_aicore_…` — an OEM stub reserving the package for a Play update |
+
+So the global phone does not ship a working AICore either; it ships the
+*declaration* that lets Play deliver one. This build declares 24 other
+`com.google.android.feature.*` entries and zero AICore ones.
+
+Shipping those three files is therefore the whole fix on the build side, and it
+is the device's own firmware rather than another phone's. That work is
+[the AICore fragment](aicore-global-20260911.md).
 
 ## What this page does not prove
 
-Whether an SM8850 model group exists privately behind the opaque
-`AicDataRelease__build_id_*` entries, and whether a functional AICore taken from
-a non-Pixel Snapdragon firmware would behave differently. Both were left
-untested: the first is not observable from here, and the second means running an
-unverifiable binary with system privileges.
+Whether Play serves the functional AICore once the feature is declared; whether
+it runs on this build, given three permissions the global allowlist names do not
+exist here (`ACCESS_NPU_MODEL_MANAGER_API`, `MANAGE_AISEAL_VIRTUAL_MACHINE`,
+`ATTRIBUTE_WORK_TO_OTHER_APPS`, all Qualcomm/Xiaomi framework additions); and
+whether this build's Pixel fingerprint (`google/mustang_beta/mustang`)
+interferes. Those are device results for the set that carries the fragment.
 
 ## Device changes
 

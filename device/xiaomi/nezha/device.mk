@@ -62,6 +62,10 @@ include $(NEZHA_DEVICE_PATH)/camera-video-profiles.mk
 include $(NEZHA_DEVICE_PATH)/leica-essential.mk
 include $(NEZHA_DEVICE_PATH)/now-playing-dsp-model.mk
 
+# Google AICore, the host process for Gemini Nano. Declares the feature the device's own global
+# firmware declares so Play can deliver the application; see config/nezha-aicore.json.
+include $(NEZHA_DEVICE_PATH)/aicore.mk
+
 # Exact-stock Android IMS provider with the restored system_ext application domain; explicit opt-in.
 include $(NEZHA_DEVICE_PATH)/ims.mk
 

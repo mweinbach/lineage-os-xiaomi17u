@@ -3,7 +3,7 @@
   "date": "2026-09-11",
   "document": "docs/gemini-nano-20260911.md",
   "question": "Can Gemini Nano (Google's on-device foundation model) run on this device?",
-  "answer": "no",
+  "answer": "not-yet-gated-on-a-feature-declaration",
   "installed_build": "nezha.b68e83ef070c648895e3881e",
   "framework_wiring": {
     "on_device_intelligence_service": "com.google.android.aicore/com.google.android.apps.aicore.service.isolated.AiCoreIntelligenceService",
@@ -75,7 +75,23 @@
       "Powering intelligent features across Android&#10;"
     ]
   },
-  "conclusion": "Gemini Nano cannot run on this device. The gap is not configuration: Google's distribution refuses the application to this device, the preinstalled APK is a stub with no runtime or weights, and no published Gemini Nano model is compiled for this phone's Hexagon HTP v81. Nothing short of Google publishing an SM8850 build would change that.",
-  "not_established": "Whether an SM8850 model group exists privately behind the opaque AicDataRelease build ids; whether a non-Pixel OEM firmware carries a functional AICore that would behave differently here.",
-  "device_changes": "None. Read-only probing plus opening a Play Store listing, which was closed again."
+  "conclusion": "Gemini Nano is not available on this build because the build never declares that it supports AICore. The global SKU of this same phone (nezha_eea_global, OS3.0.336.0.XPAEUXM) ships /product/etc/sysconfig/google_aicore.xml declaring com.google.android.feature.AICORE_QC_SM8850 and com.google.android.feature.AICORE_QC, plus a privileged-permission allowlist and a 21 KB Google-signed OEM stub APK that reserves the package for a Play update. This build declares 24 other com.google.android.feature.* entries and zero AICore ones, so Play has nothing to match and refuses the application. AICORE_QC_SM8850 names this exact SoC, so Google does build Gemini Nano for this NPU.",
+  "not_established": "Whether Play serves the functional AICore once the feature is declared, whether it runs on this build given three of the global privapp permissions do not exist here (ACCESS_NPU_MODEL_MANAGER_API, MANAGE_AISEAL_VIRTUAL_MACHINE, ATTRIBUTE_WORK_TO_OTHER_APPS), and whether this build's Pixel fingerprint interferes. Those are device results for the set that carries the fragment.",
+  "device_changes": "None. Read-only probing plus opening a Play Store listing, which was closed again.",
+  "superseded_answer": {
+    "was": "no",
+    "why_it_was_wrong": "Two of the three arguments did not support the conclusion. The Play verdict was evaluated against this build, which declares no AICore feature at all, not against the silicon. The binary-transparency allowlist is a verification list, not the complete set of model groups. The third argument, that no Gemini Nano is built for Hexagon HTP v81, is refuted directly by Google's own feature name AICORE_QC_SM8850 in this phone's global firmware.",
+    "corrected_on": "2026-09-11"
+  },
+  "global_firmware_finding": {
+    "source": "nezha_eea_global OS3.0.336.0.XPAEUXM product partition",
+    "product_img_sha256": "35521909f5f4ae9bdab5a70301fb00695477052d7ad99c0293c0550e023e5220",
+    "files": {
+      "/product/priv-app/AiCore/AiCore.apk": "21,019 bytes, versionName 0.stub.oem.stub_aicore_20260302.01_RC00..., versionCode 395591 \u2014 an OEM stub, like the Pixel one",
+      "/product/etc/sysconfig/google_aicore.xml": "declares com.google.android.feature.AICORE_QC_SM8850 and com.google.android.feature.AICORE_QC",
+      "/product/etc/permissions/privapp-permissions-aicore-product.xml": "12 privileged permissions for com.google.android.aicore"
+    },
+    "features_declared_by_this_build": 0,
+    "fix": "config/nezha-aicore.json, device/xiaomi/nezha/aicore.mk, docs/aicore-global-20260911.md"
+  }
 }
