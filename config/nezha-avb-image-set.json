@@ -311,6 +311,18 @@
             "size_bytes": 7131
           },
           "build_number": "nezha.613930978f6706c35296cd90"
+        },
+        {
+          "measured_image": {
+            "sha256": "a9659729e8beef861e109e7475d143b505ba59387b413321347b58ddceb55ecb",
+            "size_bytes": 793632768
+          },
+          "admission_record": {
+            "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v20-admit/admission.json",
+            "sha256": "e703885f416c384613f93181d6b142b8c1698fdb9642a49d1919385b931f111b",
+            "size_bytes": 7138
+          },
+          "build_number": "nezha.d5894f355e27f7d2f503f519"
         }
       ]
     }
