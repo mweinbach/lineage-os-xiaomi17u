@@ -15,6 +15,8 @@ CONTRACT = ROOT / "patches/evolution/nezha-hevc-length-prefixed-nal.json"
 PATCH = ROOT / "patches/evolution/nezha-hevc-length-prefixed-nal.patch"
 CSD_CONTRACT = ROOT / "patches/evolution/nezha-hevc-recorder-csd-duplicate.json"
 CSD_PATCH = ROOT / "patches/evolution/nezha-hevc-recorder-csd-duplicate.patch"
+CSD_ANNEXB_CONTRACT = ROOT / "patches/evolution/nezha-hevc-recorder-csd-annexb.json"
+CSD_ANNEXB_PATCH = ROOT / "patches/evolution/nezha-hevc-recorder-csd-annexb.patch"
 
 
 def convert_length_prefixed_to_annexb(data: bytearray) -> bool:
@@ -168,6 +170,19 @@ class PatchContractTests(unittest.TestCase):
         self.assertIn("+                    free(mCodecSpecificData);", text)
         self.assertIn("Already have codec specific data", contract["problem"]["evidence"]["log_error"])
         self.assertEqual(contract["problem"]["evidence"]["track_status"], "Video track stopped. Status:-1007")
+
+    def test_csd_annexb_patch_applies_on_top_and_matches_its_contract(self):
+        contract = json.loads(CSD_ANNEXB_CONTRACT.read_text())
+        patch_bytes = CSD_ANNEXB_PATCH.read_bytes()
+        self.assertEqual(hashlib.sha256(patch_bytes).hexdigest(), contract["patch_sha256"])
+        # it applies on top of the codec-config-duplicate patch's result
+        self.assertEqual(contract["applies_on_top_of"], "patches/evolution/nezha-hevc-recorder-csd-duplicate.patch")
+        self.assertEqual(contract["file"]["before_sha256"], json.loads(CSD_CONTRACT.read_text())["file"]["after_sha256"])
+        text = patch_bytes.decode()
+        self.assertIn("+++ b/frameworks/av/media/libstagefright/MPEG4Writer.cpp", text)
+        # reuses the length-prefixed converter on the codec-config buffer
+        self.assertIn("+                ConvertLengthPrefixedNalToAnnexB(", text)
+        self.assertIn("make{AVC,HEVC}CodecSpecificData", text)
 
 
 if __name__ == "__main__":

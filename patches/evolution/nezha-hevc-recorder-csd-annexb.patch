@@ -1,0 +1,16 @@
+diff --git a/frameworks/av/media/libstagefright/MPEG4Writer.cpp b/frameworks/av/media/libstagefright/MPEG4Writer.cpp
+--- a/frameworks/av/media/libstagefright/MPEG4Writer.cpp
++++ b/frameworks/av/media/libstagefright/MPEG4Writer.cpp
+@@ -3823,6 +3823,12 @@
+                     mCodecSpecificDataSize = 0;
+                     mGotAllCodecSpecificData = false;
+                 }
++                // The vendor encoder emits length-prefixed codec-specific data too
++                // (vendor.qti-ext-enc-nal-length-bs); normalize it to Annex-B so
++                // make{AVC,HEVC}CodecSpecificData parses the parameter sets instead of
++                // copying a length-prefixed blob as a malformed hvcC/avcC.
++                ConvertLengthPrefixedNalToAnnexB(
++                        (uint8_t *)buffer->data() + buffer->range_offset(), buffer->range_length());
+                 status_t err;
+                 if (mIsAvc) {
+                     err = makeAVCCodecSpecificData(

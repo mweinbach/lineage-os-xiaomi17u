@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "project": "frameworks/av",
+  "repository": "https://github.com/Evolution-X/frameworks_av.git",
+  "branch": "bka",
+  "patch": "patches/evolution/nezha-hevc-recorder-csd-annexb.patch",
+  "patch_sha256": "cd4dada5e29810db9463a4193bfdb232860b9dcbb8c7b28adf55ab779b4472fa",
+  "applies_on_top_of": "patches/evolution/nezha-hevc-recorder-csd-duplicate.patch",
+  "file": {
+    "path": "frameworks/av/media/libstagefright/MPEG4Writer.cpp",
+    "before_sha256": "1b12b5129eb96b2a63a3e4c75ec93b47a1fdcb717bc5f587b95e44e10bd1fd93",
+    "after_sha256": "b7cbc4d46a1caf994f62c76b1dbc13a3156d78224f2be0be6e0e099530ae97c7",
+    "after_bytes": 218937,
+    "added_lines": 6
+  },
+  "problem": {
+    "symptom": "With the sample-path and codec-config-duplicate fixes, 4K120 records a well-formed mp4 (full video sample table, ffprobe reads HEVC 3840x2160) but ffmpeg cannot split the bitstream ('No start code is found. Error splitting the input into NAL units'); the video is still not decodable.",
+    "cause": "The vendor encoder emits the codec-specific data (VPS/SPS/PPS) length-prefixed as well, not Annex-B. makeHEVCCodecSpecificData sees that the buffer does not start with a 0x00000001 start code and falls back to copyHEVCCodecSpecificData, which copies the length-prefixed parameter sets verbatim as the hvcC. The stsd then carries a malformed hvcC (configurationVersion byte 0x00, i.e. a 4-byte length high byte, followed by a 23-byte length-prefixed VPS), so the decoder config does not match the length-prefixed samples.",
+    "evidence": {
+      "malformed_hvcc_head": "00 00 00 17 40 01 0c 01",
+      "ffmpeg_error": "No start code is found. Error splitting the input into NAL units",
+      "measured_on": "v19; evidence/tier2-camera-v19-20260910/v19-4k120/"
+    }
+  },
+  "fix": {
+    "mechanism": "Before make{AVC,HEVC}CodecSpecificData, run the same length-prefixed-to-Annex-B conversion (ConvertLengthPrefixedNalToAnnexB, added by the length-prefixed-NAL patch) on the codec-config buffer in place. The parameter sets then start with 0x00000001, so parseHEVCCodecSpecificData/parseAVCCodecSpecificData build a valid hvcC/avcC whose NAL length size matches the length-prefixed samples.",
+    "scope": "Only the codec-config buffer is converted; the buffer is released immediately after, and Annex-B input is left unchanged by the converter."
+  },
+  "activation_allowed": true,
+  "remaining": [
+    "On-device confirmation that 4K120 and long 4K60 record a decodable HEVC track",
+    "8K may still need separate handling"
+  ]
+}
