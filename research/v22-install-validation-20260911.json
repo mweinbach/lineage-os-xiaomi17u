@@ -1,0 +1,267 @@
+{
+  "operation": "v22-install-validation-v1",
+  "date": "2026-09-11",
+  "document": "docs/v22-install-validation-20260911.md",
+  "build_number": "nezha.b68e83ef070c648895e3881e",
+  "predecessor": "nezha.34aee22f376f606d9ed52909",
+  "source_revision": 22,
+  "bundle_manifest_sha256": "f626deb90ed9e28a834deeea3d8bb44dc63d204e949e601420369110d3848b98",
+  "authorization": {
+    "user_response": "ok get it working! you may need to do some more work on this but that's ok",
+    "bound_before_phone_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "explicit_authorization_sha256": "e84c360c904b89c834eb5fd41c251eedb3b571f22792021a06f6c91bbb6d46b3"
+  },
+  "preflight": {
+    "android_observation_status": "requested-observations-complete-not-device-admission",
+    "android_properties": {
+      "ro.product.device": "nezha",
+      "ro.build.version.incremental": "nezha.34aee22f376f606d9ed52909",
+      "ro.boot.slot_suffix": "_a",
+      "ro.boot.vbmeta.device_state": "unlocked",
+      "ro.boot.verifiedbootstate": "orange",
+      "ro.crypto.state": "encrypted"
+    },
+    "bootloader_values": {
+      "product": "nezha",
+      "unlocked": "yes",
+      "current-slot": "a",
+      "slot-count": "2",
+      "is-userspace": "no",
+      "snapshot-update-status": "none",
+      "slot-unbootable:a": "no",
+      "slot-retry-count:a": "6"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 243.379,
+      "sha256": "d5bb52f8ae7b826e9dd5ea156252328d1371942cd7a1bce29f338180b866ab45",
+      "size_bytes": 9477875824,
+      "rehashed_identical": true
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.993,
+      "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+      "size_bytes": 33554432,
+      "rehashed_identical": true
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.375,
+      "sha256": "bc3e3f99cdfdc40f94ee673c6fe932529788aa597e70f87e2ecb4b4e2c0d6735",
+      "size_bytes": 8388608,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.685,
+      "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.925,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "rehashed_identical": true
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.714,
+      "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.143,
+      "sha256": "b04dcb321899d1909f3ceaed78c6ef4ab08e280624f790ce64f9839bd6c16040",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.137,
+      "sha256": "4b14cd37be9f74a810fa83d840633e682c93c30d0098bca906307ccd78b6aef4",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.6,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "root_adb": true,
+    "uptime_at_observation_s": 40.45,
+    "crash_fatal": 0,
+    "avc_denials_total": 56
+  },
+  "now_playing_trigger": {
+    "headline": {
+      "off": "refused_without_hal_reboot",
+      "periodic": "song_recognized",
+      "acd": "acd_armed_no_music_event_yet"
+    },
+    "contract": "config/nezha-now-playing-trigger.json",
+    "selector": "persist.sys.nezha.nowplaying.mode",
+    "patch": "patches/evolution/nezha-now-playing-trigger.patch",
+    "modes": {
+      "off": {
+        "verdict": "refused_without_hal_reboot",
+        "mode_property": "off",
+        "now_playing_enabled": "1",
+        "hal_reboots": 0,
+        "audio_hal_stable": true,
+        "load_model_failures": 0,
+        "intercepted": true,
+        "refused_recoverably": true,
+        "acd_loaded": false,
+        "acd_started": false,
+        "acd_reported_music": false,
+        "trigger_raised": false,
+        "asi_received_trigger": false,
+        "asi_ran_recognition": false,
+        "history_has_song": null
+      },
+      "periodic": {
+        "verdict": "song_recognized",
+        "mode_property": "periodic",
+        "now_playing_enabled": "1",
+        "hal_reboots": 0,
+        "audio_hal_stable": true,
+        "load_model_failures": 0,
+        "intercepted": true,
+        "refused_recoverably": false,
+        "acd_loaded": false,
+        "acd_started": false,
+        "acd_reported_music": false,
+        "trigger_raised": true,
+        "asi_received_trigger": true,
+        "asi_ran_recognition": true,
+        "history_has_song": true
+      },
+      "acd": {
+        "verdict": "acd_armed_no_music_event_yet",
+        "mode_property": "acd",
+        "now_playing_enabled": "1",
+        "hal_reboots": 0,
+        "audio_hal_stable": true,
+        "load_model_failures": 0,
+        "intercepted": true,
+        "refused_recoverably": false,
+        "acd_loaded": true,
+        "acd_started": true,
+        "acd_reported_music": false,
+        "trigger_raised": false,
+        "asi_received_trigger": false,
+        "asi_ran_recognition": false,
+        "history_has_song": null
+      }
+    },
+    "shim_log_tails": {
+      "off": [
+        "09-11 04:41:54.311 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:41:58.336 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:41:58.348 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:42:52.864 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:42:52.870 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:42:53.041 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:42:57.047 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off",
+        "09-11 04:42:57.051 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=off"
+      ],
+      "periodic": [
+        "09-11 04:45:33.755 I/NezhaMusicTrigger( 3421): Unloaded Now Playing model handle 1314521091",
+        "09-11 04:45:33.760 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=periodic",
+        "09-11 04:45:33.760 I/NezhaMusicTrigger( 3421): Software model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 -> handle 1314521092 (periodic trigger)",
+        "09-11 04:45:48.774 I/NezhaMusicTrigger( 3421): Raising music trigger for handle 1314521092 (periodic)",
+        "09-11 04:45:56.995 I/NezhaMusicTrigger( 3421): Unloaded Now Playing model handle 1314521092",
+        "09-11 04:45:56.998 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=periodic",
+        "09-11 04:45:56.998 I/NezhaMusicTrigger( 3421): Software model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 -> handle 1314521093 (periodic trigger)"
+      ],
+      "acd": [
+        "09-11 04:47:54.463 I/NezhaMusicTrigger( 3421): Unloaded Now Playing model handle 1314521099",
+        "09-11 04:47:54.466 I/NezhaMusicTrigger( 3421): Intercepting Now Playing model 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 (vendor 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, 34432 bytes), mode=acd",
+        "09-11 04:47:54.473 I/NezhaMusicTrigger( 3421): QC ACD music context loaded for 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 -> handle 0",
+        "09-11 04:47:54.525 I/NezhaMusicTrigger( 3421): QC ACD music detection started for handle 0 (threshold 50, step 20)"
+      ]
+    },
+    "model_files_still_present": true,
+    "note": "V21 established that the Qualcomm HAL refuses Google's music model and that each refusal rebooted the audio HAL. The off mode result is the fix for that; the periodic and acd results are whether a substitute trigger drives ASI."
+  },
+  "udfps_icon": {
+    "built_resource_um": 8000,
+    "built_resource_gate": "reports/tier2-camera-20260909/v22-guest-gates.json systemui_udfps_icon_size",
+    "previous_build_resource_um": 6000,
+    "pixel_pitch_um": 60.583,
+    "expected_icon_px": 132,
+    "upstream_icon_px": 99,
+    "sensor_px": 148,
+    "display_native_px": [
+      1200,
+      2608
+    ],
+    "display_dpi": 419.25723,
+    "drawn_on_lock_screen": false,
+    "fingerprint_templates_enrolled": 0,
+    "why_not_observed": "No fingerprint template is enrolled on this phone, so SystemUI draws no UDFPS affordance on the lock screen and there is nothing to measure. dumpsys fingerprint reports \"count\":0 and no Udfps window exists. The screenshot taken at the sensor location contains only ordinary lock-screen content; an early measurement of 73x86 px at (595,1976) was that content, not the icon.",
+    "how_to_confirm": "Enrol a fingerprint, lock the screen, then run reports/tier2-camera-20260909/measure_udfps_icon.py against a fresh screencap; the icon should measure about 132 px across inside the 148 px sensor square.",
+    "screenshot": "evidence/tier2-camera-v22-20260911/udfps/lockscreen-v22.png",
+    "overlay": "device/xiaomi/nezha/overlay/frameworks/base/packages/SystemUI/res/values/dimens.xml",
+    "built_resource_line": "() 8000",
+    "note": "Upstream fixes the icon at 6000 um (99 px). The overlay raises it to 8000 um, 132 px inside the 148 px sensor square. The built SystemUI carries 8000 where the previous build carried 6000; the drawn icon is unverified because no fingerprint is enrolled."
+  },
+  "leica_essential": {
+    "props_from_build_prop_after_reboot": true
+  },
+  "camcorder_profiles": {
+    "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml"
+  },
+  "cameraopt": {
+    "configuration_state": "configuration_state=loaded deliveries=1 failure=null"
+  },
+  "dim": {
+    "config_float": "0.05"
+  },
+  "retained_userdata": {
+    "userdata_or_metadata_partition_written": false,
+    "wipe_requested": false,
+    "accounts": "1",
+    "third_party_packages": "22",
+    "note": "Retention is structural: the eight-image write set contained no userdata or metadata partition and no wipe was requested."
+  },
+  "retention": null,
+  "device_changes_during_validation": [
+    "Now Playing toggled through ASI's own settings UI (a user setting); persist.sys.nezha.nowplaying.mode set per mode and cleared afterwards; with the song test, media volume and one YouTube track, both restored"
+  ],
+  "not_established": "Sustained DSP power behaviour in acd mode; battery cost of a periodic trigger; whether the UDFPS icon reads better by eye and whether unlock accuracy is unchanged."
+}

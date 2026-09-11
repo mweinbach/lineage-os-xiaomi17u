@@ -2,7 +2,7 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-installed build is the v21 userdebug delivery set, which boots with enforcing
+installed build is the v22 userdebug delivery set, which boots with enforcing
 SELinux and root ADB for diagnostics. Most of this repository is tooling,
 contracts and evidence records, not Android source.
 
@@ -119,28 +119,30 @@ quoted.
 
 ## Where things stand
 
-- Installed: v21, `nezha.34aee22f376f606d9ed52909`, userdebug, slot A,
+- Installed: v22, `nezha.b68e83ef070c648895e3881e`, userdebug, slot A,
   Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v21/`. It is v20 plus
-  the two hash-admitted Pixel `music_detector` files in `/product/etc/firmware`,
-  and it carries v20's three-part MPEG4Writer fix so the Xiaomi recorder's
-  8K/4K120/long-4K60 modes write a decodable HEVC track, the always-on Leica
-  Essential selection, the four ported CameraOpt methods and the factory camcorder
-  profile selection; see `docs/v21-install-validation-20260911.md`,
-  `docs/v20-install-validation-20260910.md`, `docs/leica-essential-20260910.md`
-  and `docs/tier2-camera-v16-20260910.md`.
-- Now Playing: the model files opened the app-level gate (ASI's switch is enabled
-  and turns on) but the Qualcomm sound-trigger HAL refuses Google's model — PAL
-  has no platform entry for vendor UUID `9f6ad62a…`, and the Pixel entry names a
-  Google ADSP module that is firmware, not configuration. Each refusal rebooted
-  the audio HAL, so the setting is left off on the device. The reviewed follow-up
-  is `docs/now-playing-trigger-20260911.md` (not device-admitted).
-- Predecessor (removed from host): v20, `nezha.d5894f355e27f7d2f503f519` (the
-  recorder fix); earlier v19 `nezha.613930978f6706c35296cd90`, v18, and v17
-  `nezha.11b0a26475073bca18f34c39` which baked in Leica Essential. V16 `nezha.434625bd9b5cd7a8a7eabd84` survives in
-  `docs/v16-install-validation-20260910.md` and V15
-  (`nezha.81c1b93277a1fa371a3efbb3`) in `docs/v15-install-validation-20260909.md`.
-- Source: revision 20 in the Linux checkout, now installed as v21. It carries the merged feature
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v22/`. It is v21 plus
+  the Now Playing music-trigger shim and the 8 mm lock-screen UDFPS icon, and it
+  carries v21's Pixel `music_detector` files, v20's three-part MPEG4Writer fix,
+  the always-on Leica Essential selection, the four ported CameraOpt methods and
+  the factory camcorder profile selection; see
+  `docs/v22-install-validation-20260911.md`,
+  `docs/v21-install-validation-20260911.md`,
+  `docs/v20-install-validation-20260910.md` and `docs/leica-essential-20260910.md`.
+- Now Playing works. The Qualcomm HAL cannot load Google's music model (PAL has
+  no platform entry for vendor UUID `9f6ad62a…`; the Pixel entry names a Google
+  ADSP firmware module), and on v21 every attempt rebooted the audio HAL. The
+  `NezhaMusicTriggerHal` middleware shim claims the Google music UUIDs:
+  `off` refuses them recoverably (no more reboot loop), `periodic` triggers on a
+  timer and **identified a real song on the device**, `acd` loads and arms
+  Qualcomm's own on-DSP context detector. Select with
+  `persist.sys.nezha.nowplaying.mode`; see `docs/now-playing-trigger-20260911.md`.
+- The 8 mm UDFPS icon is in the built SystemUI but undrawable until a fingerprint
+  is enrolled (`dumpsys fingerprint` reports `"count":0`).
+- Predecessor (removed from host): v21, `nezha.34aee22f376f606d9ed52909` (the
+  Pixel music_detector files); earlier v20 `nezha.d5894f355e27f7d2f503f519`
+  (recorder fix), v19, v18, and v17 `nezha.11b0a26475073bca18f34c39` (Leica).
+- Source: revision 22 in the Linux checkout, now installed as v22. It carries the merged feature
   candidates (display brightness, Dolby, haptics, camera scheduling, refresh
   policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
   the HyperOS camera framework port, native camera session hooks, vendor-key
