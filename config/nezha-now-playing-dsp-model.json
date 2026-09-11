@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-now-playing-dsp-model-v1",
+  "selector": "NEZHA_NOW_PLAYING_DSP_MODEL",
+  "fragment": "device/xiaomi/nezha/now-playing-dsp-model.mk",
+  "verifier": "device/xiaomi/nezha/now-playing-dsp-model/verify.py",
+  "bundle": "vendor/xiaomi/nezha-nowplaying/proprietary/product/etc/firmware",
+  "destination": "/product/etc/firmware/",
+  "purpose": "Give the Pixel Android System Intelligence build the Qualcomm-DSP music-detector model its Now Playing engine loads through the Sound Trigger HAL, so ambient music recognition can be enabled on this Snapdragon unit.",
+  "files": [
+    {
+      "name": "music_detector.sound_model",
+      "size_bytes": 34432,
+      "sha256": "5472e7358178e598251476cf67d4d0b120d1b702611a470ad242163b266c0e67",
+      "git_blob_sha1": "1b22773a7357ea18e2715b7e4a5dae36a146ab98",
+      "role": "generic sound model bytes; loaded by SoundTriggerManager.loadSoundModel as GenericSoundModel UUID 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15 onto sound-trigger module 0"
+    },
+    {
+      "name": "music_detector.descriptor",
+      "size_bytes": 1057,
+      "sha256": "dadf2cbd2978dce2f3832eafe6d6e1fbf4c777232c584666dc7e574c421f5989",
+      "git_blob_sha1": "a8d058584d0c1da07f64239b01ea85feb585bc29",
+      "role": "protobuf map of classifier tunables (classification_targets[0].positive/negative thresholds, event timeouts, squelch, frame step) that ASI overrides from its NowPlaying__music_model_* flags"
+    }
+  ],
+  "provenance": {
+    "source": "TheMuppets/proprietary_vendor_google_barbet (LineageOS vendor blobs extracted from the Google Pixel 5a factory image)",
+    "repository": "https://github.com/TheMuppets/proprietary_vendor_google_barbet",
+    "branch": "lineage-23.2",
+    "commit": "c17e31ec9950bfd3c54690047be31b03b45495cf",
+    "path": "proprietary/product/etc/firmware/",
+    "byte_identical_in": ["TheMuppets/proprietary_vendor_google_redfin (Pixel 5)", "TheMuppets/proprietary_vendor_google_bramble (Pixel 4a 5G)"],
+    "note": "One shared model across three Snapdragon Pixel generations; git blob hashes recomputed locally and matched. The blob is Google-proprietary Pixel firmware borrowed with the user's explicit approval; it stays in the ignored bundle and appears in Git only as these hashes."
+  },
+  "gate_analysis": {
+    "asi_build": "com.google.android.as B.13.playstore.pixel10.796770113 (DevicePersonalizationAiAiPrebuiltPixel2025)",
+    "switch_condition": "AmbientMusicSettings fragment enables the main switch only when AmbientMusicServiceManager.l() && r()",
+    "l": "allowed-for-user; measured true (the setup wizard's Turn-on button, gated by exactly l(), renders enabled)",
+    "r": "requires music_detector.sound_model and music_detector.descriptor under /product/etc/firmware (else /vendor, else /system); the Tensor tflite variant is chosen only when music_detector.sound_model_tflite exists, which it does not here, so the classic Qualcomm-DSP pair is what this device loads",
+    "measured_absent": ["/product/etc/firmware/music_detector.*", "/vendor/etc/firmware/music_detector.*", "/system/etc/firmware/music_detector.*"],
+    "already_present": ["CAPTURE_AUDIO_HOTWORD, MANAGE_SOUND_TRIGGER, CAPTURE_AUDIO_OUTPUT, RECORD_AUDIO granted to ASI (uid 10299, in the audio-policy hotword list)", "30 live NowPlaying flags incl. enable_now_playing_for_main_user; the 79 undelivered ones fall back to compiled defaults (now_playing_allowed default true)", "Settings injection via IA_SETTINGS + MUSIC_RECOGNITION category", "MusicRecognitionManagerService", "PIXEL_EXPERIENCE / PIXEL_2017..2021 feature declarations", "hotword_input HW_HOTWORD capture path"],
+    "soundtrigger_module_0": "QUALCOMM Technologies, Inc; description Sound Trigger HAL; version 259; uuid 68ab2d40-e860-11e3-95ef-0002a5d5c51b; recognitionModes 9 (VOICE_TRIGGER|GENERIC_TRIGGER); maxSoundModels 8; captureTransition true; concurrentCapture true; supportedModelArch unrestricted",
+    "engine": "DSP-only via SoundTriggerManagerCompat: reads the sound model bytes, loads a GenericSoundModel, starts intent-based recognition; the on-AP libsense_nnfp_v3 fingerprinter matches DSP-triggered audio against the downloaded music database"
+  },
+  "deviations_and_risks": [
+    "Proprietary Google Pixel blob installed on a Xiaomi unit; approved by the user for this purpose, kept out of Git.",
+    "SVA compatibility unverified: the model was built for the Snapdragon 765G-era Sound Trigger firmware; this SoC runs SVA 7.0. QTI generic models are usually forward-compatible but the loadSoundModel result on device is the verdict.",
+    "Copies two files into /product only; no HAL, SELinux, vendor or identity change."
+  ],
+  "not_device_admitted": true,
+  "document": "docs/now-playing-dsp-model-20260911.md"
+}
