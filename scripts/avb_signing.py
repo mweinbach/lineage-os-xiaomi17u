@@ -92,7 +92,7 @@ def load_contract():
              "unsupported signing contract")
     profile, profile_sha = avb.load_profile()
     _require(contract["verifier_profile"]["sha256"] == profile_sha
-             == "62459664ba17d3b5a7b3d79c95ef43dd5598aab48837e87de8080d89583429dd",
+             == "6c2bca5180b6a5a0bde98ac864ba1f4319fed29ede4549f7e339b533d4b71f42",
              "the immutable AVB verifier contract changed")
     _require(contract["verifier_profile"]["path"] == "config/nezha-avb-image-set.json"
              and type(contract["implementation_dependencies"]) is list
