@@ -12,19 +12,22 @@
       "name": "AiCore.apk",
       "destination": "priv-app/AiCore/AiCore.apk",
       "size_bytes": 21019,
-      "sha256": "ca12f6a813582b59ba352e76a6b2ad1ea15d695d1805a480b872f70f09a2920b"
+      "sha256": "ca12f6a813582b59ba352e76a6b2ad1ea15d695d1805a480b872f70f09a2920b",
+      "installed_as": "/product/priv-app/AiCore/AiCore.apk"
     },
     {
       "name": "google_aicore.xml",
       "destination": "etc/sysconfig/google_aicore.xml",
       "size_bytes": 185,
-      "sha256": "466ba0bb1a230dfca47d065b60d23bc738ab879bde4ff39058a93285ac72f7c6"
+      "sha256": "466ba0bb1a230dfca47d065b60d23bc738ab879bde4ff39058a93285ac72f7c6",
+      "installed_as": "/product/etc/sysconfig/google_aicore.xml"
     },
     {
       "name": "privapp-permissions-aicore-product.xml",
       "destination": "etc/permissions/privapp-permissions-aicore-product.xml",
       "size_bytes": 976,
-      "sha256": "0c0b842de597e1917d8534c5c366de729af2d9dc1045a376a7efe41c7c167587"
+      "sha256": "0c0b842de597e1917d8534c5c366de729af2d9dc1045a376a7efe41c7c167587",
+      "installed_as": "/product/etc/permissions/privapp-permissions-aicore-product.xml"
     }
   ],
   "provenance": {
@@ -48,5 +51,16 @@
     "This build reports a Pixel fingerprint (google/mustang_beta/mustang). Declaring a Qualcomm AICore feature alongside it is inconsistent, and Play may key on more than the feature alone."
   ],
   "not_device_admitted": true,
-  "document": "docs/aicore-global-20260911.md"
+  "document": "docs/aicore-global-20260911.md",
+  "install": {
+    "module": "AiCore",
+    "soong": "vendor/xiaomi/nezha-aicore/Android.bp",
+    "kind": "android_app_import (presigned, preprocessed, privileged, product_specific) plus two prebuilt_etc modules",
+    "note": "Make refuses a prebuilt apk in PRODUCT_COPY_FILES ('use BUILD_PREBUILT instead'), so the application and the two XML files are Soong modules; the fragment only admits the bundle by hash and adds the module to PRODUCT_PACKAGES."
+  },
+  "soong_blueprint": {
+    "path": "vendor/xiaomi/nezha-aicore/Android.bp",
+    "sha256": "876f13052d60eb211718db8071bfcf913a2f5198514f3aa0eead1758d8d3be34",
+    "size_bytes": 1367
+  }
 }

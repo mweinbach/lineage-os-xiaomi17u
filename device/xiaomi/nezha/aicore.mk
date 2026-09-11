@@ -14,7 +14,8 @@
 # Three files come from that global image and nowhere else: the 21 KB Google-signed OEM stub
 # APK that reserves the package for a Play update, its privileged-permission allowlist, and the
 # feature declaration. They are proprietary and live only in the ignored
-# vendor/xiaomi/nezha-aicore bundle; this fragment admits them by hash and copies them.
+# vendor/xiaomi/nezha-aicore bundle; this fragment admits them by hash and selects the Soong
+# module that installs them.
 # Whether Play then serves the functional AICore, and whether it runs on this build, is a device
 # result, not a build result. See config/nezha-aicore.json.
 ifneq ($(filter-out 0 1,$(words $(NEZHA_AICORE))),)
@@ -30,18 +31,11 @@ _nezha_aicore_check := $(shell python3 $(NEZHA_DEVICE_PATH)/aicore/verify.py --b
 ifneq ($(_nezha_aicore_check),verified-aicore-global)
 $(error AICore admission failed: $(_nezha_aicore_check))
 endif
-ifneq ($(filter %:$(TARGET_COPY_OUT_PRODUCT)/priv-app/AiCore/AiCore.apk,$(PRODUCT_COPY_FILES)),)
-$(error Another input already owns the AICore application destination)
+# The APK is a signed prebuilt, so it is a Soong android_app_import in the bundle rather than a
+# PRODUCT_COPY_FILES entry, and it pulls in the two prebuilt_etc modules it requires. Make refuses
+# a prebuilt apk in PRODUCT_COPY_FILES outright.
+ifneq ($(filter AiCore,$(PRODUCT_PACKAGES)),)
+$(error Another input already provides the AICore application module)
 endif
-ifneq ($(filter %:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/google_aicore.xml,$(PRODUCT_COPY_FILES)),)
-$(error Another input already owns the AICore feature declaration destination)
-endif
-ifneq ($(filter %:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-aicore-product.xml,$(PRODUCT_COPY_FILES)),)
-$(error Another input already owns the AICore privileged-permission destination)
-endif
-# The bundle is flat: the verifier admits bare names, the destinations are set here.
-PRODUCT_COPY_FILES += \
-    $(NEZHA_AICORE_BUNDLE)/AiCore.apk:$(TARGET_COPY_OUT_PRODUCT)/priv-app/AiCore/AiCore.apk \
-    $(NEZHA_AICORE_BUNDLE)/google_aicore.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/google_aicore.xml \
-    $(NEZHA_AICORE_BUNDLE)/privapp-permissions-aicore-product.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-aicore-product.xml
+PRODUCT_PACKAGES += AiCore
 endif

@@ -53,11 +53,19 @@ one. That is the same arrangement as a Pixel, whose own preinstalled AICore is a
 
 `device/xiaomi/nezha/aicore.mk`, selector `NEZHA_AICORE`, admits the bundle by
 size and SHA-256 through `aicore/verify.py` against
-[`config/nezha-aicore.json`](../config/nezha-aicore.json) and copies the three
-files into `/product`. It refuses a drifted or missing file, refuses a second
-owner of any of the three destinations, and changes nothing else: no HAL, SELinux
-or identity change. The bundle is flat and lives only in the ignored
-`vendor/xiaomi/nezha-aicore` directory; the destinations are set in the fragment.
+[`config/nezha-aicore.json`](../config/nezha-aicore.json), then adds one module to
+`PRODUCT_PACKAGES`. It refuses a drifted or missing file, refuses a second
+provider of the module, and changes nothing else: no HAL, SELinux or identity
+change.
+
+The application cannot go through `PRODUCT_COPY_FILES` — Make rejects that
+outright with *"Prebuilt apk found in PRODUCT_COPY_FILES … use BUILD_PREBUILT
+instead"*, which is how the first build attempt failed. So the bundle carries a
+blueprint: an `android_app_import` named `AiCore` (`presigned`, `preprocessed`,
+`privileged`, `product_specific`) that `required`s two `prebuilt_etc` modules for
+the feature declaration and the permission allowlist. That keeps the Google
+signature intact and puts all three files where the global firmware puts them.
+The bundle lives only in the ignored `vendor/xiaomi/nezha-aicore` directory.
 
 The platform half is already done — the GMS `PixelConfigOverlayCommon` overlay
 points `config_defaultOnDeviceIntelligenceService` at

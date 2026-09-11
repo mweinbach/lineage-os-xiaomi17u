@@ -63,14 +63,31 @@ class ContractTests(unittest.TestCase):
         self.assertIn("verified-aicore-global", text)
         self.assertIn(f"include $(NEZHA_DEVICE_PATH)/aicore.mk", DEVICE.read_text())
 
-    def test_every_contract_file_has_a_matching_copy_line(self):
+    def test_the_fragment_adds_the_module_and_never_copies_the_apk(self):
         text = FRAGMENT.read_text()
         self.assertEqual(len(self.contract["files"]), 3)
+        # Make rejects a prebuilt apk in PRODUCT_COPY_FILES, so the app is a Soong module.
+        directives = [l for l in text.splitlines() if not l.lstrip().startswith("#")]
+        self.assertFalse([l for l in directives if "PRODUCT_COPY_FILES" in l], directives)
+        self.assertIn("PRODUCT_PACKAGES += AiCore", text)
+        self.assertIn("$(filter AiCore,$(PRODUCT_PACKAGES))", text)
+        self.assertEqual(self.contract["install"]["module"], "AiCore")
+
+    def test_the_blueprint_installs_every_contract_file_where_the_contract_says(self):
+        staged = ROOT / "artifacts/aicore-global/soong/Android.bp"
+        if not staged.is_file():
+            self.skipTest("blueprint not staged locally")
+        bp = staged.read_text()
+        self.assertEqual(hashlib.sha256(staged.read_bytes()).hexdigest(),
+                         self.contract["soong_blueprint"]["sha256"])
+        # signature preserved, privileged, and on /product where the global firmware puts it
+        for token in ('name: "AiCore"', "presigned: true", "privileged: true", "product_specific: true"):
+            self.assertIn(token, bp)
         for row in self.contract["files"]:
-            line = f"$(NEZHA_AICORE_BUNDLE)/{row['name']}:$(TARGET_COPY_OUT_PRODUCT)/{row['destination']}"
-            self.assertIn(line, text, row["name"])
-            # every destination is also guarded against a second owner
-            self.assertIn(f"$(TARGET_COPY_OUT_PRODUCT)/{row['destination']},$(PRODUCT_COPY_FILES)", text)
+            self.assertIn(f"proprietary/{row['name']}", bp, row["name"])
+            self.assertTrue(row["installed_as"].startswith("/product/"), row["installed_as"])
+        self.assertIn("sub_dir: \"sysconfig\"", bp)
+        self.assertIn("sub_dir: \"permissions\"", bp)
 
     def test_the_gate_is_the_feature_declaration(self):
         analysis = self.contract["gate_analysis"]
@@ -139,7 +156,7 @@ class MakeSelectorTests(unittest.TestCase):
                     f"NEZHA_AICORE_BUNDLE := {bundle}\n"
                     f"NEZHA_AICORE_CONTRACT := {contract}\n"
                     f"include {FRAGMENT}\n"
-                    "all:\n\t@echo [$(PRODUCT_COPY_FILES)]\n")
+                    "all:\n\t@echo [$(PRODUCT_PACKAGES)]\n")
         return subprocess.run([make, "--no-print-directory", "-f", "-"], input=makefile,
                               capture_output=True, text=True,
                               env={"PATH": "/usr/bin:/bin:" + str(Path(sys.executable).parent)})
@@ -153,8 +170,7 @@ class MakeSelectorTests(unittest.TestCase):
                     run = self.run_make(flag, bundle, contract)
                     self.assertEqual(run.returncode == 0, ok, run.stderr)
                     if ok:
-                        self.assertEqual("product/etc/sysconfig/google_aicore.xml" in run.stdout, copies, run.stdout)
-                        self.assertEqual("product/priv-app/AiCore/AiCore.apk" in run.stdout, copies, run.stdout)
+                        self.assertEqual("AiCore" in run.stdout, copies, run.stdout)
 
     def test_refuses_a_drifted_bundle(self):
         with tempfile.TemporaryDirectory(dir=REAL_TMP) as d:
