@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "topic": "play-integrity-wallet",
+  "date": "2026-09-11",
+  "device": "nezha",
+  "measured_on": {
+    "delivery_set": "v25",
+    "build_number": "nezha.b2c99443fe9e90a4a7954eac",
+    "phone_accessed": true,
+    "flashed": false,
+    "built": false,
+    "device_changes": "one reversible secure setting written (spoof_trickystore_target); nothing else"
+  },
+  "not_a_gsi": {
+    "gsid_image_running": "0",
+    "per_partition_identity": {
+      "system": {
+        "brand": "Xiaomi",
+        "device": "nezha"
+      },
+      "product": {
+        "brand": "Xiaomi",
+        "device": "nezha"
+      },
+      "system_ext": {
+        "brand": "Xiaomi",
+        "device": "nezha"
+      },
+      "vendor": {
+        "brand": "Xiaomi",
+        "device": "nezha"
+      },
+      "odm": {
+        "brand": "Xiaomi",
+        "device": "nezha"
+      },
+      "bootimage": {
+        "brand": "Xiaomi",
+        "device": "nezha"
+      }
+    },
+    "model": "2512BPNDAC",
+    "generic_looking_strings": {
+      "ro.build.display.id": "BP4A.251205.006 test-keys (AOSP platform id, shown as Settings build number)",
+      "ro.build.tags": "test-keys (accurate: platform apps signed with AOSP public test key)",
+      "ro.build.fingerprint": "google/mustang_beta/mustang:CANARY/ZP11.260717.006/16004061:user/release-keys (deliberate Pixel override)"
+    },
+    "real_identity_in_avb": "Xiaomi/lineage_nezha/nezha:16/BP4A.251205.006/nezha.<hash>:userdebug/test-keys"
+  },
+  "in_rom_trickystore": {
+    "sources": [
+      "frameworks/base/core/java/android/security/trickystore/KeyBoxManager.java",
+      "frameworks/base/core/java/android/security/trickystore/CertificateHacker.java",
+      "frameworks/base/core/java/android/security/trickystore/CertificateGenerator.java",
+      "frameworks/base/core/java/android/security/trickystore/TrickyStoreService.java",
+      "frameworks/base/keystore/java/android/security/keystore2/AndroidKeyStoreKeyPairGeneratorSpi.java",
+      "frameworks/base/services/core/java/com/android/server/spoof/AxSpoofManager.java"
+    ],
+    "no_magisk_required": true,
+    "data_adb_empty": true,
+    "settings": [
+      "spoof_trickystore_target",
+      "spoof_trickystore_keybox",
+      "spoof_trickystore_patch"
+    ],
+    "settings_have_no_resource_fallback": "AxSpoofManager.getTrickyStoreTarget() reads only the secure setting",
+    "target_format": "JSON array of {package, mode}; unknown/absent mode defaults to AUTO"
+  },
+  "modes": {
+    "enum": [
+      "AUTO",
+      "LEAF_HACK",
+      "GENERATE",
+      "SKIP"
+    ],
+    "tee_broken_on_this_device": false,
+    "AUTO_no_keybox": "routes to LEAF_HACK; CertificateHacker returns the real chain untouched (safe)",
+    "LEAF_HACK_no_keybox": "if (keybox == null) return chain (safe); with keybox, re-signs leaf and swaps chain",
+    "GENERATE_no_keybox": "CertificateGenerator returns null -> ProviderException -> breaks key generation (unsafe)",
+    "safe_default_mode": "AUTO"
+  },
+  "armed": {
+    "setting": "spoof_trickystore_target",
+    "value": [
+      {
+        "package": "com.google.android.gms",
+        "mode": "AUTO"
+      },
+      {
+        "package": "com.google.android.apps.walletnfcrel",
+        "mode": "AUTO"
+      },
+      {
+        "package": "com.android.vending",
+        "mode": "AUTO"
+      },
+      {
+        "package": "com.google.android.gsf",
+        "mode": "AUTO"
+      }
+    ],
+    "axspoofmanager_refreshed": true,
+    "verification": {
+      "tee_key_generate": "ok",
+      "sign_verify": "OK",
+      "provider_exception_or_no_keybox_errors": "none",
+      "gms_and_wallet_running": true
+    },
+    "persistence": "userdata retained across every A/B flash (never wiped), so the setting persists; a wipe would need it re-applied"
+  },
+  "already_active_before_this_change": {
+    "spoof_pif_enabled": "1",
+    "pif_profile": "Pixel 10 Pro XL (mustang)",
+    "cached_pixel_fingerprints": 19,
+    "pi_photos_spoof": "1",
+    "pi_snapchat_spoof": "1",
+    "build_fp_override": "vendor/lineage/config/evolution.mk TARGET_ENABLE_FP_OVERRIDE, documented 'to fix RCS/Wallet'"
+  },
+  "wallet": {
+    "gate": "hardware key attestation Google accepts",
+    "device_state": {
+      "ro.boot.verifiedbootstate": "orange",
+      "flash.locked": "0",
+      "must_stay_unlocked": true
+    },
+    "sole_missing_ingredient": "a valid, non-revoked Google keybox (EC + RSA, chain rooted in Google's attestation root)",
+    "both_modes_need_it": true,
+    "keybox_not_supplied": true,
+    "auto_fetcher_declined": "an engine to harvest and rotate leaked OEM keys ahead of revocation was not built, by choice",
+    "defensive_pieces_present": [
+      "isValidKeyboxXml",
+      "checkKeyboxRevocation"
+    ],
+    "owner_supplies_via": "Evolver Settings"
+  },
+  "aicore": {
+    "v23_refusal": "GetManifestConfig -> INVALID_ARGUMENT (request content rejected, not an integrity failure)",
+    "cause": "device declares com.google.android.feature.AICORE_QC_SM8850 while GMS presents a Pixel 10 Pro XL fingerprint",
+    "keybox_does_not_fix_it": true,
+    "real_fix": "present the real Xiaomi fingerprint, which is the override Evolution ships to fix Wallet/RCS",
+    "fork": "Wallet wants the Pixel fingerprint; AICore wants the real one; not cleanly reconcilable",
+    "owner_decision": "keep the Pixel fingerprint and the Wallet path; AICore model download stays refused"
+  },
+  "netflix_hdr": {
+    "gate": "Widevine L1 (TEE DRM keybox)",
+    "invalidated_by_bootloader_unlock": true,
+    "separate_subsystem_from_key_attestation": true,
+    "not_fixable_by_trickystore_or_keybox": true,
+    "level_props_empty_consistent_with_l3": true,
+    "netflix_installed": false
+  },
+  "not_established": [
+    "That Wallet taps to pay",
+    "That Play Integrity returns MEETS_DEVICE_INTEGRITY",
+    "That any targeted app behaves differently - all require a valid keybox that is not present"
+  ],
+  "document": "docs/play-integrity-wallet-20260911.md"
+}
