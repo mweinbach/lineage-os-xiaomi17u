@@ -31,9 +31,9 @@
   "product_file": {
     "path": "device/xiaomi/nezha/device.mk",
     "before_sha256": "92b7c904c2fb79875c8d5758e32be07d1696fc2c80a909e194a63e1b42a72851",
-    "after_sha256": "1eb88fd4173fe4a99a5056ffd128ecfbb77b916a11d3a276039cb626e9529970",
+    "after_sha256": "34c960ac9d1d688de893553acbe3e7e1f748dfe4d7735b66226558de0b091009",
     "before_bytes": 3968,
-    "after_bytes": 4476,
+    "after_bytes": 4699,
     "history": [
       {
         "after_sha256": "551aa42a317cd4c3cfb5cb1a514cc2b52fdccf9082f42a86489019150b3394f2",
@@ -57,8 +57,14 @@
         "after_sha256": "6baf59041ab92886ae3c38c6694f1ac9dc7e4d1f072cf0a7cd18d633a68adfc4",
         "after_bytes": 4422,
         "reason": "device.mk gained the guarded Now Playing DSP model include (now-playing-dsp-model.mk) after leica-essential.mk; the audio enum selection itself is unchanged."
+      },
+      {
+        "after_sha256": "1eb88fd4173fe4a99a5056ffd128ecfbb77b916a11d3a276039cb626e9529970",
+        "after_bytes": 4476,
+        "reason": "superseded"
       }
-    ]
+    ],
+    "reason": "device.mk gained include $(NEZHA_DEVICE_PATH)/aicore.mk, which ships the AICore feature declaration from this phone's global firmware; see config/nezha-aicore.json. The audio selection this contract covers is untouched."
   },
   "vendor_values": {
     "output_flag": {
