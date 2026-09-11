@@ -71,6 +71,9 @@ class ContractTests(unittest.TestCase):
         self.assertFalse([l for l in directives if "PRODUCT_COPY_FILES" in l], directives)
         self.assertIn("PRODUCT_PACKAGES += AiCore", text)
         self.assertIn("$(filter AiCore,$(PRODUCT_PACKAGES))", text)
+        # The blueprint declares its own namespace; without registering it the module is invisible.
+        self.assertIn("PRODUCT_SOONG_NAMESPACES += vendor/xiaomi/nezha-aicore", text)
+        self.assertIn("soong_namespace", (ROOT / "artifacts/aicore-global/soong/Android.bp").read_text())
         self.assertEqual(self.contract["install"]["module"], "AiCore")
 
     def test_the_blueprint_installs_every_contract_file_where_the_contract_says(self):

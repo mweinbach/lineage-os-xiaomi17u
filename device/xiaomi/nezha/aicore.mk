@@ -37,5 +37,8 @@ endif
 ifneq ($(filter AiCore,$(PRODUCT_PACKAGES)),)
 $(error Another input already provides the AICore application module)
 endif
+# The bundle's blueprint declares its own Soong namespace, so the directory has to be registered
+# or the module is invisible and PRODUCT_PACKAGES reports it as non-existent.
+PRODUCT_SOONG_NAMESPACES += vendor/xiaomi/nezha-aicore
 PRODUCT_PACKAGES += AiCore
 endif
