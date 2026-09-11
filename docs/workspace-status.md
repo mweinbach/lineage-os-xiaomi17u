@@ -1,23 +1,31 @@
 # Current Nezha workspace status
 
-**Installed phone: v20 userdebug (`nezha.d5894f355e27f7d2f503f519`, source
-revision 19), slot A, boot completed in 25.5 s with SELinux Enforcing.**
+**Installed phone: v21 userdebug (`nezha.34aee22f376f606d9ed52909`, source
+revision 20), slot A, boot completed in 25.4 s with SELinux Enforcing.**
 The separately approved eight-image installation completed without a wipe, slot
-change or data clear, and userdata was retained. V20 is v17 plus a three-part
+change or data clear, and userdata was retained. V21 is v20 plus the two hash-admitted Pixel
+`music_detector` files in `/product/etc/firmware`, which open the app-level gate on
+Now Playing: ASI's switch is now enabled and turns on, but the Qualcomm sound-trigger
+HAL refuses Google's model (`Failed to get sound model platform info` for vendor UUID
+`9f6ad62a…`) and each refusal rebooted the audio HAL, so the setting is left off; see
+the [v21 install record](v21-install-validation-20260911.md) and the planned
+[music-trigger shim](now-playing-trigger-20260911.md). V21 carries v20's three-part
 `MPEG4Writer` fix so the Xiaomi recorder's 8K, 4K120 and long/sustained 4K60 modes
-now write a **decodable** HEVC track: 8K30 → HEVC 7680×4320, 4K120 → HEVC
+write a **decodable** HEVC track: 8K30 → HEVC 7680×4320, 4K120 → HEVC
 3840×2160 at a true 120 fps, and a 45 s 4K60 clip with live audio — where before
 8K wrote a non-decodable track and 4K120 and long 4K60 crashed the recorder (a
 FORTIFY write overflow). It still carries the always-on Leica Essential selection
 (`ro.theme_customize=LCC` + `camera.debug.safe.check.disable=true`, from v17), the
 four ported CameraOpt methods, the factory camcorder-profile selection, and the
 enabled cloud Leica color filters. See the
+[v21 installation record](v21-install-validation-20260911.md), the
 [v20 installation record](v20-install-validation-20260910.md), the
 [Leica Essential record](leica-essential-20260910.md) and the
 [tier 2 v16 camera page](tier2-camera-v16-20260910.md). The intermediate sets
 were v17 (`nezha.11b0a26475073bca18f34c39`, baked-in Leica Essential), v18 and
-v19 (the first two parts of the recorder fix); V19
-(`nezha.613930978f6706c35296cd90`) is the recorded predecessor removed after v20,
+v19 (the first two parts of the recorder fix); V20
+(`nezha.d5894f355e27f7d2f503f519`) is the recorded predecessor removed after v21,
+V19 (`nezha.613930978f6706c35296cd90`) survives in its install record,
 V16 (`nezha.434625bd9b5cd7a8a7eabd84`) survives in its install record, and V15
 (`nezha.81c1b93277a1fa371a3efbb3`) survives further back in its install record.
 No SIM is inserted, so no IMS registration is expected.
@@ -64,12 +72,12 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.d5894f355e27f7d2f503f519` (userdebug, delivery set v20) |
-| Recorded predecessor (removed from host) | v19 `nezha.613930978f6706c35296cd90` (intermediate recorder-fix stages: v18, v19; and v17 `nezha.11b0a26475073bca18f34c39` baked in Leica Essential) |
+| Installed build identity | `nezha.34aee22f376f606d9ed52909` (userdebug, delivery set v21) |
+| Recorded predecessor (removed from host) | v20 `nezha.d5894f355e27f7d2f503f519` ([install record](v20-install-validation-20260910.md), the three-part recorder fix); earlier v19 `nezha.613930978f6706c35296cd90`, v18, and v17 `nezha.11b0a26475073bca18f34c39` (Leica Essential) |
 | Earlier predecessors | v16 `nezha.434625bd9b5cd7a8a7eabd84`, [install record](v16-install-validation-20260910.md); v15 `nezha.81c1b93277a1fa371a3efbb3`, [install record](v15-install-validation-20260909.md) |
-| Installed source receipt | 710 rows; `reports/tier2-camera-20260909/source-revision-19/source-installed.json`, SHA256 `531fd2b4f210574a8c767caa745c1a11c17842a6993d795529ba51b9d033bc70` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v20/` (the only delivery set retained on the host; see the [v20 install record](v20-install-validation-20260910.md)) |
-| Bundle manifest SHA256 | `1f0c5e0c974b103a74bf1ce66a92544ac4cb996e575cde2299919c41fbd53769` |
+| Installed source receipt | 716 rows; `reports/tier2-camera-20260909/source-revision-20/source-installed.json`, SHA256 `6f025d656161b0686f764cd041d9ecf9c7f05bfeaa2a2de65c3bb463c04e56f8` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v21/` (the only delivery set retained on the host; see the [v21 install record](v21-install-validation-20260911.md)) |
+| Bundle manifest SHA256 | `13d9a34da39f4321a0bebe43b521730bc431f6bbeeffc42068b784e6c9fdb5fd` |
 | Reconciled signed target-files SHA256 | `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953` |
 | Signing/reconciliation result | Passed signing, reconciliation, 18 host gates and eight-payload verification; receipts in the [tier 1 record](tier1-ims-dim-20260909.md) |
 | Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.4 s |
@@ -116,11 +124,12 @@ camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-2
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
 verification remain separate evidence. The Linux checkout holds source
-revision 19 (`nezha.d5894f355e27f7d2f503f519`), which is now installed as v20
-and adds the three-part [HEVC recorder fix](v20-install-validation-20260910.md)
+revision 20 (`nezha.34aee22f376f606d9ed52909`), which is now installed as v21
+and adds the [Now Playing DSP model fragment](now-playing-dsp-model-20260911.md)
+over revision 19's three-part [HEVC recorder fix](v20-install-validation-20260910.md)
 over revision 16's always-on [Leica Essential selection](leica-essential-20260910.md),
 the four CameraOpt methods and the [factory camcorder profile selection](camera-video-profiles-20260909.md).
-The [v20 installation record](v20-install-validation-20260910.md) is the current
+The [v21 installation record](v21-install-validation-20260911.md) is the current
 phone evidence, and the [tier 2 v16 page](tier2-camera-v16-20260910.md) holds
 the earlier video matrix, microphone, CameraOpt runtime and Leica findings.
 
@@ -178,7 +187,7 @@ template is enrolled.
   Aperture Ultra HDR effects. Useful effect quality, focus, stabilization,
   sensor-native detail and sustained behavior remain unverified. Preserve the
   [v13 runtime record](camera-v13-install-validation-20260908.md).
-- **Video and audio:** The installed v20 exposes the full Xiaomi video matrix
+- **Video and audio:** The installed v21 exposes the full Xiaomi video matrix
   (720p to 8K, 30/60/120 fps) because the stock `media.settings.xml` key loads the
   vendor camcorder table, and **8K, 4K120 and long/sustained 4K60 now record a
   decodable HEVC track**: three guarded `MPEG4Writer` patches teach the platform
@@ -191,6 +200,20 @@ template is enrolled.
   frame rate (about 25/30 fps) and sustained thermals still want a lit scene and a
   longer run; 4K60 Dolby Vision and 1080p HEVC continue to record and play with a
   live microphone.
+- **Now Playing:** The installed v21 carries the two Pixel `music_detector`
+  files in `/product/etc/firmware` at their pinned hashes, so ASI's Now Playing
+  switch is **enabled** where it was greyed out before, and it turns on. The
+  feature still does not run: PAL has no sound-model platform entry for Google's
+  vendor UUID `9f6ad62a…` and refuses the load, the framework reads that as a HAL
+  fault and reboots the audio HAL, and ASI's 5 s retry made that a loop, so the
+  setting is left **off** on the device. The Pixel platform entry names a Google
+  ADSP module (`execution_type="ADSP"`, `library="none"`), which is firmware this
+  SoC does not carry, so no configuration file can load this model. The reviewed
+  follow-up is the [music-trigger shim](now-playing-trigger-20260911.md), which
+  refuses the model harmlessly by default and can back it with Qualcomm's own
+  on-DSP Acoustic Context Detection (`music.eai`, context AMBIENCE_MUSIC) or a
+  timer. Not device-admitted. See the
+  [v21 install record](v21-install-validation-20260911.md).
 - **Leica looks:** The cloud Leica color filters (Leica Vibrant and the six
   Leica LUT looks) are enabled and cloud-delivered. The Leica M3 and M9
   "Leica Essential" film looks (module 256) are now baked on in the installed

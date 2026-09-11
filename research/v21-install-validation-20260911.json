@@ -1,0 +1,222 @@
+{
+  "operation": "v21-install-validation-v1",
+  "date": "2026-09-11",
+  "document": "docs/v21-install-validation-20260911.md",
+  "build_number": "nezha.34aee22f376f606d9ed52909",
+  "predecessor": "nezha.d5894f355e27f7d2f503f519",
+  "source_revision": 20,
+  "bundle_manifest_sha256": "13d9a34da39f4321a0bebe43b521730bc431f6bbeeffc42068b784e6c9fdb5fd",
+  "authorization": {
+    "user_response": "ok get it working! you may need to do some more work on this but that's ok",
+    "bound_before_phone_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "explicit_authorization_sha256": "705bb8533876e042b8b715cb458d0536a899a44f9a5cbd620d82aec507beb45d"
+  },
+  "preflight": {
+    "android_observation_status": "requested-observations-complete-not-device-admission",
+    "android_properties": {
+      "ro.product.device": "nezha",
+      "ro.build.version.incremental": "nezha.d5894f355e27f7d2f503f519",
+      "ro.boot.slot_suffix": "_a",
+      "ro.boot.vbmeta.device_state": "unlocked",
+      "ro.boot.verifiedbootstate": "orange",
+      "ro.crypto.state": "encrypted"
+    },
+    "bootloader_values": {
+      "product": "nezha",
+      "unlocked": "yes",
+      "current-slot": "a",
+      "slot-count": "2",
+      "is-userspace": "no",
+      "snapshot-update-status": "none",
+      "slot-unbootable:a": "no",
+      "slot-retry-count:a": "6"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 242.799,
+      "sha256": "21d9931dade327f17bbde64b7701158b5faa553751ccc6fb7712caa1ad42413a",
+      "size_bytes": 9477867632,
+      "rehashed_identical": true
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.982,
+      "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+      "size_bytes": 33554432,
+      "rehashed_identical": true
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.329,
+      "sha256": "53c7a8e050c13b5c768cfe0f5e6bfe543009951ee7d1106c1d31b93ec69476e0",
+      "size_bytes": 8388608,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.704,
+      "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.804,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "rehashed_identical": true
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.68,
+      "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.132,
+      "sha256": "ecad1e10202f9d743c64ad850bcf844d62a78f6954dcf272eb166df043657f7b",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.151,
+      "sha256": "8117f3a27bf287fe1a0ccb29a2ab88ebde975b69027593186ab5715fb7db9168",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.4,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "root_adb": true,
+    "uptime_at_observation_s": 43.16,
+    "crash_fatal": 0,
+    "avc_denials_total": 59
+  },
+  "now_playing_dsp_model": {
+    "headline": "dsp_model_load_failed",
+    "contract": "config/nezha-now-playing-dsp-model.json",
+    "selector": "NEZHA_NOW_PLAYING_DSP_MODEL",
+    "fragment": "device/xiaomi/nezha/now-playing-dsp-model.mk",
+    "files_pinned": [
+      {
+        "name": "music_detector.sound_model",
+        "size_bytes": 34432,
+        "sha256": "5472e7358178e598251476cf67d4d0b120d1b702611a470ad242163b266c0e67"
+      },
+      {
+        "name": "music_detector.descriptor",
+        "size_bytes": 1057,
+        "sha256": "dadf2cbd2978dce2f3832eafe6d6e1fbf4c777232c584666dc7e574c421f5989"
+      }
+    ],
+    "files_present_on_device_with_pinned_hashes": true,
+    "switch_enabled_after_model_present": true,
+    "enabled_through_asi_ui": true,
+    "now_playing_enabled_setting_after": "1",
+    "dsp_load_attempted": true,
+    "dsp_load_failed": true,
+    "recognition_started": true,
+    "asi_loaded_models": [],
+    "soundtrigger_log_tail": [
+      "09-11 02:06:35.582 W/SoundTriggerHelper( 3395): Unload error: Attempting unload invalid generic model with id:12caddb1-acdb-4dce-8cb0-2e95a2313aee",
+      "09-11 02:06:35.582 I/SoundTriggerService( 3395): error onStop(): Model 12caddb1-acdb-4dce-8cb0-2e95a2313aee has no stats available",
+      "09-11 02:06:36.594 W/SoundTriggerMiddlewareLogging( 3395): MODULE_DIED ()",
+      "09-11 02:06:36.594 W/SoundTriggerMiddlewareLogging( 3395): MODULE_DIED ()",
+      "09-11 02:06:36.594 E/SoundTriggerHelper( 3395): onServiceDied!!",
+      "09-11 02:06:36.594 I/SoundTriggerMiddlewareLogging( 3395): DETACH ()",
+      "09-11 02:06:36.594 I/SoundTriggerMiddlewareLogging( 3395): ATTACH [client= \"com.google.android.googlequicksearchbox10\"] (0, android.hardware.soundtrigger.SoundTriggerModule$EventHandlerDelegate@83a0b5c, false) -> com.android.server.soundtrigger_middleware.SoundTriggerModule$Session@8d1c62e",
+      "09-11 02:06:36.595 E/SoundTriggerHelper( 3395): onServiceDied!!",
+      "09-11 02:06:36.595 W/SoundTriggerHelper( 3395): MODULE_DIED               for: 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15",
+      "09-11 02:06:36.596 I/SoundTriggerMiddlewareLogging( 3395): DETACH ()",
+      "09-11 02:06:36.597 I/SoundTriggerMiddlewareLogging( 3395): ATTACH [client= \"com.google.android.as11\"] (0, android.hardware.soundtrigger.SoundTriggerModule$EventHandlerDelegate@dc176fe, false) -> com.android.server.soundtrigger_middleware.SoundTriggerModule$Session@a994c80",
+      "09-11 02:06:36.598 W/AmbientMusicDetector( 5718): SoundTrigger callback onError: -32"
+    ],
+    "verdict": "dsp_model_load_failed",
+    "note": "The switch condition is l() && r(); r() is the file check this set satisfies. The load result on sound-trigger module 0 (QTI, GENERIC_TRIGGER) is the compatibility verdict for the 765G-era model on SVA 7.0.",
+    "refusal": {
+      "pal_vendor_uuid_lookup": [
+        "09-11 02:08:15.748 I/PAL: StreamSoundTrigger(13866): ProcessEvent: 2158: Input vendor uuid : 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15",
+        "09-11 02:08:20.744 I/PAL: StreamSoundTrigger(14009): ProcessEvent: 2158: Input vendor uuid : 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15"
+      ],
+      "pal_refusal": [
+        "09-11 02:08:15.748 E/PAL: StreamSoundTrigger(13866): ProcessEvent: 2163: Failed to get sound model platform info",
+        "09-11 02:08:20.744 E/PAL: StreamSoundTrigger(14009): ProcessEvent: 2163: Failed to get sound model platform info"
+      ],
+      "sthal_load": [
+        "09-11 02:08:15.743 I/STHAL: SoundTriggerSession(13866): loadSoundModel_l: 252: Enter handle 0, model SoundModel{type: GENERIC, uuid: 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, vendorUuid: 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, data: fd:83, dataSize: 34432}",
+        "09-11 02:08:20.739 I/STHAL: SoundTriggerSession(14009): loadSoundModel_l: 252: Enter handle 0, model SoundModel{type: GENERIC, uuid: 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, vendorUuid: 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15, data: fd:83, dataSize: 34432}"
+      ],
+      "framework_reboot": [
+        "09-11 02:08:10.729 E/SoundTriggerHalEnforcer( 3395): Exception caught from HAL, rebooting HAL",
+        "09-11 02:08:15.749 E/SoundTriggerHalEnforcer( 3395): Exception caught from HAL, rebooting HAL",
+        "09-11 02:08:20.745 E/SoundTriggerHalEnforcer( 3395): Exception caught from HAL, rebooting HAL"
+      ],
+      "audio_server_died": [
+        "09-11 02:08:10.749 E/AS.AudioService( 3395): AudioService.onAudioServerDied",
+        "09-11 02:08:11.251 E/AS.AudioService( 3395): AudioService.onAudioServerDied"
+      ],
+      "cause": "PAL StreamSoundTrigger has no sound-model platform entry for vendor UUID 9f6ad62a-1f0b-11e7-87c5-40a8f03d3f15. The resource-manager XML on this device declares QC Voice UI, Google hotword, QC ACD, sensor PCM and MMA stream configs only; the Snapdragon Pixels that ship this model declare a Google Music Detection config whose execution_type is ADSP with library \"none\", i.e. a Google module inside the Pixel ADSP image this device does not carry.",
+      "side_effect": "Each failed load rebooted the sound-trigger HAL, which restarted audioserver and the QTI audio HAL; ASI retried every 5 s, so the audio HAL restarted every 5 s while the setting was on.",
+      "left_as": "Now Playing turned back off through ASI's own switch after the measurement; the audio HAL was then stable and no further load attempts were logged.",
+      "contract": "config/nezha-now-playing-trigger.json"
+    }
+  },
+  "leica_essential": {
+    "props_from_build_prop_after_reboot": true
+  },
+  "camcorder_profiles": {
+    "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml"
+  },
+  "cameraopt": {
+    "configuration_state": "configuration_state=loaded deliveries=1 failure=null"
+  },
+  "dim": {
+    "config_float": "0.05"
+  },
+  "retained_userdata": {
+    "userdata_or_metadata_partition_written": false,
+    "wipe_requested": false,
+    "accounts": "1",
+    "third_party_packages": "22",
+    "note": "Retention is structural: the eight-image write set contained no userdata or metadata partition and no wipe was requested."
+  },
+  "retention": null,
+  "device_changes_during_validation": [
+    "Now Playing enabled through ASI's own settings UI (a user setting) if the switch was available; ASI settings screen opened and closed"
+  ],
+  "not_established": "Recognition of an actual song needs music playing in the room; sustained DSP power behaviour; whether the music database download completed if enabled."
+}
