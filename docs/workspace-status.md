@@ -221,6 +221,18 @@ template is enrolled.
   music on real audio is unmeasured. `persist.sys.nezha.nowplaying.mode` selects
   the mode at runtime. See the
   [v22 install record](v22-install-validation-20260911.md).
+- **Gemini Nano:** **Not available on this device, and not a gap this workspace
+  can close.** The framework is already wired to AICore by the build's GMS
+  overlay and the hardware is capable (HTP v81 NPU with Qualcomm's on-NPU LLM
+  runtime, 11.3 GB RAM), but AICore itself is neither installed nor in the tree.
+  Google's own `aicore` flags on this phone list model file groups for Tensor,
+  SM8635, SM8650, Exynos and MediaTek — none for SM8850 — and those artifacts are
+  QNN graphs compiled per Hexagon HTP version, so another chip's cannot be
+  borrowed. The official Pixel factory image carries only a 1.4 MB AICore stub,
+  and Play answers "Your device isn't compatible with this version." The device's
+  own on-NPU LLM runtime is idle and could host an openly-licensed model, which
+  would be separate work and not Gemini Nano. See the
+  [availability record](gemini-nano-20260911.md).
 - **Lock-screen fingerprint icon:** v22 builds the device SystemUI overlay with
   `udfps_icon_size` 8000 µm (132 px inside the 148 px sensor) in place of
   upstream's 6000 µm (99 px), confirmed in the built `SystemUI.apk`. The drawn

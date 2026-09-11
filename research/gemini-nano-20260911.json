@@ -1,0 +1,81 @@
+{
+  "operation": "gemini-nano-availability-v1",
+  "date": "2026-09-11",
+  "document": "docs/gemini-nano-20260911.md",
+  "question": "Can Gemini Nano (Google's on-device foundation model) run on this device?",
+  "answer": "no",
+  "installed_build": "nezha.b68e83ef070c648895e3881e",
+  "framework_wiring": {
+    "on_device_intelligence_service": "com.google.android.aicore/com.google.android.apps.aicore.service.isolated.AiCoreIntelligenceService",
+    "on_device_sandboxed_inference_service": "com.google.android.aicore/com.google.android.apps.aicore.service.isolated.AiCoreIsolatedService",
+    "device_config_namespace": "aicore",
+    "source": "product/overlay/PixelConfigOverlayCommon.apk (shipped by the build's GMS package set)",
+    "note": "The framework is already pointed at AICore. AOSP leaves both config strings empty."
+  },
+  "aicore_package_installed": false,
+  "aicore_in_source_tree": false,
+  "hardware": {
+    "soc": "SM8850",
+    "platform": "canoe",
+    "npu": "Hexagon HTP v81",
+    "npu_skeleton_on_device": "libQnnHtpV81Skel.so (only v81; v68-v79 are host-side stubs)",
+    "qnn_genai_runtime": [
+      "libQnnGenAiTransformer.so",
+      "libQnnGenAiTransformerCpuOpPkg.so",
+      "libQnnGenAiTransformerModel.so"
+    ],
+    "ram_kb": 11284508,
+    "data_free": "458G",
+    "verdict": "The device has a complete on-NPU LLM runtime and ample memory; the hardware is not the blocker."
+  },
+  "server_config_on_this_device": {
+    "aicore_flag_count": 148,
+    "llm_file_groups": [
+      "llm",
+      "llm_mmit_xs_edgetpu",
+      "llm_mmit_xs_edgetpu_baseonly",
+      "llm_it_xxs_edgetpu",
+      "llm_sm8635_xxs_it",
+      "llm_sm8650_xxs_it",
+      "llm_slsi_npu_xxs_it",
+      "llm_mt6897_xxs_it",
+      "llm_mt6989_xxs_it"
+    ],
+    "on_device_intelligence_enabled": true,
+    "note": "Google pushes aicore configuration to this device, and its model file groups name their target silicon. The Snapdragon groups target SM8635 and SM8650; there is no SM8850 group."
+  },
+  "why_the_model_cannot_be_borrowed": "AICore model artifacts are QNN context binaries compiled for one Hexagon HTP version. SM8635 is HTP v73 and SM8650 is HTP v75; this device is v81, and QNN graphs do not load across HTP versions. The same per-SoC rule is visible in the phone's own vendor models, e.g. vendor/data/model/seg_quantized.serialized.8850.aimet.pertensor_512_cls3.minn.",
+  "official_apk_probe": {
+    "source": "https://dl.google.com/dl/android/aosp/mustang-cp2a.260805.005.a1-factory-0eeb93e8.zip",
+    "published_archive_sha256": "0eeb93e8ad489c35f89029221671a1bd4ef1a39c289d0f4ff5b18fec357f65f4",
+    "method": "ZIP64 range fetch of the inner image zip member product.img only (2.78 GB of 9.61 GB), inflated locally",
+    "product_img_sha256": "67140a09ed2eb9a6d880da207dfe43e053e9698a7f5c664393745a08b3beb5bb",
+    "apk_path_in_image": "priv-app/AICorePrebuilt-aicore_20260302.01_RC00/AICorePrebuilt-aicore_20260302.01_RC00.apk",
+    "apk_sha256": "32dceefb719b6d47a4a2bc9887162a5d9588be99f63f6c55612c2243a7405418",
+    "apk_bytes": 1447374,
+    "apk_version_name": "0.stub.stub_aicore_20260302.01_RC00.877448964",
+    "apk_version_code": 395592,
+    "apk_contains_native_libs": false,
+    "apk_contains_models": false,
+    "finding": "The Pixel factory image ships only a 1.4 MB stub. The functional AICore, with its accelerator runtimes and model management, is delivered as a Play Store update to eligible devices."
+  },
+  "play_store_verdict_on_this_device": {
+    "package": "com.google.android.aicore",
+    "listing_title": "Android AICore (Beta)",
+    "message": "Your device isn't compatible with this version.",
+    "account_is_beta_tester": true,
+    "texts": [
+      "Android AICore (Beta)",
+      "Google LLC",
+      "Your device isn't compatible with this version.",
+      "You're a beta tester for this app. Future updates will include beta versions.",
+      "What's new",
+      "New features for the latest release are listed in Google's System Service release notes. Learn more",
+      "About this service",
+      "Powering intelligent features across Android&#10;"
+    ]
+  },
+  "conclusion": "Gemini Nano cannot run on this device. The gap is not configuration: Google's distribution refuses the application to this device, the preinstalled APK is a stub with no runtime or weights, and no published Gemini Nano model is compiled for this phone's Hexagon HTP v81. Nothing short of Google publishing an SM8850 build would change that.",
+  "not_established": "Whether an SM8850 model group exists privately behind the opaque AicDataRelease build ids; whether a non-Pixel OEM firmware carries a functional AICore that would behave differently here.",
+  "device_changes": "None. Read-only probing plus opening a Play Store listing, which was closed again."
+}
