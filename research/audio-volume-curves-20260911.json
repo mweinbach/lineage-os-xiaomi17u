@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "topic": "audio-volume-curves",
+  "date": "2026-09-11",
+  "device": "nezha",
+  "measured_on": {
+    "delivery_set": "v23",
+    "build_number": "nezha.2fa2ea3549a2fc869a4c79df",
+    "platform_build": "BP4A.251205.006",
+    "phone_accessed": true,
+    "read_only": true,
+    "changes_made_to_the_phone": "audioserver was restarted once to capture the boot-time engine log; no setting, partition or slot was changed"
+  },
+  "symptom": {
+    "reported": "audio out of the speakers is set to 0 but playing at maximum volume and the slider is not working",
+    "framework_state": {
+      "stream": "STREAM_MUSIC",
+      "index": 0,
+      "index_max": 150,
+      "muted": true,
+      "device": "speaker",
+      "settings_volume_music_speaker": 0
+    },
+    "scope": "every stream, not only media; media is the one that gets noticed"
+  },
+  "cause": {
+    "summary": "The audio policy engine ends up with volume groups that hold no volume curves, and a volume group with no curve for the device category reports 0 dB, which is no attenuation.",
+    "chain": [
+      "The audio policy configuration on this device comes from the AIDL HAL, so the engine configuration comes from the HAL too (dumpsys media.audio_policy: 'Config source: AIDL HAL').",
+      "The HAL parses its engine XML successfully: AHAL_Config reports 8 strategies and 12 volume groups.",
+      "That XML is Xiaomi's, and it declares eight device categories AOSP does not define, 33 curves in all. The xsdc parser turns an unknown enumeration into UNKNOWN and aidl2legacy_DeviceCategory refuses it.",
+      "aidl2legacy_AudioHalVolumeGroup_VolumeGroup converts curves with convertContainer, which fails on the first refusal, so engineConfig::convert discards the whole configuration.",
+      "EngineBase falls back to gDefaultEngineConfig, whose volumeGroups list is empty, and processParsingResult then creates one group per default strategy from a default-constructed configuration with no curve points.",
+      "VolumeCurves::volIndexToDb returns 0.0f when it has no curve for the device category, so every index maps to no attenuation. AudioService mutes a stream by setting index 0, which is why 0 is the loudest position."
+    ],
+    "xiaomi_only_device_categories": {
+      "DEVICE_CATEGORY_A2DP": 12,
+      "DEVICE_CATEGORY_USB": 12,
+      "DEVICE_CATEGORY_A2DP_CE": 2,
+      "DEVICE_CATEGORY_HEADSET_CE": 2,
+      "DEVICE_CATEGORY_USB_CE": 2,
+      "DEVICE_CATEGORY_A2DP_SPATIALIZER_CE": 1,
+      "DEVICE_CATEGORY_HEADSET_SPATIALIZER_CE": 1,
+      "DEVICE_CATEGORY_USB_SPATIALIZER_CE": 1
+    },
+    "aosp_device_categories": [
+      "DEVICE_CATEGORY_HEADSET",
+      "DEVICE_CATEGORY_SPEAKER",
+      "DEVICE_CATEGORY_EARPIECE",
+      "DEVICE_CATEGORY_EXT_MEDIA",
+      "DEVICE_CATEGORY_HEARING_AID"
+    ]
+  },
+  "evidence": {
+    "hal_parsed_its_xml": "AHAL_Config: getEngineConfig: number of strategies parsed: 8, default strategy: 5, number of volume groups parsed: 12",
+    "framework_refused_it": [
+      "APM::AudioPolicyEngine/Config: Function: aidl2legacy_AudioHalVolumeCurve_VolumeCurve Line: 143 Failed result (BAD_VALUE)",
+      "APM::AudioPolicyEngine/Config: Function: aidl2legacy_AudioHalVolumeGroup_VolumeGroup Line: 156 Failed result (BAD_VALUE)",
+      "APM::AudioPolicyEngine/Base: loadAudioPolicyEngineConfig: There was an error parsing AIDL data"
+    ],
+    "curveless_groups": "APM::AudioPolicyEngine/Base: processParsingResult: No configuration of AUDIO_STREAM_MUSIC found, using default volume configuration, repeated for all fifteen default groups",
+    "runtime_effect": "APM::VolumeCurve: Invalid device category 1 for Volume Curve, emitted by VolumeCurves::volIndexToDb on every volume computation; device category 1 is DEVICE_CATEGORY_SPEAKER",
+    "policy_dump": "dumpsys media.audio_policy lists all fifteen volume groups with streams, attributes and index ranges and not one curve point",
+    "engine_in_use_is_the_aosp_default": "the live product strategies and volume group names are the AOSP defaults (STRATEGY_MEDIA with AUDIO_STREAM_MUSIC, group names AUDIO_STREAM_*), not the vendor's lowercase names (music, ring, ...)",
+    "configuration_files_on_device": {
+      "/vendor/etc/audio_policy_engine_stream_volumes.xml": "12 groups, only the five AOSP device categories",
+      "/odm/etc/audio_policy_engine_stream_volumes_mi.xml": "12 groups; 60 curves for the five AOSP categories plus 33 for eight Xiaomi-only ones (A2DP, USB and their CE and SPATIALIZER_CE variants)",
+      "/vendor/etc/audio/sku_canoe/audio_policy_configuration.xml": "the legacy policy file, which XIncludes audio_policy_volumes.xml and default_volume_tables.xml and is what parseLegacyVolumes reads"
+    }
+  },
+  "source_reference": {
+    "project": "frameworks/av",
+    "revision": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
+    "files_are_identical_to": "AOSP android16-qpr2-release",
+    "engine_config_cpp_sha256": "2a611b673bf20a701500123fdfb36bd0c9d01c3f62bbb2f81be86906e5998448",
+    "engine_base_cpp_sha256": "2b213bc77eaf0a9690d39790e5e7261fc354c5e39dc726d0e81b91f1a0e3cbdd"
+  },
+  "fix": {
+    "patch": "patches/evolution/nezha-audio-volume-curves.patch",
+    "contract": "patches/evolution/nezha-audio-volume-curves.json",
+    "patch_sha256": "5d04892e79d9d7b2878bce39f469ee1484ab14e8c97147d9a633be5d0d927bb1",
+    "parts": [
+      "Convert AIDL volume curves one at a time and skip the ones whose device category cannot be represented, instead of discarding the whole engine configuration.",
+      "If a converted configuration still has no volume groups, fill them from the legacy volume tables, which is what the XML path already does when it finds no engine configuration."
+    ],
+    "expected_result": "the engine keeps Xiaomi's twelve volume groups and eight strategies with their real curves for the five categories AOSP defines"
+  },
+  "rejected_alternatives": {
+    "replace_the_engine_xml": "The file the HAL reads lives on /vendor and /odm, which this project does not build, and the framework never reads it on the AIDL path anyway.",
+    "runtime_workaround": "None exists. The curves are built once when audioserver starts the audio policy manager; nothing writable from the shell changes them."
+  },
+  "not_established": [
+    "Which Xiaomi device category the HAL sends first: the AIDL payload is not readable from the device, so the category list is read out of the ODM XML instead",
+    "That the fix restores attenuation on the phone. That is a device result for the delivery set that carries the patch",
+    "Whether any Xiaomi-only category carries tuning that the five AOSP categories do not already cover for the speaker, earpiece, wired headset, Bluetooth and USB paths"
+  ],
+  "document": "docs/audio-volume-curves-20260911.md",
+  "aosp_device_category_mapping": {
+    "source": "frameworks/av/services/audiopolicy/common/include/Volume.h getDeviceCategory()",
+    "DEVICE_CATEGORY_HEADSET": [
+      "WIRED_HEADSET",
+      "WIRED_HEADPHONE",
+      "BLUETOOTH_SCO",
+      "BLUETOOTH_SCO_HEADSET",
+      "BLUETOOTH_A2DP",
+      "BLUETOOTH_A2DP_HEADPHONES",
+      "USB_HEADSET",
+      "BLE_HEADSET",
+      "BLE_BROADCAST"
+    ],
+    "DEVICE_CATEGORY_EXT_MEDIA": [
+      "LINE",
+      "AUX_DIGITAL",
+      "USB_DEVICE"
+    ],
+    "DEVICE_CATEGORY_SPEAKER": [
+      "SPEAKER",
+      "SPEAKER_SAFE",
+      "BLUETOOTH_SCO_CARKIT",
+      "BLUETOOTH_A2DP_SPEAKER",
+      "USB_ACCESSORY",
+      "REMOTE_SUBMIX",
+      "BLE_SPEAKER",
+      "default"
+    ],
+    "note": "every Bluetooth and USB output already lands on a category the file defines, so dropping the Xiaomi-only curves leaves no output without a curve"
+  },
+  "measured_music_volume_group": {
+    "source": "/odm/etc/audio_policy_engine_stream_volumes_mi.xml, volume group 'music', deviceCategory DEVICE_CATEGORY_SPEAKER",
+    "declared_index_range": [
+      0,
+      15
+    ],
+    "framework_index_range": [
+      0,
+      150
+    ],
+    "framework_index_range_note": "AudioService calls initStreamVolume with ro.config.media_vol_steps=150, and Xiaomi authored the curve on that same scale",
+    "speaker_curve_points": [
+      [
+        0,
+        -75800
+      ],
+      [
+        1,
+        -7317
+      ],
+      [
+        2,
+        -6450
+      ],
+      [
+        7,
+        -5730
+      ],
+      [
+        13,
+        -4878
+      ],
+      [
+        20,
+        -4226
+      ],
+      [
+        27,
+        -3728
+      ],
+      [
+        33,
+        -3362
+      ],
+      [
+        40,
+        -3006
+      ],
+      [
+        47,
+        -2758
+      ],
+      [
+        53,
+        -2549
+      ],
+      [
+        60,
+        -2309
+      ],
+      [
+        66,
+        -2102
+      ],
+      [
+        73,
+        -1795
+      ],
+      [
+        80,
+        -1400
+      ],
+      [
+        87,
+        -1190
+      ],
+      [
+        93,
+        -1040
+      ],
+      [
+        100,
+        -900
+      ],
+      [
+        109,
+        -685
+      ],
+      [
+        116,
+        -522
+      ],
+      [
+        122,
+        -460
+      ],
+      [
+        130,
+        -385
+      ],
+      [
+        137,
+        -265
+      ],
+      [
+        143,
+        -250
+      ],
+      [
+        150,
+        -30
+      ]
+    ],
+    "speaker_volume_db": {
+      "0": -758.0,
+      "1": -73.17,
+      "6": -58.74,
+      "75": -16.82,
+      "149": -0.61,
+      "150": -0.3
+    },
+    "speaker_volume_db_without_a_curve": 0.0,
+    "computed_by": "tests/test_audio_volume_curves.py, a port of VolumeCurve::volIndexToDb"
+  }
+}
