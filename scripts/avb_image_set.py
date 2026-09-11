@@ -359,6 +359,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "b6837d804cf5a9c92d7515d3b09f448c07ed6364ac610856332a176c6ad7e391", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v21-admit/admission.json", "sha256": "7985a717cbd6fb959d9df8ff497de1fbf5b4b202f717966f23b254fc6c454a54", "size_bytes": 7137},
      "build_number": "nezha.34aee22f376f606d9ed52909"},
+    # Now Playing music-trigger shim in the sound-trigger middleware over v21 (DSP model files + HEVC recorder fix + Leica + CameraOpt + camcorder retained); measured v22 system/system_ext.
+    {"measured_image": {"sha256": "5f9afa5b160b284c1c16e5804930d8dc0c2dc99ef76761ca376d4120196a37bc", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v22-admit/admission.json", "sha256": "569d2479bcabb74e57c34a04df2b56a148eccabeecfe9c2e4716ef960dae5848", "size_bytes": 7141},
+     "build_number": "nezha.b68e83ef070c648895e3881e"},
 )
 
 
