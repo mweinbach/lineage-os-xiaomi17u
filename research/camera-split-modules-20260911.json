@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "topic": "camera-split-modules",
+  "date": "2026-09-11",
+  "device": "nezha",
+  "measured_on": {
+    "delivery_set": "v23",
+    "build_number": "nezha.2fa2ea3549a2fc869a4c79df",
+    "phone_accessed": true,
+    "read_only": true,
+    "changes_made_to_the_phone": "none; the user selected Panorama in the camera and the log was read afterwards"
+  },
+  "symptom": "the Xiaomi camera's extra modes cannot be downloaded; every Qigsaw module directory is empty",
+  "finding": "the download and unpack succeed and the failure is the first dlopen of a split's native library, after which Qigsaw deletes the module",
+  "modules_declared": {
+    "manifest": "assets/qigsaw_5.0.0.0_2.0.json inside MiuiCamera.apk",
+    "qigsaw_id": "5.0.0.0",
+    "splits": {
+      "mimojifu2": {
+        "version": "1.3.4@250115",
+        "bytes": 179087959
+      },
+      "movielens": {
+        "version": "44.0.0@44",
+        "bytes": 127382399
+      },
+      "clone": {
+        "version": "38.0@38",
+        "bytes": 74931730
+      },
+      "vlog2": {
+        "version": "3.13@15",
+        "bytes": 27606596
+      },
+      "panorama": {
+        "version": "8.4.1@17",
+        "bytes": 18247013
+      },
+      "milive": {
+        "version": "0106@230106",
+        "bytes": 10251664
+      },
+      "ambilight": {
+        "version": "v1.3.7@20250115",
+        "bytes": 2912883
+      }
+    },
+    "built_in": false,
+    "note": "no assets/qigsaw/ split payload exists in the base APK, so every module is fetched at runtime"
+  },
+  "download_verified": {
+    "split": "panorama",
+    "expected_md5": "3891f5ead83911e32d24b14c7ba7554b",
+    "downloaded_md5": "3891f5ead83911e32d24b14c7ba7554b",
+    "downloaded_bytes": 18247013,
+    "host_http_status": 200,
+    "phone_reachability_ms": 17,
+    "conclusion": "the CDN, DNS and the phone's network are not involved in the failure"
+  },
+  "failure": {
+    "linker": "dlopen failed: couldn't map \"/data/data/com.android.camera/app_qigsaw/5.0.0.0/panorama/8.4.1@17/nativeLib/arm64-v8a/libmorpho_sensor_fusion.so\" segment 2: Permission denied",
+    "java": "java.lang.UnsatisfiedLinkError at com.android.camera.panorama.MorphoSensorFusion.<clinit>, reached from PanoramaModuleBase.onActive",
+    "rollback": "MCAM_Split.FileUtil deleted panorama.apk, the nativeLib tree, the oat tree and the version directory",
+    "avc_denial_logged": false,
+    "avc_note": "the platform policy dontaudits app data execute, so the linker message is the only record"
+  },
+  "policy_measurement": {
+    "method": "/sys/fs/selinux/access query, class file (index 6)",
+    "scontext": "u:r:platform_app:s0:c512,c768",
+    "tcontext": "u:object_r:app_data_file:s0:c512,c768",
+    "allowed_mask": "0x1142e7f",
+    "granted": [
+      "append",
+      "create",
+      "getattr",
+      "ioctl",
+      "lock",
+      "map",
+      "open",
+      "read",
+      "rename",
+      "setattr",
+      "unlink",
+      "watch",
+      "watch_reads",
+      "write"
+    ],
+    "withheld": [
+      "audit_access",
+      "entrypoint",
+      "execmod",
+      "execute",
+      "execute_no_trans",
+      "link",
+      "mounton",
+      "quotaon",
+      "relabelfrom",
+      "relabelto",
+      "watch_mount",
+      "watch_sb",
+      "watch_with_perm"
+    ],
+    "priv_app_privapp_data_file_allows_execute": true,
+    "priv_app_note": "priv_app may execute privapp_data_file, but a platform-key-signed app is matched to platform_app with app_data_file by seapp_contexts, so that path does not apply",
+    "file_class_permission_indices": {
+      "ioctl": 1,
+      "read": 2,
+      "write": 3,
+      "create": 4,
+      "getattr": 5,
+      "setattr": 6,
+      "lock": 7,
+      "relabelfrom": 8,
+      "relabelto": 9,
+      "append": 10,
+      "map": 11,
+      "unlink": 12,
+      "link": 13,
+      "rename": 14,
+      "execute": 15,
+      "quotaon": 16,
+      "mounton": 17,
+      "audit_access": 18,
+      "open": 19,
+      "execmod": 20,
+      "watch": 21,
+      "watch_mount": 22,
+      "watch_sb": 23,
+      "watch_with_perm": 24,
+      "watch_reads": 25,
+      "execute_no_trans": 26,
+      "entrypoint": 27
+    },
+    "decode_rule": "bit value for a permission is 1 << (index - 1); granted iff allowed_mask & bit"
+  },
+  "stock_reference": {
+    "observation": "the retained /data still carries a package-manager record of /data/user/0/com.android.camera/app_qigsaw/5.0.0.0/panorama/8.4.1@17/panorama.apk marked (removed)",
+    "reading": "the module was installed under the stock ROM before this one was flashed, so stock permits the load"
+  },
+  "text_relocation_survey": {
+    "split": "panorama",
+    "libraries": 9,
+    "with_dt_textrel_or_textrel_flag": 0,
+    "conclusion": "execmod is not required; execute alone is enough to map them"
+  },
+  "fix": {
+    "rule": "allow platform_app app_data_file:file execute;",
+    "file": "device/xiaomi/nezha/sepolicy/product/private/platform_app.te",
+    "contract": "config/nezha-camera-split-modules.json",
+    "policy_dir_already_wired": "device/xiaomi/nezha/generated/BoardConfigCandidate.mk PRODUCT_PRIVATE_SEPOLICY_DIRS",
+    "selinux_stays_enforcing": true
+  },
+  "cost": {
+    "scope": "every platform-key-signed app may run native code it wrote into its own data directory",
+    "processes_in_that_domain_on_this_build": [
+      "com.android.camera",
+      "com.android.systemui",
+      "com.google.android.packageinstaller",
+      "com.android.bluetooth.bthelper",
+      "com.google.android.flipendo"
+    ]
+  },
+  "not_established": [
+    "That any mode installs and runs. That is a device result for the delivery set that carries the rule",
+    "Whether a module needs a permission beyond execute once its libraries load",
+    "The six modules other than panorama were never observed downloading"
+  ],
+  "document": "docs/camera-split-modules-20260911.md"
+}

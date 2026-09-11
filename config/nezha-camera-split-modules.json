@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-split-modules-v1",
+  "device": "nezha",
+  "purpose": "Let the Xiaomi camera load the native libraries of its downloadable modes",
+  "rule_file": {
+    "path": "device/xiaomi/nezha/sepolicy/product/private/platform_app.te",
+    "sha256": "6baaa6b3997568fded0cf5f55111ee009c12d9967c9018151144877c7b277351",
+    "size_bytes": 1739,
+    "policy_dir": "device/xiaomi/nezha/sepolicy/product/private",
+    "wired_by": "device/xiaomi/nezha/generated/BoardConfigCandidate.mk: PRODUCT_PRIVATE_SEPOLICY_DIRS",
+    "rule": "allow platform_app app_data_file:file execute;"
+  },
+  "problem": {
+    "symptom": "In the Xiaomi camera, the extra modes never install. Every Qigsaw module directory under /data/data/com.android.camera/app_qigsaw/5.0.0.0 exists and is empty.",
+    "cause": "The split downloads and unpacks correctly, then dlopen() of its first native library fails with 'couldn't map ... segment 2: Permission denied' and Qigsaw deletes the whole module. The camera is platform-key signed, so it runs as platform_app with data labelled app_data_file, and the policy grants that pair every file permission except execute.",
+    "evidence": {
+      "linker": "dlopen failed: couldn't map \"/data/data/com.android.camera/app_qigsaw/5.0.0.0/panorama/8.4.1@17/nativeLib/arm64-v8a/libmorpho_sensor_fusion.so\" segment 2: Permission denied",
+      "rollback": "MCAM_Split.FileUtil: Succeed to delete file: ... /panorama/8.4.1@17/panorama.apk, then nativeLib, oat and the version directory itself",
+      "no_audit_record": "no avc denial is logged for this: the platform policy carries a dontaudit for app data execute, so the only visible symptom is the linker message",
+      "policy_query": "/sys/fs/selinux/access for u:r:platform_app:s0:c512,c768 -> u:object_r:app_data_file:s0:c512,c768 class file returns allowed=0x1142e7f, which grants append create getattr ioctl lock map open read rename setattr unlink watch watch_reads write and withholds execute",
+      "measured_on": "v23, nezha.2fa2ea3549a2fc869a4c79df, 2026-09-11"
+    }
+  },
+  "download_is_not_the_problem": {
+    "manifest": "assets/qigsaw_5.0.0.0_2.0.json inside MiuiCamera.apk",
+    "host_reachability": "HTTP 200 with the declared content-length",
+    "phone_reachability": "resolves and replies in 17 ms",
+    "panorama_split_md5_expected": "3891f5ead83911e32d24b14c7ba7554b",
+    "panorama_split_md5_downloaded": "3891f5ead83911e32d24b14c7ba7554b",
+    "panorama_split_bytes": 18247013
+  },
+  "scope_and_cost": {
+    "grants": "execute on app_data_file to every platform-key-signed app",
+    "platform_app_processes_on_this_build": [
+      "com.android.camera",
+      "com.android.systemui",
+      "com.google.android.packageinstaller",
+      "com.android.bluetooth.bthelper",
+      "com.google.android.flipendo"
+    ],
+    "withheld": [
+      "execmod",
+      "execute_no_trans"
+    ],
+    "execmod_not_needed_because": "none of the nine libraries in the panorama split declares DT_TEXTREL or the TEXTREL flag",
+    "neverallow_review": "no AOSP neverallow covers it: the app data execute neverallows name all_untrusted_apps, and the sensitive-domain list in private/app.te (bluetooth, isolated_app_all, nfc, radio, shared_relro, sdk_sandbox_all, system_app) does not include platform_app",
+    "types_are_public": "platform_app is declared in system/sepolicy/public/platform_app.te and app_data_file in public/file.te, so product-private policy may add this rule"
+  },
+  "rejected_alternatives": {
+    "private_data_type_for_the_camera": "a seapp_contexts type= of its own would scope the grant to one app, but many platform rules name app_data_file literally rather than the app_data_file_type attribute, so the camera would silently lose access it has today",
+    "private_domain_for_the_camera": "would have to re-derive every permission platform_app grants it",
+    "ship_the_splits_in_the_image": "the splits are not in the APK and it is Xiaomi-signed, so it cannot be repacked; Qigsaw unpacks to the same data directory either way"
+  },
+  "activation_allowed": true,
+  "not_device_admitted": true,
+  "remaining": [
+    "On-device confirmation that a mode installs and runs",
+    "Whether any module needs a permission beyond execute once its libraries load",
+    "The other six modules were never observed downloading; only panorama was exercised"
+  ],
+  "document": "docs/camera-split-modules-20260911.md"
+}

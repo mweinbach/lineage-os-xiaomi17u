@@ -1,0 +1,25 @@
+# The Xiaomi camera's extra modes are Qigsaw dynamic feature splits, not code in the APK.
+# Selecting Panorama, Clone, Vlog, Movie lens, Mimoji, Mi Live or Ambilight makes the app
+# download a split APK, unpack its native libraries under
+# /data/data/com.android.camera/app_qigsaw/<qigsawId>/<split>/<version>/nativeLib/arm64-v8a and
+# dlopen() them. The app is signed with the platform key, so it runs as platform_app with its
+# data labelled app_data_file, and this policy grants that pair everything except execute:
+#
+#   dlopen failed: couldn't map ".../nativeLib/arm64-v8a/libmorpho_sensor_fusion.so"
+#   segment 2: Permission denied
+#
+# Qigsaw treats the load failure as a bad install and deletes the whole module, which is why
+# every module directory on the phone is empty and why the modes look like they never download.
+# The download itself works: the split's md5 matches the manifest inside the APK.
+#
+# This is a W^X relaxation and it is deliberate. It lets any platform-key-signed app run native
+# code it wrote into its own data directory; on this build that is the camera, SystemUI,
+# PackageInstaller, bthelper and flipendo, all signed by the same key as the rest of the image.
+# The narrower alternatives were rejected: a private data type for the camera alone would drop
+# it out of the many platform rules that name app_data_file by hand, and a private domain would
+# have to re-derive everything platform_app grants the camera.
+#
+# execmod is deliberately not granted: none of the nine libraries in the panorama split carries
+# a text relocation, so mapping them needs execute only.
+# See config/nezha-camera-split-modules.json and docs/camera-split-modules-20260911.md.
+allow platform_app app_data_file:file execute;
