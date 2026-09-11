@@ -157,8 +157,8 @@
     "phone_accessed": true,
     "retention": "v15 removed from host after v16 was installed and recorded (2026-09-10)",
     "install_record": "research/v16-install-validation-20260910.json",
-    "carried_into": "research/v17-install-validation-20260910.json",
-    "carried_into_build": "nezha.11b0a26475073bca18f34c39",
-    "note_superseded": "v16 bundle retired after v17 was installed; these features are carried forward in the installed v17."
+    "carried_into": "research/v20-install-validation-20260910.json",
+    "carried_into_build": "nezha.d5894f355e27f7d2f503f519",
+    "note_superseded": "v16 bundle retired; these features are carried forward through the installed v20."
   }
 }

@@ -117,13 +117,13 @@ class PreparedDeliveryTests(unittest.TestCase):
         page = (ROOT / "docs/cameraopt-four-methods-20260909.md").read_text()
         for value in (first["build_number"], first["reconciled_archive"]["sha256"], first["bundle_manifest_sha256"]):
             self.assertIn(value, page)
-        # v16 is now the recorded predecessor on the status page; the installed build is the
-        # v17 the features were carried into, which still exposes the camcorder selection and CameraOpt
+        # v16 introduced these features and is now a lineage ancestor on the status page; the
+        # installed build is the one they were carried into, which still exposes the camcorder
+        # selection and CameraOpt.
         status = (ROOT / "docs/workspace-status.md").read_text()
-        self.assertIn(first["build_number"], status)
+        self.assertIn(first["build_number"], status)  # v16 still recorded in the lineage
         carried = json.loads((ROOT / first["carried_into"]).read_text())
         self.assertEqual(carried["build_number"], first["carried_into_build"])
-        self.assertEqual(carried["predecessor"], first["build_number"])
         self.assertIn("| Installed build identity | `" + carried["build_number"] + "`", status)
         self.assertEqual(carried["camcorder_profiles"]["media_settings_xml"], "/vendor/etc/media_profiles_vendor.xml")
         self.assertIn("configuration_state=loaded", carried["cameraopt"]["configuration_state"])

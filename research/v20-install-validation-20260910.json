@@ -1,0 +1,218 @@
+{
+  "operation": "v20-install-validation-v1",
+  "date": "2026-09-10",
+  "document": "docs/v20-install-validation-20260910.md",
+  "build_number": "nezha.d5894f355e27f7d2f503f519",
+  "predecessor": "nezha.613930978f6706c35296cd90",
+  "source_revision": 19,
+  "bundle_manifest_sha256": "1f0c5e0c974b103a74bf1ce66a92544ac4cb996e575cde2299919c41fbd53769",
+  "authorization": {
+    "user_response": "ok do 8K/120fps/long-4K60 video now",
+    "bound_before_phone_writes": true,
+    "wipe": false,
+    "slot_change": false,
+    "explicit_authorization_sha256": "b80b686917187f3d3b61aedc2ef75d13e474aa63e42d71af39c90d0ee3b1f085"
+  },
+  "preflight": {
+    "android_observation_status": "requested-observations-complete-not-device-admission",
+    "android_properties": {
+      "ro.product.device": "nezha",
+      "ro.build.version.incremental": "nezha.613930978f6706c35296cd90",
+      "ro.boot.slot_suffix": "_a",
+      "ro.boot.vbmeta.device_state": "unlocked",
+      "ro.boot.verifiedbootstate": "orange",
+      "ro.crypto.state": "encrypted"
+    },
+    "bootloader_values": {
+      "product": "nezha",
+      "unlocked": "yes",
+      "current-slot": "a",
+      "slot-count": "2",
+      "is-userspace": "no",
+      "snapshot-update-status": "none",
+      "slot-unbootable:a": "no",
+      "slot-retry-count:a": "6"
+    }
+  },
+  "writes": [
+    {
+      "role": "super",
+      "target": "super",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 243.825,
+      "sha256": "ee204767ce53c22cb4953c25be3b1b363dbc076660c772a6350e098d11efc7ea",
+      "size_bytes": 9477851248,
+      "rehashed_identical": true
+    },
+    {
+      "role": "dtbo",
+      "target": "dtbo_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.952,
+      "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+      "size_bytes": 33554432,
+      "rehashed_identical": true
+    },
+    {
+      "role": "init_boot",
+      "target": "init_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.371,
+      "sha256": "e3f55bfcd911a639bfbda971dbfc1faed5dc1b5a7e96f99e322f9df1c37f7104",
+      "size_bytes": 8388608,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vendor_boot",
+      "target": "vendor_boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.653,
+      "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "recovery",
+      "target": "recovery_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.758,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "rehashed_identical": true
+    },
+    {
+      "role": "boot",
+      "target": "boot_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.686,
+      "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+      "size_bytes": 100663296,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta_system",
+      "target": "vbmeta_system_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.137,
+      "sha256": "7b928b6bb54c9e03aef13bb421b5779d01aed058834d138342aaf970d28259dd",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    },
+    {
+      "role": "vbmeta",
+      "target": "vbmeta_a",
+      "status": "acknowledged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.147,
+      "sha256": "7f20f4791f04bd110d5d1ee8e3c0dcbf4954fe0b011735296ed60b92c3674eac",
+      "size_bytes": 65536,
+      "rehashed_identical": true
+    }
+  ],
+  "boot": {
+    "seconds_to_boot_completed": 25.5,
+    "build_type": "userdebug",
+    "debuggable": "1",
+    "selinux": "Enforcing",
+    "root_adb": true,
+    "uptime_at_observation_s": 517.45,
+    "crash_fatal": 0,
+    "avc_denials_total": 132
+  },
+  "hevc_recorder_fix": {
+    "headline": "8K, 4K120 and long/sustained 4K60 now record a decodable HEVC track; previously they crashed the writer or wrote a non-decodable track.",
+    "patches": [
+      "patches/evolution/nezha-hevc-length-prefixed-nal.patch",
+      "patches/evolution/nezha-hevc-recorder-csd-duplicate.patch",
+      "patches/evolution/nezha-hevc-recorder-csd-annexb.patch"
+    ],
+    "cause": "The Xiaomi recorder enables vendor.qti-ext-enc-nal-length-bs, so the vendor encoder emits length-prefixed NAL units and length-prefixed codec-specific data. The AOSP MPEG4Writer parsed those as Annex-B, which underflowed a NAL size (FORTIFY crash) or built a malformed hvcC.",
+    "video_matrix_measured_on_device": {
+      "8k30": {
+        "decodable": true,
+        "codec": "hevc",
+        "resolution": "7680x4320",
+        "frames_decoded": 362,
+        "container_fps": 24.69,
+        "gaps_over_100ms": 0,
+        "size_bytes": 136861095
+      },
+      "4k120": {
+        "decodable": true,
+        "codec": "hevc",
+        "resolution": "3840x2160",
+        "frames_decoded": 1786,
+        "container_fps": 120.18,
+        "gaps_over_100ms": 0,
+        "size_bytes": 182484306
+      },
+      "4k60_long": {
+        "decodable": true,
+        "codec": "hevc",
+        "resolution": "3840x2160",
+        "frames_decoded": 1337,
+        "container_fps": 30.04,
+        "gaps_over_100ms": 0,
+        "size_bytes": 279000934
+      }
+    },
+    "all_three_decodable": true,
+    "note": "The 8K30 clip decodes at ~25 fps and 4K60 at ~30 fps in the container (the Xiaomi mode timing / low-light auto frame rate in a dark room), not a decodability defect; 4K120 decodes at a true 120 fps. No FORTIFY crash, track error or codec-config error in any case."
+  },
+  "leica_essential": {
+    "props_from_build_prop_after_reboot": true,
+    "note": "v20 carries the always-on Leica Essential selection unchanged from v17."
+  },
+  "camcorder_profiles": {
+    "media_settings_xml": "/vendor/etc/media_profiles_vendor.xml",
+    "canoe_v2_sha256": "c1cf4365e3361ff1de384f338ff0681e98bb6ae3004c6da07c8de992e8b0b6c5"
+  },
+  "cameraopt": {
+    "configuration_state": "configuration_state=loaded deliveries=1 failure=null"
+  },
+  "dim": {
+    "config_float": "0.05"
+  },
+  "retained_userdata": {
+    "userdata_or_metadata_partition_written": false,
+    "wipe_requested": false,
+    "accounts": "1",
+    "third_party_packages": "22",
+    "note": "Retention is structural: the eight-image write set contained no userdata or metadata partition and no wipe was requested. Account count unchanged."
+  },
+  "retention": {
+    "operation": "retention-after-v20-install",
+    "kept": "variant-opt-in-userdebug-20260906-v20",
+    "removed": [
+      {
+        "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v19",
+        "kib": 30158112
+      },
+      {
+        "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v19",
+        "kib": 9605264
+      },
+      {
+        "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v19-transfer",
+        "kib": 20315884
+      }
+    ],
+    "removed_total_kib": 60079260,
+    "kept_admission_record": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v19-admit/admission.json",
+    "host_free_kib_before": 1057102316,
+    "host_free_kib_after": 1117182032,
+    "dry_run": false,
+    "recorded_at": "2026-09-11T01:32:27Z"
+  },
+  "device_changes_during_validation": [
+    "recorded 8K/4K120/4K60/1080p test clips into DCIM via the Xiaomi app; camera force-stopped; stay-awake restored to 0"
+  ],
+  "not_established": "Sustained thermal behavior at 8K/4K120, the exact 8K/4K60 recording frame rate at the encoder, and rendered image quality in a lit scene with a person. Audio and the Leica look quality are recorded separately."
+}

@@ -1,22 +1,24 @@
 # Current Nezha workspace status
 
-**Installed phone: v17 userdebug (`nezha.11b0a26475073bca18f34c39`, source
-revision 16, 709 rows), slot A, boot completed in 25.5 s with SELinux Enforcing.**
+**Installed phone: v20 userdebug (`nezha.d5894f355e27f7d2f503f519`, source
+revision 19), slot A, boot completed in 25.5 s with SELinux Enforcing.**
 The separately approved eight-image installation completed without a wipe, slot
-change or data clear, and userdata was retained. V17 is v16 plus one change: the
-guarded `leica-essential.mk` fragment is enabled (`NEZHA_LEICA_ESSENTIAL := true`),
-so the Leica M3/M9 "Leica Essential" mode (module 256) is baked on at build time
-by two system properties (`ro.theme_customize=LCC` and
-`camera.debug.safe.check.disable=true`) — no runtime resetprop and no Magisk, and
-the device keeps its real identity. It also still carries the four ported
-CameraOpt methods and the factory camcorder-profile selection: the Xiaomi app
-exposes the full video matrix, 4K60 and 1080p record and play, and 8K/120 fps/long
-4K60 still fail on this build's media writer. The cloud Leica color filters are
-enabled. See the [v17 installation record](v17-install-validation-20260910.md),
-the [Leica Essential record](leica-essential-20260910.md) and the
-[tier 2 v16 camera page](tier2-camera-v16-20260910.md). V16
-(`nezha.434625bd9b5cd7a8a7eabd84`) is the recorded predecessor; its bundle was
-removed after v17 was installed and recorded, and V15
+change or data clear, and userdata was retained. V20 is v17 plus a three-part
+`MPEG4Writer` fix so the Xiaomi recorder's 8K, 4K120 and long/sustained 4K60 modes
+now write a **decodable** HEVC track: 8K30 → HEVC 7680×4320, 4K120 → HEVC
+3840×2160 at a true 120 fps, and a 45 s 4K60 clip with live audio — where before
+8K wrote a non-decodable track and 4K120 and long 4K60 crashed the recorder (a
+FORTIFY write overflow). It still carries the always-on Leica Essential selection
+(`ro.theme_customize=LCC` + `camera.debug.safe.check.disable=true`, from v17), the
+four ported CameraOpt methods, the factory camcorder-profile selection, and the
+enabled cloud Leica color filters. See the
+[v20 installation record](v20-install-validation-20260910.md), the
+[Leica Essential record](leica-essential-20260910.md) and the
+[tier 2 v16 camera page](tier2-camera-v16-20260910.md). The intermediate sets
+were v17 (`nezha.11b0a26475073bca18f34c39`, baked-in Leica Essential), v18 and
+v19 (the first two parts of the recorder fix); V19
+(`nezha.613930978f6706c35296cd90`) is the recorded predecessor removed after v20,
+V16 (`nezha.434625bd9b5cd7a8a7eabd84`) survives in its install record, and V15
 (`nezha.81c1b93277a1fa371a3efbb3`) survives further back in its install record.
 No SIM is inserted, so no IMS registration is expected.
 
@@ -62,12 +64,12 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.11b0a26475073bca18f34c39` (userdebug, delivery set v17) |
-| Recorded predecessor (removed from host) | v16 `nezha.434625bd9b5cd7a8a7eabd84`; survives as hashes in its [install record](v16-install-validation-20260910.md) |
-| Earlier predecessor | v15 `nezha.81c1b93277a1fa371a3efbb3`; survives in its [install record](v15-install-validation-20260909.md) |
-| Installed source receipt | 709 rows; `reports/tier2-camera-20260909/source-revision-16/source-installed.json`, SHA256 `6a5d215761c40dd147ce351586ed9a1d3d7130302c381caf9e645e2c7f204ec1` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v17/` (the only delivery set retained on the host; see the [v17 install record](v17-install-validation-20260910.md)) |
-| Bundle manifest SHA256 | `6230582068c8133487c10af7097be7ff10dc52cd29c1cf0f6177961df4819ec0` |
+| Installed build identity | `nezha.d5894f355e27f7d2f503f519` (userdebug, delivery set v20) |
+| Recorded predecessor (removed from host) | v19 `nezha.613930978f6706c35296cd90` (intermediate recorder-fix stages: v18, v19; and v17 `nezha.11b0a26475073bca18f34c39` baked in Leica Essential) |
+| Earlier predecessors | v16 `nezha.434625bd9b5cd7a8a7eabd84`, [install record](v16-install-validation-20260910.md); v15 `nezha.81c1b93277a1fa371a3efbb3`, [install record](v15-install-validation-20260909.md) |
+| Installed source receipt | 710 rows; `reports/tier2-camera-20260909/source-revision-19/source-installed.json`, SHA256 `531fd2b4f210574a8c767caa745c1a11c17842a6993d795529ba51b9d033bc70` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v20/` (the only delivery set retained on the host; see the [v20 install record](v20-install-validation-20260910.md)) |
+| Bundle manifest SHA256 | `1f0c5e0c974b103a74bf1ce66a92544ac4cb996e575cde2299919c41fbd53769` |
 | Reconciled signed target-files SHA256 | `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953` |
 | Signing/reconciliation result | Passed signing, reconciliation, 18 host gates and eight-payload verification; receipts in the [tier 1 record](tier1-ims-dim-20260909.md) |
 | Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.4 s |
@@ -114,12 +116,13 @@ camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-2
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
 verification remain separate evidence. The Linux checkout holds source
-revision 16 (`nezha.11b0a26475073bca18f34c39`), which is now installed as v17
-and adds the always-on [Leica Essential selection](leica-essential-20260910.md)
-over revision 15's four CameraOpt methods and [factory camcorder profile selection](camera-video-profiles-20260909.md).
-The [v17 installation record](v17-install-validation-20260910.md) is the current
+revision 19 (`nezha.d5894f355e27f7d2f503f519`), which is now installed as v20
+and adds the three-part [HEVC recorder fix](v20-install-validation-20260910.md)
+over revision 16's always-on [Leica Essential selection](leica-essential-20260910.md),
+the four CameraOpt methods and the [factory camcorder profile selection](camera-video-profiles-20260909.md).
+The [v20 installation record](v20-install-validation-20260910.md) is the current
 phone evidence, and the [tier 2 v16 page](tier2-camera-v16-20260910.md) holds
-the measured video matrix, microphone, CameraOpt runtime and Leica findings.
+the earlier video matrix, microphone, CameraOpt runtime and Leica findings.
 
 1. Read [source-lock handling](source-lock.md),
    [device integration](../device/xiaomi/nezha/README.md) and the
@@ -175,17 +178,19 @@ template is enrolled.
   Aperture Ultra HDR effects. Useful effect quality, focus, stabilization,
   sensor-native detail and sustained behavior remain unverified. Preserve the
   [v13 runtime record](camera-v13-install-validation-20260908.md).
-- **Video and audio:** The installed v17 exposes the full Xiaomi video matrix
-  (720p to 8K, 30/60/120 fps, unchanged from v16) because the stock `media.settings.xml` key now
-  loads the vendor camcorder table. 4K60 Dolby Vision and 1080p HEVC record and
-  play with a live microphone; 8K produces a non-decodable track, and 120 fps
-  and long 4K60 runs abort the stock app in the platform media writer, which
-  lacks the QTI length-prefixed-NAL handling the stock system carries. A
-  sustained 4K60 thermal curve therefore could not be captured. The microphone
-  tracks a played test tone in both Dolby Vision and plain HEVC. See the
-  [tier 2 v16 page](tier2-camera-v16-20260910.md). Fixing 8K/120 fps/long 4K60
-  needs the QTI-patched `MPEG4Writer`; effect quality, focus and stabilization
-  still need a lit scene and a person.
+- **Video and audio:** The installed v20 exposes the full Xiaomi video matrix
+  (720p to 8K, 30/60/120 fps) because the stock `media.settings.xml` key loads the
+  vendor camcorder table, and **8K, 4K120 and long/sustained 4K60 now record a
+  decodable HEVC track**: three guarded `MPEG4Writer` patches teach the platform
+  media writer the vendor encoder's length-prefixed NAL and codec-config framing
+  (`vendor.qti-ext-enc-nal-length-bs`), so 8K30 decodes at 7680×4320, 4K120 at a
+  true 120 fps, and a 45 s 4K60 clip records with live audio — where before 8K
+  wrote a non-decodable track and 4K120/long 4K60 crashed the recorder with a
+  FORTIFY write overflow. See the
+  [v20 install record](v20-install-validation-20260910.md). The 8K/4K60 container
+  frame rate (about 25/30 fps) and sustained thermals still want a lit scene and a
+  longer run; 4K60 Dolby Vision and 1080p HEVC continue to record and play with a
+  live microphone.
 - **Leica looks:** The cloud Leica color filters (Leica Vibrant and the six
   Leica LUT looks) are enabled and cloud-delivered. The Leica M3 and M9
   "Leica Essential" film looks (module 256) are now baked on in the installed

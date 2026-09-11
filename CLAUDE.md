@@ -2,7 +2,7 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-installed build is the v17 userdebug delivery set, which boots with enforcing
+installed build is the v20 userdebug delivery set, which boots with enforcing
 SELinux and root ADB for diagnostics. Most of this repository is tooling,
 contracts and evidence records, not Android source.
 
@@ -119,18 +119,20 @@ quoted.
 
 ## Where things stand
 
-- Installed: v17, `nezha.11b0a26475073bca18f34c39`, userdebug, slot A,
+- Installed: v20, `nezha.d5894f355e27f7d2f503f519`, userdebug, slot A,
   Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v17/`. It is v16 plus
-  the always-on Leica Essential selection, and still carries the four ported
-  CameraOpt methods and the factory camcorder profile selection; see
-  `docs/v17-install-validation-20260910.md`, `docs/leica-essential-20260910.md`
-  and `docs/tier2-camera-v16-20260910.md`.
-- Predecessor (removed from host): v16, `nezha.434625bd9b5cd7a8a7eabd84`; it
-  survives as hashes in `docs/v16-install-validation-20260910.md`. V15
-  (`nezha.81c1b93277a1fa371a3efbb3`) survives further back in
-  `docs/v15-install-validation-20260909.md`.
-- Source: revision 16 in the Linux checkout, now installed as v17. It carries the merged feature
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v20/`. It is v17 plus
+  a three-part MPEG4Writer fix so the Xiaomi recorder's 8K/4K120/long-4K60 modes
+  write a decodable HEVC track, and it still carries the always-on Leica Essential
+  selection, the four ported CameraOpt methods and the factory camcorder profile
+  selection; see `docs/v20-install-validation-20260910.md`,
+  `docs/leica-essential-20260910.md` and `docs/tier2-camera-v16-20260910.md`.
+- Predecessor (removed from host): v19, `nezha.613930978f6706c35296cd90` (v18/v19
+  were the first two parts of the recorder fix; v17 `nezha.11b0a26475073bca18f34c39`
+  baked in Leica Essential). V16 `nezha.434625bd9b5cd7a8a7eabd84` survives in
+  `docs/v16-install-validation-20260910.md` and V15
+  (`nezha.81c1b93277a1fa371a3efbb3`) in `docs/v15-install-validation-20260909.md`.
+- Source: revision 19 in the Linux checkout, now installed as v20. It carries the merged feature
   candidates (display brightness, Dolby, haptics, camera scheduling, refresh
   policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
   the HyperOS camera framework port, native camera session hooks, vendor-key
@@ -139,14 +141,19 @@ quoted.
   needs its explicit opt-in. The workload classifier stays disabled.
 - V15 carried the exact-stock IMS provider in its restored
   `vendor_qtelephony` domain (no SIM) and the display dim level 0.05; those
-  remain in v17. See `docs/tier1-ims-dim-20260909.md`.
-- Camera: on v17 the Xiaomi app exposes the full video matrix (720p to 8K,
+  remain in v20. See `docs/tier1-ims-dim-20260909.md`.
+- Camera: on v20 the Xiaomi app exposes the full video matrix (720p to 8K,
   30/60/120 fps). 4K60 Dolby Vision and 1080p record and play with a live
-  microphone; 8K, 120 fps and long 4K60 runs fail on this build's media writer
-  (no QTI length-prefixed-NAL handling), so a sustained 4K60 thermal curve is
-  not available. The four CameraOpt methods run on real 4K events, killing only
-  cached apps above the adj floor. The cloud Leica color filters are enabled.
-  The Leica M3/M9 Essential looks (module 256) are baked on in v17 by two
+  microphone; 8K, 4K120 and long/sustained 4K60 now also record a decodable HEVC
+  track (8K30 7680×4320, 4K120 a true 120 fps, 45 s 4K60 with audio), fixed by
+  three guarded MPEG4Writer patches that handle the vendor encoder's
+  length-prefixed NAL and codec-config framing (`vendor.qti-ext-enc-nal-length-bs`);
+  see `docs/v20-install-validation-20260910.md` and
+  `patches/evolution/nezha-hevc-*`. The 8K/4K60 container frame rate and sustained
+  thermals still want a lit scene and longer runs. The four CameraOpt methods run
+  on real 4K events, killing only cached apps above the adj floor. The cloud Leica
+  color filters are enabled.
+  The Leica M3/M9 Essential looks (module 256) are baked on (from v17) by two
   properties, `ro.theme_customize=LCC` and `camera.debug.safe.check.disable=true`:
   the gate was the camera's native anti-tamper check (fails on an unlocked
   bootloader), not a hardware attestation, and the device keeps its real
