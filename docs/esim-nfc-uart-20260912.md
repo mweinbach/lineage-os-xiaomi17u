@@ -143,8 +143,88 @@ fixtures. All 44 private artifact hashes in the initial receipt were recomputed
 successfully. These are host/evidence checks, separate from the failed card
 startup measurements; no ROM or diagnostic APK was rebuilt.
 
-The next host investigations compare the remaining global/CN UART code and AP
-device-tree differences, and seek a supported Thales card-status definition.
+## Further firmware and card-reference comparisons
+
+The previously retained configuration comparison left executable-code and AP
+overlay gaps. Those have now been investigated using the retained CN, WW and
+official EEA modem images. Nineteen bounded UART function groups, covering
+1,264 instruction lines per image, match after explicit relocation mapping.
+Eighteen power/level-shifter groups also match. The comparison preserves reset
+order, mode/mask constants, clock choices, eSIM checks, votes and GPIO/QDI
+operations. Ten complete UART tables are byte-identical. Unexamined external
+callees remain outside this comparison; it does not prove whole-firmware
+equivalence or interchangeability.
+
+The EEA336 AP DTBO was reconstructed from 11 verified OTA operations, and its
+complete 23,068,672-byte hash matches the OTA manifest. Its second overlay has
+the same board selectors as CN309. Across 384 focused nodes and 1,375
+properties, the compared ST54/NFC, PMIC and satellite SIM declarations have no
+differences after resolving phandle references. The extra EEA overlay supplies
+different platform selectors and has 22 PMIC differences; its compared ST/NFC,
+satellite and SD-card settings match.
+
+The Tiantong satellite driver does have runtime SIM-route controls. Its GPIO
+getters request and free ownership, so they were not used as passive queries.
+Reanalysis of all 138 earlier full GPIO snapshots found unchanged printed
+PMH0101 GPIO8/10 output-low values, but the exact PMIC driver's debug output
+uses cached fields for output level, direction and function. It rereads enable
+control and conditionally input status. Those output-low strings therefore do
+not establish the modem's actual level-shifter state. The numerical match
+between the AP's GPIO10 and the modem's zero-based GPIO9 does not yet identify
+the same PMIC controller or prove an eSIM connection.
+
+Five small public-mirror artifacts, totaling 476,689 bytes, yielded ten Thales
+maintenance scripts. The eUICC-update APEX duplicates three of the loose
+catalogs. All scripts start by selecting a patch security domain; their only
+unwrapped identity queries are FE, FD and FC, already measured here. There is
+no AuditScript, matching `C1146657-A` definition, or documented pre-SELECT SPI
+initializer. The target identifiers differ from the measured card OS platform
+identifier.
+Git blob identities and the APEX outer signature/source stamp verify, but
+official factory membership was not established and six optional embedded
+manifest hashes do not match decoded script bytes. No patch was executed.
+The client uses a card-bound cryptographic session for its Thales provisioning
+URL; that client path is not a shared-catalog read and was not contacted.
+
+## Actual NFC controller configuration
+
+An original temporary DEX helper invokes the active NFC service's typed Binder
+API for two fixed ST GET_CONFIG commands. It registers no vendor callback,
+changes no configuration and sends no card APDU. The active APK, JNI, HAL and
+configuration file are hash-gated before dispatch. Fifteen mocked host tests
+cover fresh response correlation, ambiguous/extra replies and cleanup failures.
+
+| Record | Captured request | Observed value | Comparison with the freshly pulled shipped file |
+| --- | --- | ---: | --- |
+| Hardware | `2f02050300020100` | 48 bytes | Byte-identical |
+| Secure element | `2f020503000b0100` | 30 bytes | Byte-identical |
+
+Both controller responses have status zero, exact NCI/value lengths and raw
+prefix bytes `0100`. The prefix's field meanings are not assumed. Each response
+is correlated with its own fresh outgoing command, without another ST command
+or response in that query window. The response timestamps follow the requests
+by 9,759 and 6,944 microseconds respectively; these are log intervals, not chip
+startup measurements. An independent decoder rechecked both responses against
+the raw snoop and freshly pulled configuration file.
+
+These records are therefore present and match the shipped configuration. Their
+opaque fields supply no verified ISO7816-enable bit or card-module status.
+No eSIM cycle was performed for these reads. The temporary helper was removed,
+ADB returned to UID 2000, and boot/build/slot, Enforcing SELinux, NFC on and
+always-on off were verified unchanged.
+
+The official EEA336 `/odm/etc/st54l_conf.txt` was subsequently extracted from
+the existing OTA with 1,382,007 additional compressed bytes. The whole 6,750-byte
+file matches the freshly pulled phone file, so both measured controller records
+also match the EEA shipped records. The new data operation was checked against
+the retained manifest, reused reconstructed operations were rehashed, and all
+required inode/directory/data extents were covered. This is a verified partial
+extraction; no complete ODM-partition hash or new OTA-signature verification is
+claimed.
+
+The comparisons supply no supported global-firmware configuration change or
+new card-activation command. TrustZone's separate eSE GPIO configuration and
+the modem's downstream PMIC-controller mapping remain under host review.
 The public [ST54L description](https://www.st.com/en/secure-mcus/st54l.html)
 supports the chip family's eSIM capability; it does not identify this board's
 connections or personalization. No measured result yet justifies changing

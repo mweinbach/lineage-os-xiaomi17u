@@ -9,6 +9,11 @@ status becoming set before cleanup after previously clear status. It does not
 identify the electrical or card-configuration cause. Both tests restored NFC,
 the original records, physical selection, owned channels and diagnostic mask;
 the diagnostic app is subsequently force-stopped and ADB is shell UID 2000.
+Two additional supported NFC reads verify that the controller's hardware and
+secure-element records match both the fresh phone file and official EEA336
+configuration. Bounded global/CN modem-code and matching AP-overlay comparisons
+found no enabling difference. Card-module state and the physical interface remain
+unresolved; these comparisons do not establish whole-firmware interchangeability.
 The [combined eSIM boot/hold test](esim-combined-20260912.md) completes the
 previously unmeasured application-LPA configuration plus verified ISD hold.
 Three captured startup attempts still end in RX BREAK and NO_ATR. The approved

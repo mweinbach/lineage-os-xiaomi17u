@@ -169,7 +169,8 @@
       "seconds": 190.218,
       "passed": true
     },
-    "artifact_hashes_recomputed_before_validation_logs_added": 44
+    "artifact_hashes_recomputed_before_validation_logs_added": 44,
+    "nfc_read_mocked_regressions": 15
   },
   "remaining": {
     "esim_working": false,
@@ -177,9 +178,8 @@
     "physical_startup_cause_known": false,
     "selected_lpa": null,
     "next_host_investigations": [
-      "Global/CN UART startup code comparison",
-      "Global/CN AP DTBO secure-element dependencies",
-      "Supported Thales card-configuration/status definition"
+      "TrustZone eSE GPIO configuration",
+      "Modem PM peripheral backend controller mapping"
     ]
   },
   "artifacts": [
@@ -412,6 +412,220 @@
       "path": "reports/esim-continuation-20260912/test-full.log",
       "size": 903691,
       "sha256": "75f883b20240c7a8d67b6d1115880b76ecf669991f518061357d0cb166f6ce66"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/variant-code/uart-findings.md",
+      "size": 7665,
+      "sha256": "79ecc2a5a3e055221601a0858295b9cf26ff304a6ecf5ee6be03219dec349aec"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/variant-code/pm-comparison.md",
+      "size": 9753,
+      "sha256": "ce7fa00c3bc59fd5c36cd152b631a62f34eb4edaa90b6a1f8ae37a7eeb9a18ef"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/findings.md",
+      "size": 10550,
+      "sha256": "6c8b54ec8f6bd490e8f3d65812d914b7ed860686eea5d4dbc4a207c05eb64f60"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/evidence.json",
+      "size": 8397,
+      "sha256": "b1c70edcdff2521c39a529340ca6dd905c0f960cfd195cee505675b677132f1e"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/satellite-runtime-review.md",
+      "size": 10973,
+      "sha256": "bf35570fbf6721ced4ff52ab1ba2a29bafef6fcdbd0aa6065cb4696a08fa02b0"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pmic-debug-show-review.md",
+      "size": 4475,
+      "sha256": "d07f666b331290e9506ee9c7f7c3307bd7e6c3557a29af05428541b248bfe401"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/card-config-discovery/new-catalog-findings.md",
+      "size": 7019,
+      "sha256": "87f765740a39e23e29a1e48974cc011f43d3794e68d21271745ccf3853e282a7"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/card-config-discovery/client-query-review.md",
+      "size": 6715,
+      "sha256": "a41ad70d17d7002ad8f6abeb46e816391f87a7d25133a1be5d5a05da7bd5fda6"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/card-config-discovery/multiscript-inventory.json",
+      "size": 21984,
+      "sha256": "a8e7407481fc2140ffa19f00fcaa46c8cd24b4d49e7f59c30ee85809ec5fb5c4"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/card-config-discovery/script-query-summary.json",
+      "size": 5711,
+      "sha256": "c017c36f21e3dfc4622f3a85c72aa2b3078e101a96040141ad5139baed47e8cc"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/card-config-discovery/ofl-source/evidence.json",
+      "size": 9091,
+      "sha256": "f9c3af6fa523f5d603d076b59a0db1711f17f7cbf6a4f7b05a58c7cf53c85553"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-interface-query/findings.md",
+      "size": 7498,
+      "sha256": "12e0926da43336343f0ee69a8ae6d07640a1e8fe0e4dff2f9ac24e04655a5cbd"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-interface-query/query-contract.json",
+      "size": 1395,
+      "sha256": "4e3224f5a296043d4957011a075e905381c97e65257431c8d8a2803a446efd0d"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-interface-query/live-comparison.json",
+      "size": 2822,
+      "sha256": "f24ecff1b6327e68b2c45962721c997c6cf7cb3615ba1f1e119c42fabc0f6deb"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-interface-query/global-config/provenance.json",
+      "size": 2915,
+      "sha256": "1d17d6fbd154bef9f877ecc0e29a8be18377843e75ce927fb2e33626def900d1"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-interface-query/global-config/findings.md",
+      "size": 2565,
+      "sha256": "435a1dc7836a6edffc2850f56066fdc2f0ac019381c2cc00acac98796debbf11"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-interface-query/global-config/comparison.json",
+      "size": 996,
+      "sha256": "b4f274353e9c74335c6a56a0193ece1ce121ae68fde7cf6be4f2d2bcd61af59a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/preflight/active-st/provenance.json",
+      "size": 971,
+      "sha256": "eb92f422daf79ef5d93fb2189bfb97a08f825f4e7a71d6303494b852d3329e5f"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/NezhaNfcConfigRead.java",
+      "size": 1637,
+      "sha256": "18ec589579450beaf22c58ef5362307c5776a15247c5f2f29b837d913cd117fb"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/build.json",
+      "size": 223,
+      "sha256": "33838eaaa3cc972ef452a07150fd2e69979427c9abda4f8ce7687c6eded91f33"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/decode_config.py",
+      "size": 3051,
+      "sha256": "ecd4c075c6c49304487dcb99c76e79e7257cdef376b11e382f8e9ba9608a897c"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/transaction.py",
+      "size": 9721,
+      "sha256": "856aec2ec3678e8bfbf89f4cf1a2a214f04153a8bfd3bbc291204eac34d5ed5c"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/review.md",
+      "size": 5851,
+      "sha256": "af04fa12638f874a77d48e9bf937d2d30ddb568e89280be7281126c23bf6aa8b"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/review-manifest.json",
+      "size": 1647,
+      "sha256": "a253c924a5beacd837b512bd95be00a70c08fc67b5a3904e4eecc2c95493c495"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/test_transaction_review.py",
+      "size": 11032,
+      "sha256": "5d959566b60efe9aa227df50229e29daf9ddcfa623f4ec00a16fd505bb476737"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/capture/journal.json",
+      "size": 1946,
+      "sha256": "d909f7184769e79d288b5ad18a77588baedd123df482d455ced42c51d39c316b"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/capture/hardware-nfc.txt",
+      "size": 15862,
+      "sha256": "144a3f38b07e738e631efc1ffcf7d207e530859908ec56d3230f7ac51b329ee4"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/capture/secure_element-nfc.txt",
+      "size": 15931,
+      "sha256": "de3086636ecc363f7bf70de0caad5047eb4ed6e6ed3c641b0823783fd32e6e32"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-config-read/result.json",
+      "size": 464,
+      "sha256": "1d03fafe6de8ce01f4ae5650c03771fbec3135102d8161dd7f6a56bd5c47fe5a"
     }
-  ]
+  ],
+  "host_followup": {
+    "uart_variant_comparison": {
+      "images": [
+        "CN309",
+        "WW-bundled-309",
+        "EEA336"
+      ],
+      "matched_function_groups": 19,
+      "instruction_lines_per_image": 1264,
+      "exact_static_tables": 10,
+      "whole_firmware_equivalence_claimed": false
+    },
+    "pm_variant_comparison": {
+      "matched_groups": 18,
+      "pmic_controller_identity_established": false
+    },
+    "ap_dtbo_comparison": {
+      "eea_partition_bytes": 23068672,
+      "all_11_operation_hashes_and_partition_hash_verified": true,
+      "matching_overlay": 1,
+      "focused_nodes": 384,
+      "focused_properties": 1375,
+      "matching_overlay_differences_after_reference_normalization": 0,
+      "extra_overlay_0_pmic_differences": 22,
+      "extra_overlay_st_nfc_satellite_sd_settings_equal": true
+    },
+    "thales_static_catalogs": {
+      "artifacts": 5,
+      "bytes": 476689,
+      "decoded_scripts": 10,
+      "new_status_query": false,
+      "matching_customer_id_definition": false,
+      "matching_live_platform_identity": false,
+      "git_blob_verification": true,
+      "apex_outer_signature_and_source_stamp_verified": true,
+      "factory_membership_proven": false,
+      "optional_manifest_hash_mismatches": 6,
+      "no_scripts_executed": true
+    },
+    "retained_pmic_snapshots": {
+      "samples": 138,
+      "output_values_from_cached_fields": true,
+      "actual_output_or_full_configuration_inferred": false
+    }
+  },
+  "nfc_configuration_read": {
+    "original_helper": true,
+    "query_count": 2,
+    "controller_writes": 0,
+    "reboots": 0,
+    "sim_cycles": 0,
+    "hardware_bytes": 48,
+    "secure_element_bytes": 30,
+    "both_values_match_fresh_phone_and_eea_shipped_records": true,
+    "hardware_sha256": "176e9c8203ae4210ad951286c12a5eff02ecc3460149819db1a7f8c65b5207c2",
+    "secure_element_sha256": "872b0225256f6e133e817b72d4c89c95a73c30459cf03474e6de2770ad9fba21",
+    "status": 0,
+    "opaque_prefix": "0100",
+    "fresh_unambiguous_command_response_required": true,
+    "temporary_dex_removed": true,
+    "original_boot_build_slot_nfc_enforcing_verified": true,
+    "adb_uid_2000_restored": true,
+    "cleanup_errors": [],
+    "eea_script_bytes": 6750,
+    "eea_script_sha256": "ba60d15b1ffacc135778c4300846eca63deb1c9cf8edbc01eaa4b959d658b3d6",
+    "eea_additional_download_bytes": 1382007,
+    "eea_partial_partition_extraction": true,
+    "full_odm_partition_hash_verified": false
+  }
 }
