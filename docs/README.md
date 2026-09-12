@@ -7,7 +7,8 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
-| [eSIM service and modem investigation](esim-deep-20260912.md) | Original diagnostic app confirms the installed ISD-R application. Modem accepts eSIM selection but reports NO_ATR. Regional initialization and cached LPA mode are traced; a reboot experiment is prepared, with modem state restored pending authorization |
+| [eSIM application-LPA reboot test](esim-boot-20260912.md) | Approved candidate boot loads both stock records but still returns NO_ATR. A second reboot verifies restoration of original records and physical selection; no working eUICC exposed |
+| [eSIM service and modem investigation](esim-deep-20260912.md) | Original diagnostic app confirms the installed ISD-R application. Native selector, regional initialization, power and LPA mode are traced; preparation evidence for the subsequent reboot test |
 | [First eSIM factory-command attempt](esim-20260912.md) | Preserved initial timeout and restoration evidence; the deeper investigation supersedes its next-step restrictions and resolves applet presence |
 | [Roadmap](roadmap-20260906.md) | Workstreams, sequencing and decisions for moving from guarded bring-up to a maintainable release |
 | [Software plan](software-plan-20260909.md) | Prioritized plan for the ROM itself from the v14 baseline: ledger session, IMS, fingerprint, display, audio, power, camera completion, polish, graduation to a user build with OTA |

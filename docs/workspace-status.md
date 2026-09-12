@@ -2,14 +2,14 @@
 
 **Latest installed-phone observation (September 12): v25
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
-The [deeper eSIM investigation](esim-deep-20260912.md) confirms the standard
-eUICC ISD-R application in the secure element's directory. An original diagnostic
-app is built, installed and validated. The modem accepts eSIM selection but
-reports NO_ATR and no EID. The CN region skips a stock application-LPA
-initialization branch; a complete test needs an explicitly authorized reboot
-because the modem caches the LPA mode. Physical SIM selection and all tested
-modem records are restored, and ADB returned to shell UID 2000. eSIM remains
-unavailable; the prepared boot experiment has not run.
+The [eSIM reboot test](esim-boot-20260912.md) loaded the two stock application-LPA
+initialization records and selected eSIM, but still produced NO_ATR and no
+Android eUICC. Its authorized rollback reboot restored original modem records
+and physical SIM selection; ADB returned to shell UID 2000. eSIM remains
+unavailable. The [earlier investigation](esim-deep-20260912.md) confirms the
+installed ISD-R application and provides an original, validated diagnostic app.
+The remaining modem-facing startup failure is unresolved; the tested records
+are not a verified enablement fix.
 This observation does not revalidate other features or reconstruct the v25
 installation. The v23 and older source/delivery sections below are earlier
 checkpoints; their pending delivery statements are not a current v25 inventory.

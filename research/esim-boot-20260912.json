@@ -1,0 +1,395 @@
+{
+  "operation": "Authorized application-LPA boot experiment and verified rollback",
+  "date": "2026-09-12",
+  "document": "docs/esim-boot-20260912.md",
+  "previous_record": "research/esim-deep-20260912.json",
+  "authorization": {
+    "user_instruction": "do it!",
+    "scope": "Prepared candidate configuration and reboot, followed by rollback and a second reboot if unsuccessful",
+    "reboots_requested": 2,
+    "three_distinct_kernel_boot_ids_observed": true
+  },
+  "device": {
+    "product": "nezha",
+    "build_identifier": "nezha.b2c99443fe9e90a4a7954eac",
+    "variant": "CN",
+    "slot": "_a",
+    "selection": "Explicit serial read from ignored prior collection; omitted from this receipt"
+  },
+  "outcome": {
+    "esim_enabled": false,
+    "original_modem_configuration_restored": true,
+    "candidate_loaded_across_reboot": true,
+    "finding": "The two stock application-LPA records are insufficient: modem slot 2 still reports ERROR/NO_ATR and Android exposes no eUICC.",
+    "eid_error_interpretation": "Changing error 3 to 94 is consistent with disabling modem LPA; no EID was returned.",
+    "remaining_uncertainty": "Modem-facing card startup remains unresolved. Other regional decisions, electrical behavior, and secure-element OS state are not ruled out."
+  },
+  "record_paths": {
+    "lpa": "/nv/item_files/modem/uim/lpa/lpa_support",
+    "terminal": "/nv/item_files/modem/qmi/uim/terminal_capability_Subscription01"
+  },
+  "baseline": {
+    "lpa_record_hex": "01010002010000000000000000000000",
+    "terminal_record_hex": null,
+    "terminal_efs_read_result": -117,
+    "current_record_hex": "0001010101",
+    "current_sim_types": [
+      1,
+      1
+    ],
+    "slot_card_error_tlv_13_hex": "0202030203",
+    "eid_modem_errors_by_slot": {
+      "1": 3,
+      "2": 3,
+      "3": 94
+    },
+    "original_binary_backups": {
+      "lpa": {
+        "size": 16,
+        "sha256": "e0345094314e0159e65af6f7936e8f7877f9df64b4428a5f9d257ff1d598e0bf"
+      },
+      "terminal": {
+        "absent": true
+      },
+      "current": {
+        "size": 5,
+        "sha256": "c5fa7a4f055ecfb310cff078852a08c832be9ac4c4d30ecb73e4b55630fff19f"
+      },
+      "mapping": {
+        "size": 70,
+        "sha256": "009e348dbb9274b0951781c24f6b2a869f5a5cd3968842a898db9efac73391a1"
+      }
+    }
+  },
+  "candidate_after_boot": {
+    "lpa_record_hex": "00000100000000000000000000000000",
+    "terminal_record_hex": "060083010700",
+    "current_record_hex": "0001030101",
+    "current_sim_types": [
+      1,
+      3
+    ],
+    "slot_card_error_tlv_13_hex": "0202030203",
+    "eid_modem_errors_by_slot": {
+      "1": 94,
+      "2": 94,
+      "3": 94
+    },
+    "eid_data_present": false,
+    "android_observed_slots": 2,
+    "android_euicc_slots": 0,
+    "uptime_seconds": 67.22,
+    "boot_completed": true,
+    "selinux": "Enforcing",
+    "active_slot": "_a"
+  },
+  "candidate_final": {
+    "lpa_record_hex": "00000100000000000000000000000000",
+    "terminal_record_hex": "060083010700",
+    "current_record_hex": "0001030101",
+    "current_sim_types": [
+      1,
+      3
+    ],
+    "slot_card_error_tlv_13_hex": "0202030203",
+    "eid_modem_errors_by_slot": {
+      "1": 94,
+      "2": 94,
+      "3": 94
+    },
+    "eid_data_present": false,
+    "android_observed_slots": 2,
+    "android_euicc_slots": 0,
+    "uptime_seconds": 353.16,
+    "boot_completed": true,
+    "selinux": "Enforcing",
+    "active_slot": "_a"
+  },
+  "postboot_power_cycle": {
+    "slot": 2,
+    "power_down_modem_result": 0,
+    "power_up_modem_result": 0,
+    "reselect_already_selected_type_error": 26,
+    "newly_held_secure_element_channel": false,
+    "outcome": "No card-startup improvement"
+  },
+  "postboot_held_channel_repeat": {
+    "established": false,
+    "user_state": "RUNNING_LOCKED",
+    "diagnostic_activity_start": "Failed with Error type 3 while installed and user locked",
+    "headless_helper": "Aborted before READY_FOR_SWITCH",
+    "limitation": "A successful held-channel repeat in the reboot-loaded application-LPA configuration was not established. Prior held-channel tests are separate evidence."
+  },
+  "restored_after_boot": {
+    "lpa_record_hex": "01010002010000000000000000000000",
+    "terminal_record_hex": null,
+    "current_record_hex": "0001010101",
+    "current_sim_types": [
+      1,
+      1
+    ],
+    "slot_card_error_tlv_13_hex": "0202030203",
+    "eid_modem_errors_by_slot": {
+      "1": 3,
+      "2": 3,
+      "3": 94
+    },
+    "eid_data_present": false,
+    "android_observed_slots": 2,
+    "android_euicc_slots": 0,
+    "uptime_seconds": 30.02,
+    "boot_completed": true,
+    "selinux": "Enforcing",
+    "active_slot": "_a"
+  },
+  "restoration": {
+    "original_records_restored": true,
+    "mapping_size": 70,
+    "mapping_sha256": "009e348dbb9274b0951781c24f6b2a869f5a5cd3968842a898db9efac73391a1",
+    "three_distinct_observed_boot_ids": true,
+    "reboots_requested": 2,
+    "build_identity_unchanged": true,
+    "selinux": "Enforcing",
+    "phone_boot_completed": true,
+    "slot": "_a",
+    "diagnostic_app_remains_installed": true,
+    "diagnostic_app_stopped": true,
+    "temporary_probe_files_removed": true,
+    "adb_uid_restored": 2000
+  },
+  "diagnostic_app": {
+    "package": "org.evolution.nezha.esimprobe",
+    "app_id": 10451,
+    "installed": true,
+    "stopped": true,
+    "changed_this_test": false
+  },
+  "excluded_operations": {
+    "firmware_flash": false,
+    "product_or_region_identity_change": false,
+    "profile_download_delete_or_reset": false,
+    "userdata_clear": false,
+    "selinux_weakened": false
+  },
+  "validation": {
+    "scope": "Workspace documentation and evidence only; no full Android build or additional feature validation",
+    "test_current": {
+      "passed": true,
+      "tests": 1124,
+      "seconds": 33.682
+    },
+    "full_suite": {
+      "passed": true,
+      "tests": 5101,
+      "seconds": 216.339
+    },
+    "evidence_hashes_and_sizes_verified": 41
+  },
+  "evidence": [
+    {
+      "path": "reports/esim-boot-20260912/before-lpa.bin",
+      "size_bytes": 16,
+      "sha256": "e0345094314e0159e65af6f7936e8f7877f9df64b4428a5f9d257ff1d598e0bf"
+    },
+    {
+      "path": "reports/esim-boot-20260912/before-terminal.txt",
+      "size_bytes": 3847,
+      "sha256": "d618ed05c8d6d6605b2b50382e798ff9797de75f46d2a5f3e5e97b6dc86683b9"
+    },
+    {
+      "path": "reports/esim-boot-20260912/before-current.bin",
+      "size_bytes": 5,
+      "sha256": "c5fa7a4f055ecfb310cff078852a08c832be9ac4c4d30ecb73e4b55630fff19f"
+    },
+    {
+      "path": "reports/esim-boot-20260912/before-mapping.bin",
+      "size_bytes": 70,
+      "sha256": "009e348dbb9274b0951781c24f6b2a869f5a5cd3968842a898db9efac73391a1"
+    },
+    {
+      "path": "reports/esim-boot-20260912/before-qmi.txt",
+      "size_bytes": 1281,
+      "sha256": "f6a52ba037bef1648fb3b4da9f4ce33f568cfc5c6ab34fc79de9d1865a4527c6"
+    },
+    {
+      "path": "reports/esim-boot-20260912/mtb-sha.txt",
+      "size_bytes": 82,
+      "sha256": "7b434666bab965f3081148814108e47e120c24513e5e709b3c6eea6d7fc69666"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-read-lpa.txt",
+      "size_bytes": 4387,
+      "sha256": "ce9ec028f57808d10f6abb08afe0b54e77e1ebe20ec15c70375927a68e688cf6"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-read-terminal.txt",
+      "size_bytes": 3736,
+      "sha256": "6e727a8919f952d80f1a950270cf7a46476a7d32182c57cbf48a34b13e403674"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-select.txt",
+      "size_bytes": 1392,
+      "sha256": "888a6ad16620dc02801ecccb3011b3cea59a21a2edb43ab1059b934a1043c07c"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-current.txt",
+      "size_bytes": 3658,
+      "sha256": "24089388316f89420767366368f9302775aa6934ca885ac565c45602502589be"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-after-boot/summary.json",
+      "size_bytes": 1449,
+      "sha256": "0ab6586cdff4c70f660cf08aaa19a84d27cf546b41047d60130c8ceededcc3f5"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-after-boot/qmi.txt",
+      "size_bytes": 1283,
+      "sha256": "ca14febe39be85dd1d3f8fae737e854274771b732c9f758587aedaf56838b8e3"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-after-boot/telephony.txt",
+      "size_bytes": 220573,
+      "sha256": "7738269d7e89b5cb4c2a49d05d866f1d796e06d95614c1303ffcab0ca56adea6"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-final-power-cycle.txt",
+      "size_bytes": 1617,
+      "sha256": "1915447233dbe7ff64bcedfaba21ab6bfd47f85dbc550f99f804ec1782eab30a"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-final/summary.json",
+      "size_bytes": 1451,
+      "sha256": "159a6e36100a07757323bd7fdb8fd7c3b29aee9c65e5eb1dbcf99c51442042be"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-final/qmi.txt",
+      "size_bytes": 1283,
+      "sha256": "ca14febe39be85dd1d3f8fae737e854274771b732c9f758587aedaf56838b8e3"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-final/telephony.txt",
+      "size_bytes": 222601,
+      "sha256": "465208d5421ea5ca5626f204aa0f2410bc925ceba27606971c966cacc8800d21"
+    },
+    {
+      "path": "reports/esim-boot-20260912/user-state.txt",
+      "size_bytes": 41191,
+      "sha256": "2227d9bcf01091a78979afd704303713afba863d52a1c95b74dcde896249b4d1"
+    },
+    {
+      "path": "reports/esim-boot-20260912/probe-package-state.txt",
+      "size_bytes": 3373,
+      "sha256": "bc455834a4f30f506826d6bf81e64354677740cb4f863290e7824521a3a51c97"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-held/start.txt",
+      "size_bytes": 208,
+      "sha256": "7bc397de9080e4ca653aa1c87c613fe1a75c9a909f7060088088982eb9eb52fb"
+    },
+    {
+      "path": "reports/esim-boot-20260912/candidate-held-headless/hold.txt",
+      "size_bytes": 9,
+      "sha256": "6c1322fe167a8a720eb19850ba06cf830c8a4045c03b95c3c608860986b0eb80"
+    },
+    {
+      "path": "reports/esim-boot-20260912/rollback/lpa-restored-read.txt",
+      "size_bytes": 4387,
+      "sha256": "7f57ed4f5bab339daf96b51c261a692dce78eb95a8c9a30c081c135b5f156ea6"
+    },
+    {
+      "path": "reports/esim-boot-20260912/rollback/terminal-before-delete.txt",
+      "size_bytes": 3736,
+      "sha256": "4707598af57d06082ef225421944ea475bd3fee061d487cd844e52e21c70b284"
+    },
+    {
+      "path": "reports/esim-boot-20260912/rollback/terminal-absence.txt",
+      "size_bytes": 3847,
+      "sha256": "ca0fe2c8b0fa5fd90188dabaf51d40b5900c7830238cba965f13c2bc5f00d9c7"
+    },
+    {
+      "path": "reports/esim-boot-20260912/rollback/physical-selection.txt",
+      "size_bytes": 1614,
+      "sha256": "67a7e69fa9e31c92158895816926c79097003516b8c2321123433c52232e14cd"
+    },
+    {
+      "path": "reports/esim-boot-20260912/rollback/current-restored.txt",
+      "size_bytes": 3658,
+      "sha256": "38d0a3916ea8d3434325b402afe08afc4cc2aa970a1eb0f96aaddfa142e4d619"
+    },
+    {
+      "path": "reports/esim-boot-20260912/rollback/mapping-restored.txt",
+      "size_bytes": 8029,
+      "sha256": "77f11b4c746fb8fcd0657faa654417528fd43b7fac38bbbf2560b5c49d2bcdff"
+    },
+    {
+      "path": "reports/esim-boot-20260912/restored-after-boot/summary.json",
+      "size_bytes": 1434,
+      "sha256": "0abbdb1bd6cb5d138988c3ed3ddf7570d3454299174b92e0c949c0984a8119d0"
+    },
+    {
+      "path": "reports/esim-boot-20260912/restored-after-boot/qmi.txt",
+      "size_bytes": 1281,
+      "sha256": "f6a52ba037bef1648fb3b4da9f4ce33f568cfc5c6ab34fc79de9d1865a4527c6"
+    },
+    {
+      "path": "reports/esim-boot-20260912/restored-after-boot/telephony.txt",
+      "size_bytes": 201366,
+      "sha256": "cc646426b96f17af551a4fa4ad34cfd74c2994bf59a19b50f711c860b9cb349c"
+    },
+    {
+      "path": "reports/esim-boot-20260912/restored-after-boot/lpa.txt",
+      "size_bytes": 4387,
+      "sha256": "64a433a2f68b53fdde4dd860ab9557b7cb76241636e2d21052d8ffaa3711ce4d"
+    },
+    {
+      "path": "reports/esim-boot-20260912/restored-after-boot/terminal.txt",
+      "size_bytes": 3847,
+      "sha256": "c5e7e716cabe09b861407dcf994803eae80fd4c780f695d539b9858e32616b28"
+    },
+    {
+      "path": "reports/esim-boot-20260912/restored-after-boot/current.txt",
+      "size_bytes": 3658,
+      "sha256": "eb76ce037e1fd082d21924e09dd8c041a7fb9be0da1a2e58c214f23613097259"
+    },
+    {
+      "path": "reports/esim-boot-20260912/final/mapping.txt",
+      "size_bytes": 8029,
+      "sha256": "07d9b897a7681ab1b59c8d1ac18812f161f10b39f92b810356c33e48cad93155"
+    },
+    {
+      "path": "reports/esim-boot-20260912/final/checks.json",
+      "size_bytes": 477,
+      "sha256": "61331ab0fd9fd808ac500449d7eb95755db51a87ca652c6bd4e7a8cfce9c10a2"
+    },
+    {
+      "path": "reports/esim-boot-20260912/final/properties.txt",
+      "size_bytes": 112744,
+      "sha256": "419cce10eb146d821585891ae6294cc6ecac06292f820751bc4e8d85a3fefa2c"
+    },
+    {
+      "path": "reports/esim-boot-20260912/final/adb-uid.txt",
+      "size_bytes": 5,
+      "sha256": "1d8fa3c8ab49d50b30fccbbd901735d5896a5d7959a5ad7ccecb79c1c849cc66"
+    },
+    {
+      "path": "reports/esim-boot-20260912/journal.json",
+      "size_bytes": 115,
+      "sha256": "2783d495cd0c66d35430c039f2c0cb87d6768cfd1b02e606fd95189a09f38859"
+    },
+    {
+      "path": "reports/esim-boot-20260912/capture.py",
+      "size_bytes": 2657,
+      "sha256": "484f9508e9f4e1eed3607ebbb0f7a6cd76d782a6608d6790592171dbe912dda1"
+    },
+    {
+      "path": "reports/esim-boot-20260912/test-current.log",
+      "size_bytes": 207816,
+      "sha256": "1123d24dc4389043e18c1647cead062fb6af3d853e551aab246a4e84bf09317c"
+    },
+    {
+      "path": "reports/esim-boot-20260912/test-full.log",
+      "size_bytes": 903691,
+      "sha256": "8949117801053882e5ec93d28089faa3b245c21269a7719f5294266b4015e52d"
+    }
+  ]
+}
