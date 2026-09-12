@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -28,8 +29,12 @@ public final class HoldActivity extends Activity {
     private static final String TAG = "NezhaEsimProbe";
     private static final String PERMISSION = "android.permission.SECURE_ELEMENT_PRIVILEGED_OPERATION";
     private static final byte[] ISD = {(byte) 0xa0, 0, 0, 1, 0x51, 0, 0, 0};
+    private static final byte[] GEM_ISD = {(byte) 0xa0, 0, 0, 0, 0x30, (byte) 0xff, 0x55, 0x50, 1};
     private static final byte[] ISD_R = {(byte) 0xa0, 0, 0, 5, 0x59, 0x10, 0x10,
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x89, 0, 0, 1, 0};
+    private static final byte[] ECASD = {(byte) 0xa0, 0, 0, 5, 0x59, 0x10, 0x10,
+            (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x89, 0, 0, 2, 0};
+    private static final byte[] SELECT_DEFAULT = {0, (byte) 0xa4, 4, 0, 0};
     private static final int MAX_PAGES = 16;
     private static DiagnosticRun current;
     private DiagnosticRun run;
@@ -71,9 +76,21 @@ public final class HoldActivity extends Activity {
         int seconds = intent.getIntExtra("seconds", 90);
         int p2 = intent.getIntExtra("p2", 4);
         String requestedReader = intent.getStringExtra("reader");
-        if (!(mode.equals("inspect") || mode.equals("hold") || mode.equals("discovery") || mode.equals("registry"))
+        String target = intent.hasExtra("target") ? intent.getStringExtra("target") : "isd-r";
+        if (!(mode.equals("inspect") || mode.equals("hold") || mode.equals("discovery")
+                || mode.equals("basic-discovery") || mode.equals("registry") || mode.equals("identity")
+                || mode.equals("configuration"))
                 || seconds < 2 || seconds > 90 || (mode.equals("discovery") && p2 != 0 && p2 != 4)) {
             report(null, "ERROR invalid mode, seconds outside 2..90, or discovery P2 outside 0/4");
+            return;
+        }
+        if (intent.hasExtra("target") && (!mode.equals("discovery")
+                || !("isd-r".equals(target) || "ecasd".equals(target)))) {
+            report(null, "ERROR target must be isd-r/ecasd and is accepted only for discovery");
+            return;
+        }
+        if ((mode.equals("basic-discovery") || mode.equals("configuration")) && intent.hasExtra("p2")) {
+            report(null, "ERROR " + mode + " uses fixed P2 00; omit p2");
             return;
         }
         if (intent.hasExtra("reader") && (!(mode.equals("inspect") || mode.equals("discovery"))
@@ -93,7 +110,7 @@ public final class HoldActivity extends Activity {
                 report(null, "ERROR another diagnostic is still active; wait for DONE or send STOP");
                 return;
             }
-            next = new DiagnosticRun(mode, seconds, p2, requestedReader);
+            next = new DiagnosticRun(mode, seconds, p2, requestedReader, target);
             current = next;
             run = next;
         }
@@ -116,6 +133,7 @@ public final class HoldActivity extends Activity {
         private final int seconds;
         private final int discoveryP2;
         private final String readerName;
+        private final String discoveryTarget;
         private final AtomicBoolean ending = new AtomicBoolean();
         private final AtomicBoolean finished = new AtomicBoolean();
         private final Handler timers = new Handler(Looper.getMainLooper());
@@ -128,10 +146,11 @@ public final class HoldActivity extends Activity {
         private boolean selectionAttempted;
         private int responseBytes;
 
-        DiagnosticRun(String mode, int seconds, int discoveryP2, String requestedReader) {
+        DiagnosticRun(String mode, int seconds, int discoveryP2, String requestedReader, String target) {
             this.mode = mode;
             this.seconds = seconds;
             this.discoveryP2 = discoveryP2;
+            this.discoveryTarget = target;
             // Only the original inspect default chooses the first eSE reader.
             // Every explicit choice and every channel operation has an exact target.
             this.readerName = requestedReader != null ? requestedReader
@@ -151,6 +170,9 @@ public final class HoldActivity extends Activity {
                     // starts as the previous deadline thread wakes up.
                     if (!finished.get() && current == this) {
                         Log.e(TAG, "WATCHDOG_EXIT diagnostics_incomplete=true");
+                        if (mode.equals("basic-discovery")) {
+                            Log.e(TAG, "BASIC_RESTORATION_UNVERIFIED inspect_native_cleanup=true");
+                        }
                         Process.killProcess(Process.myPid());
                     }
                 }
@@ -205,9 +227,16 @@ public final class HoldActivity extends Activity {
                 session = selected.openSession();
                 if (ending.get()) return;
                 emit("SESSION_OPEN");
-                if (mode.equals("discovery")) reportBytes("SESSION_ATR", session.getATR(), false);
+                if (mode.equals("discovery") || mode.equals("basic-discovery")) {
+                    reportBytes("SESSION_ATR", session.getATR(), false);
+                }
                 if (ending.get()) return;
-                byte[] aid = mode.equals("discovery") ? ISD_R : ISD;
+                if (mode.equals("basic-discovery")) {
+                    basicDiscovery();
+                    return;
+                }
+                byte[] aid = mode.equals("configuration") ? GEM_ISD
+                        : mode.equals("discovery") ? (discoveryTarget.equals("ecasd") ? ECASD : ISD_R) : ISD;
                 byte p2 = mode.equals("discovery") ? (byte) discoveryP2 : 0;
                 emit("SELECT_REQUEST aid=" + hex(aid) + " p2=" + String.format(Locale.ROOT, "%02X", p2));
                 selectionAttempted = true;
@@ -216,21 +245,167 @@ public final class HoldActivity extends Activity {
                 if (channel == null) throw new IllegalStateException("No logical channel");
                 emit("CHANNEL_OPEN aid=" + hex(aid) + " max_seconds=" + seconds);
                 if (mode.equals("discovery")) {
-                    reportBytes("ISD_R_SELECT_RESPONSE", channel.getSelectResponse(), true);
-                    end("ISD_R_DISCOVERY_DONE no_extra_apdu=true");
+                    reportBytes(discoveryLabel() + "_SELECT_RESPONSE", channel.getSelectResponse(), true);
+                    end(discoveryLabel() + "_DISCOVERY_DONE no_extra_apdu=true");
                 } else if (mode.equals("registry")) {
                     if (!registry() && !ending.get()) directory();
                     end("REGISTRY_DIAGNOSTIC_DONE");
+                } else if (mode.equals("identity")) {
+                    identity(0xfe);
+                    if (!ending.get()) identity(0xfd);
+                    end("IDENTITY_DIAGNOSTIC_DONE no_serial_query=true");
+                } else if (mode.equals("configuration")) {
+                    byte[] response = channel.getSelectResponse();
+                    if (response == null || response.length < 2 || response.length > RegistryParser.MAX_BYTES) {
+                        throw new IllegalArgumentException("Invalid configuration ISD response");
+                    }
+                    responseBytes += response.length;
+                    reportBytes("CONFIGURATION_ISD_SELECT", response, true);
+                    if (sw(response) != 0x9000) {
+                        throw new IllegalStateException("Configuration ISD selection not verified");
+                    }
+                    configuration();
+                    end("CONFIGURATION_DIAGNOSTIC_DONE no_activation_command=true");
                 } else {
                     emit("READY_FOR_SWITCH no_extra_apdu=true");
                 }
             } catch (Exception failure) {
                 emit("ERROR exception=" + failure.getClass().getSimpleName() + " diagnostics_incomplete=true");
-                if (mode.equals("discovery")) emit((selectionAttempted
-                        ? "ISD_R_SELECTION_FAILED" : "ISD_R_SELECTION_NOT_ATTEMPTED")
+                if (mode.equals("discovery")) emit(discoveryLabel() + (selectionAttempted
+                        ? "_SELECTION_FAILED" : "_SELECTION_NOT_ATTEMPTED")
                         + " existence_inconclusive=true");
+                if (mode.equals("basic-discovery")) emit("BASIC_DISCOVERY_FAILED isd_r_selection_attempted="
+                        + selectionAttempted + " inspect_select_and_restoration_status=true");
                 end("DIAGNOSTIC_FAILED");
             }
+        }
+
+        private String discoveryLabel() {
+            return discoveryTarget.equals("ecasd") ? "ECASD" : "ISD_R";
+        }
+
+        private void configuration() throws Exception {
+            byte[] response = readCommand(new byte[]{(byte) 0x80, (byte) 0xca, 0, (byte) 0xfc, 0}, "CONFIGURATION_FC");
+            reportBytes("CONFIGURATION_FC", response, false);
+            if (sw(response) != 0x9000 || response.length < 5 || response.length > 68
+                    || (response[0] & 255) != 0xfc || (response[1] & 255) != response.length - 4) {
+                emit("CONFIGURATION_FC_INCONCLUSIVE unsupported_or_malformed=true");
+                return;
+            }
+            char[] value = new char[response.length - 4];
+            for (int index = 0; index < value.length; index++) {
+                int ascii = response[index + 2] & 255;
+                if (ascii < 0x20 || ascii > 0x7e) {
+                    emit("CONFIGURATION_FC_INCONCLUSIVE unsupported_text=true");
+                    return;
+                }
+                value[index] = (char) ascii;
+            }
+            emit("CONFIGURATION_FC class=" + new String(value) + " module_state_inconclusive=true");
+        }
+
+        private void identity(int tag) throws Exception {
+            String label = tag == 0xfe ? "OS_IDENTITY_FE" : "OS_PATCH_FD";
+            byte[] response = readCommand(new byte[]{(byte) 0x80, (byte) 0xca, 0, (byte) tag, 0}, label);
+            reportBytes(label, response, false);
+            // Thales' published identification format uses a single short-form TLV.
+            // Unknown/extended forms are deliberately not interpreted as identity data.
+            if (sw(response) != 0x9000 || response.length < 4 || response.length > 256
+                    || (response[0] & 255) != tag || (response[1] & 255) >= 128
+                    || (response[1] & 255) != response.length - 4) {
+                emit(label + "_INCONCLUSIVE unsupported_or_malformed=true");
+                return;
+            }
+            if (tag == 0xfd) {
+                if (response.length != 8) {
+                    emit(label + "_INCONCLUSIVE expected_patch_bytes=4");
+                    return;
+                }
+                emit(label + " patch=" + hex(Arrays.copyOfRange(response, 2, 6)));
+                return;
+            }
+            List<byte[]> oids = new ArrayList<>();
+            int end = response.length - 2;
+            for (int offset = 2; offset < end;) {
+                if (offset + 2 > end || response[offset++] != 6) {
+                    emit(label + "_INCONCLUSIVE expected_oid=true");
+                    return;
+                }
+                int length = response[offset++] & 255;
+                if (length == 0 || length > 64 || offset + length > end || oids.size() >= 8
+                        || (response[offset + length - 1] & 128) != 0) {
+                    emit(label + "_INCONCLUSIVE invalid_oid_length_or_encoding=true");
+                    return;
+                }
+                boolean componentStart = true;
+                for (int index = offset; index < offset + length; index++) {
+                    int value = response[index] & 255;
+                    if (componentStart && value == 0x80) {
+                        emit(label + "_INCONCLUSIVE nonminimal_oid_encoding=true");
+                        return;
+                    }
+                    componentStart = (value & 128) == 0;
+                }
+                oids.add(Arrays.copyOfRange(response, offset, offset + length));
+                offset += length;
+            }
+            if (oids.isEmpty()) {
+                emit(label + "_INCONCLUSIVE empty=true");
+                return;
+            }
+            // These vendor-documented OIDs describe OS versions, not a card serial.
+            for (int index = 0; index < oids.size(); index++) {
+                emit(label + " oid_index=" + index + " oid_value_hex=" + hex(oids.get(index)));
+            }
+        }
+
+        private void basicDiscovery() throws Exception {
+            emit("BASIC_OPEN_REQUEST aid=" + hex(ISD) + " p2=00");
+            channel = session.openBasicChannel(ISD, (byte) 0);
+            if (channel == null) throw new IllegalStateException("No basic channel");
+            if (!channel.isBasicChannel()) throw new IllegalStateException("Expected basic channel");
+            emit("BASIC_CHANNEL_OPEN");
+            boolean selected = false;
+            try {
+                if (ending.get()) return;
+                // The installed HAL treats transmitted SELECT-default as channel close.
+                // Use the saved open response; a null AID would hide it in the Java service.
+                byte[] baseline = channel.getSelectResponse();
+                if (baseline == null || baseline.length < 2 || baseline.length > RegistryParser.MAX_BYTES) {
+                    throw new IllegalArgumentException("Invalid ISD baseline response");
+                }
+                responseBytes += baseline.length;
+                reportBytes("BASIC_ISD_BASELINE", baseline, true);
+                if (sw(baseline) != 0x9000) throw new IllegalStateException("ISD selection not verified");
+                if (ending.get()) return;
+                // Exact known AID only. Its 16-byte length determines Lc; the final byte is Le=00.
+                byte[] command = new byte[ISD_R.length + 6];
+                command[1] = (byte) 0xa4;
+                command[2] = 4;
+                command[4] = (byte) ISD_R.length;
+                System.arraycopy(ISD_R, 0, command, 5, ISD_R.length);
+                emit("SELECT_REQUEST channel=basic aid=" + hex(ISD_R) + " p2=00");
+                selectionAttempted = true;
+                byte[] response = readCommand(command, "BASIC_ISD_R_SELECT_RESPONSE");
+                reportBytes("BASIC_ISD_R_SELECT_RESPONSE", response, false);
+                selected = sw(response) == 0x9000;
+            } finally {
+                // Run even after STOP/deadline or a rejected SELECT. Never use readCommand:
+                // its ending guard would suppress this required restoration operation.
+                try {
+                    byte[] restored = channel.transmit(SELECT_DEFAULT.clone());
+                    if (restored == null || restored.length < 2 || restored.length > RegistryParser.MAX_BYTES) {
+                        throw new IllegalArgumentException("Invalid default restoration response");
+                    }
+                    reportBytes("BASIC_DEFAULT_RESTORE", restored, true);
+                    if (sw(restored) != 0x9000) throw new IllegalStateException("Default restoration rejected");
+                    emit("BASIC_DEFAULT_RESTORED native_channel_release_verification_required=true");
+                } catch (Exception failure) {
+                    emit("BASIC_RESTORATION_FAILED diagnostics_incomplete=true inspect_native_cleanup=true");
+                    throw failure;
+                }
+            }
+            end("BASIC_DISCOVERY_DONE select_success=" + selected + " no_extra_target_apdu=true");
         }
 
         private byte[] readCommand(byte[] command, String label) throws Exception {

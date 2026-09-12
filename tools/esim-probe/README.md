@@ -21,7 +21,7 @@ checks the APK against the supplied certificate; it does not inspect a phone.
 python3 scripts/build_esim_probe.py \
   --sdk /path/to/Android/sdk \
   --java-home /path/to/jdk \
-  --output artifacts/esim-probe-local-v4 \
+  --output artifacts/esim-probe-local-v7 \
   --platform-key /private/path/platform.pk8 \
   --platform-cert /path/to/platform.x509.pem
 ```
@@ -49,15 +49,24 @@ adb -s AUTHORIZED_SERIAL shell am start -W \
 | --- | --- |
 | `inspect` | List readers and check the requested reader's presence; default to the first eSE reader. Open no session. |
 | `hold` | On `eSE1`, select ISD `A000000151000000` with P2 `00`; hold the channel until stop/deadline. |
-| `discovery` | On the requested reader, defaulting to `eSE1`, select ISD-R `A0000005591010FFFFFFFF8900000100`; P2 is `04` by default, or explicitly `00`. Log ATR/select-response lengths and SHA-256 hashes. |
+| `discovery` | On the requested reader, defaulting to `eSE1`, select ISD-R `A0000005591010FFFFFFFF8900000100`, or the fixed ECASD target described below, on a logical channel. P2 is `04` by default, or explicitly `00`. Log ATR/select-response lengths and SHA-256 hashes. |
+| `basic-discovery` | On fixed `eSE1`, open the known ISD on the basic channel, verify its saved SELECT response, try the exact ISD-R SELECT with P2 `00`, and explicitly restore default selection before normal close. Send no command to the selected ISD-R after SELECT. |
 | `registry` | On `eSE1`, select the ISD above, read the GP registry, and try the optional application directory if the registry query does not complete. |
+| `identity` | On `eSE1`, select the ISD above and query the two fixed Thales OS-identification tags `FE` and `FD`. Log validated OS-version OIDs and patch bytes; query no card serial. |
+| `configuration` | On `eSE1`, select fixed ISD `A000000030FF555001` on a logical channel and query only configuration tag `FC`. Require exact short-form TLV, `9000`, and 1–64 printable ASCII bytes. |
 
 The optional `seconds` integer is bounded to 2–90. `discovery` also accepts
 `--ei p2 0` or `--ei p2 4`. Only `inspect` and `discovery` accept an explicit
 `--es reader eSE1`, `--es reader SIM1`, or `--es reader SIM2`. Other names,
-empty values, and a reader extra supplied to `hold` or `registry` are rejected.
+empty values, and a reader extra supplied to other modes are rejected.
 A missing requested reader fails without choosing a different reader. A listed
 reader may report absent; discovery then stops before opening a session.
+
+Only logical `discovery` accepts `--es target isd-r` or `--es target ecasd`.
+Its default is `isd-r`; `ecasd` selects the fixed, previously enumerated AID
+`A0000005591010FFFFFFFF8900000200`. Arbitrary AIDs, empty targets, and a target
+extra in another mode are rejected before binding. `basic-discovery` and
+`configuration` also reject a `p2` extra because they always use `00`.
 
 For example, a SELECT-only check of the second modem/UICC reader is:
 
@@ -115,6 +124,63 @@ missing AIDs do not prove card-wide absence. A failed ISD-R SELECT, including
 status `6999`, does not establish whether the applet exists. A successful eSE
 session or registry read does not establish that modem-side eUICC transport,
 EID retrieval, or eSIM profile management works.
+
+The basic-channel comparison needs additional cleanup evidence. It first calls
+`openBasicChannel(A000000151000000, 00)` and requires a returned basic-channel
+handle. It reads the saved SELECT response and proceeds only after `9000`, then sends
+the fixed ISD-R SELECT `00A4040010A0000005591010FFFFFFFF890000010000` once.
+A `finally` block sends `00A4040000` again even when the target SELECT fails or
+STOP has arrived. This restoration response has its own 64 KiB size bound so
+the normal diagnostic byte cap cannot prevent the restoration attempt.
+Only status `9000` emits `BASIC_DEFAULT_RESTORED`; other responses or exceptions
+emit `BASIC_RESTORATION_FAILED`. Session/channel close follows in either case.
+
+This operation uses the installed service's existing privileged SELECT support.
+It preserves permission checks and exposes no general APDU input. A basic-channel
+success would distinguish channel behavior; it would not verify the logical
+channel needed by the standard LPA transport. ECASD selection is likewise only
+a comparison of applet selectability, with no certificate or authentication
+commands sent.
+
+The installed HAL treats an exact transmitted `00A4040000` as basic-channel
+close: it clears native channel ownership and may close its TEE connection.
+Therefore the baseline must use the saved opening response. Opening with a null
+AID cannot provide that response through this installed Java service. Version 5
+sent an extra default SELECT before the target and consequently closed the
+native channel early; that test produced a transport failure without a target
+status word and was not a valid basic-channel comparison.
+
+The explicit restoration SELECT may release native channel ownership itself.
+Normal Java close then selects default again, and the subsequent native close
+may report that the channel is already closed. Public close methods can suppress
+errors, and the HAL's transmitted-default special case does not check `9000`
+before clearing ownership. Consequently `DONE` or an app-side close return alone
+does not prove final default selection or native release. Capture correlated
+default-SELECT replies and compare both Java and native open-channel listings
+before and after the experiment. Require a final observed default SELECT `9000`
+and no newly owned channels; an already-closed native channel is consistent with
+this sequence. A watchdog exit explicitly marks restoration unverified; inspect
+native cleanup before another diagnostic. Do not reset the reader or close
+another client's session as cleanup.
+
+The identity mode follows the identification fields in the
+[Thales Connected eSE 5.3.4 security target, page 11](https://messervices.cyber.gouv.fr/visas/ANSSI-CC-2024-33-cible.pdf).
+It sends `80CA00FE00` and `80CA00FD00` only. A successful response must end in
+`9000`, contain at most 256 bytes, and have one exact short-form outer TLV with
+the requested tag. `FE` permits only contained OID values; `FD` requires exactly
+four patch bytes. Unsupported, extended, malformed, or denied forms remain
+inconclusive. The published example is a format reference; it does not establish
+the installed card OS or activate any platform module. No CPLC serial,
+certificate, authentication, activation, or profile command is included.
+
+Configuration mode requires the saved ISD SELECT response to end in `9000`,
+then sends exactly `80CA00FC00`. It accepts only one `FC` TLV whose declared
+short length consumes the entire response body and whose 1–64 value bytes are
+printable ASCII. Other formats or status words remain inconclusive. Reviewed
+Thales-client references use this value as a configuration/customer class
+shared by card configurations. The text does not establish enabled modules or
+eUICC availability. This mode has no fallback, configurable AID/tag, or activation
+command, and leaves the existing FE/FD identity queries on their original ISD.
 
 ## Host checks
 
