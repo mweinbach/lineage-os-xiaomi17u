@@ -14,6 +14,12 @@ secure-element records match both the fresh phone file and official EEA336
 configuration. Bounded global/CN modem-code and matching AP-overlay comparisons
 found no enabling difference. Card-module state and the physical interface remain
 unresolved; these comparisons do not establish whole-firmware interchangeability.
+The EEA TrustZone eSE GPIO values also match. A bounded diagnostic discovery
+and existing-log read now verify 127 root-domain logger names and obtain GPIO,
+PMIC and SPMI text without decoding the transformed modem image. The retained
+text does not map the eSIM controller; candidate-time correlation remains open.
+Both log transactions preserve boot/build/slot/NFC/Enforcing state and the
+640-byte diagnostic mask, with ADB remaining shell UID 2000.
 The [combined eSIM boot/hold test](esim-combined-20260912.md) completes the
 previously unmeasured application-LPA configuration plus verified ISD hold.
 Three captured startup attempts still end in RX BREAK and NO_ATR. The approved

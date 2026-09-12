@@ -178,8 +178,8 @@
     "physical_startup_cause_known": false,
     "selected_lpa": null,
     "next_host_investigations": [
-      "TrustZone eSE GPIO configuration",
-      "Modem PM peripheral backend controller mapping"
+      "Correlate existing root GPIO and PMIC logs with candidate startup",
+      "Accepted QBEC Block A selection and hardware import semantics"
     ]
   },
   "artifacts": [
@@ -557,6 +557,206 @@
       "path": "reports/esim-continuation-20260912/nfc-config-read/result.json",
       "size": 464,
       "sha256": "1d03fafe6de8ce01f4ae5650c03771fbec3135102d8161dd7f6a56bd5c47fe5a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/tz-esegpio-config/findings.md",
+      "size": 7030,
+      "sha256": "af972e85bb695fa412cd8fcee977c1891d85d84e8fe8ab59af45e337fcfe53db"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/tz-esegpio-config/evidence.json",
+      "size": 4991,
+      "sha256": "08b1710fadbb6972a3e9dbc6417b59dd5feed4b7f1d5119e0234474048f6bba5"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/tz-esegpio-config/config-comparison.json",
+      "size": 10269,
+      "sha256": "79a9be79caad9cae7900ad25d52bd91dfd034a81eb4228f0f8da962ef739f60e"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/tz-esegpio-config/eea-provenance.json",
+      "size": 1102,
+      "sha256": "8580335d7d0e6593d5247879b646fd0abcc43c47f13f6ff62bd23c9b72e25265"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/gpio74-review.md",
+      "size": 5440,
+      "sha256": "cc2986fbf2889594cba64f56c7acff8ef6bf5aa477193c59d0ee73ae4fd12793"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/gpio74-summary.json",
+      "size": 49981,
+      "sha256": "d63bd3b7438a5fdbc296c2d7350e325736da8ae3336c566445ef8c1f781976b8"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/query.py",
+      "size": 9228,
+      "sha256": "61fa6d170944420f76c3ef5d264b45fb1e49cbc1d1298b37745e8d89d063c214"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/test_query_offline.py",
+      "size": 15555,
+      "sha256": "64e5b8bafe7181e22c8b0e40d1cb6c3dfda5d446f3234303cebdeddb123d27f7"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/offline-review.md",
+      "size": 5193,
+      "sha256": "c955cac8dfa341b42a0f111baa9415970cd871e8f1e7c415167db3bcc04c6d72"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/audit_capture_offline.py",
+      "size": 4779,
+      "sha256": "44392043888718f7212dc0f5b59c72c16b6dcb21bf503118b480fc58c3560281"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/capture-audit.json",
+      "size": 4878,
+      "sha256": "0bafb66e8d75ffaa69f9d25b37985d7fbd4e68de884a8986961bf0d0ce57c1ce"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/capture/result.json",
+      "size": 10293,
+      "sha256": "b45676d46905ddcae400aa1d5d37798bf648eebb42fd34bfab220f72fb6520e9"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/capture/journal.json",
+      "size": 4741,
+      "sha256": "2fcd8291b61e3c2d609e901b3cf40aeaba599dcc755c00c8ac043be5403b8812"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-inventory/capture/frames.json",
+      "size": 7169,
+      "sha256": "a70fcaf240082c50a4d76e22f581f8ab98a41d297773f6cb215b8c36d8eb842a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/findings.md",
+      "size": 11242,
+      "sha256": "eff3be0a68bc69c5df4a8a623f770c589a240e791561c5a33314cdda567b0ecc"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/evidence.json",
+      "size": 12057,
+      "sha256": "3e5ab397bbe5acdfa972a0265c565f287e1a34a5b1e72efcc51cfc7daa382298"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/loader-transform-findings.md",
+      "size": 6468,
+      "sha256": "f594085f1c9a442d7ed070bcd795888a419a8580f9a6c8c24a3f1f9e0c7ec2a7"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/loader-container-receipt.json",
+      "size": 8139,
+      "sha256": "66a523d33309836a93e9b53c58936387937a9ff82cab38483b566aeec0658231"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/root-ulog-review.md",
+      "size": 9588,
+      "sha256": "0b2c843c52c04596a1d7e9a8b2b84cf101a7339a227d4efa0d007f8ebd465a62"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/root-ulog-formatted-review.md",
+      "size": 10709,
+      "sha256": "fdb4cda312da861475986e60bfdf571552dda5c650b17cce6e764b1c5fff8514"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/qdb-pm-review.md",
+      "size": 8476,
+      "sha256": "d8832c00c99371f3a5f7243ea8d3afa168f925eac571e6b87788002b56856248"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ap-dtbo-comparison/pm-controller/qdb-pm-summary.json",
+      "size": 26747,
+      "sha256": "0531ca17016d42aeaf6cad569c4003e661376e5395f08b4a2c869f4926b50d94"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/loader-key-source/findings.md",
+      "size": 8648,
+      "sha256": "1e0fab077c789e0e0e567b4ccdea39adde552dbe35f98cd00d3cd12a54d89578"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/loader-key-source/manifest.json",
+      "size": 865,
+      "sha256": "2a76653af5403bdce19b413e7a1516265373661d2029e72edaae65abf961c410"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/loader-key-source/container-input/findings.md",
+      "size": 8448,
+      "sha256": "414b304ec6c7ba45cca8bbac15d7a9af390f28082a62babb3c15280cc4b76a93"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/loader-key-source/container-input/manifest.json",
+      "size": 2349,
+      "sha256": "1838d8924e3ebfe7ba78c2e90d7f3dd43bbff0cc978806a1ec1ac0445540b3d1"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/loader-key-source/container-input/receipt.json",
+      "size": 12898,
+      "sha256": "6989618ed09b666365d691878a859814832b99eeb4495a7f42d173ffdf9dc9f3"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/tz-esegpio-config/loader-producer/findings.md",
+      "size": 8121,
+      "sha256": "0d907c90215f498489bd7783732440f712f42c44639fa5f62b3cb7061563586a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/tz-esegpio-config/loader-producer/evidence.json",
+      "size": 4808,
+      "sha256": "93c6ca0d4369f64e96a0f18f8b13d56946c74bfd55997b6603ac2165b66ef2a6"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/query.py",
+      "size": 12044,
+      "sha256": "b8d76172dd7dcec5dcb730e7e6bf3c43cf43322300a2bbece0cd4a1fed0dc021"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/ascii_protocol.py",
+      "size": 2957,
+      "sha256": "55fd8509bed0c277b8c707d13c06dd31162a31f5a9e3f08207840ba7ceb9b556"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/test_ascii_protocol.py",
+      "size": 3678,
+      "sha256": "b2d896783673800ada122ede830e567771e4344cde9a9fd1608e8d1c60f21555"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/test_read_offline.py",
+      "size": 25854,
+      "sha256": "79e4f051c877fc784d4945cc4b068edd841c8a129c09e25668a1974f18a86d1d"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/read-review.md",
+      "size": 3720,
+      "sha256": "dcd2706bc7ac5c02c4ac197be2c2a00737400bce2da83015e36331468fff51bc"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/capture/journal.json",
+      "size": 85180,
+      "sha256": "87de0b8acdeb131d9c70cdfbd0aebe8eabaf0cb939f154b4892a7ebc50a326ba"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/capture/result.json",
+      "size": 212852,
+      "sha256": "c5b307c3e3dad84bbc452ec3f3230b35055acc98ab910e64d00be35e2ae21a25"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/capture/frames.json",
+      "size": 87018,
+      "sha256": "50268fdee8eac3821e5f79c2a4b07ab841926cddf1f7c96a0fe7bbe8dbe9a507"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/capture-audit.py",
+      "size": 13209,
+      "sha256": "cb0015d5b156f38e9ad23025c3e11a396b33a6f63ec2de317ff87350b53f9a8f"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/capture-audit.json",
+      "size": 18234,
+      "sha256": "21710f00bdc9cb86d1d124517e6bf8e380bee35aea6fff5858d4103812f8bf76"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-read/capture-findings.md",
+      "size": 4563,
+      "sha256": "9d8175e85f933d469bf4d2f65425252e2fff83168a2655be83b978779345da16"
     }
   ],
   "host_followup": {
@@ -602,6 +802,84 @@
       "samples": 138,
       "output_values_from_cached_fields": true,
       "actual_output_or_full_configuration_inferred": false
+    },
+    "tz_esegpio": {
+      "selected_cn_eea_values_equal": true,
+      "eea_devcfg_partition_bytes": 57344,
+      "eea_compressed_operation_bytes": 17272,
+      "operation_and_complete_partition_hashes_verified": true,
+      "ese_enable": 1,
+      "reset_gpio": 46,
+      "reset_function": 0,
+      "secure_io_gpio": 74,
+      "secure_io_function": 0,
+      "reset_delay_value": 0,
+      "secure_io_delay_value": 15,
+      "both_output_requests_in_same_initialization_dispatch": true,
+      "omapi_channel_lifetime_control_established": false,
+      "output_write_result_checked_by_helper": false,
+      "gpio74_absent_from_all_138_reserved_pin_filtered_snapshots": true,
+      "physical_gpio74_state_known": false,
+      "whole_tz_executable_equivalence_claimed": false
+    },
+    "root_qdb_review": {
+      "stored_frame_containers": 7,
+      "qsr4_records": 26832,
+      "root_records": 2298,
+      "all_ids_resolved": true,
+      "decoder_or_arity_errors": 0,
+      "pm_controller_to_sid_mapping_found": false
+    },
+    "modem_loader": {
+      "byte_preserving_root_elf_reconstructed": true,
+      "transformed_segments": 20,
+      "segment_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "transformed_file_bytes": 66768425,
+      "published_buffer_bytes": 1248,
+      "published_buffer_zero_in_package": true,
+      "trap3_is_address_translation": true,
+      "blob_import_reaches_hardware_command_fifo": true,
+      "packaged_qbec_found": true,
+      "qbec_bytes": 1208,
+      "block_a_bytes": 608,
+      "block_b_bytes": 576,
+      "block_b_bitmap": "0x03ffffc0",
+      "block_b_record_bytes": 28,
+      "block_b_records": 20,
+      "available_segment_sha384_matches": 26,
+      "new_signature_chain_validation": false,
+      "tz_mbnv7_locator_recognizes_packaged_envelope": true,
+      "packaged_block_a_version": 0,
+      "separate_full_parser_block_a_versions": [
+        4,
+        5
+      ],
+      "accepted_block_a_processing_known": false,
+      "runtime_input_copy_or_conversion_known": false,
+      "reproducible_software_only_decoder_established": false,
+      "reference_uses_elf64_controls_only_coredump_format": true,
+      "cryptographic_material_exported": false
     }
   },
   "nfc_configuration_read": {
@@ -627,5 +905,104 @@
     "eea_additional_download_bytes": 1382007,
     "eea_partial_partition_extraction": true,
     "full_odm_partition_hash_verified": false
+  },
+  "root_ulog_inventory": {
+    "compatibility_initially_inferred_from_root_dtb_and_oem_protocol": true,
+    "version_reply": "4b4d00020100000000000000",
+    "version_and_list_verified_on_device": true,
+    "names": 127,
+    "list_pages": 2,
+    "page_starts": [
+      0,
+      77
+    ],
+    "page_names": [
+      77,
+      50
+    ],
+    "enumeration_complete": true,
+    "duplicates": 0,
+    "crc_errors": 0,
+    "dropped_frames": 0,
+    "discovered_relevant_names": [
+      "GPIO",
+      "PMIC PRM Log",
+      "Spmi Log",
+      "PMIC Log"
+    ],
+    "only_version_list_and_mask_read_requests": true,
+    "connect_read_enable_reset_operations": 0,
+    "reboots": 0,
+    "root_transitions": 0,
+    "sim_cycles": 0,
+    "full_640_byte_mask_unchanged": true,
+    "boot_build_slot_nfc_enforcing_uid_snapshot_unchanged": true,
+    "adb_uid": 2000,
+    "usb_released": true,
+    "cleanup_errors": [],
+    "host_mocked_tests": 20,
+    "raw_response_inventory_independently_audited": true
+  },
+  "root_ulog_existing_read": {
+    "root_version_list_connect_and_format0_read_verified": true,
+    "fresh_inventory_names": 127,
+    "logs": [
+      {
+        "name": "GPIO",
+        "pages": 8,
+        "text_bytes": 4672,
+        "stop_reason": "empty_or_unavailable"
+      },
+      {
+        "name": "PMIC Log",
+        "pages": 3,
+        "text_bytes": 94,
+        "stop_reason": "empty_or_unavailable"
+      },
+      {
+        "name": "PMIC PRM Log",
+        "pages": 36,
+        "text_bytes": 27512,
+        "stop_reason": "empty_or_unavailable"
+      },
+      {
+        "name": "Spmi Log",
+        "pages": 8,
+        "text_bytes": 4784,
+        "stop_reason": "empty_or_unavailable"
+      }
+    ],
+    "total_read_pages": 55,
+    "total_text_bytes": 37062,
+    "shared_log_reader_bookkeeping_changes": true,
+    "logger_enable_reset_operations": 0,
+    "root_transitions": 0,
+    "sim_cycles": 0,
+    "clean_end_or_fully_drained_claimed": false,
+    "full_640_byte_mask_unchanged": true,
+    "phone_snapshot_unchanged": true,
+    "usb_released": true,
+    "cleanup_errors": [],
+    "gpio_pin_in_retained_text": [
+      141
+    ],
+    "spmi_boot_warning_bus_sid_pairs": [
+      [
+        0,
+        8
+      ],
+      [
+        1,
+        7
+      ]
+    ],
+    "relevant_controller_mapping_established": false,
+    "host_collector_tests": 36,
+    "host_protocol_tests": 8,
+    "independently_audited_exchanges": 62,
+    "independently_decoded_pages": 55,
+    "timestamped_lines": 319,
+    "capture_mutation_checks": 4,
+    "all_observed_tokens_match_requests": true
   }
 }

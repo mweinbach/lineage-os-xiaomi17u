@@ -223,9 +223,128 @@ extraction; no complete ODM-partition hash or new OTA-signature verification is
 claimed.
 
 The comparisons supply no supported global-firmware configuration change or
-new card-activation command. TrustZone's separate eSE GPIO configuration and
-the modem's downstream PMIC-controller mapping remain under host review.
+new card-activation command.
 The public [ST54L description](https://www.st.com/en/secure-mcus/st54l.html)
 supports the chip family's eSIM capability; it does not identify this board's
 connections or personalization. No measured result yet justifies changing
 voltage, polarity, legacy GPIO descriptors or card activation state.
+
+## TrustZone eSE initialization
+
+The retained CN TrustZone configuration identifies an additional control:
+`nfc_secure_io` is TLMM GPIO74/function0. Its selected configuration matches the
+official EEA336 devcfg, including eSE enable 1, reset GPIO46/function0, reset
+delay 0, secure-I/O delay 15 and the TLMM controller metadata. One 17,272-byte
+compressed operation reconstructs the entire 57,344-byte EEA devcfg partition;
+both the compressed operation and complete partition hashes match the retained
+official manifest. The full CN and EEA images differ, and this comparison does
+not establish executable TrustZone equivalence or reverify the live TZ image.
+
+The CN consumer resolves the named tuples into actual GPIO configuration/output
+requests. It requests GPIO74 high and later low, but both calls occur within
+the same sequential TrustZone initialization dispatch. This is not an observed
+OMAPI channel-open/channel-close pair. The output path reaches a masked register
+write; the caller discards the configuration/output results before releasing
+the named ID, so its success flag cannot prove the hardware write succeeded.
+The delay is compared as 15,000 timer units, not a measured 15 ms pulse width.
+
+GPIO74 is absent from all 138 retained TLMM snapshots because the reserved-pin
+mask excludes it before the debug implementation reads its registers. This
+includes the sample collected after the probe reported channel cleanup. Its
+omission supplies no pin level, direction or function. Consequently neither
+the static name nor the absent debug row establishes a causal link between the
+SPI hold and the ISO startup failure. No manual GPIO operation was performed.
+
+## Modem power-controller backend
+
+The earlier peripheral call still leaves the modem's controller argument 1
+unmapped to a physical PMIC/SID. The neighboring `uim_esim` regulator's PM index
+and SID do not establish the identity of the GPIO level-shifter controller.
+The transport entry's value 8 is also not a proven peripheral operation ID:
+the local QDI branch replaces that value before dispatch.
+
+The investigation reconstructed the retained split root ELF without changing
+its segment bytes and traced its clear startup loader. All 20 populated entries
+in the loader's address/size table match `modem.b06` through `modem.b25`, totaling
+66,768,425 bytes. The loader transforms each segment in place and requires
+successful status plus an unchanged total output length. This is direct code
+evidence of a transformation, beyond high entropy or unsuccessful disassembly.
+
+The complete 1,248-byte published input buffer is zero in the packaged ELF.
+Its consumer uses a 100-byte blob and 28-byte per-segment parameter records,
+then reaches a hardware command FIFO. Trap 3 resolves to address translation;
+it is not evidence of a secure-service call. The intended physical aliases are
+`0x04180000`/`0x04180004` for buffer publication and `0x041f2000` for the command
+interface. The publication caller ignores mapping/translation errors, and its
+nonzero capacity check is not a proven producer-completion handshake.
+
+The retained loader alone therefore does not yet give a reproducible normal
+host decoder for the downstream driver. This does not identify a fused key,
+establish a specific secure service, or prove that local reconstruction is
+impossible. No guessed-input decryption, runtime memory collection or
+authentication change was attempted. The normal producer and packaged-input
+paths were investigated further as follows.
+
+A follow-up found a 1,208-byte QBEC envelope after the declared authentication
+fields in `modem.b27`; `modem.mdt` is exactly `b00` plus `b27`. All 26 available
+segment hashes match their retained SHA-384 table entries. This is hash-table
+integrity, not a new signature-chain validation. The envelope's 576-byte data
+block contains a four-byte selection bitmap and twenty 28-byte records. The
+bitmap selects exactly program headers 6–25, matching the loader's table and
+record layout. The input metadata is therefore packaged; the zero destination
+does not establish that it is available only at runtime.
+
+The exact retained TZ MBNv7 parser recognizes the QBEC envelope and stores its
+pointer/size. A separate full parser proves the bitmap/count/record schema but
+accepts key-management block versions 4 or 5, while this modem carries version
+0. That is a limit of the traced branch, not evidence that the booting modem is
+rejected. The accepted selection/conversion into the runtime 100-byte blob and
+the hardware import's semantics remain unresolved. The findings provide no
+justified software-only decoder or PMIC-controller mapping yet.
+
+## Root-domain diagnostic inventory
+
+The exact root DTS advertises ULog base `0x0200`, while the fully decoded OEM
+handler uses `0x1400`. The root implementation was not available for a static
+equivalence proof. A bounded compatibility probe therefore sent the standard
+VERSION request to the advertised root base, and permitted LIST only after the
+exact version-1/status-zero reply.
+
+The phone returned 127 unique logger names in two pages: starts 0 and 77,
+copying 77 and 50 names with the same total count. Independent decoding from
+the raw captured replies agrees with the collector. The inventory includes
+`GPIO`, `PMIC Log`, `PMIC PRM Log` and `Spmi Log`, providing specific existing
+targets for a subsequent bounded read. Inventory success does not retroactively
+establish complete static equivalence between the root and OEM implementations.
+
+This transaction sent only VERSION, LIST and existing-mask reads. It created no
+logger connections, advanced no log cursor, changed no mask and performed no
+SIM cycle. Both 640-byte masks match, and the boot/build/slot/NFC/Enforcing/UID
+snapshot is unchanged. ADB remained UID 2000; the USB interface was released
+with no cleanup errors. Twenty mocked tests cover malformed replies, version
+gating, pagination limits and cleanup failures; the capture has no CRC errors
+or dropped frames.
+
+The subsequent fixed-name read verified root CONNECT and server-formatted READ
+responses for all four logs. Its 55 read pages returned 37,062 text bytes:
+
+| Existing log | Pages | Text bytes | Retained content |
+| --- | ---: | ---: | --- |
+| GPIO | 8 | 4,672 | Repeated configuration of pin 141 |
+| PMIC Log | 3 | 94 | One boot-time fuel-gauge feature warning |
+| PMIC PRM Log | 36 | 27,512 | Routine modem/GNSS resource activity |
+| Spmi Log | 8 | 4,784 | Boot-time warnings for bus 0/SID 8 and bus 1/SID 7 |
+
+The server rendered existing format strings, so the host did not need to
+decode their pointers in the transformed root image. No retained text here
+maps the eSIM controller argument to a PMIC/SID. The independently reviewed
+collector passed 36 mocked cases, and its pure packet/text helper passed eight.
+The read changed ordinary shared log-reader bookkeeping, created no new log
+buffer, and sent no logger enable/reset, SIM or NFC configuration operation.
+USB cleanup, mask equality and the phone-state snapshot all verify.
+
+Each log stopped after two consecutive zero-count replies. The exact formatter
+can hide overwrite/error conditions in those replies, and existing rewind
+attributes can replay data. This is a bounded read of retained text, not proof
+that the log was empty or completely drained. Startup correlation requires a
+separate capture while the candidate is active.
