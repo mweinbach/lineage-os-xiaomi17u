@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-12",
+  "result": "NO_ATR persists; five alternate-pin groups and partial root eSIM power-resource activity captured; original phone state restored",
+  "preceding_investigation": "research/esim-nfc-uart-20260912.json",
+  "workspace_commit_before_experiment": "424d87d",
+  "device": {
+    "build_incremental": "nezha.b2c99443fe9e90a4a7954eac",
+    "slot": "_a",
+    "selinux": "Enforcing",
+    "reboots": 0,
+    "flashes": 0
+  },
+  "condition": {
+    "modem_lpa": "original",
+    "verified_isd_hold": true,
+    "same_pid_channel_at_cycle_endpoints": true,
+    "native_nfc_enable_command": "2203028603",
+    "native_nfc_enable_response": "42030100",
+    "qmi_selected_types": [
+      1,
+      3
+    ],
+    "qmi_no_atr": true
+  },
+  "root_ulog": {
+    "fresh_baseline_named_connects": 4,
+    "during_or_after_connects": 0,
+    "read_pages": 91,
+    "live_rounds_started": 20,
+    "after_rounds_started": 2,
+    "logs": [
+      {
+        "name": "GPIO",
+        "pages": 23,
+        "text_bytes": 7708
+      },
+      {
+        "name": "PMIC Log",
+        "pages": 23,
+        "text_bytes": 0
+      },
+      {
+        "name": "PMIC PRM Log",
+        "pages": 23,
+        "text_bytes": 13896
+      },
+      {
+        "name": "Spmi Log",
+        "pages": 22,
+        "text_bytes": 0
+      }
+    ],
+    "request_deadline_seconds": 0.75,
+    "max_read_pages": 128,
+    "reader_poisoned": false,
+    "logger_enable_or_reset_operations": 0,
+    "shared_reader_bookkeeping_changes": true,
+    "zero_text_is_not_empty_proof": true,
+    "complete_power_history_claimed": false,
+    "read_pages_by_phase": {
+      "baseline": 4,
+      "during": 79,
+      "after": 8
+    },
+    "exchanges": 96
+  },
+  "diag_capture": {
+    "frames": 4499,
+    "payload_bytes": 123371,
+    "dropped_frames": 0,
+    "bad_crc": 0,
+    "trailing_partial_bytes": 0,
+    "trailing_escape": false
+  },
+  "new_driver_evidence": {
+    "target_gpio_records": 30,
+    "groups": 5,
+    "enable_order": [
+      70,
+      71,
+      72
+    ],
+    "enable_function": 2,
+    "disable_order": [
+      72,
+      71,
+      70
+    ],
+    "disable_function": 0,
+    "pull_raw": 0,
+    "drive_raw": 200,
+    "drive_current_measured": false,
+    "root_esim_resource_text_records": 5,
+    "levelshifter_controller_to_sid_mapping_known": false,
+    "electrical_waveforms_measured": false,
+    "card_module_activation_state_known": false
+  },
+  "oem_uart_read": {
+    "data_bytes": 4068,
+    "limit_reached": false,
+    "overrun_metadata_pages": 1,
+    "final_read_empty_or_unavailable": true,
+    "decoded_records": 113,
+    "record_bytes": 36,
+    "ordered_register_action_values_match_previous_capture": true,
+    "complete_startup_history_claimed": false
+  },
+  "restoration": {
+    "physical_types": [
+      1,
+      1
+    ],
+    "physical_sim_restored": true,
+    "owned_channel_closed": true,
+    "other_native_entries_match_baseline": true,
+    "released_diagnostic_app_force_stopped": true,
+    "full_640_byte_mask_restored": true,
+    "temporary_helper_removed": true,
+    "collector_cleanup_errors": [],
+    "native_process_completion_uncertain": false,
+    "coordinator_guard": {
+      "nfc_restore_allowed": true,
+      "adb_unroot_allowed": true,
+      "matching_native_processes": [],
+      "native_absence_verified": true,
+      "collector_stage": "complete",
+      "native_process_completion_uncertain": false,
+      "sim_dispatch_attempted": true,
+      "physical_sim_restored": true,
+      "reason": "native_absent_and_collector_cleanup_verified"
+    },
+    "native_nfc_restore_command": "2203028600",
+    "native_nfc_restore_response": "42030100",
+    "original_records_boot_build_slot_verified": true,
+    "nfc_on": true,
+    "nfc_always_on_off": true,
+    "adb_uid": 2000,
+    "original_adb_uid_restored": true,
+    "coordinator_cleanup_errors": []
+  },
+  "validation": {
+    "collector_independent_tests": 10,
+    "token_helper_tests": 6,
+    "token_independent_tests": 4,
+    "coordinator_tests": 26,
+    "prior_make_test_current": 1124,
+    "prior_make_test": 5101,
+    "independent_capture_audit_passed": true,
+    "capture_audit_mutation_rejections": 3,
+    "qsr_manifest_identities_verified": 21,
+    "capture_audit_input_identities_verified": 99,
+    "combined_manifest_identities_verified": 38,
+    "uart_manifest_identities_verified": 10,
+    "independent_power_gpio_parser_rejection_cases": 9
+  },
+  "artifacts": [
+    {
+      "path": "reports/esim-continuation-20260912/nfc_transaction_root_ulog.py",
+      "size": 16097,
+      "sha256": "ea45dfa6c2df1e251d446050d4877bb826960f79490b7fe513b292410708c89a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/usb_uim_root_ulog_capture.py",
+      "size": 33021,
+      "sha256": "ed3998acfa691ea5146395b29a7864227b0a2908f464556fa52c9f4280ed1dc6"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/token_hook.py",
+      "size": 10301,
+      "sha256": "3842ecee43d7f6285aee4a1fd70457acca5ec67f9f2d53460963fd6e9e458ca6"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/test_token_hook.py",
+      "size": 5931,
+      "sha256": "efb650bf5293cc0a556fdce2e7ca1b1a8b33dd6563a7ef590d8c57dbdafe5c7a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/test_token_independent.py",
+      "size": 5313,
+      "sha256": "76aef0122ae543735c91429f82e3da3ae60b93ab7c49052e598d9f24232a36a3"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/test_collector_independent.py",
+      "size": 10347,
+      "sha256": "686c4521f1d0f3c90993beaff4dd90d56d2b461b56f9dbf288bec62e6426742a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/test_nfc_transaction.py",
+      "size": 17172,
+      "sha256": "7bd75879045e41738abf5bd7ba19631d087b62f628695d7b15d8a43d99f1bd22"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/coordinator-review.md",
+      "size": 3409,
+      "sha256": "d89a9beb363d95d8ae4b4be0ee93790ea12ef0b34aaba6f7f7ca3ab1aa9e146f"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/hook-plan.md",
+      "size": 9955,
+      "sha256": "360a2a8a9f3e679b60b514d52f4282392f99ddde0c77dad5841f054654ae82a6"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/journal.json",
+      "size": 202467,
+      "sha256": "683cba87fc554783bf56e46162378744c1508852feef3ad66d08b63fafaa1d7d"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/root-ulog.json",
+      "size": 404604,
+      "sha256": "09659ff710b692b3e22dd7d9c04ece26103820ac389ea7dc06c633f4b880659c"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/frames.bin",
+      "size": 177359,
+      "sha256": "56b2e42cb2912f346282ee5b90a17d811167621306c14549c3db515eec3cffcc"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/frame-summary.json",
+      "size": 146,
+      "sha256": "25a7c7c56f91229694f252c4a8b190d87a7fa35cfcc7cd9b596a244a4d63b641"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/ulog-after-cycle.json",
+      "size": 17946,
+      "sha256": "6ea1427161840e8852d2b0ecd0fb9efbd9d26f7c6182879f99dd4c05fa84e6ed"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/nfc-transaction/journal.json",
+      "size": 1417,
+      "sha256": "700bf40ed0a33c76995f4767c901173646d756512be641542c09ca11fcc37fbd"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/nfc-transaction/baseline/records.json",
+      "size": 402,
+      "sha256": "14b454e589e91ec1cdf7c22c29a95c9a12ce6b2c851f16950e7934270b1bc698"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/nfc-transaction/restored/records.json",
+      "size": 402,
+      "sha256": "14b454e589e91ec1cdf7c22c29a95c9a12ce6b2c851f16950e7934270b1bc698"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/GPIO.txt",
+      "size": 7708,
+      "sha256": "1180162643ef938d0cd257f3067dee012de86237768d9a4e545f4f3c1b783e73"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/PMIC_Log.txt",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/PMIC_PRM_Log.txt",
+      "size": 13896,
+      "sha256": "f9775c60c8dc6c739195aa59bd5fd702dff567ef2fcdee08f71b07144b6e8e69"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture/Spmi_Log.txt",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture-audit.py",
+      "size": 22343,
+      "sha256": "bdfe1c618640879876c0e75f4b0b0f5c4ab5dc8906983ce86b7dec98a30c6332"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture-audit.json",
+      "size": 116463,
+      "sha256": "b5a8eed3efe1f9891482b3b9451aa1d0e23b2487d9403581d64450a485820d31"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/capture-findings.md",
+      "size": 5804,
+      "sha256": "fc5d622717cf54c10c90a36ca8a038661d9868fd2bdb7b8e80ae4bb6ef1b7e9f"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/qsr/findings.md",
+      "size": 8217,
+      "sha256": "335b7f6fb845d2c232e30a311acac0c1c25b679024d1bbeb810169acf6227749"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/qsr/evidence.json",
+      "size": 4669,
+      "sha256": "f7a7cd8e883af67feb8f08dea6ef78e0cf32e58f71c69d22b8a8940c7769ccaa"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/findings.md",
+      "size": 8542,
+      "sha256": "b833b9744d2835a3849cc56a5d628e6e14b3621ae384e36418188e6196c63612"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/evidence.json",
+      "size": 8774,
+      "sha256": "bb9b2cf5f654f87299bbf18cd42037fbfc6cb75bff7064122cfed9fe813401a9"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/power-gpio-review.md",
+      "size": 3720,
+      "sha256": "80b17bda7687759f2c71b7beff40567e9f147916433519727804f81ec8b91281"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/uart/findings.md",
+      "size": 3808,
+      "sha256": "97d5c68e422b616b376ae04a6480296fd4ca1d17b90f8f97687f1c98480ac2ae"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/root-ulog-cycle/analysis/uart/evidence.json",
+      "size": 2411,
+      "sha256": "a02586be33ddbf7d3561019a7d5d5b527caf98df8969e6070f7be260270379f0"
+    }
+  ],
+  "qsr4": {
+    "records": 4391,
+    "oem_records": 3988,
+    "root_records": 403,
+    "all_dictionary_ids_resolved": true,
+    "critical_argument_records": 138,
+    "critical_argument_errors": 0,
+    "candidate_attempts": 5,
+    "candidate_requested_mv": [
+      1200,
+      1200,
+      1200,
+      1200,
+      1200
+    ],
+    "candidate_rx_break_events": 5,
+    "reset_reason_values": [
+      2,
+      0,
+      1,
+      0,
+      0
+    ],
+    "new_cause_specific_setting_identified": false,
+    "candidate_explicit_atr_received_zero": 4,
+    "candidate_external_command_timeouts": 1,
+    "reset_reason_interpretation": "UIM2, parity=0, RX BREAK=1, overrun=0, bad-status-word=0; repeated in each candidate attempt",
+    "selected_scalar_sequence_matches_previous_capture": true,
+    "normalization": "Only identified pointer fields; zero/nonzero state preserved",
+    "noncritical_oem_argument_count_mismatches": 71
+  }
+}

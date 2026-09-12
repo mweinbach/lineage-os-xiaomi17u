@@ -2,6 +2,13 @@
 
 **Latest installed-phone observation (September 12): v25
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
+The [root GPIO and power capture](esim-root-power-20260912.md) adds one completed,
+restored startup test. All five attempts configure DATA/CLK/RESET pins 70/71/72
+to the alternate function and back; the root power manager logs eSIM-resource
+requests. Startup still ends in RX BREAK/NO_ATR. The driver records do not
+measure physical voltage/waveforms or establish card-module activation.
+Original records, physical selection, owned channels, diagnostic mask, NFC,
+temporary helper and app process are restored; ADB is shell UID 2000.
 The [NFC power and raw UART investigation](esim-nfc-uart-20260912.md) adds two
 completed, restored tests without reboot. NFC accepts the eSE power/link request,
 but startup still fails before ATR. A recovered UART log now shows break/error
@@ -17,7 +24,10 @@ unresolved; these comparisons do not establish whole-firmware interchangeability
 The EEA TrustZone eSE GPIO values also match. A bounded diagnostic discovery
 and existing-log read now verify 127 root-domain logger names and obtain GPIO,
 PMIC and SPMI text without decoding the transformed modem image. The retained
-text does not map the eSIM controller; candidate-time correlation remains open.
+baseline text does not map the eSIM controller. The subsequent startup capture
+supplies candidate-time correlation for alternate
+pin configuration and partial power-resource requests, with the physical
+controller mapping and startup cause still unresolved.
 Both log transactions preserve boot/build/slot/NFC/Enforcing state and the
 640-byte diagnostic mask, with ADB remaining shell UID 2000.
 The [combined eSIM boot/hold test](esim-combined-20260912.md) completes the
