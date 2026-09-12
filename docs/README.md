@@ -7,6 +7,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
+| [eSIM follow-up after removing the screen lock](esim-followup-20260912.md) | App hold works again. USB DIAG captures five eSIM power/enable attempts followed by RX BREAK and NO_ATR; active pin routing and card startup remain unresolved, with a separate missing LPA service |
 | [eSIM application-LPA reboot test](esim-boot-20260912.md) | Approved candidate boot loads both stock records but still returns NO_ATR. A second reboot verifies restoration of original records and physical selection; no working eUICC exposed |
 | [eSIM service and modem investigation](esim-deep-20260912.md) | Original diagnostic app confirms the installed ISD-R application. Native selector, regional initialization, power and LPA mode are traced; preparation evidence for the subsequent reboot test |
 | [First eSIM factory-command attempt](esim-20260912.md) | Preserved initial timeout and restoration evidence; the deeper investigation supersedes its next-step restrictions and resolves applet presence |
