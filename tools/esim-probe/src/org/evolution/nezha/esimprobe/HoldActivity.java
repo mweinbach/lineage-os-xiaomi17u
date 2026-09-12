@@ -70,9 +70,16 @@ public final class HoldActivity extends Activity {
         if (mode == null) mode = intent.getBooleanExtra("hold", false) ? "hold" : "inspect";
         int seconds = intent.getIntExtra("seconds", 90);
         int p2 = intent.getIntExtra("p2", 4);
+        String requestedReader = intent.getStringExtra("reader");
         if (!(mode.equals("inspect") || mode.equals("hold") || mode.equals("discovery") || mode.equals("registry"))
                 || seconds < 2 || seconds > 90 || (mode.equals("discovery") && p2 != 0 && p2 != 4)) {
             report(null, "ERROR invalid mode, seconds outside 2..90, or discovery P2 outside 0/4");
+            return;
+        }
+        if (intent.hasExtra("reader") && (!(mode.equals("inspect") || mode.equals("discovery"))
+                || !("eSE1".equals(requestedReader) || "SIM1".equals(requestedReader)
+                || "SIM2".equals(requestedReader)))) {
+            report(null, "ERROR reader must be eSE1/SIM1/SIM2 and is accepted only for inspect/discovery");
             return;
         }
         boolean granted = getPackageManager().checkPermission(PERMISSION, getPackageName()) == PackageManager.PERMISSION_GRANTED;
@@ -86,13 +93,14 @@ public final class HoldActivity extends Activity {
                 report(null, "ERROR another diagnostic is still active; wait for DONE or send STOP");
                 return;
             }
-            next = new DiagnosticRun(mode, seconds, p2);
+            next = new DiagnosticRun(mode, seconds, p2, requestedReader);
             current = next;
             run = next;
         }
         status.setText("");
         report(next, "PROCESS package=" + getPackageName() + " uid=" + Process.myUid() + " mode=" + mode);
         report(next, "PRIVILEGED_PERMISSION_GRANTED true");
+        report(next, "REQUESTED_READER " + (requestedReader == null ? "default" : requestedReader));
         next.start();
     }
 
@@ -107,6 +115,7 @@ public final class HoldActivity extends Activity {
         private final String mode;
         private final int seconds;
         private final int discoveryP2;
+        private final String readerName;
         private final AtomicBoolean ending = new AtomicBoolean();
         private final AtomicBoolean finished = new AtomicBoolean();
         private final Handler timers = new Handler(Looper.getMainLooper());
@@ -116,12 +125,17 @@ public final class HoldActivity extends Activity {
         private SEService service;
         private Session session;
         private Channel channel;
+        private boolean selectionAttempted;
         private int responseBytes;
 
-        DiagnosticRun(String mode, int seconds, int discoveryP2) {
+        DiagnosticRun(String mode, int seconds, int discoveryP2, String requestedReader) {
             this.mode = mode;
             this.seconds = seconds;
             this.discoveryP2 = discoveryP2;
+            // Only the original inspect default chooses the first eSE reader.
+            // Every explicit choice and every channel operation has an exact target.
+            this.readerName = requestedReader != null ? requestedReader
+                    : mode.equals("inspect") ? null : "eSE1";
         }
 
         private void emit(String line) { report(this, line); }
@@ -172,18 +186,22 @@ public final class HoldActivity extends Activity {
                 Reader selected = null;
                 for (int i = 0; i < readers.length; i++) {
                     names[i] = readers[i].getName();
-                    boolean suitable = mode.equals("discovery") || mode.equals("registry")
-                            ? names[i].equals("eSE1") : names[i].startsWith("eSE");
+                    boolean suitable = readerName == null ? names[i].startsWith("eSE")
+                            : names[i].equals(readerName);
                     if (selected == null && suitable) selected = readers[i];
                 }
                 emit("READERS " + Arrays.toString(names));
-                if (selected == null) throw new IllegalStateException("No eSE reader");
+                if (selected == null) {
+                    emit("READER_UNAVAILABLE requested=" + (readerName == null ? "first_eSE" : readerName)
+                            + " fallback=false");
+                    throw new IllegalStateException("Requested reader is unavailable");
+                }
                 emit("SELECTED_READER " + selected.getName());
                 boolean present = selected.isSecureElementPresent();
                 if (ending.get()) return;
                 emit("SECURE_ELEMENT_PRESENT " + present);
                 if (mode.equals("inspect")) { end("INSPECT_DONE no session or channel opened"); return; }
-                if (!present) throw new IllegalStateException("eSE reader reports absent");
+                if (!present) throw new IllegalStateException("Selected reader reports absent");
                 session = selected.openSession();
                 if (ending.get()) return;
                 emit("SESSION_OPEN");
@@ -192,6 +210,7 @@ public final class HoldActivity extends Activity {
                 byte[] aid = mode.equals("discovery") ? ISD_R : ISD;
                 byte p2 = mode.equals("discovery") ? (byte) discoveryP2 : 0;
                 emit("SELECT_REQUEST aid=" + hex(aid) + " p2=" + String.format(Locale.ROOT, "%02X", p2));
+                selectionAttempted = true;
                 channel = session.openLogicalChannel(aid, p2);
                 if (ending.get()) return;
                 if (channel == null) throw new IllegalStateException("No logical channel");
@@ -207,7 +226,9 @@ public final class HoldActivity extends Activity {
                 }
             } catch (Exception failure) {
                 emit("ERROR exception=" + failure.getClass().getSimpleName() + " diagnostics_incomplete=true");
-                if (mode.equals("discovery")) emit("ISD_R_SELECTION_FAILED existence_inconclusive=true");
+                if (mode.equals("discovery")) emit((selectionAttempted
+                        ? "ISD_R_SELECTION_FAILED" : "ISD_R_SELECTION_NOT_ATTEMPTED")
+                        + " existence_inconclusive=true");
                 end("DIAGNOSTIC_FAILED");
             }
         }

@@ -21,7 +21,7 @@ checks the APK against the supplied certificate; it does not inspect a phone.
 python3 scripts/build_esim_probe.py \
   --sdk /path/to/Android/sdk \
   --java-home /path/to/jdk \
-  --output artifacts/esim-probe-local-v3 \
+  --output artifacts/esim-probe-local-v4 \
   --platform-key /private/path/platform.pk8 \
   --platform-cert /path/to/platform.x509.pem
 ```
@@ -47,13 +47,31 @@ adb -s AUTHORIZED_SERIAL shell am start -W \
 
 | Mode | Operation |
 | --- | --- |
-| `inspect` | List readers and check the first eSE reader's presence; open no session. |
-| `hold` | Open the first eSE reader and select ISD `A000000151000000` with P2 `00`; hold the channel until stop/deadline. |
-| `discovery` | On `eSE1`, select ISD-R `A0000005591010FFFFFFFF8900000100`; P2 is `04` by default, or explicitly `00`. Log ATR/select-response lengths and SHA-256 hashes. |
+| `inspect` | List readers and check the requested reader's presence; default to the first eSE reader. Open no session. |
+| `hold` | On `eSE1`, select ISD `A000000151000000` with P2 `00`; hold the channel until stop/deadline. |
+| `discovery` | On the requested reader, defaulting to `eSE1`, select ISD-R `A0000005591010FFFFFFFF8900000100`; P2 is `04` by default, or explicitly `00`. Log ATR/select-response lengths and SHA-256 hashes. |
 | `registry` | On `eSE1`, select the ISD above, read the GP registry, and try the optional application directory if the registry query does not complete. |
 
 The optional `seconds` integer is bounded to 2–90. `discovery` also accepts
-`--ei p2 0` or `--ei p2 4`. A second start while a run is active is rejected;
+`--ei p2 0` or `--ei p2 4`. Only `inspect` and `discovery` accept an explicit
+`--es reader eSE1`, `--es reader SIM1`, or `--es reader SIM2`. Other names,
+empty values, and a reader extra supplied to `hold` or `registry` are rejected.
+A missing requested reader fails without choosing a different reader. A listed
+reader may report absent; discovery then stops before opening a session.
+
+For example, a SELECT-only check of the second modem/UICC reader is:
+
+```sh
+adb -s AUTHORIZED_SERIAL shell am start -W \
+  -n org.evolution.nezha.esimprobe/.HoldActivity \
+  --es mode discovery --es reader SIM2 --ei p2 0 --ei seconds 30
+```
+
+The app logs both the requested and selected reader. Reader presence alone does
+not prove that the eUICC is usable. No reader choice changes the modem's SIM type
+or performs a card reset.
+
+A second start while a run is active is rejected;
 after `DONE`, the same activity accepts another explicit start. To stop early:
 
 ```sh
