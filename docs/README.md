@@ -7,7 +7,8 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
-| [eSIM enablement attempt](esim-20260912.md) | On the CN v25 unit, no LPA is installed and no eUICC is exposed. Xiaomi's factory enable command times out after 30 EID reads; physical SIM2 restored, modem mapping identical, ADB returned to shell. Physical chip absence versus CN firmware gating remains unresolved |
+| [eSIM service and modem investigation](esim-deep-20260912.md) | Original diagnostic app confirms the installed ISD-R application. Modem accepts eSIM selection but reports NO_ATR. Regional initialization and cached LPA mode are traced; a reboot experiment is prepared, with modem state restored pending authorization |
+| [First eSIM factory-command attempt](esim-20260912.md) | Preserved initial timeout and restoration evidence; the deeper investigation supersedes its next-step restrictions and resolves applet presence |
 | [Roadmap](roadmap-20260906.md) | Workstreams, sequencing and decisions for moving from guarded bring-up to a maintainable release |
 | [Software plan](software-plan-20260909.md) | Prioritized plan for the ROM itself from the v14 baseline: ledger session, IMS, fingerprint, display, audio, power, camera completion, polish, graduation to a user build with OTA |
 | [Artifact retention](artifact-retention-20260909.md) | September 9 pass that kept only the installed v14 delivery set, what was verified before removal, what stays, and the guest candidates left alone |

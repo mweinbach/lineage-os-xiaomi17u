@@ -2,10 +2,14 @@
 
 **Latest installed-phone observation (September 12): v25
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
-The [eSIM session](esim-20260912.md) found no LPA and no exposed eUICC. Xiaomi's
-factory enable command failed after 30 EID reads. Physical SIM2 was restored,
-the saved modem mapping matched, and ADB returned to shell UID 2000. eSIM remains
-unavailable; physical chip absence versus CN firmware gating is unresolved.
+The [deeper eSIM investigation](esim-deep-20260912.md) confirms the standard
+eUICC ISD-R application in the secure element's directory. An original diagnostic
+app is built, installed and validated. The modem accepts eSIM selection but
+reports NO_ATR and no EID. The CN region skips a stock application-LPA
+initialization branch; a complete test needs an explicitly authorized reboot
+because the modem caches the LPA mode. Physical SIM selection and all tested
+modem records are restored, and ADB returned to shell UID 2000. eSIM remains
+unavailable; the prepared boot experiment has not run.
 This observation does not revalidate other features or reconstruct the v25
 installation. The v23 and older source/delivery sections below are earlier
 checkpoints; their pending delivery statements are not a current v25 inventory.

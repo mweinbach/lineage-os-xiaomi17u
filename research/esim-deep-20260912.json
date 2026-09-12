@@ -1,0 +1,318 @@
+{
+  "operation": "nezha-esim-service-modem-investigation-v2",
+  "date": "2026-09-12",
+  "document": "docs/esim-deep-20260912.md",
+  "previous_record": "research/esim-20260912.json",
+  "device": {
+    "model": "2512BPNDAC",
+    "product": "nezha",
+    "build_number": "nezha.b2c99443fe9e90a4a7954eac",
+    "slot": "_a",
+    "modem_product_code": 401,
+    "modem_hardware_region": 0,
+    "selinux": "Enforcing",
+    "matched_previously_authorized_device": true
+  },
+  "outcome": {
+    "esim_enabled": false,
+    "isd_r_listed_in_secure_element_directory": true,
+    "isd_r_aid": "A0000005591010FFFFFFFF8900000100",
+    "directory_entries": 38,
+    "directory_response_bytes": 636,
+    "directory_status": "9000",
+    "registry_status": "6985",
+    "isd_r_select_status": "6999",
+    "modem_eid_obtained": false,
+    "modem_card_state": "ERROR",
+    "modem_card_error": "NO_ATR",
+    "next_step": "Explicitly authorized reboot experiment for the two stock application-LPA initialization records; not executed"
+  },
+  "modem": {
+    "service_object": [
+      1,
+      118,
+      6
+    ],
+    "original_current_sim_types": [
+      1,
+      1
+    ],
+    "accepted_esim_sim_types": [
+      1,
+      3
+    ],
+    "set_esim_modem_result": 0,
+    "set_esim_modem_error": 0,
+    "supported_combination_values": [
+      2,
+      6
+    ],
+    "supported_hal_masks": [
+      3,
+      7
+    ],
+    "eid_slot2_error": 3,
+    "eid_slot3_error": 94,
+    "regional_gate_skips_application_lpa_initialization": true,
+    "cached_lpa_mode_has_no_verified_runtime_reset": true
+  },
+  "original_app": {
+    "package": "org.evolution.nezha.esimprobe",
+    "version_code": 3,
+    "source": "tools/esim-probe",
+    "builder": "scripts/build_esim_probe.py",
+    "apk_sha256": "7b6acc6d5cc6fc5f70aa14e8f24a1263c814ca118cce53e4053011566ca54f73",
+    "installed": true,
+    "permission_granted": "android.permission.SECURE_ELEMENT_PRIVILEGED_OPERATION",
+    "exported_component_permission": "android.permission.DUMP",
+    "final_force_stopped": true,
+    "is_profile_manager": false
+  },
+  "bounded_terminal_test": {
+    "path": "/nv/item_files/modem/qmi/uim/terminal_capability_Subscription01",
+    "initial_state": "absent",
+    "candidate_hex": "060083010700",
+    "exact_readback_verified": true,
+    "esim_exposed": false,
+    "removed_only_test_created_record": true,
+    "final_read_result": -117
+  },
+  "firmware_comparison": {
+    "live_cn_qdsp_sha256": "1e32f3892e03ca907464d57fea37eb3db4806327bc8807a851af13f0db9254be",
+    "live_modem_dtb_sha256": "7e4b204c3636969ee99e578a59bfe17273a561c9c0440c9c687b018b90baf4d1",
+    "modem_dtb_equal_cn_ww_eea": true,
+    "all_hardware_uim_mcfg_records_equal": true,
+    "four_live_uim_records_match_all_three_defaults": true,
+    "evidence_does_not_justify_global_firmware_replacement": true
+  },
+  "restoration": {
+    "current_type": {
+      "size": 5,
+      "sha256": "c5fa7a4f055ecfb310cff078852a08c832be9ac4c4d30ecb73e4b55630fff19f",
+      "physical_both": true
+    },
+    "mapping": {
+      "size": 70,
+      "sha256": "009e348dbb9274b0951781c24f6b2a869f5a5cd3968842a898db9efac73391a1",
+      "baseline_match": true
+    },
+    "lpa_support": {
+      "size": 16,
+      "sha256": "e0345094314e0159e65af6f7936e8f7877f9df64b4428a5f9d257ff1d598e0bf",
+      "baseline_match": true
+    },
+    "terminal_capability_original_absence_restored": true,
+    "installed_apk_sha256": "7b6acc6d5cc6fc5f70aa14e8f24a1263c814ca118cce53e4053011566ca54f73",
+    "adb_uid": 2000,
+    "selinux": "Enforcing",
+    "phone_rebooted": false,
+    "flashed": false,
+    "profile_reset_delete_or_download_invoked": false,
+    "disposable_uploaded_native_probes_removed": true,
+    "lpa_support_modified": false
+  },
+  "boot_experiment": {
+    "prepared": true,
+    "executed": false,
+    "requires_explicit_reboot_authorization": true,
+    "maximum_reboots_including_rollback": 2,
+    "lpa_original_hex": "01010002010000000000000000000000",
+    "lpa_candidate_hex": "00000100000000000000000000000000",
+    "terminal_candidate_hex": "060083010700",
+    "product_region_identity_change": false
+  },
+  "validation": {
+    "test_current": {
+      "passed": true,
+      "tests": 1124
+    },
+    "builder_tests": {
+      "passed": true,
+      "tests": 6
+    },
+    "parser_harness_passed": true,
+    "signed_apk_build_and_alignment_passed": true,
+    "exact_final_apk_directory_and_relaunch_device_test_passed": true,
+    "full_suite": {
+      "passed": true,
+      "tests": 5101
+    }
+  },
+  "evidence": [
+    {
+      "path": "reports/esim-deep-20260912/qmi-type-before.txt",
+      "size_bytes": 1281,
+      "sha256": "f6a52ba037bef1648fb3b4da9f4ce33f568cfc5c6ab34fc79de9d1865a4527c6"
+    },
+    {
+      "path": "reports/esim-deep-20260912/qmi-switch-direct.txt",
+      "size_bytes": 1390,
+      "sha256": "e03eebf46db2308e5b805477ba4bbedb9bef6991691e1b2ecf0694eb6d3d24d5"
+    },
+    {
+      "path": "reports/esim-deep-20260912/qmi-restore-direct.txt",
+      "size_bytes": 1392,
+      "sha256": "2f86349c65fee6d9d470834a84dccd17566419eee25f88bc43f9cd4ca763fd22"
+    },
+    {
+      "path": "reports/esim-deep-20260912/qmi-cycle-without-wake.txt",
+      "size_bytes": 1614,
+      "sha256": "3e178751a1baa7c7c0df0bd0439cb764121259f607eeaab085ce99c59547b7ee"
+    },
+    {
+      "path": "reports/esim-deep-20260912/qmi-cycle-without-wake-restore.txt",
+      "size_bytes": 1614,
+      "sha256": "67a7e69fa9e31c92158895816926c79097003516b8c2321123433c52232e14cd"
+    },
+    {
+      "path": "reports/esim-deep-20260912/held-app-log.txt",
+      "size_bytes": 502,
+      "sha256": "3ac6e92996ce94aaf911632aa3d9cf838d9c00e8b2a395025f11aef44c6d2b50"
+    },
+    {
+      "path": "reports/esim-deep-20260912/held-set.txt",
+      "size_bytes": 1390,
+      "sha256": "e03eebf46db2308e5b805477ba4bbedb9bef6991691e1b2ecf0694eb6d3d24d5"
+    },
+    {
+      "path": "reports/esim-deep-20260912/held-cycle.txt",
+      "size_bytes": 1615,
+      "sha256": "56c63c48cc16c251a123c74582d0735c84d838067a5cc8c870b629e977ed17bb"
+    },
+    {
+      "path": "reports/esim-deep-20260912/held-restore.txt",
+      "size_bytes": 1614,
+      "sha256": "67a7e69fa9e31c92158895816926c79097003516b8c2321123433c52232e14cd"
+    },
+    {
+      "path": "reports/esim-deep-20260912/held-app-log-final.txt",
+      "size_bytes": 343,
+      "sha256": "e534e7998c7a914be815737aa5e427909bf2632102d31402648c5bed4274d703"
+    },
+    {
+      "path": "reports/esim-deep-20260912/registry-summary.json",
+      "size_bytes": 269,
+      "sha256": "e0ed2132a4f67f86f51df1b8bf2fcc735771c1a0cf627c20aa953e1bdca5d4f3"
+    },
+    {
+      "path": "reports/esim-deep-20260912/registry-app.txt",
+      "size_bytes": 6216,
+      "sha256": "3463f3874b803a4321c1684aa9260723e831edd90254115f3082b92bb82a3e0d"
+    },
+    {
+      "path": "reports/esim-deep-20260912/isd-r-select-native-logcat.txt",
+      "size_bytes": 4544,
+      "sha256": "da03c2af41f29b391189d91c067a8362bd076f1f156e330117d86657b7476369"
+    },
+    {
+      "path": "reports/esim-deep-20260912/isd-r-esim-native.txt",
+      "size_bytes": 2551,
+      "sha256": "bb939e9e8b4fd19bed5566b8139ac4dfc291b06c0d560845a84f103a0a1d6da1"
+    },
+    {
+      "path": "reports/esim-deep-20260912/nv-product-6853-decoded.json",
+      "size_bytes": 71,
+      "sha256": "d7705317814c9d43ee4e0662b12f1e35cdd73b76857342ed79703e129df57e83"
+    },
+    {
+      "path": "reports/esim-deep-20260912/terminal-test/written-readback.txt",
+      "size_bytes": 3736,
+      "sha256": "74b994600ffe6259009b29056423844bf0f38838e852e2b61f5a245c364f9880"
+    },
+    {
+      "path": "reports/esim-deep-20260912/terminal-test/cycle.txt",
+      "size_bytes": 1614,
+      "sha256": "3e178751a1baa7c7c0df0bd0439cb764121259f607eeaab085ce99c59547b7ee"
+    },
+    {
+      "path": "reports/esim-deep-20260912/terminal-test/restore-sim.txt",
+      "size_bytes": 1614,
+      "sha256": "67a7e69fa9e31c92158895816926c79097003516b8c2321123433c52232e14cd"
+    },
+    {
+      "path": "reports/esim-deep-20260912/terminal-test/after-delete.txt",
+      "size_bytes": 3847,
+      "sha256": "67cd1e5be49a3ba6c58b330ca5bd5e166d0627792205495c025c3895f90c9ff9"
+    },
+    {
+      "path": "reports/esim-deep-20260912/final/checks.json",
+      "size_bytes": 596,
+      "sha256": "b22095ca05bdf51e39551d72a7256e7e49c7a18b63119c76ed1fc4724f31721e"
+    },
+    {
+      "path": "reports/esim-deep-20260912/final/adb-uid.txt",
+      "size_bytes": 5,
+      "sha256": "1d8fa3c8ab49d50b30fccbbd901735d5896a5d7959a5ad7ccecb79c1c849cc66"
+    },
+    {
+      "path": "reports/esim-deep-20260912/final/build-identifier.txt",
+      "size_bytes": 694,
+      "sha256": "737680a371de7738124b54b18d8a88787ed4750029eab7c05cc32e2e1723fd66"
+    },
+    {
+      "path": "reports/esim-deep-20260912/final/state.txt",
+      "size_bytes": 60,
+      "sha256": "33110a27484c037b6da4c438fdae12e949de62587df30511218ab3f0bced0e12"
+    },
+    {
+      "path": "reports/esim-deep-20260912/final/secure-element.txt",
+      "size_bytes": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-deep-20260912/v3d-registry.txt",
+      "size_bytes": 6216,
+      "sha256": "59806dbc403a80d5fd422f6a92e6e4f8362a3f25c47b5dc18200e54cb0e844a8"
+    },
+    {
+      "path": "reports/esim-deep-20260912/v3d-inspect.txt",
+      "size_bytes": 6856,
+      "sha256": "32aa2b3152357622fddbee6b275dcda92314c69178c897266debda434a6d629b"
+    },
+    {
+      "path": "reports/esim-deep-20260912/native/qdsp/findings.md",
+      "size_bytes": 8677,
+      "sha256": "99278e9cf6f3b791a1cd3944f25923e20ede15eac3caa6953c985ed10371c3a6"
+    },
+    {
+      "path": "reports/esim-deep-20260912/global-lpa/modem-comparison/findings.md",
+      "size_bytes": 8866,
+      "sha256": "f3ffef05e741d55a3e2a5a39faef085bc92c3418cbceffa3be4c8a61eefc8fd3"
+    },
+    {
+      "path": "reports/esim-deep-20260912/global-lpa/modem-comparison/live-nv-comparison.json",
+      "size_bytes": 4593,
+      "sha256": "54f1f00bb7c9e880dd94beed4e335561e43293cd724ea5e8308232f1812f5520"
+    },
+    {
+      "path": "reports/esim-deep-20260912/reboot-plan/plan.json",
+      "size_bytes": 1305,
+      "sha256": "3a2fdcd96affd3f8a03d18c573d39993f6aca7f9ec8263d29157e2ea6f1f5f34"
+    },
+    {
+      "path": "artifacts/esim-probe-20260912-v3d/build-receipt.json",
+      "size_bytes": 2348,
+      "sha256": "c7a73e076c769672f515ba40a4d18faf6454eb10c41e48e6c27975c9ae3e5fad"
+    },
+    {
+      "path": "reports/esim-deep-20260912/test-current.log",
+      "size_bytes": 207816,
+      "sha256": "e69539ecefed67713e2fab87800070351472880ab392b20d939f56514802af8b"
+    },
+    {
+      "path": "reports/esim-deep-20260912/test-full.log",
+      "size_bytes": 903691,
+      "sha256": "1f00fc911aeb79ecad6114fc314ee8647f97f31b8610f616d39bee526c484033"
+    },
+    {
+      "path": "reports/esim-deep-20260912/test-esim-builder.log",
+      "size_bytes": 104,
+      "sha256": "64687c347beaf01c2465e40d77de0c8df26f410e2630f8bc9300ce4244039804"
+    },
+    {
+      "path": "reports/esim-deep-20260912/test-esim-parser.log",
+      "size_bytes": 76,
+      "sha256": "cb89831bb99ba8aaa9c85465778624e6f7e8d10380c62bfe394c93e8dd49bf7f"
+    }
+  ]
+}
