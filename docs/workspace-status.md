@@ -1,7 +1,17 @@
 # Current Nezha workspace status
 
-**Installed phone: v23 userdebug (`nezha.2fa2ea3549a2fc869a4c79df`, source
-revision 25), slot A, boot completed in 25.6 s with SELinux Enforcing.**
+**Latest installed-phone observation (September 12): v25
+(`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
+The [eSIM session](esim-20260912.md) found no LPA and no exposed eUICC. Xiaomi's
+factory enable command failed after 30 EID reads. Physical SIM2 was restored,
+the saved modem mapping matched, and ADB returned to shell UID 2000. eSIM remains
+unavailable; physical chip absence versus CN firmware gating is unresolved.
+This observation does not revalidate other features or reconstruct the v25
+installation. The v23 and older source/delivery sections below are earlier
+checkpoints; their pending delivery statements are not a current v25 inventory.
+
+**Earlier v23 checkpoint:** userdebug (`nezha.2fa2ea3549a2fc869a4c79df`, source
+revision 25), slot A, boot completed in 25.6 s with SELinux Enforcing.
 V23 is v22 plus the AICore feature declaration taken from this phone's own
 global firmware. It works as far as Google allows: `pm list features` now lists
 `AICORE_QC` and `AICORE_QC_SM8850`, Play changed from *"isn't compatible"* to

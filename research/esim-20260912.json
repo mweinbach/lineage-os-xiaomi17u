@@ -1,0 +1,284 @@
+{
+  "operation": "nezha-esim-enablement-attempt-v1",
+  "date": "2026-09-12",
+  "document": "docs/esim-20260912.md",
+  "device": {
+    "product": "nezha",
+    "model": "2512BPNDAC",
+    "hardware_country": "CN",
+    "hardware_version": "5.9.0",
+    "build_number": "nezha.b2c99443fe9e90a4a7954eac",
+    "delivery_set": "v25",
+    "slot": "_a",
+    "selinux": "Enforcing",
+    "matched_original_private_serial": true
+  },
+  "authorization": {
+    "request": "can you look at our device and try to get eSIM enabled pls",
+    "scope": "Inspect the selected phone and attempt the stock eSIM selection, restore the physical SIM selection on failure; temporary root ADB for stock diagnostic access.",
+    "phone_reboot_requested": false,
+    "flashed": false,
+    "wiped": false,
+    "profile_reset_or_delete_invoked": false,
+    "profiles_downloaded": false,
+    "app_installed": false
+  },
+  "observations": {
+    "euicc_feature_declared": true,
+    "euicc_mep_feature_declared": true,
+    "euicc_service_candidates_including_disabled": 0,
+    "euicc_connector_state": "UnavailableState",
+    "euicc_selected_component": null,
+    "vendor_lpa_instances": [
+      "UimLpa0",
+      "UimLpa1"
+    ],
+    "physical_slot_count": 2,
+    "both_slots_report_removable": true,
+    "both_slots_report_euicc": false,
+    "both_slots_have_empty_eid": true,
+    "both_slots_have_empty_atr": true,
+    "default_euicc_card_id": -2,
+    "sim_state": "ABSENT,ABSENT"
+  },
+  "stock_inputs": [
+    {
+      "path": "artifacts/camera-analysis/factory-extract/vendor/bin/mtb",
+      "size_bytes": 1158344,
+      "sha256": "63224c5ce5df295d636f853cd5e4938a5b044c99a8c3f0fa900a5ff6535dd5df"
+    },
+    {
+      "path": "artifacts/camera-analysis/factory-extract/odm/etc/factory_cmd_config/modem.xml",
+      "size_bytes": 3270,
+      "sha256": "d519d64eca5a79064e89a7283502ccda5c45d4687ab3407c2d33ca60db77548e"
+    },
+    {
+      "path": "artifacts/camera-analysis/factory-extract/vendor/lib64/libxiaomi_qcril.so",
+      "size_bytes": 4139392,
+      "sha256": "7002928c1b43e873f97aed39cc1a860fdf258898c73bbce3878ad18860c1eaef"
+    }
+  ],
+  "live_mtb_sha256_matches_stock": true,
+  "enablement_attempt": {
+    "command": "/vendor/bin/mtb 5 10 1 1",
+    "sim_type_values": [
+      1,
+      3
+    ],
+    "reported_transport_result": 0,
+    "transport_result_is_not_modem_acceptance": true,
+    "eid_reads": 30,
+    "eid_obtained": false,
+    "terminal_result": "value=FAILED",
+    "terminal_error": "get eid timeout",
+    "euicc_exposed_after_attempt": false
+  },
+  "restoration": {
+    "command": "/vendor/bin/mtb 5 10 2 1",
+    "sim_type_values": [
+      1,
+      1
+    ],
+    "terminal_result": "value=SUCCEED",
+    "tool_message": "SIM2 Power Up successfully",
+    "mapping_bytes": 70,
+    "mapping_sha256": "009e348dbb9274b0951781c24f6b2a869f5a5cd3968842a898db9efac73391a1",
+    "mapping_restored_identical": true,
+    "esim_enable_read_error_unchanged": -117,
+    "esim_global_settings_unchanged": true,
+    "build_slot_and_sim_state_unchanged": true,
+    "final_uptime_seconds": 48466.13,
+    "no_esim_identity": true,
+    "eid_attempts": 30,
+    "adb_uid_before": 2000,
+    "adb_uid_final": 2000,
+    "selinux_final": "Enforcing"
+  },
+  "conclusion": {
+    "esim_enabled": false,
+    "lpa_missing": true,
+    "usable_native_euicc_observed": false,
+    "physical_chip_absence_proven": false,
+    "cn_firmware_gate_proven": false,
+    "removable_euicc_tested": false,
+    "next_native_attempt_requires": "Device-specific evidence for an eUICC and a supported way to expose it."
+  },
+  "evidence": [
+    {
+      "path": "reports/esim-20260912/identity.txt",
+      "size_bytes": 340,
+      "sha256": "987cfdb7ab873c2714b3ec26574d868fac287e2d988dac7cdd106abfd18c2284"
+    },
+    {
+      "path": "reports/esim-20260912/features.txt",
+      "size_bytes": 6866,
+      "sha256": "8fe1e725216497a20298e5fe05b574afc04a6fcac42076f1a3db1f8ea933a408"
+    },
+    {
+      "path": "reports/esim-20260912/packages.txt",
+      "size_bytes": 54718,
+      "sha256": "1025892c0244ff5599cfef5a2ae95dfa19f2d3a61f66e585be08f0769f1df809"
+    },
+    {
+      "path": "reports/esim-20260912/services.txt",
+      "size_bytes": 30741,
+      "sha256": "08f17e1413d3c758bc9fb7c65bbb4a422a26facfc3d26a53f7462c7394f147f6"
+    },
+    {
+      "path": "reports/esim-20260912/euicc_service.txt",
+      "size_bytes": 18,
+      "sha256": "704bcd72f05618b1e8d80a379b227405e18f307009677135367f32e104c226c0"
+    },
+    {
+      "path": "reports/esim-20260912/econtroller-package.txt",
+      "size_bytes": 18,
+      "sha256": "704bcd72f05618b1e8d80a379b227405e18f307009677135367f32e104c226c0"
+    },
+    {
+      "path": "reports/esim-20260912/econtroller.txt",
+      "size_bytes": 2361,
+      "sha256": "b40199ba3c8485d4a4d4f4c3650328c736ca03490bed092fc69ccd20da61f8dc"
+    },
+    {
+      "path": "reports/esim-20260912/telephony-debug.txt",
+      "size_bytes": 285280,
+      "sha256": "8799049651543af228faa24979716c12ac41fbfc80e3b9f6e0377903c30336ea"
+    },
+    {
+      "path": "reports/esim-20260912/mtb-help.txt",
+      "size_bytes": 2849,
+      "sha256": "370e8a50af45a30db69d00b81dcebe1c6cf58e6698926f7e04d4084d36030c5f"
+    },
+    {
+      "path": "reports/esim-20260912/mtb-main-help.txt",
+      "size_bytes": 8045,
+      "sha256": "a920f752b568e886c6a636cb41f87580b29b3b4a10bf482b56ee68b9f5d5886d"
+    },
+    {
+      "path": "reports/esim-20260912/mtb-slots.txt",
+      "size_bytes": 2779,
+      "sha256": "e2ce50c7897c73490eab65150da048b92d9d18a402f623fe61d88ff9ec470911"
+    },
+    {
+      "path": "reports/esim-20260912/esim-enable-before.txt",
+      "size_bytes": 3830,
+      "sha256": "bea7e43ebc0acd6598a1c2c9a0f90f0070153bf9695ba8c588f66af59e14a7e9"
+    },
+    {
+      "path": "reports/esim-20260912/slot-mapping-before.txt",
+      "size_bytes": 8032,
+      "sha256": "0ce124e861708fdfddfde9edfd7abc8d067d7fde1cf3ecef1e0b9c16a815bf69"
+    },
+    {
+      "path": "reports/esim-20260912/esim-switch-attempt.txt",
+      "size_bytes": 11853,
+      "sha256": "9ad274f04974fa172073dcdc019345ddecebf8bbd3637cfe6b7f07b1323aa25d"
+    },
+    {
+      "path": "reports/esim-20260912/telephony-after-switch.txt",
+      "size_bytes": 293856,
+      "sha256": "bcd82d51ab818d1577e7d58efb355ccb7d5651921f38c784d90ada83e961a6a0"
+    },
+    {
+      "path": "reports/esim-20260912/radio-after-switch.txt",
+      "size_bytes": 478692,
+      "sha256": "545be494da0448fb81d6720454b5d336c87e69c70c827e3484af8c12808b3ed9"
+    },
+    {
+      "path": "reports/esim-20260912/slot-mapping-after-switch.txt",
+      "size_bytes": 8032,
+      "sha256": "3147944afd6f1dfd8ddb1dc1d8b0f1c34c8d48f33be70d5100b4eda7dc5e3434"
+    },
+    {
+      "path": "reports/esim-20260912/esim-switch-restore.txt",
+      "size_bytes": 1604,
+      "sha256": "1b2dfb19f9f9681f7820119a6c65b4f0b1f6b9706c1a0d3bf239613ba938411a"
+    },
+    {
+      "path": "reports/esim-20260912/slot-mapping-restored.txt",
+      "size_bytes": 8032,
+      "sha256": "abd24b231583226f5e6448b1a0ad18a4e8634052df8d8bcc25d308bc13c7eddf"
+    },
+    {
+      "path": "reports/esim-20260912/esim-enable-restored.txt",
+      "size_bytes": 3830,
+      "sha256": "88e9658ceee21cbecacfad34e0a44ff9786b7522170dcad786fae1f93f5a4c64"
+    },
+    {
+      "path": "reports/esim-20260912/final-telephony.txt",
+      "size_bytes": 295123,
+      "sha256": "812dc9a29d6e27977620923f3e4906d05c55d918f55d6c00c43f0633004a4a3c"
+    },
+    {
+      "path": "reports/esim-20260912/final-state.txt",
+      "size_bytes": 81,
+      "sha256": "7bd96516b648c3f49c28d0b1204852d8a49ccad7c28f1702e60d54f138b9e2d9"
+    },
+    {
+      "path": "reports/esim-20260912/final-settings.txt",
+      "size_bytes": 188,
+      "sha256": "0157e406aab415e218e9d4f3d732c6520db367281f29ec89536c8d45bd12ec98"
+    },
+    {
+      "path": "reports/esim-20260912/final-econtroller.txt",
+      "size_bytes": 2364,
+      "sha256": "e2a806b055e03d4513ffc33210e46da06176532aa08f42fc5ce169eef110acf2"
+    },
+    {
+      "path": "reports/esim-20260912/adb-root.txt",
+      "size_bytes": 24,
+      "sha256": "cbfc5f4f46947a84c46216ae8ee0bfaebce09bbac37337972e033b39056106eb"
+    },
+    {
+      "path": "reports/esim-20260912/adb-unroot.txt",
+      "size_bytes": 28,
+      "sha256": "7f3e8a86acefcf19aa7019f583c44f7115f2714908aaf4014241cbadd9eb0e43"
+    },
+    {
+      "path": "reports/esim-20260912/final-adb-identity.txt",
+      "size_bytes": 292,
+      "sha256": "56613e4e1099138c745b3b99861e0836bc13ea3b4c0383509b173cc9ed4e7351"
+    },
+    {
+      "path": "reports/esim-20260912/restore-verification.json",
+      "size_bytes": 370,
+      "sha256": "14a5fdd8c08e15f129f41b13a619bb4efcb74201bcbef8486d3a4a80aedb1f03"
+    }
+  ],
+  "references": [
+    "https://source.android.com/docs/core/connect/esim-overview",
+    "https://source.android.com/docs/core/connect/esim-modem-requirements"
+  ],
+  "validation": {
+    "new_offline_tests_added": false,
+    "reason": "Evidence documentation only; recorded mapping bytes and hashes independently recomputed, existing suites run separately.",
+    "existing_suites": [
+      {
+        "command": "make test-current",
+        "tests": 1124,
+        "elapsed_seconds": 29.19,
+        "result": "passed",
+        "log": {
+          "path": "reports/esim-20260912/test-current.log",
+          "sha256": "a6268a8ffddc6ad459f1823e08a6dfc88cd22f51fb8241858c343098732c9e9f"
+        }
+      },
+      {
+        "command": "make test",
+        "tests": 5101,
+        "elapsed_seconds": 194.61,
+        "result": "passed",
+        "log": {
+          "path": "reports/esim-20260912/make-test.log",
+          "sha256": "3e4d3d81aed43376fcf865e1fdd5ec18af0cdac9af4269bb4a6fd8a9e7a879dd"
+        }
+      }
+    ],
+    "independent_checks": [
+      "Rehashed 28 evidence artifacts and three stock inputs.",
+      "Compared the 70-byte modem mapping before, after enable attempt, and after restore.",
+      "Verified all 30 sequential EID retries and the separate FAILED/SUCCEED terminal results.",
+      "Checked local documentation links and omission of the selected device serial."
+    ]
+  }
+}
