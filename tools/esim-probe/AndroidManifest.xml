@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.evolution.nezha.esimprobe" android:versionCode="3" android:versionName="3">
+    <uses-sdk android:minSdkVersion="35" android:targetSdkVersion="36"/>
+    <uses-permission android:name="android.permission.SECURE_ELEMENT_PRIVILEGED_OPERATION"/>
+    <application android:label="Nezha eSIM diagnostic" android:allowBackup="false"
+        android:hasCode="true" android:debuggable="false" android:usesCleartextTraffic="false">
+        <activity android:name=".HoldActivity" android:exported="true"
+            android:permission="android.permission.DUMP" android:excludeFromRecents="true"
+            android:launchMode="singleTop"/>
+        <receiver android:name=".StopReceiver" android:exported="true"
+            android:permission="android.permission.DUMP"/>
+    </application>
+</manifest>
