@@ -7,6 +7,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
+| [eSIM NFC power and raw UART investigation](esim-nfc-uart-20260912.md) | NFC controller accepts eSE power/link request, still NO_ATR; recovered raw UART status confirms receive break before cleanup; two tests fully restored without reboot |
 | [Combined eSIM boot and held-channel test](esim-combined-20260912.md) | Application-LPA candidate boots unlocked with a verified ISD hold; three attempts still fail before ATR; both authorized reboots and full restoration completed |
 | [eSIM interface and card configuration](esim-interface-20260912.md) | All three alternate mux functions measured, still NO_ATR; Thales OS and configuration identified; basic/logical ISD-R both refused; preparation for the subsequent combined boot/hold test |
 | [eSIM follow-up after removing the screen lock](esim-followup-20260912.md) | App hold works again. USB DIAG captures five eSIM power/enable attempts followed by RX BREAK and NO_ATR; active pin routing and card startup remain unresolved, with a separate missing LPA service |

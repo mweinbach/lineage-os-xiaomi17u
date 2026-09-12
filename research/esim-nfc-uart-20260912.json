@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-12",
+  "result": "NFC eSE power-link plus verified ISD hold still yields NO_ATR; raw UART receiver break recovered before cleanup; both tests restored",
+  "preceding_investigation": "research/esim-combined-20260912.json",
+  "workspace_commit_before_experiment": "8400fe8",
+  "device": {
+    "build_incremental": "nezha.b2c99443fe9e90a4a7954eac",
+    "slot": "_a",
+    "selinux": "Enforcing",
+    "reboots": 0,
+    "flashes": 0
+  },
+  "authorization": "Continuing user-authorized eSIM diagnostics, bounded reversible NFC/selector/hold experiments; no new reboot or flash",
+  "experiments": [
+    {
+      "capture": 1,
+      "native_enable_exchange": {
+        "command": "2203028603",
+        "response": "42030100"
+      },
+      "native_restore_exchange": {
+        "command": "2203028600",
+        "response": "42030100"
+      },
+      "qsr4_records": 4660,
+      "qdb_matched_records": 4257,
+      "other_token_records": 403,
+      "candidate_attempts": 5,
+      "all_attempts_rx_break": true,
+      "explicit_generic_timeouts_atr_received_zero": 4,
+      "critical_argument_records": 138,
+      "critical_argument_mismatches": 0,
+      "decoder_errors": 0,
+      "reported_drops": 0,
+      "candidate_cycle_seconds": 5.250441074371338,
+      "qmi_no_atr": true,
+      "same_hold_pid_channel_at_endpoints": true,
+      "original_modem_lpa": true,
+      "direct_efs_file_writes": 0,
+      "collector_cleanup_errors": []
+    },
+    {
+      "capture": 2,
+      "native_enable_exchange": {
+        "command": "2203028603",
+        "response": "42030100"
+      },
+      "native_restore_exchange": {
+        "command": "2203028600",
+        "response": "42030100"
+      },
+      "qsr4_records": 4361,
+      "qdb_matched_records": 3958,
+      "other_token_records": 403,
+      "candidate_attempts": 5,
+      "all_attempts_rx_break": true,
+      "explicit_generic_timeouts_atr_received_zero": 4,
+      "critical_argument_records": 138,
+      "critical_argument_mismatches": 0,
+      "decoder_errors": 0,
+      "reported_drops": 0,
+      "candidate_cycle_seconds": 5.443491220474243,
+      "qmi_no_atr": true,
+      "same_hold_pid_channel_at_endpoints": true,
+      "original_modem_lpa": true,
+      "direct_efs_file_writes": 0,
+      "collector_cleanup_errors": []
+    }
+  ],
+  "ulog": {
+    "original_metadata_only_response_is_not_empty_log": true,
+    "supported_format1_reads_continue_after_overrun": true,
+    "pages": 7,
+    "record_bytes": 4068,
+    "records": 113,
+    "target_instance_records": 112,
+    "unrelated_instance_records": 1,
+    "overrun_pages": 1,
+    "complete_startup_history": false,
+    "critical_sequence": [
+      {
+        "capture_order": 54,
+        "instance_raw": 1,
+        "register_offset_hex": "0xa4",
+        "register_name": "SR",
+        "action": "read",
+        "value_hex": "0x0000020c"
+      },
+      {
+        "capture_order": 56,
+        "instance_raw": 1,
+        "register_offset_hex": "0xb4",
+        "register_name": null,
+        "action": "read",
+        "value_hex": "0x00000021"
+      },
+      {
+        "capture_order": 57,
+        "instance_raw": 1,
+        "register_offset_hex": "0xac",
+        "register_name": "MISR",
+        "action": "read",
+        "value_hex": "0x00000004"
+      },
+      {
+        "capture_order": 58,
+        "instance_raw": 1,
+        "register_offset_hex": "0xa4",
+        "register_name": "SR",
+        "action": "read",
+        "value_hex": "0x0000036c"
+      },
+      {
+        "capture_order": 59,
+        "instance_raw": 1,
+        "register_offset_hex": "0xa8",
+        "register_name": "CR",
+        "action": "write",
+        "value_hex": "0x00000010"
+      },
+      {
+        "capture_order": 61,
+        "instance_raw": 1,
+        "register_offset_hex": "0xa4",
+        "register_name": "SR",
+        "action": "read",
+        "value_hex": "0x0000000c"
+      }
+    ],
+    "all_113_records_independently_decoded": true,
+    "mr1_mr2_live_initialization_not_retained": true,
+    "physical_voltage_or_waveforms_measured": false
+  },
+  "restoration": {
+    "both_native_nfc_restore_acks": true,
+    "original_records_verified": true,
+    "physical_types": [
+      1,
+      1
+    ],
+    "full_640_byte_mask_restored": true,
+    "owned_channels_released": true,
+    "temporary_probes_removed": true,
+    "nfc_state": "on",
+    "nfc_always_on": "off",
+    "boot_build_slot_unchanged": true,
+    "selinux": "Enforcing",
+    "adb_uid": 2000,
+    "idle_probe_process_force_stopped_after_hold_release": true,
+    "other_client_channels_not_closed": true
+  },
+  "lineage_reference": {
+    "hardware_xiaomi_commit": "e0b0fa0cf9b5a5c5f174a1c3a6e8d63cc361c1d1",
+    "garnet_commit": "0c2a8e865bc3c7f64d8f13153cda3f92071c2a59",
+    "legacy_selector_no_nezha_mapping": true,
+    "no_legacy_gpio_operation_executed": true
+  },
+  "validation": {
+    "nfc_transaction_host_regressions": 12,
+    "ulog_decoder_host_fixtures": 16,
+    "current": {
+      "tests": 1124,
+      "seconds": 29.071,
+      "passed": true
+    },
+    "full": {
+      "tests": 5101,
+      "seconds": 190.218,
+      "passed": true
+    },
+    "artifact_hashes_recomputed_before_validation_logs_added": 44
+  },
+  "remaining": {
+    "esim_working": false,
+    "card_activation_state_known": false,
+    "physical_startup_cause_known": false,
+    "selected_lpa": null,
+    "next_host_investigations": [
+      "Global/CN UART startup code comparison",
+      "Global/CN AP DTBO secure-element dependencies",
+      "Supported Thales card-configuration/status definition"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "reports/esim-continuation-20260912/nfc_transaction.py",
+      "size": 11051,
+      "sha256": "82da65ba5f4db17def9b626591f38b24b9be90501f546e69cf5ebb079fd58b70"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc_transaction_raw2.py",
+      "size": 11066,
+      "sha256": "d1639888e69dccd31aacbf6aef8c50fd62fe3eb21a227d2a3dec8defb0f16de9"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-snoop/decode_power.py",
+      "size": 3041,
+      "sha256": "a1d3f20d4b14e1b43d185a0dbd46911f00073e90f4b4e7017a1e50b12670b764"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-snoop/references.json",
+      "size": 641,
+      "sha256": "1a2edb3bf77d5efb215b9daa49d66506b1a34e4005e02732658c9263d8793d65"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-review/findings.md",
+      "size": 2938,
+      "sha256": "b96f132d5eaee9e751311f58c05d0edfdd2179d5986b1445532c6a7274cab030"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-review/host-tests.txt",
+      "size": 1757,
+      "sha256": "e969d1c2ecfff1cf06d24fc8c1a2a5795ce3fcabc8b505ed5b2b40b095355fc3"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-transaction/journal.json",
+      "size": 974,
+      "sha256": "e728d053ef8a15c82f53451acd743fd724f248dd32f65996806eb3c784497206"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-transaction-raw2/journal.json",
+      "size": 974,
+      "sha256": "05bb89367f80b28a79c24bcdbda1437464cf92c989951f28965ac25224b75981"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-transaction-raw2/baseline/records.json",
+      "size": 402,
+      "sha256": "14b454e589e91ec1cdf7c22c29a95c9a12ce6b2c851f16950e7934270b1bc698"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/nfc-transaction-raw2/restored/records.json",
+      "size": 402,
+      "sha256": "14b454e589e91ec1cdf7c22c29a95c9a12ce6b2c851f16950e7934270b1bc698"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/usb_uim_nfc_capture.py",
+      "size": 20349,
+      "sha256": "cd8b38af943c62391fb3de004ad83242243e4fb105f96d8ce3be178142cebcb2"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/usb_uim_nfc_capture_raw2.py",
+      "size": 20354,
+      "sha256": "9b36d26ef678ae53e77e6c8e8963f41756dd5b8f2352475f679474fb903faf23"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/ulog_hook.py",
+      "size": 1895,
+      "sha256": "8e05e8628c30891484f0c310fb3662ff55e81e44e589a966fccb917617929581"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture/frames.bin",
+      "size": 158019,
+      "sha256": "92f346ee0d70e4bcef7ffcf9cfdc6fe884bc5583fdfd1bb401fdc7b433fe53f3"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture/frame-summary.json",
+      "size": 146,
+      "sha256": "40a7b6f26980d06dcbf3d8aeca67512e9be9ab622da336cdf4702ef22b4a3b04"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture/journal.json",
+      "size": 5569,
+      "sha256": "9d52b195afdc1cff6f4fe15494618f2a46753a18293b524e7907f3ca5cc6b0ce"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture/ulog-after-cycle.json",
+      "size": 515,
+      "sha256": "310da4f7729eda7e7a6fab634d5f834b0108d00d63f0c9933ad93a732dd98ab8"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture-raw2/frames.bin",
+      "size": 152405,
+      "sha256": "86e534bf6e0276ecefb712372cf589564452641b42730f3ec5eaf8f2de6ae56e"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture-raw2/frame-summary.json",
+      "size": 145,
+      "sha256": "432910e79f9feeb4c94b5c0b8b0c14a44cc72da5d391dce149f0f88247d07e7b"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture-raw2/journal.json",
+      "size": 23101,
+      "sha256": "3bfa8f6370abb952458d802bdc55919803fc18505553f8091bebc096947a592c"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/capture-raw2/ulog-after-cycle.json",
+      "size": 17946,
+      "sha256": "8976788c2d8ffdab802d1519f0485dc093dbf05facca087cce2037bab1b7fed9"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/analysis/findings.md",
+      "size": 5273,
+      "sha256": "839beca4e814fb33de2e8f918f489ad95e10444621e823f877b3ba89aac0ee04"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/analysis/critical-argument-audit.json",
+      "size": 26969,
+      "sha256": "c236617666a1edac5f0714e5c1c49e585e7c545537dcacbc236027c4b4720620"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/analysis-raw2/findings.md",
+      "size": 3928,
+      "sha256": "168ef48bc1f620f0f657150d07400d60e2016890dc2418bc60088bddcf6c3fad"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/analysis-raw2/comparison.json",
+      "size": 5027,
+      "sha256": "7c3b20ae9ef717560eea3474bf8de4864a9b2f210aaccab5202227bcabcaa39d"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/diag/analysis-raw2/critical-argument-audit.json",
+      "size": 27001,
+      "sha256": "4e1f56643f4bc6ad9dce34e542d538015000b2df1842d5fcdde4d7f284e9f6b4"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ulog_query.py",
+      "size": 5977,
+      "sha256": "3ea155cdda28a5c35b454097eb954bb13b42fd4cf64fa354a6956dc4b839db87"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/ulog_query_first.py",
+      "size": 5071,
+      "sha256": "03cf43486a1e6cc828da090d83c4666cc2ce2482008a7a87fd7cfa2e8047373f"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/ulog-protocol.md",
+      "size": 8702,
+      "sha256": "29b05e7cc3259e5eccf9b452c3784b1311029e2704050a348222ba91124ced07"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/ulog-read-semantics.md",
+      "size": 7970,
+      "sha256": "75d102e41f54d4beeb489245a5ad998890bf3f9f4457197cb769dce3e9d3c963"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/ulog-overrun-followup.md",
+      "size": 5899,
+      "sha256": "44b819ffa837ece701bb0f9b1f6e02adac6f2ec7e9147aa045b84bdff185fff2"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/decode_ulog.py",
+      "size": 11330,
+      "sha256": "f9885b0c16a7f102ed90e7a911c2ec26548b2092d75a7415681ab3e18ddddd05"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/test_decode_ulog.py",
+      "size": 6389,
+      "sha256": "ff935e03ab56dbd97023e3f29e29161845e4f98e0866d59102e5d57caafefa3d"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/ulog-candidate-raw2-decoded.json",
+      "size": 109263,
+      "sha256": "9b60b8694d25de69f04726e27cc423041b4b76110cac200a656f02a1c8fad70a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/native-startup/ulog-config-comparison.json",
+      "size": 2127,
+      "sha256": "002d3037c6718f55c82d43ff98dcc47a51815f038d5af843865db3a4570b7c2a"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/atr-audit/raw2-review.py",
+      "size": 5458,
+      "sha256": "9ca3214a98ef2f8b2acc84e4014c7fac7c554702c264353a7972812957c65761"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/atr-audit/raw2-review.md",
+      "size": 4464,
+      "sha256": "16b01418e9cfe2147e577281f0c297c6d8ecc7da76aa319234e8685e697afe9d"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/atr-audit/raw2-review.json",
+      "size": 9215,
+      "sha256": "0945970241482b0d608b3c43a63af1afd42be82bd98fa1ee1d8e3b2232d5fdba"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/se-interface/findings.md",
+      "size": 9787,
+      "sha256": "3c4f6d53b22df1a1232d00c0a46644aec52263f9bad37b032d0cf3a9aa69e1a0"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/se-interface/active-inputs-verified.json",
+      "size": 7953,
+      "sha256": "08199e2c4268a769b4cca2edcc98bfec2197653e273d15885c963c68e6e94b59"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/final-readonly/stop-cleanup.json",
+      "size": 749,
+      "sha256": "4b734521512ed036b9869792db7c0bb5298d5ed9c3c9df06d6aa3d53383ac79f"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/final-readonly/summary.json",
+      "size": 672,
+      "sha256": "8a57726131e785da11c4e82bf977e80d6fef8c194b43db7ca779585de3199fca"
+    },
+    {
+      "path": "reports/esim-lineage-switcher-20260912/findings.md",
+      "size": 4714,
+      "sha256": "99dff2cd267104b17b648f3c29c6139d2f7a1be4fca9059f304b7a7171a4fb57"
+    },
+    {
+      "path": "reports/esim-lineage-switcher-20260912/upstream/provenance.json",
+      "size": 8903,
+      "sha256": "c7ece731bf9949d6cd0c38980ad71a77f5607a557c443fca437368e7a1f0fb69"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/test-current.log",
+      "size": 207816,
+      "sha256": "d2d86be4e717fb4dd8d952ee4fdc0ea1ac41794aedbc917a3f6b99d9c6e55341"
+    },
+    {
+      "path": "reports/esim-continuation-20260912/test-full.log",
+      "size": 903691,
+      "sha256": "75f883b20240c7a8d67b6d1115880b76ecf669991f518061357d0cb166f6ce66"
+    }
+  ]
+}

@@ -2,6 +2,13 @@
 
 **Latest installed-phone observation (September 12): v25
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
+The [NFC power and raw UART investigation](esim-nfc-uart-20260912.md) adds two
+completed, restored tests without reboot. NFC accepts the eSE power/link request,
+but startup still fails before ATR. A recovered UART log now shows break/error
+status becoming set before cleanup after previously clear status. It does not
+identify the electrical or card-configuration cause. Both tests restored NFC,
+the original records, physical selection, owned channels and diagnostic mask;
+the diagnostic app is subsequently force-stopped and ADB is shell UID 2000.
 The [combined eSIM boot/hold test](esim-combined-20260912.md) completes the
 previously unmeasured application-LPA configuration plus verified ISD hold.
 Three captured startup attempts still end in RX BREAK and NO_ATR. The approved
