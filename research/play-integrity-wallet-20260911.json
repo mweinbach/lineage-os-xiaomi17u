@@ -154,5 +154,25 @@
     "That Play Integrity returns MEETS_DEVICE_INTEGRITY",
     "That any targeted app behaves differently - all require a valid keybox that is not present"
   ],
-  "document": "docs/play-integrity-wallet-20260911.md"
+  "document": "docs/play-integrity-wallet-20260911.md",
+  "keybox_loaded_and_active": {
+    "date": "2026-09-11",
+    "loaded_by_owner_via": "Evolver",
+    "keybox_setting_length_chars": 23149,
+    "keybox_contents_read": false,
+    "keybox_note": "contents never read, copied or logged; it holds a private key",
+    "parsed_and_accepted": "Evolver accepted it; the leaf-hack used it with no 'No keybox for algorithm' and no revocation error",
+    "leaf_hack_confirmed": "AndroidKeyStoreSpi: 'TrickyStore: Hacked certificate chain for uid=10314' fired twice",
+    "hacked_uid": "10314 = com.google.android.gms (DroidGuard/Play Integrity broker)",
+    "no_keybox_fallthrough_lines": 0,
+    "provider_exceptions": 0,
+    "trigger": "launching com.google.android.apps.walletnfcrel/...wallet.WalletActivity (the correct launcher activity)",
+    "verified_boot_state_override": {
+      "ro.appcompat_override.ro.boot.verifiedbootstate": "green",
+      "ro.boot.verifiedbootstate_real": "orange",
+      "meaning": "Evolution's appcompat_override presents a green boot state to apps that read it, on top of the keybox-signed chain"
+    },
+    "server_verdict_still_unconfirmed": "whether Google accepts the keybox (not server-side revoked) and returns a passing verdict is only observable by the owner: Play Store -> Play Protect certification = Certified, and Google Wallet accepting a card for contactless",
+    "wallet_not_yet_provisioned": "Wallet has only notification/analytics dbs, no tapandpay provisioning db yet (no card added)"
+  }
 }

@@ -74,6 +74,35 @@ resource or property fallback for this key — it reads the secure setting only 
 this setting *is* the default, and because userdata is retained across every A/B
 flash we do (we never wipe), it persists. A data wipe would need it re-applied.
 
+## Update — keybox loaded, leaf-hack confirmed active
+
+The owner loaded a keybox through Evolver (a 23 KB secure setting; its contents
+were never read — it holds a private key). With Wallet's real launcher activity
+(`…wallet.WalletActivity`) driving a fresh attestation, the keystore hook logged,
+twice:
+
+```
+AndroidKeyStoreSpi: TrickyStore: Hacked certificate chain for uid=10314
+```
+
+uid 10314 is `com.google.android.gms` — the DroidGuard / Play Integrity broker.
+That line only appears when the keybox is present and applied; a missing keybox
+logs `No keybox for algorithm` and returns the chain untouched. There were **zero**
+`No keybox` fall-throughs, `ProviderException`s or revocation errors, so the
+keybox parsed, validated and is signing the swapped chain.
+
+Two other layers line up with it: Evolution presents a spoofed boot state through
+the appcompat-override path — `ro.appcompat_override.ro.boot.verifiedbootstate =
+green` while the real `ro.boot.verifiedbootstate = orange` — and PIF is active. So
+GMS now emits a keybox-signed attestation carrying a green boot state.
+
+**What is confirmed:** the entire on-device chain works — keybox → leaf-hack →
+green boot state, applied to GMS. **What is not yet confirmed:** whether Google's
+servers accept the keybox (i.e. it is not server-side revoked) and return a
+passing verdict. That is only visible to the owner as **Play Store → Play Protect
+certification = Certified** and **Google Wallet accepting a card for contactless**.
+Wallet has not provisioned a card yet, so its payment path is untested.
+
 ## Google Wallet — one ingredient missing, and it is yours to supply
 
 Contactless payment needs a hardware key attestation Google accepts. This device
