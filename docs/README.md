@@ -7,7 +7,8 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
-| [eSIM interface and card configuration](esim-interface-20260912.md) | All three alternate mux functions measured, still NO_ATR; Thales OS and configuration identified; basic/logical ISD-R both refused; one combined boot/hold test remains unmeasured |
+| [Combined eSIM boot and held-channel test](esim-combined-20260912.md) | Application-LPA candidate boots unlocked with a verified ISD hold; three attempts still fail before ATR; both authorized reboots and full restoration completed |
+| [eSIM interface and card configuration](esim-interface-20260912.md) | All three alternate mux functions measured, still NO_ATR; Thales OS and configuration identified; basic/logical ISD-R both refused; preparation for the subsequent combined boot/hold test |
 | [eSIM follow-up after removing the screen lock](esim-followup-20260912.md) | App hold works again. USB DIAG captures five eSIM power/enable attempts followed by RX BREAK and NO_ATR; active pin routing and card startup remain unresolved, with a separate missing LPA service |
 | [eSIM application-LPA reboot test](esim-boot-20260912.md) | Approved candidate boot loads both stock records but still returns NO_ATR. A second reboot verifies restoration of original records and physical selection; no working eUICC exposed |
 | [eSIM service and modem investigation](esim-deep-20260912.md) | Original diagnostic app confirms the installed ISD-R application. Native selector, regional initialization, power and LPA mode are traced; preparation evidence for the subsequent reboot test |

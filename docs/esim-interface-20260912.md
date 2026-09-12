@@ -1,5 +1,10 @@
 # eSIM interface and card configuration investigation, September 12, 2026
 
+The subsequent [combined boot/hold test](esim-combined-20260912.md) executes the
+remaining candidate/rollback plan below. It also returns NO_ATR with the hold
+verified; both reboots and restoration are complete. This page retains the
+preceding interface measurements and pre-experiment assessment.
+
 **The modem reaches the expected alternate pin functions, but still receives no
 ATR. eSIM remains unavailable.** The secure element reports Thales Connected eSE
 5.3.4 v1.1 OS identifiers and configuration class `C1146657-A`. Its installed

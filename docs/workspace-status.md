@@ -2,15 +2,17 @@
 
 **Latest installed-phone observation (September 12): v25
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
-The [eSIM interface investigation](esim-interface-20260912.md) measures all
-three alternate eSIM pins in their expected mux function, while five startup
-attempts still end in RX BREAK and NO_ATR. Version 7 of the original diagnostic
-identifies the Thales card OS and configuration class `C1146657-A`; ISD-R
-selection returns `6999` through both basic and logical SPI channels. Physical
-signals and card-module activation remain unresolved; Android also lacks a
-selected LPA service. eSIM remains unavailable. Original modem records and
-physical SIM selection were verified, with no new reboot; temporary probes and
-mounts are removed, the app is stopped, and ADB is shell UID 2000. The
+The [combined eSIM boot/hold test](esim-combined-20260912.md) completes the
+previously unmeasured application-LPA configuration plus verified ISD hold.
+Three captured startup attempts still end in RX BREAK and NO_ATR. The approved
+candidate and rollback reboots completed; original records, physical selection,
+cached-mode behavior and diagnostic mask were verified afterward. The app is
+stopped, temporary probes are removed and ADB is shell UID 2000. The earlier
+[interface investigation](esim-interface-20260912.md) measured all three
+alternate pin functions and identified the Thales OS/configuration class
+`C1146657-A`; basic and logical SPI ISD-R selection both returned `6999`.
+Physical signals and card-module activation remain unresolved; Android also
+lacks a selected LPA service. eSIM remains unavailable. The
 [unlocked-user follow-up](esim-followup-20260912.md) preserves the earlier
 successful hold and initial power trace. The
 [earlier reboot test](esim-boot-20260912.md)
