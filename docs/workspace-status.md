@@ -2,14 +2,17 @@
 
 **Latest installed-phone observation (September 12): v25
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
-The [unlocked-user eSIM follow-up](esim-followup-20260912.md) verifies that the
-owned diagnostic app can hold the eSE channel again. A bounded USB DIAG capture
-shows five attempts reaching eSIM power/enable, then RX BREAK and NO_ATR. The
-timeout logger reads ordinary SIM pins, so its zeros do not measure the active
-eSIM pins. Signal routing, physical supply and card-interface policy remain
-unresolved; Android also lacks a selected LPA service. eSIM remains unavailable.
-Original modem records and physical SIM selection were verified after the
-capture, with no new reboot; ADB returned to shell UID 2000. The
+The [eSIM interface investigation](esim-interface-20260912.md) measures all
+three alternate eSIM pins in their expected mux function, while five startup
+attempts still end in RX BREAK and NO_ATR. Version 7 of the original diagnostic
+identifies the Thales card OS and configuration class `C1146657-A`; ISD-R
+selection returns `6999` through both basic and logical SPI channels. Physical
+signals and card-module activation remain unresolved; Android also lacks a
+selected LPA service. eSIM remains unavailable. Original modem records and
+physical SIM selection were verified, with no new reboot; temporary probes and
+mounts are removed, the app is stopped, and ADB is shell UID 2000. The
+[unlocked-user follow-up](esim-followup-20260912.md) preserves the earlier
+successful hold and initial power trace. The
 [earlier reboot test](esim-boot-20260912.md)
 preserves the unsuccessful application-LPA candidate and its verified rollback.
 The [service investigation](esim-deep-20260912.md) confirms the installed ISD-R

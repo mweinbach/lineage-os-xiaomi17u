@@ -1,0 +1,1065 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-12",
+  "result": "eSIM remains unavailable: actual alternate pin mux observed, modem NO_ATR persists, ISD-R SPI selection refused",
+  "continuation_of": "research/esim-followup-20260912.json",
+  "device": {
+    "codename": "nezha",
+    "build_incremental": "nezha.b2c99443fe9e90a4a7954eac",
+    "slot": "_a",
+    "same_boot_as_preflight": true,
+    "selinux": "Enforcing",
+    "user_unlocked": true
+  },
+  "diagnostic_app": {
+    "source_commit": "65b6568",
+    "package": "org.evolution.nezha.esimprobe",
+    "version_code": 7,
+    "apk_sha256": "1ac4c58a7092cf678b97328e99ca50372f12e20f7805946709c7d8edb4bced65",
+    "signer_certificate_sha256": "c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8",
+    "signature_verified": true,
+    "alignment_verified": true,
+    "installed_apk_pulled_and_hash_matched": true,
+    "fixed_modes_added": [
+      "basic-discovery",
+      "identity",
+      "configuration"
+    ],
+    "discovery_fixed_target_added": "ecasd",
+    "arbitrary_apdu_or_aid_input": false,
+    "profile_or_activation_commands": false,
+    "basic_native_exchanges": [
+      {
+        "command": "00A4040008A00000015100000000",
+        "response_length": 136,
+        "sw": "9000",
+        "response_sha256": "8b17a5ae8af85c93a2068fbf274529d9645c6395e2862c20ab1497df8b668e4a"
+      },
+      {
+        "command": "00A4040010A0000005591010FFFFFFFF890000010000",
+        "response_length": 2,
+        "sw": "6999",
+        "response_sha256": "fac7a6ffd3e55613018acf3b37a17e37f496208ce155acaa10324695365069e4"
+      },
+      {
+        "command": "00A4040000",
+        "response_length": 2,
+        "sw": "9000",
+        "response_sha256": "48a5ec61abec0eafe3e31b9a2148ea0818595dc8e42fae637ad1d2bf8d8a2959"
+      },
+      {
+        "command": "00A4040000",
+        "response_length": 136,
+        "sw": "9000",
+        "response_sha256": "8b17a5ae8af85c93a2068fbf274529d9645c6395e2862c20ab1497df8b668e4a"
+      }
+    ],
+    "basic_java_and_native_states_restored": true,
+    "invalid_intent_device_cases": [
+      {
+        "case": "configuration-reader",
+        "rejected_before_run": true,
+        "native_channels_unchanged": true
+      },
+      {
+        "case": "configuration-target",
+        "rejected_before_run": true,
+        "native_channels_unchanged": true
+      },
+      {
+        "case": "configuration-p2",
+        "rejected_before_run": true,
+        "native_channels_unchanged": true
+      },
+      {
+        "case": "basic-p2",
+        "rejected_before_run": true,
+        "native_channels_unchanged": true
+      },
+      {
+        "case": "discovery-unknown-target",
+        "rejected_before_run": true,
+        "native_channels_unchanged": true
+      }
+    ],
+    "v5_basic_comparison_valid": false,
+    "v5_basic_limit": "Extra default SELECT released native basic channel before target; no target status word. Corrected in v6 and verified again in v7."
+  },
+  "pin_mapping": {
+    "live_compatible": "qcom,canoe-tlmm",
+    "esim": {
+      "data_gpio": 70,
+      "clock_gpio": 71,
+      "reset_gpio": 72,
+      "function": 2
+    },
+    "ordinary_sim": {
+      "data_gpio": 130,
+      "clock_gpio": 131,
+      "reset_gpio": 132,
+      "function": 1
+    },
+    "target_pins_reserved": false,
+    "mapping_evidence": "Exact retained Canoe function arrays/relocations and live DT; existing debugfs control-register readback"
+  },
+  "captures": [
+    {
+      "folder": "reports/esim-next-20260912/diag/capture",
+      "hold_client": "org.evolution.nezha.esimprobe",
+      "samples": 138,
+      "frames": {
+        "frames": 4343,
+        "payload_bytes": 95084,
+        "dropped_frames": 0,
+        "bad_crc": 0
+      },
+      "ssid": 21,
+      "mask_before": 0,
+      "mask_during": 15,
+      "mask_after": 0,
+      "complete_mask_response_bytes": 640,
+      "complete_response_restored": true,
+      "mask_before_and_after_sha256": "bd716b11e5270e9b4b91a4e7d48578d4b19d013f89417f015f63bf3b11ff202e",
+      "hold_verified": true,
+      "sim_restored": true,
+      "debugfs_unmounted": true,
+      "cleanup_errors": [],
+      "reboots": 0,
+      "direct_efs_file_writes": 0
+    },
+    {
+      "folder": "reports/esim-next-20260912/diag-fast/capture",
+      "hold_client": "org.evolution.nezha.esimprobe",
+      "samples": 7204,
+      "frames": {
+        "frames": 4786,
+        "payload_bytes": 104251,
+        "dropped_frames": 0,
+        "bad_crc": 0
+      },
+      "ssid": 21,
+      "mask_before": 0,
+      "mask_during": 15,
+      "mask_after": 0,
+      "complete_mask_response_bytes": 640,
+      "complete_response_restored": true,
+      "mask_before_and_after_sha256": "bd716b11e5270e9b4b91a4e7d48578d4b19d013f89417f015f63bf3b11ff202e",
+      "hold_verified": true,
+      "sim_restored": true,
+      "debugfs_unmounted": true,
+      "cleanup_errors": [],
+      "reboots": 0,
+      "direct_efs_file_writes": 0
+    }
+  ],
+  "fast_capture": {
+    "samples": 7204,
+    "median_interval_us": 2746.614,
+    "median_read_us": 2230.2345,
+    "acquisition_span_seconds": 19.99948494,
+    "sampler_bytes_per_open": 5120,
+    "gpio_function_2_sample_counts": {
+      "70": 52,
+      "71": 49,
+      "72": 1
+    },
+    "all_three_function_2_sample_index": 744,
+    "sample_read_window_ns": 864636,
+    "sample_time_scope": "Monotonic open/read/close window including TLMM record generation",
+    "sample_atomic": false,
+    "physical_voltage_or_waveforms_measured": false,
+    "output_level_is_gpio_latch": true,
+    "qdb_matched_total": 4378,
+    "queued_pre_enable_qdb_records_excluded": 230,
+    "current_post_enable_qdb_records": 4148,
+    "unmatched_other_token_records": 403,
+    "esim_attempts": 5,
+    "reset_restore_to_break_ms": [
+      0.3118408203125,
+      0.5391357421875
+    ],
+    "atr_received": false,
+    "omitted_mux_transition_hypothesis": "Ruled out for the captured interval; no physical waveform claim",
+    "gpio_evidence_limit": "Fast records contain parsed fields, with source review and previous full-snapshot prefix validation; not retained raw fast MMIO snapshots"
+  },
+  "card_identity": {
+    "reported_platform": "Thales Connected eSE 5.3.4 v1.1",
+    "toe_revision": "1.0",
+    "pdm": "D0026A15E0",
+    "internal_release_hex": "0102",
+    "patch_hex": "00000000",
+    "fe_response_sha256": "c83a6677f95dbf2492a8ec934a17f709da3843b355262a51174792f7bc7c806b",
+    "fd_response_sha256": "f1427dedd6fb809baaf6b6cafe3bdc6b357828ba8e3673845c7daeda6c2c83f8",
+    "configuration_class": "C1146657-A",
+    "fc_response_sha256": "3d131cbb7d765916dbee86ddb5b2356d71d54601f1536bfcc4ac8a099ed6d91c",
+    "cryptographic_attestation": false,
+    "euicc_module_activation_measured": false,
+    "eid_read": false,
+    "isd_r_basic_sw": "6999",
+    "isd_r_logical_sw": "6999",
+    "ecasd_logical_sw_p2_00": "6999",
+    "ecasd_logical_sw_p2_04": "6999",
+    "registry_directory_entries": 38
+  },
+  "configuration_lookup": {
+    "reference_catalog_entries": 102,
+    "scoped_xiaomi_files": 2435,
+    "inspected_units": 13612,
+    "exact_matches": 0,
+    "skipped_eligible_files": 0,
+    "reference_client_executed_on_phone": false,
+    "reference_limit": "Host-only small client APK analysis; signature verified, exact factory archive membership not verified. No other-device firmware applied.",
+    "missing_guide": "Thales D1611592 v1.2 PLATFORM_IdentificationConfigurability for Connected eSE 5.3.4 V1.1"
+  },
+  "service_analysis": {
+    "cn_activate_deactivate_se_interface": "Immediate -1 stubs in Nfc_st; MITSMClient has callers/wrappers",
+    "cn_reset_ese_receiver": "Inspected Nfc_st receiver: flag guard and sleep only; no native reset",
+    "inspected_native_iesim_implementation_found": false,
+    "activation_command_proposed": false
+  },
+  "remaining_combination": {
+    "boot_loaded_application_lpa_plus_verified_hold_tested": false,
+    "evidence_for_pre_atr_fix": "No concrete mechanism found in bounded LPA consumer analysis",
+    "candidate_lpa_hex": "00000100000000000000000000000000",
+    "candidate_terminal_hex": "060083010700",
+    "candidate_sim_types": [
+      1,
+      3
+    ],
+    "new_reboots_required": 2,
+    "new_reboots_authorized": false,
+    "candidate_written_this_investigation": false,
+    "success_criterion": "ATR and card communication; modem EID API may be unsupported in application-LPA mode",
+    "restoration": "Fresh original EFS records, physical SIM selection, and reboot to restore persistent cache"
+  },
+  "final_state": {
+    "same_boot_as_preflight": true,
+    "build_incremental": "nezha.b2c99443fe9e90a4a7954eac",
+    "slot": "_a",
+    "selinux": "Enforcing",
+    "user_unlocked": true,
+    "lpa": {
+      "hex": "01010002010000000000000000000000",
+      "size": 16,
+      "absent": false,
+      "sha256": "e0345094314e0159e65af6f7936e8f7877f9df64b4428a5f9d257ff1d598e0bf"
+    },
+    "current": {
+      "hex": "0001010101",
+      "size": 5,
+      "absent": false,
+      "sha256": "c5fa7a4f055ecfb310cff078852a08c832be9ac4c4d30ecb73e4b55630fff19f"
+    },
+    "terminal": {
+      "hex": "",
+      "size": 0,
+      "absent": true,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "mapping": {
+      "hex": "01000102000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "size": 70,
+      "absent": false,
+      "sha256": "009e348dbb9274b0951781c24f6b2a869f5a5cd3968842a898db9efac73391a1"
+    },
+    "ldo_sub0": {
+      "hex": "0000000000",
+      "size": 5,
+      "absent": false,
+      "sha256": "8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4"
+    },
+    "ldo_sub1": {
+      "hex": "0000000000",
+      "size": 5,
+      "absent": false,
+      "sha256": "8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4"
+    },
+    "qmi_sim_types": [
+      1,
+      1
+    ],
+    "native_channels_empty": true,
+    "android_slots": 2,
+    "android_euicc_slots": 0,
+    "econtroller_state": "UnavailableState",
+    "app_version": 7,
+    "app_stopped": true,
+    "debugfs_unmounted": true,
+    "temporary_probes_removed": true,
+    "adb_uid": 2000,
+    "same_boot_after_unroot": true,
+    "installed_apk_sha256": "1ac4c58a7092cf678b97328e99ca50372f12e20f7805946709c7d8edb4bced65",
+    "installed_apk_matches_host": true
+  },
+  "validation": {
+    "current": {
+      "passed": true,
+      "tests": 1124,
+      "seconds": 29.55
+    },
+    "full": {
+      "passed": true,
+      "tests": 5101,
+      "seconds": 195.321
+    },
+    "builder": {
+      "passed": true,
+      "tests": 6,
+      "seconds": 0.032
+    },
+    "registry_parser_harness": {
+      "passed": true
+    },
+    "native_sampler_parser": {
+      "passed": true,
+      "cases": 7,
+      "scope": "Host snapshot acceptance/rejection and field parsing; separate from device capture"
+    }
+  },
+  "sources": [
+    {
+      "url": "https://messervices.cyber.gouv.fr/visas/ANSSI-CC-2024-33-cible.pdf",
+      "use": "Exact published OS identity, page 11"
+    },
+    {
+      "url": "https://trustcb.com/download/?wpdmdl=3979",
+      "use": "Optional platform modules and manufacturer administration, pages 10 and 26; referenced configuration guide"
+    },
+    {
+      "url": "https://www.st.com/resource/en/data_brief/st54l.pdf",
+      "use": "Separate battery and IO supply ranges; no board wiring inference"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/esim-probe-20260912-v7/build-receipt.json",
+      "size": 2347,
+      "sha256": "6e8f4acb568887c3f047726489c008fb5b9d25aedcffcb8c6d90ee29742c9edd"
+    },
+    {
+      "path": "artifacts/esim-probe-20260912-v7/nezha-esim-probe.apk",
+      "size": 20883,
+      "sha256": "1ac4c58a7092cf678b97328e99ca50372f12e20f7805946709c7d8edb4bced65"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/absent-sim2/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/absent-sim2/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/absent-sim2/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/absent-sim2/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/absent-sim2/native.txt",
+      "size": 990,
+      "sha256": "5cc4e715a482f18804c8fd1e39c74f776979f15f1db8ef5d3d3a46473f325779"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/absent-sim2/summary.json",
+      "size": 584,
+      "sha256": "1b9ac8787facb86949d40e599ae9347e888087c82eceefdcf864be2641391494"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/basic/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/basic/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/basic/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/basic/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/basic/native.txt",
+      "size": 8146,
+      "sha256": "73fb8317377e82d46cbd134d6ab40e31748c8cd390d3ecafab1f640e6aa3657b"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/basic/summary.json",
+      "size": 1368,
+      "sha256": "25ca6836d3546c3e218e997a0e47bfb0f584d0e68f45b36288384e60340bac89"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/check_guards.py",
+      "size": 2082,
+      "sha256": "5f7ea7b23377f1cd59713a6345c80c9d9f832ae6c2dcf1b5d9b2cc09f42c9193"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/configuration/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/configuration/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/configuration/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/configuration/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/configuration/native.txt",
+      "size": 5336,
+      "sha256": "d260e7b07e0c4a578d802e75f66a5b2aa5814fe41f96a14387e64311658c566f"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/configuration/summary.json",
+      "size": 1049,
+      "sha256": "0bc192fabe6f3f086b067c527065e2dec9c3307af8b188dc4c178c69a5e37f6e"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-00/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-00/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-00/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-00/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-00/native.txt",
+      "size": 3885,
+      "sha256": "fec3577cab8bec4b7b300b5dcab018044e55a8abd1b637b332c27a23c507f0b3"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-00/summary.json",
+      "size": 788,
+      "sha256": "6004eb271bff7fbbc1b4acc8c4b53308feaf9ed622906c314771b92f29e458af"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-04/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-04/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-04/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-04/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-04/native.txt",
+      "size": 3885,
+      "sha256": "c0ebaef4dd8d8a93a352be4032cc06338d6d461f1fbec91a4c95c973547e2ddb"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/ecasd-p2-04/summary.json",
+      "size": 788,
+      "sha256": "9ef80812a7a49470c3b4a1fbfb2258489e2a089ff42a96b26cce993f5674431b"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/guards/results.json",
+      "size": 571,
+      "sha256": "9c872d6236fc11d96a872d44dcbc0dda12b8edd340460588a562004ca997b740"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/hold/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/hold/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/hold/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/hold/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/hold/native.txt",
+      "size": 4008,
+      "sha256": "944a841b555eaed3d91e61520a13e395688809b281c6ec235f483a69a2731619"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/hold/summary.json",
+      "size": 644,
+      "sha256": "dde69545393816b1ce768847bca40e2a0435bcf55d2b02c82391a023f1e8f51d"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/identity/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/identity/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/identity/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/identity/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/identity/native.txt",
+      "size": 6475,
+      "sha256": "482084f248efb407cdcd59b918bea423bc936e56b8c71d964c13fbe93db7ba22"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/identity/summary.json",
+      "size": 1109,
+      "sha256": "12691b4f3588bf1f71bae60f850b5702de20ee170efee596b6fc7a2415f77d67"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/logical-isdr/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/logical-isdr/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/logical-isdr/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/logical-isdr/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/logical-isdr/native.txt",
+      "size": 3885,
+      "sha256": "fd20a32b33badd54ca59a075e388b0a8d8a296a7d6486b3aa8da3ff7e66e1a8e"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/logical-isdr/summary.json",
+      "size": 789,
+      "sha256": "90a957392e78ff6347a067bfb73be1ffb06d30f894fcf284b572e8e54fcc2c3b"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/registry/java-after.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/registry/java-before.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/registry/native-after.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/registry/native-before.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/registry/native.txt",
+      "size": 11827,
+      "sha256": "7b0c1fb5dbdd6b9f953b52ea8dd6c53214f9d5738c4f5c14325d6a88079d7b5b"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/registry/summary.json",
+      "size": 4041,
+      "sha256": "749323a13b4e925810409e2d2e8cbf533c3680d1107af8263c872933ce12e043"
+    },
+    {
+      "path": "reports/esim-next-20260912/app-v7/run_cases.py",
+      "size": 2887,
+      "sha256": "ad601249e2c6b6c626df395a37c7319889dc01e1a73a2c1d28aa44af28fd43be"
+    },
+    {
+      "path": "reports/esim-next-20260912/basic-channel/evidence.json",
+      "size": 3034,
+      "sha256": "c47da4c2fa752e6a30ce60f6ca62c6000d31a99dbb722a1846a11f348782c72f"
+    },
+    {
+      "path": "reports/esim-next-20260912/basic-channel/findings.md",
+      "size": 10069,
+      "sha256": "3cd6d72096850466b95c579d651be1d446cce1f20e20e7c86d0a3eaf1f59b6a2"
+    },
+    {
+      "path": "reports/esim-next-20260912/basic-channel/v7-final-review.md",
+      "size": 4259,
+      "sha256": "8f2d331795a98b4d5398d938118c2ff5b68458b1460083cfe4f216a38bb4075f"
+    },
+    {
+      "path": "reports/esim-next-20260912/basic-channel/v7-review.json",
+      "size": 1836,
+      "sha256": "6f7024f9167bef0f3093537aee975a474de892469ee18e35a0246d1431a93627"
+    },
+    {
+      "path": "reports/esim-next-20260912/build-v7.log",
+      "size": 2347,
+      "sha256": "6e8f4acb568887c3f047726489c008fb5b9d25aedcffcb8c6d90ee29742c9edd"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/after-mounts.txt",
+      "size": 21533,
+      "sha256": "23fc9c47e0fb5edf4aa9674d9dbc47005349e3596a2d6538acf00bf9fccb658e"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/frame-summary.json",
+      "size": 86,
+      "sha256": "854597060bb547b59e06a76d76093639288e40c494b5449f6b0c521f83155049"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/frames.bin",
+      "size": 147200,
+      "sha256": "c6d5af4c21895eb078d37fc20b9662ae7b40225b42e72ef943e0f3e910d2eb9b"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/hold-final.txt",
+      "size": 1175,
+      "sha256": "d98ff769e22af7663caec0ceb0d4fd957dba0ed0295c7f5b28769bd9cad103a5"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/journal.json",
+      "size": 1034,
+      "sha256": "3fd934764521d02fcc089d85b559172510f22d0b0b22c43cd08a81770ec351aa"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/mask-before.bin",
+      "size": 640,
+      "sha256": "bd716b11e5270e9b4b91a4e7d48578d4b19d013f89417f015f63bf3b11ff202e"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/mask-enabled.bin",
+      "size": 640,
+      "sha256": "23544ea01f2b64326373f0ca861b258f0630f50f33c7f25dbe3f26d5de70cfd0"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/mask-restored.bin",
+      "size": 640,
+      "sha256": "bd716b11e5270e9b4b91a4e7d48578d4b19d013f89417f015f63bf3b11ff202e"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/qmi-before.txt",
+      "size": 1281,
+      "sha256": "f6a52ba037bef1648fb3b4da9f4ce33f568cfc5c6ab34fc79de9d1865a4527c6"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/qmi-cycle.txt",
+      "size": 1615,
+      "sha256": "56c63c48cc16c251a123c74582d0735c84d838067a5cc8c870b629e977ed17bb"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/qmi-restore.txt",
+      "size": 1614,
+      "sha256": "67a7e69fa9e31c92158895816926c79097003516b8c2321123433c52232e14cd"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/capture/qmi-select.txt",
+      "size": 1390,
+      "sha256": "e03eebf46db2308e5b805477ba4bbedb9bef6991691e1b2ecf0694eb6d3d24d5"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag/usb_uim_pin_capture.py",
+      "size": 10232,
+      "sha256": "1204788b8c3ae7b2cc2a73966d5076e828d1a60bfbb7fff724ea8cd5e832bc66"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/after-mounts.txt",
+      "size": 21533,
+      "sha256": "f67ed1500d5381ff833061bc97a5316fb6e826b6c42dcee4a0b3f27754a988ce"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/frame-summary.json",
+      "size": 87,
+      "sha256": "87163e9d7626b0f296407a975fde3e1c5fd2150aaded28d10abf3150e41683f0"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/frames.bin",
+      "size": 161683,
+      "sha256": "7efae307c79d973d4553a3717cf79a96dfa380ce67e834b099b94bf006e11354"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/gpio-samples.jsonl",
+      "size": 1446894,
+      "sha256": "0f988f35ee53c69332b02b47e4344147687f8df6af63a0c8bd13d9e8bad11ded"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/hold-final.txt",
+      "size": 1175,
+      "sha256": "22b3c14b9484078414f38b2a93df967136a49245c6f454ac2fc93a901ca63fde"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/journal.json",
+      "size": 1061,
+      "sha256": "a8064723ef2ac5f51c8d1229668cb63a4b5c09cc96392f42f37b342a32cd3993"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/mask-before.bin",
+      "size": 640,
+      "sha256": "bd716b11e5270e9b4b91a4e7d48578d4b19d013f89417f015f63bf3b11ff202e"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/mask-enabled.bin",
+      "size": 640,
+      "sha256": "23544ea01f2b64326373f0ca861b258f0630f50f33c7f25dbe3f26d5de70cfd0"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/mask-restored.bin",
+      "size": 640,
+      "sha256": "bd716b11e5270e9b4b91a4e7d48578d4b19d013f89417f015f63bf3b11ff202e"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/qmi-before.txt",
+      "size": 1281,
+      "sha256": "f6a52ba037bef1648fb3b4da9f4ce33f568cfc5c6ab34fc79de9d1865a4527c6"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/qmi-cycle.txt",
+      "size": 1615,
+      "sha256": "56c63c48cc16c251a123c74582d0735c84d838067a5cc8c870b629e977ed17bb"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/qmi-restore.txt",
+      "size": 1614,
+      "sha256": "67a7e69fa9e31c92158895816926c79097003516b8c2321123433c52232e14cd"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/capture/qmi-select.txt",
+      "size": 1390,
+      "sha256": "e03eebf46db2308e5b805477ba4bbedb9bef6991691e1b2ecf0694eb6d3d24d5"
+    },
+    {
+      "path": "reports/esim-next-20260912/diag-fast/usb_uim_fast_capture.py",
+      "size": 10723,
+      "sha256": "45341ac2d17e113287f66e009000c8a01036e89b836bbce6cc77ca75604cb094"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/adb-uid.txt",
+      "size": 5,
+      "sha256": "1d8fa3c8ab49d50b30fccbbd901735d5896a5d7959a5ad7ccecb79c1c849cc66"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/adb-unroot.txt",
+      "size": 28,
+      "sha256": "7f3e8a86acefcf19aa7019f583c44f7115f2714908aaf4014241cbadd9eb0e43"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/checks.json",
+      "size": 1733,
+      "sha256": "311cbf130f3dbe273e28948bbdf6cae2215217ee4d70f3878bd80b0aec24f12c"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/current.txt",
+      "size": 3661,
+      "sha256": "c23beb00c91343ae1f815728d41001072476d6a643564c01bc1d35ed1178f57e"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/econtroller.txt",
+      "size": 2264,
+      "sha256": "1f27dafaec5a75598dd3548e36742df85e0a8cd3efe2b8fb805b2186d06c09c2"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/installed-v7.apk",
+      "size": 20883,
+      "sha256": "1ac4c58a7092cf678b97328e99ca50372f12e20f7805946709c7d8edb4bced65"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/ldo-sub0.txt",
+      "size": 3662,
+      "sha256": "c80b7fa445a6e3b45b6a7a562f3084b0b16b2cde6a71b74f1ff0542f93f13a50"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/ldo-sub1.txt",
+      "size": 3662,
+      "sha256": "0fa4530e3a2c16d281952b5c4444513e925e94c91c93843f8f5766f5766c5106"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/lpa.txt",
+      "size": 4390,
+      "sha256": "5938294ea4ed722332f01798d22977742b7172c3cda894f483b0f1c2d29d4be9"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/mapping.txt",
+      "size": 8032,
+      "sha256": "81bf0609be2789a3e997329af634d7ef7d51ccd2a6fc5f48f12a344a31f75fbb"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/mounts.txt",
+      "size": 21533,
+      "sha256": "3dade7dd26a08e6a04bdb4d768196f74ec3c34457158360511e5153c3f4c1c00"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/native-se.txt",
+      "size": 16,
+      "sha256": "6bac902dd013ba173fc5473760ead58ee76762b4f232c840543ebf0de67a4ae4"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/package.txt",
+      "size": 4053,
+      "sha256": "2cde8607ecd34b4d66bb22d86f6fab6581885a2224b483dc0a573e13b2332011"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/qmi.txt",
+      "size": 1281,
+      "sha256": "f6a52ba037bef1648fb3b4da9f4ce33f568cfc5c6ab34fc79de9d1865a4527c6"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/secure-element.txt",
+      "size": 2028,
+      "sha256": "8cdb7466728f70760e5519314ee4d9dccc9820a2e8112114e90f586a82afe85c"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/telephony.txt",
+      "size": 251625,
+      "sha256": "29a3dd137331497f9317b209c7c379a88af57b7ab3501c0372d0ff63f2e6b2ce"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/temporary-files.txt",
+      "size": 21208,
+      "sha256": "fe2a8133a1d282d3c04a7b9289c2ece78a6e60e568420ce86b59e06786832023"
+    },
+    {
+      "path": "reports/esim-next-20260912/final/terminal.txt",
+      "size": 3850,
+      "sha256": "b8d2f031b9b11f826342ece453433f5d2fb09c4ee5aae96d0971bd9bbf1b2918"
+    },
+    {
+      "path": "reports/esim-next-20260912/final_check.py",
+      "size": 5337,
+      "sha256": "2b7d0bf09360a15cdde64fa809bceeaafd07dc3b251536cb68defbe1c8b16420"
+    },
+    {
+      "path": "reports/esim-next-20260912/modem-lpa-combined/assessment-and-plan.md",
+      "size": 8614,
+      "sha256": "6065ebe148a3c6f45b737122e83bcfa41bd0c5ccbc96ddae261670c98abe44c3"
+    },
+    {
+      "path": "reports/esim-next-20260912/modem-lpa-combined/assessment-evidence.json",
+      "size": 2241,
+      "sha256": "e431367e2932afd06711788f46b9c5dfe0b0901ecf3015cc92667c31a7b046e4"
+    },
+    {
+      "path": "reports/esim-next-20260912/modem-lpa-combined/byte3-policy-consumers.md",
+      "size": 6508,
+      "sha256": "8d6921be2ee2403774a33866b8a0b565f453f0ed421a77319fb6e2a0ccb94b51"
+    },
+    {
+      "path": "reports/esim-next-20260912/modem-lpa-combined/cached-consumers.md",
+      "size": 8989,
+      "sha256": "b03940809646b755ce83a01f23751b56e7a6bb681282e6dc1898becc5d656135"
+    },
+    {
+      "path": "reports/esim-next-20260912/modem-reset/evidence.json",
+      "size": 2592,
+      "sha256": "ad997ddb1aa41e465f5b0e9176d8497d47a37931c1ea28c9e8bbc9033102ea9c"
+    },
+    {
+      "path": "reports/esim-next-20260912/modem-reset/findings.md",
+      "size": 6996,
+      "sha256": "7cfda7f9adee9588b135a17d57d7a5a178ee75ac2c105af0f333f6832845fedc"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-live/baseline-summary.json",
+      "size": 1101,
+      "sha256": "5f6410cb41c4ced70c9d1a6b2f9179c7ca156383e4e3041fdd4983b4e0765377"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-live/dt-summary.json",
+      "size": 207,
+      "sha256": "0857effe084663799ea7c508d808cb0eb8a8f500ee2c31b0d184850237230ed8"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/analyze_fast.py",
+      "size": 4466,
+      "sha256": "4397d8a45141d7c074d1927044cf47dad56e850ec6dab98110b8f2bf11faaa60"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/binary-pin-mapping.json",
+      "size": 1518,
+      "sha256": "fcc1c60cb3fe1e426451dd7d9ceeec6d1275f6d03a55228aaa04d6286a1afd34"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/capture-findings.md",
+      "size": 11163,
+      "sha256": "eed631ac805b2da937689e717dd92bce82ebdf1bfcac47bb325c94e1f4ea05b0"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/capture-summary.json",
+      "size": 11369,
+      "sha256": "c124887ef1be4ae68a5ef3bf02fa1b738db269f5127f7443b2e6b12500d4762f"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/evidence.json",
+      "size": 8713,
+      "sha256": "33eb8fb5bc1cc007859489ba89fd2cbfa646858770f579d9098f70f692d8d488"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/fast-capture-summary.json",
+      "size": 3939,
+      "sha256": "fc4664ea307592696ac54bf69521eaa06bcf192a4db48d23f0fcb0ba84f15302"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/fast-qsr-decoded.jsonl",
+      "size": 2343238,
+      "sha256": "fc4152adba17185064743fe890134477270efa846338f668d5456b855834745a"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/fast-reset-event-intervals.json",
+      "size": 2050,
+      "sha256": "c97b735281b7deb56c33ae6cfef54564733e71db854b00aa777359c22e775dc8"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/findings.md",
+      "size": 6784,
+      "sha256": "cc9ce39ecaccd1e0255c40d3a812dc9d6410e4cd38fce82356c111d953ead8c8"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/sampler-protocol.md",
+      "size": 3745,
+      "sha256": "ab6b19e5e3cbf02ee9851cd20c1213ce1ceb6af40e759d4cde8c21f9a039a9ae"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/sampler-validation.json",
+      "size": 403,
+      "sha256": "69e7e3e6a651933ffe7a07dc04f83e208c44726bf7659697596551bd45bae768"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/test_tlmm_sampler.c",
+      "size": 1122,
+      "sha256": "62743c7f6a3d7a07b4be3ef3e9fe56245ba1872cfa6507c271e02211890e8653"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/tlmm_sampler",
+      "size": 11344,
+      "sha256": "e952455debabdd2bc60d46eeec7dbafc371418263320de81fa5bcc0f7faa3ea7"
+    },
+    {
+      "path": "reports/esim-next-20260912/pin-metadata/tlmm_sampler.c",
+      "size": 5798,
+      "sha256": "9df7087f86c5b6ec34bd5a693e7c03ac445952c577bcb29243af713def775d71"
+    },
+    {
+      "path": "reports/esim-next-20260912/preflight/summary.json",
+      "size": 1440,
+      "sha256": "225fc634ac2e3ce9ee09fa0469c37f3646a2c0030a003094b6752ff03a807ea9"
+    },
+    {
+      "path": "reports/esim-next-20260912/se-interface/evidence-hashes.json",
+      "size": 3951,
+      "sha256": "21059990e3ee37fbf5f1c201600048969c32836cc67e9549f371ba19fee3a048"
+    },
+    {
+      "path": "reports/esim-next-20260912/se-interface/findings.md",
+      "size": 8811,
+      "sha256": "13a7c583426cb1519ca22b59380d50b79102a911700291c7588991a4a6737eeb"
+    },
+    {
+      "path": "reports/esim-next-20260912/se-interface/identity-followup.md",
+      "size": 4190,
+      "sha256": "a71759597d173daeee572c2c5e03057c882548daeeb506333da3693acb4c050c"
+    },
+    {
+      "path": "reports/esim-next-20260912/se-interface/identity-primary-sources.json",
+      "size": 780,
+      "sha256": "a516fef1ab6626c32845842f794cb1b3652b6b62da678074bfd4042c6aaf00c3"
+    },
+    {
+      "path": "reports/esim-next-20260912/se-interface/live-os-identity-comparison.json",
+      "size": 1207,
+      "sha256": "94f8bf7496c1e1f4832ed690a95202552e2419c6e564c0f3f9ffe64ec3001dbc"
+    },
+    {
+      "path": "reports/esim-next-20260912/test-builder-v7.log",
+      "size": 962,
+      "sha256": "633ebc8ea44a81c29390bbcadb769a2f139940b08c0f2214563bcff48fc35b3c"
+    },
+    {
+      "path": "reports/esim-next-20260912/test-current-v7.log",
+      "size": 207816,
+      "sha256": "621f895c6af532e300f39e9ac4ddc76fd72a4035c14e951d6c7054b4411f60c2"
+    },
+    {
+      "path": "reports/esim-next-20260912/test-full-v7.log",
+      "size": 903691,
+      "sha256": "77f8f17bd71a4535b626ba80d2474ce7b8fefd1ac4d2e48d596ed8b32a73e8c4"
+    },
+    {
+      "path": "reports/esim-next-20260912/test-parser-v7.log",
+      "size": 76,
+      "sha256": "cb89831bb99ba8aaa9c85465778624e6f7e8d10380c62bfe394c93e8dd49bf7f"
+    },
+    {
+      "path": "reports/esim-next-20260912/thales-client/evidence.json",
+      "size": 4690,
+      "sha256": "e500be21edf0d7bbc4ca9f08f8a189b3c9d74ca0f3e5f9cba63744a231d136df"
+    },
+    {
+      "path": "reports/esim-next-20260912/thales-client/findings.md",
+      "size": 3606,
+      "sha256": "9018036085c4f2468363a6b732af5c75039e4c8e7400e7580e8b5c2ba12d8896"
+    },
+    {
+      "path": "reports/esim-next-20260912/thales-client/live-fc-comparison.json",
+      "size": 551412,
+      "sha256": "5f6ce0ecf65e2999de0f9952fbc6cdf033a6d5b07deaacd59e9343a242bc4575"
+    },
+    {
+      "path": "reports/esim-next-20260912/thales-client/live-fc-findings.md",
+      "size": 2005,
+      "sha256": "160b1c23c8b33b901c742d3944e91b1e57ae0b75c27a736bea1aafad897f2e07"
+    }
+  ]
+}

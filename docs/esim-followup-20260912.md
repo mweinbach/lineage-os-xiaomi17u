@@ -1,5 +1,9 @@
 # eSIM follow-up after removing the screen lock, September 12, 2026
 
+The subsequent [interface investigation](esim-interface-20260912.md) measures
+the alternate pin functions, identifies the card OS/configuration and records
+the final version-7 diagnostic. The results below retain the earlier capture.
+
 **The user is now unlocked and the diagnostic app's wake channel works again.
 eSIM remains unavailable.** This follows the
 [application-LPA boot experiment](esim-boot-20260912.md) on the same Nezha v25
