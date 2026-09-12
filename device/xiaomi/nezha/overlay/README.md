@@ -77,7 +77,7 @@ a measured device UI fix.
 `(sensorWidth - iconWidth) / 2` pixels of padding, clamped at zero. Upstream fixes
 `udfps_icon_size` at 6000 micrometres (6 mm), which on this 60.583 um/px panel is
 99 px inside the 148 px sensor square — a small icon with 24 px of padding per
-side. The overlay raises it to **8000 micrometres (8 mm): 132 px, 8 px of padding
+side. The overlay raises it to **8700 micrometres (8.7 mm): 143 px, 2 px of padding
 per side**, still inside the sensor. The ceiling is the 148 px sensor width
 (about 8966 um); beyond that the padding would clamp to zero and the icon would
 be clipped. The sensor location and size come from the fingerprint HAL and are

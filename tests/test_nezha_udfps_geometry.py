@@ -50,10 +50,10 @@ class NezhaUdfpsGeometryTests(unittest.TestCase):
         upstream_pixels = int(UPSTREAM_ICON_WIDTH_UM / pitch)
         self.assertEqual(upstream_pixels, 99)  # what the 6 mm default drew
         self.assertGreater(icon_pixels, upstream_pixels, "the overlay is meant to enlarge the icon")
-        # The selected 8 mm icon: 132 px with 8 px of padding per side.
-        self.assertEqual(icon_um, 8000)
-        self.assertEqual(icon_pixels, 132)
-        self.assertEqual(native_padding, 8)
+        # The selected 8.7 mm icon: 143 px with 2 px of padding per side.
+        self.assertEqual(icon_um, 8700)
+        self.assertEqual(icon_pixels, 143)
+        self.assertEqual(native_padding, 2)
         # It must never exceed the sensor, or the padding clamps to zero and the icon clips.
         self.assertLessEqual(icon_pixels, SENSOR_WIDTH_PX)
         self.assertGreaterEqual(native_padding, 0)
