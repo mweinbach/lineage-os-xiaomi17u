@@ -4,6 +4,12 @@
 the phone; the corrected fix below is a reviewed source change that has not run on
 the phone.**
 
+**September 12 follow-up:** the [v25 read-only audit](log-audit-20260912.md)
+measures 15 live volume groups with 75 populated device-category curves. The
+empty-curves fault below is absent in that capture; no new listening or mute
+test was performed. The source and delivery statements below describe the
+September 11 checkpoint, not the current v25 inventory.
+
 ## What was reported
 
 Media volume reads 0 and the speaker plays at full scale. Moving the slider

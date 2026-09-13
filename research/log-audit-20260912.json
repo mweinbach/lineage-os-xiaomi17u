@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-12",
+  "scope": "read-only audit; no phone or ROM source change",
+  "device_observation": {
+    "build": "nezha.b2c99443fe9e90a4a7954eac",
+    "delivery_label": "v25",
+    "slot": "_a",
+    "boot_completed": true,
+    "selinux": "Enforcing",
+    "adb_uid": 2000,
+    "same_kernel_boot_at_end": true
+  },
+  "counts": {
+    "logcat_lines": 34275,
+    "qmipriod_exit_status_255_unique": 389,
+    "qmipriod_directory_search_unique_audit_ids": 497,
+    "long_property_errors": 4491,
+    "long_property_errors_from_proven_flags_health_check_pids": 4037,
+    "flags_health_check_pids_matched": 12,
+    "long_property_errors_unattributed": 454,
+    "iwlan_network_service_disconnected": 78,
+    "panel_mode_invalid_messages": 6,
+    "java_fatal_exception_lines": 0,
+    "native_fatal_signal_lines": 0,
+    "anr_in_lines": 0,
+    "audio_volume_groups": 15,
+    "populated_device_curves": 75
+  },
+  "qmipriod_exit_interval": {
+    "first": "09-12 19:50:55.564",
+    "last": "09-12 20:23:19.620",
+    "time_basis": "device log timestamps"
+  },
+  "resource_comparison": {
+    "config_device_volte_available": {
+      "live": false,
+      "factory_framework": true
+    },
+    "config_device_vt_available": {
+      "live": false,
+      "factory_framework": true
+    },
+    "config_device_wfc_ims_available": {
+      "live": false,
+      "factory_framework": false
+    },
+    "config_wlan_network_service_package": {
+      "live": "",
+      "factory_framework": ""
+    },
+    "config_wlan_data_service_package": {
+      "live": "",
+      "factory_framework": ""
+    },
+    "config_qualified_networks_service_package": {
+      "live": "",
+      "factory_framework": ""
+    }
+  },
+  "fi_carrier_values": {
+    "carrier_volte_available_bool": true,
+    "carrier_wfc_ims_available_bool": false
+  },
+  "ims_runtime": {
+    "isGbaValid": true,
+    "isVolteProvisionedOnDevice": true,
+    "isEnhanced4gLteModeSettingEnabledByUser": true,
+    "isVolteEnabledByPlatform": false,
+    "mImsRegistered": false
+  },
+  "source_versions": {
+    "frameworks/opt/net/ims": {
+      "local_head": "336af62cf98cdf44247c78b9645b5a6535837624",
+      "upstream_tag": "android-16.0.0_r4",
+      "upstream_peeled_commit": "336af62cf98cdf44247c78b9645b5a6535837624"
+    },
+    "frameworks/opt/telephony": {
+      "local_head": "bd2be122661748dae9251368418fc5efa50f5f08",
+      "upstream_branch": "bka",
+      "upstream_head": "43d9cbbf116d28b870097fd9dd3397d94e99ee73"
+    }
+  },
+  "evidence": [
+    {
+      "path": "reports/log-audit-20260912/logcat-all.txt",
+      "sha256": "2c979ce0562aad188b071b32b8145902fd09f59ab0e19a3b7ab704f766be5305",
+      "bytes": 6864396
+    },
+    {
+      "path": "reports/log-audit-20260912/telephony.txt",
+      "sha256": "8b762bb7c47be67fdbf8a898475e9392084b195bcfd4e0797f52ad62752258e8",
+      "bytes": 627460
+    },
+    {
+      "path": "reports/log-audit-20260912/audio-policy.txt",
+      "sha256": "4b893cd2f62f4ef3d84db6c15483b776b7b9ce68ecefcd1b66b92184e7bd2ad2",
+      "bytes": 119582
+    },
+    {
+      "path": "reports/log-audit-20260912/dropbox-index.txt",
+      "sha256": "da9f5a410e5eab8728dc6e0c3f9e8acdd9cc3e6a47f7feac2e7d77fa0527590d",
+      "bytes": 1507
+    },
+    {
+      "path": "reports/log-audit-20260912/native-tombstone.txt",
+      "sha256": "9d2b93f452cbb508970e32cd2f30f6a17abbc817c4150993fff8f25c22473c48",
+      "bytes": 23786
+    },
+    {
+      "path": "reports/log-audit-20260912/carrierconfig.txt",
+      "sha256": "c826c68be1e854e6651b6fc2ee79f0a50a2179558b4ab0b8f958e6466e19da9d",
+      "bytes": 68953
+    },
+    {
+      "path": "reports/log-audit-20260912/iwlan-services.txt",
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "bytes": 66
+    },
+    {
+      "path": "reports/log-audit-20260912/package-iwlan.txt",
+      "sha256": "e67edf10c554fe8f6101aaa8c74c5732ca32da4cf51f31dfc72fbd8c5a69375e",
+      "bytes": 5751
+    },
+    {
+      "path": "reports/log-audit-20260912/soundtrigger.txt",
+      "sha256": "ce746cbef5436ca6e892042ae03c209500ac05633ae54fa60aecd18bded8e815",
+      "bytes": 4330
+    },
+    {
+      "path": "reports/log-audit-20260912/phone-network-resources.json",
+      "sha256": "9307af2ec8682a9414c4ff9b6140278a34cd429161fd33d3f4beee715282218a",
+      "bytes": 324
+    },
+    {
+      "path": "reports/log-audit-20260912/phone-ims-resources.json",
+      "sha256": "67ec60c4d19b476a830d2d890fd039a52b42b0dd619cb342f8a09ad8714b3bea",
+      "bytes": 473
+    },
+    {
+      "path": "reports/log-audit-20260912/stock-resource-comparison.json",
+      "sha256": "ed904fc1295533071e7030d4cc58c28a543f8c571a92a63c2e9fbdb8af7f65d4",
+      "bytes": 3262
+    },
+    {
+      "path": "reports/log-audit-20260912/identity.txt",
+      "sha256": "93443ed2ad2633b00462f0a2c1d67eac60a8f6bf5c252c627ba1c2c5c5f31af5",
+      "bytes": 151
+    },
+    {
+      "path": "reports/log-audit-20260912/identity-after.txt",
+      "sha256": "8bfd5886204729700d1e317762ea0a5cdb43e1d49b905fc34e7e07d4f9ac4ab3",
+      "bytes": 83
+    },
+    {
+      "path": "reports/log-audit-20260912/identity-after-build.txt",
+      "sha256": "dcec21bd7c2d8c627173c9fa929253890f45409c5fb59f123fe4e74cf0404798",
+      "bytes": 68
+    }
+  ],
+  "limitations": [
+    "Buffers retain unequal time windows; counts are captured events, not lifetime totals.",
+    "Factory base resources plus bounded retained overlay comparison do not establish whole factory runtime behavior.",
+    "No call, SMS, cellular download, camera mode, new listening or song-identification test.",
+    "IMS vendor extra codes 4001 and 4002 remain undecoded.",
+    "IWLAN binding alone cannot override carrier WFC provisioning."
+  ]
+}

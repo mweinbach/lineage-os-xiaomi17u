@@ -9,6 +9,12 @@ authorized SystemUI restart restores visible notification cards and the normal
 unrestricted count; the phone stays on the same boot and ADB returns to shell
 UID 2000. A focused source candidate clears the limit without waiting for that
 state; it is not adopted, built or installed, so recurrence remains possible.
+The subsequent [read-only log audit](log-audit-20260912.md) identifies disabled
+VoLTE/video-call device capabilities despite factory support and Fi VoLTE
+provisioning, the continuing QMI helper restart loop, and empty IWLAN service
+selectors. Those fixes are not implemented or installed. The live audio policy
+now has 15 groups with 75 populated curves; the older empty-curves fault is not
+present in this capture. No new listening, call or SMS test was performed.
 The newly inserted physical Google Fi SIM is loaded
 and registered on LTE with a connected data context; IMS is unregistered, and
 calls, SMS and cellular downloads remain untested. No causal link between SIM
