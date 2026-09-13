@@ -197,7 +197,11 @@ The private eight-image bundles and target-files ZIPs are not OTA or TWRP
 installers. Preserve the installed v26 set, the working76 rescue recovery,
 the stock return inputs, the signing key and the private build inputs.
 Superseded delivery sets are removed once their successor is installed and
-recorded; a removed set survives only as the hashes in its dated record. Artifact
+recorded; a removed set survives only as the hashes in its dated record. The
+[September 13 retention pass](artifact-retention-20260913.md) applied that rule
+to v23, v24 and v25, freeing about 171.7 GiB and leaving v26 as the only set on
+the host with its bundle, images and signed archive reverified intact
+afterward. Artifact
 checks, installation results and feature validation are separate evidence.
 
 ## Resume development

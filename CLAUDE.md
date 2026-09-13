@@ -169,12 +169,15 @@ quoted.
 - The 8 mm UDFPS icon is in the built SystemUI but undrawable until a fingerprint
   is enrolled (`dumpsys fingerprint` reports `"count":0`).
 - Recorded predecessor: v25, `nezha.b2c99443fe9e90a4a7954eac`, observed
-  immediately before the authorized v26 installation. The v23, v24 and v25 set
-  bytes are still on the host at about 57 GB each, which the retention rule
-  above says to remove now that v26 is installed and recorded. Earlier sets
-  survive only as hashes: v21 `nezha.34aee22f376f606d9ed52909` (Pixel
-  music_detector files), v20 `nezha.d5894f355e27f7d2f503f519` (recorder fix),
-  v19, v18, and v17 `nezha.11b0a26475073bca18f34c39` (Leica).
+  immediately before the authorized v26 installation. V26 is now the only set
+  whose bytes are on the host; the
+  [September 13 retention pass](docs/artifact-retention-20260913.md) removed
+  v23, v24 and v25 after verifying each against its manifest, and preserved
+  each one's build number and all eight payload hashes in
+  `research/artifact-retention-20260913.json`. Earlier sets survive only as
+  hashes: v21 `nezha.34aee22f376f606d9ed52909` (Pixel music_detector files),
+  v20 `nezha.d5894f355e27f7d2f503f519` (recorder fix), v19, v18, and v17
+  `nezha.11b0a26475073bca18f34c39` (Leica).
 - Source: revision 30 in the Linux checkout, installed as v26, with 736
   recorded input rows in
   `reports/telephony-fixes-20260912/source-revision-30/source-installed.json`.

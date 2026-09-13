@@ -1,0 +1,145 @@
+{
+  "operation": "artifact-retention-pass-v2",
+  "recorded_at": "2026-09-13",
+  "decision": "The user asked to reclaim the superseded delivery sets. V23, v24 and v25 were removed from the host now that v26 is installed and recorded; their identities and payload hashes are preserved in this record.",
+  "kept_delivery_set": {
+    "artifact_set": "variant-opt-in-userdebug-20260906-v26",
+    "build_number": "nezha.a22a7b1e3294c491ae5d03db",
+    "bundle_manifest_sha256": "883ead802b615175e31fb572889ada5d502adfb829b659530051303e1ae98225",
+    "reconciled_target_files_sha256": "cc1a63491b5ab867dd382baf0a9241544c30d6fe05cc0310211a877c31599207",
+    "verified_after_removal": [
+      "experimental_flash_bundle.py verify matched the manifest hash and all eight payloads",
+      "shasum -a 256 -c SHA256SUMS reported OK for all eight images",
+      "shasum -a 256 of reconciled-v1/target-files.zip matched the status page"
+    ],
+    "directories": [
+      "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v26",
+      "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26",
+      "artifacts/build-validation/variant-opt-in-userdebug-20260906-v26-admit",
+      "artifacts/build-validation/variant-opt-in-userdebug-20260906-v26-transfer"
+    ]
+  },
+  "allowed_parents": [
+    "artifacts/avb/nezha",
+    "artifacts/flash/nezha",
+    "artifacts/build-validation"
+  ],
+  "removal_threshold_kib": 1048576,
+  "removed_sets": [
+    {
+      "artifact_set": "variant-opt-in-userdebug-20260906-v23",
+      "build_number": "nezha.2fa2ea3549a2fc869a4c79df",
+      "bundle_manifest_sha256": "6b75fe320ef5d849aeb06adc063964539734a2612bba5a0eaaf73c35990a19c4",
+      "reconciled_target_files_sha256": "a26ce4f954c0090fb7d05f35d05dfd363dcfd0de7845557d4c8b7930e857948f",
+      "verified_before_removal": "experimental_flash_bundle.py verify matched the recorded manifest hash and all eight payloads",
+      "note": "The AICore feature declaration set; installed and validated in docs/v23-install-validation-20260911.md.",
+      "payload_sha256": {
+        "boot.img": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+        "dtbo.img": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+        "init_boot.img": "e1d66c404bc6c3005ffc5981e77f0d906c1710dbb01048080264429832956a9d",
+        "recovery.img": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+        "super.img": "f4234ce14bf06caa12f0d10af0b405c145f1b0e4b0c2dd0bc6f00ee659f9de0f",
+        "vbmeta.img": "69ad3602cf1beb087fa89e6027005adc6761ac130158418a0879f0c7e9eb2969",
+        "vbmeta_system.img": "5270be02e7b044bcedf4249c34ada46979712852aa82334b02dc9645dcbe15c9",
+        "vendor_boot.img": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821"
+      }
+    },
+    {
+      "artifact_set": "variant-opt-in-userdebug-20260906-v24",
+      "build_number": "nezha.d2ff2fe2133ee17a0fb46d7f",
+      "bundle_manifest_sha256": "d775b47a74fe06a0fc77740d1b8364bc71b14731fc448838a7812903f953248c",
+      "reconciled_target_files_sha256": "dbac73df57032d3673108aefdbdee4c570b85cb290c738fcc4676fb664ee1973",
+      "verified_before_removal": "experimental_flash_bundle.py verify matched the recorded manifest hash and all eight payloads",
+      "note": "The first audio volume-curve attempt, which boot-looped on Invalid usage 19; see docs/audio-volume-curves-20260911.md. Its bytes are not a rollback target.",
+      "payload_sha256": {
+        "boot.img": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+        "dtbo.img": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+        "init_boot.img": "5e78f5e4bdf77c8eb9f2fff200200ae5850d7fc1de06b9955bdfb1ee5f84bd13",
+        "recovery.img": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+        "super.img": "5ead288878a6b39a442464c33ce34b76eb87b61cf0832028b31ef6df32522766",
+        "vbmeta.img": "1e8573178f7f729cf903c4fe00fcfb8d33739522da31052673d26d9ebf7fb525",
+        "vbmeta_system.img": "ee9dbf276b2b4b5df695dea1d11d5e103fbc4ec02e5ce8758f8d7e356c3d97be",
+        "vendor_boot.img": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821"
+      }
+    },
+    {
+      "artifact_set": "variant-opt-in-userdebug-20260906-v25",
+      "build_number": "nezha.b2c99443fe9e90a4a7954eac",
+      "bundle_manifest_sha256": "c7435c907958268ff17ae03d6d91bbc737c72ce2a0b371fceda54eee99efa6d1",
+      "reconciled_target_files_sha256": "3c7dd3926b78a3c8c54f3400a60255c43d91f9a6f9e4ced3c4cb1dcfb767f5f8",
+      "verified_before_removal": "experimental_flash_bundle.py verify matched the recorded manifest hash and all eight payloads",
+      "note": "The immediate predecessor observed before the authorized v26 installation; carried the corrected audio volume curves. Its eSIM, log-audit and Play Integrity sessions were measured on it.",
+      "payload_sha256": {
+        "boot.img": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e",
+        "dtbo.img": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57",
+        "init_boot.img": "3ca6892f20dd4ca0813ad5390ec84ab83616f0ce3d4bfec5ed5d04de9c262140",
+        "recovery.img": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+        "super.img": "1dc2c84fded99bdebe3d6b3b3d4b9c099a2f0b965531bc9708c534a316040767",
+        "vbmeta.img": "659f52f9f3c3b4ff3f1c973b715c7bb4c1fdd735202641d396662196bd08b198",
+        "vbmeta_system.img": "12d42b3a93031e06674f5d4deda746110948894c1b75af5601e337c97decf8bb",
+        "vendor_boot.img": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821"
+      }
+    }
+  ],
+  "removed": [
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v23",
+      "kib": 30121072
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v24",
+      "kib": 30121284
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v25",
+      "kib": 30121320
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v23",
+      "kib": 9595872
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v24",
+      "kib": 9595936
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v25",
+      "kib": 9595944
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v23-transfer",
+      "kib": 20314716
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v24-transfer",
+      "kib": 20314888
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v25-transfer",
+      "kib": 20314892
+    }
+  ],
+  "removed_total_kib": 180095924,
+  "kept_small_receipt_directories": [
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v23-admit",
+      "kib": 8
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v24-admit",
+      "kib": 8
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v25-admit",
+      "kib": 8
+    }
+  ],
+  "kept_admission_records": "every artifacts/build-validation/<set>-admit/admission.json stayed; config/nezha-avb-image-set.json pins them by hash",
+  "kept_delivery_receipts": "the per-set receipts and logs under reports/variant-opt-in-20260906/, reports/tier2-camera-20260909/ and evidence/ were left in place; each is kilobytes to a few megabytes and holds the delivery, signing and install evidence",
+  "host_free_kib_before": 767963856,
+  "host_free_kib_after": 948055920,
+  "removal_seconds": 2.0,
+  "refused": [],
+  "guest_note": "Nothing in the VM was touched. The evolution-nezha-work volume stayed attached to the idle twrp-nezha-upstream74-20260829 container and the one-writer rule applies to it.",
+  "not_proven": "Removal changes no build, record or device result. A historical replay of a removed set must rebuild it or restore it from a copy matching the payload hashes in this record. Host free space is measured at the time of the pass."
+}
