@@ -717,7 +717,7 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
                  evolution_base_contract_path=None, evolution_base_inputs=None,
                  system_ext_public_cil_path=None, evolution_base_source_files=None,
                  camera_property_contract_path=None, factory_contexts_contract_path=None,
-                 factory_property_context_paths=None):
+                 factory_property_context_paths=None, qmipriod_contract_path=None):
     reader = vp.Reader()
     contract = load_contract(contract_path, reader)
     require((property_contract_path is None) == (property_contexts_path is None),
@@ -768,6 +768,20 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
                                                factory_contexts_contract=factory_contexts_contract)
     require(set(inputs) == set(INPUT_FLAGS), "native input flags differ")
     corpus = {runtime: reader.read(inputs[flag]) for flag, runtime in INPUT_FLAGS.items()}
+    qmipriod_result = None
+    if qmipriod_contract_path is not None:
+        if __package__:
+            from . import qmipriod_policy as qp
+        else:
+            import qmipriod_policy as qp
+        extension = qp.load_contract(qmipriod_contract_path, reader)
+        vendor_runtime = INPUT_FLAGS["derived_vendor"]
+        # Verify every byte of the full compiler input before applying the old
+        # ownership budget to its unchanged base. Never rewrite the CIL file.
+        corpus[vendor_runtime] = qp.verify_extended(corpus[vendor_runtime], extension)
+        qmipriod_result = {"contract_sha256": qp.CONTRACT_SHA256,
+                           "compiler_input": extension["output"],
+                           "verified_base": extension["base"]}
     original = reader.read(original_vendor)
     capability = reader.read(capability_path)
     source = Path(tool_source) if tool_source is not None else Path(__file__)
@@ -776,6 +790,8 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
         tool_names.append("framework_provider_policy.py")
     if evolution_selected:
         tool_names.append("evolution_policy_base.py")
+    if qmipriod_contract_path is not None:
+        tool_names.append("qmipriod_policy.py")
     tools = {name: vp.sha(reader.read(source.with_name(name))) for name in tool_names}
     result = check_native_contents(corpus, original, contract, capability, properties, property_contexts,
                                    provider, provider_files, provider_services,
@@ -785,6 +801,8 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
                                    factory_property_contexts=factory_contexts)
     if evolution_selected:
         result["evolution_policy_base_source_files"] = source_files
+    if qmipriod_result is not None:
+        result["qmipriod_logging"] = qmipriod_result
     reader.recheck()
     result["input_bindings"] = list(reader.bindings.values())
     result["tool_sources_sha256"] = tools
@@ -819,6 +837,7 @@ def main(argv=None):
     source.add_argument("--output", type=Path)
     native = commands.add_parser("check-native")
     native.add_argument("--contract", required=True, type=Path)
+    native.add_argument("--qmipriod-contract", type=Path)
     native.add_argument("--capability-contract", required=True, type=Path)
     native.add_argument("--factory-vendor", required=True, type=Path)
     native.add_argument("--tool-source", type=Path)
@@ -853,6 +872,7 @@ def main(argv=None):
         else:
             result = check_native({flag: getattr(args, flag) for flag in INPUT_FLAGS}, args.factory_vendor,
                                   args.capability_contract, contract_path=args.contract, tool_source=args.tool_source,
+                                  qmipriod_contract_path=args.qmipriod_contract,
                                   property_contract_path=args.property_contract,
                                   property_contexts_path=args.system_ext_property_contexts,
                                   provider_contract_path=args.provider_contract,

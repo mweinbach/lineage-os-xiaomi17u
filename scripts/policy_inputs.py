@@ -43,6 +43,7 @@ CONTROL_FILES = {
     "provenance/factory-framework-contract.json": FACTORY_RECORD_PATH,
 }
 OEM_CONTRACT_PATH = "config/nezha-oem-policy.json"
+QMIPRIOD_CONTRACT_PATH = "config/nezha-qmipriod-policy.json"
 OEM_CAPABILITY_PATH = "config/nezha-init-helper-capability.json"
 OEM_CHECK_TARGET = "nezha_factory_oem_policy_check"
 OEM_BEGIN = "// BEGIN OPTIONAL NEZHA OEM POLICY CHECK\n"
@@ -840,9 +841,26 @@ def _capture(reader, receipt_path, contract):
     return raw
 
 
+def _qmipriod_controls(reader, path, correction, controls, oem_binding):
+    require(oem_binding is not None, "qmipriod policy requires the explicit native OEM check")
+    if __package__:
+        from . import qmipriod_policy as qp
+    else:
+        import qmipriod_policy as qp
+    extension = qp.load_contract(path, reader)
+    require(extension["base"] == correction["output"],
+            "qmipriod policy must extend the unchanged Binder correction")
+    controls["tools/nezha-qmipriod-policy.json"] = reader.read(path, qp.CONTRACT_SHA256)
+    controls["tools/qmipriod_policy.py"] = reader.read(ROOT / "scripts/qmipriod_policy.py")
+    controls["Android.bp"] = qp.render_blueprint(controls["Android.bp"])
+    return {"path": QMIPRIOD_CONTRACT_PATH,
+            **identity(controls["tools/nezha-qmipriod-policy.json"]),
+            "output": copy.deepcopy(extension["output"])}
+
+
 def _manifest(contract, correction, files, stage_tool, oem_binding=None, property_binding=None,
               provider_binding=None, provider_inputs=None, evolution_binding=None, camera_binding=None,
-              factory_contexts_binding=None):
+              factory_contexts_binding=None, qmipriod_binding=None):
     result = {
         "schema_version": 1, "operation": "stage-nezha-policy-inputs", "status": "staged",
         "device": "nezha", "bundle": BUNDLE_PATH,
@@ -879,6 +897,10 @@ def _manifest(contract, correction, files, stage_tool, oem_binding=None, propert
     if factory_contexts_binding is not None:
         require(camera_binding is not None, "factory contexts receipt requires the explicit camera capability")
         result["factory_property_contexts_capability_contract"] = copy.deepcopy(factory_contexts_binding)
+    if qmipriod_binding is not None:
+        require(oem_binding is not None, "qmipriod receipt requires the native OEM check")
+        result["qmipriod_policy_contract"] = copy.deepcopy(qmipriod_binding)
+        result["expected_vendor_derivative"] = copy.deepcopy(qmipriod_binding["output"])
     return result
 
 
@@ -965,6 +987,15 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
                                                              controls, camera_binding)
         require(receipt["factory_property_contexts_capability_contract"] == factory_contexts_binding,
                 "factory property contexts capability receipt differs from trusted controls")
+    qmipriod_binding = None
+    if "qmipriod_policy_contract" in receipt:
+        require(type(receipt["qmipriod_policy_contract"]) is dict and
+                receipt["qmipriod_policy_contract"].get("path") == QMIPRIOD_CONTRACT_PATH,
+                "unexpected qmipriod policy receipt binding")
+        qmipriod_binding = _qmipriod_controls(reader, ROOT / QMIPRIOD_CONTRACT_PATH,
+                                             correction, controls, oem_binding)
+        require(receipt["qmipriod_policy_contract"] == qmipriod_binding,
+                "qmipriod policy receipt differs from trusted controls")
     expected = dict(controls)
     expected[FACTORY_RECEIPT_MEMBER] = _capture(reader, bundle / FACTORY_RECEIPT_MEMBER, contract)
     for row in correction["inputs"]:
@@ -977,7 +1008,7 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
     require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding, property_binding,
                                 provider_binding, provider_inputs, evolution_binding, camera_binding,
-                                factory_contexts_binding),
+                                factory_contexts_binding, qmipriod_binding),
             "policy-input receipt differs from the reviewed files or scope")
     require(_members(bundle) == set(expected) | {RECEIPT_NAME}, "bundle has missing or unexpected files")
     if provider_inputs is not None:
@@ -1001,6 +1032,8 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
         result["camera_property_capability_contract"] = copy.deepcopy(camera_binding)
     if factory_contexts_binding is not None:
         result["factory_property_contexts_capability_contract"] = copy.deepcopy(factory_contexts_binding)
+    if qmipriod_binding is not None:
+        result["qmipriod_policy_contract"] = copy.deepcopy(qmipriod_binding)
     return result
 
 
@@ -1020,7 +1053,7 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
                  oem_policy_contract=None, oem_property_contract=None,
                  framework_provider_policy_contract=None, framework_provider_inputs_receipt=None,
                  evolution_policy_base_contract=None, camera_property_capability_contract=None,
-                 factory_property_contexts_capability_contract=None):
+                 factory_property_contexts_capability_contract=None, qmipriod_policy_contract=None):
     """Publish a fresh private bundle atomically; originals remain untouched."""
     require((factory_capture_root is None) != (factory_policy_receipt is None),
             "choose exactly one factory capture root or receipt")
@@ -1038,6 +1071,8 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
             "camera property capability requires the explicit Evolution policy base")
     require(factory_property_contexts_capability_contract is None or camera_property_capability_contract is not None,
             "factory property contexts require the explicit camera property capability")
+    require(qmipriod_policy_contract is None or oem_policy_contract is not None,
+            "qmipriod policy requires the explicit native OEM check")
     output, parent = _output_path(output)
     corpus_root = vendor_policy.real_directory(corpus_root)
     if factory_capture_root is not None:
@@ -1074,6 +1109,10 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     if factory_property_contexts_capability_contract is not None:
         factory_contexts_binding = _factory_contexts_controls(reader, factory_property_contexts_capability_contract,
                                                              controls, camera_binding)
+    qmipriod_binding = None
+    if qmipriod_policy_contract is not None:
+        qmipriod_binding = _qmipriod_controls(reader, qmipriod_policy_contract,
+                                             correction, controls, oem_binding)
     files = dict(controls)
     files[FACTORY_RECEIPT_MEMBER] = _capture(reader, receipt_path, contract)
     for row in correction["inputs"]:
@@ -1085,7 +1124,7 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
     receipt = _manifest(contract, correction, files, stage_tool, oem_binding, property_binding,
                         provider_binding, provider_inputs, evolution_binding, camera_binding,
-                        factory_contexts_binding)
+                        factory_contexts_binding, qmipriod_binding)
     files[RECEIPT_NAME] = encoded(receipt)
     required_bytes = sum(len(data) for data in files.values())
     require(shutil.disk_usage(parent).free >= required_bytes + 16 * 1024 * 1024,
@@ -1146,6 +1185,8 @@ def main(argv=None):
                        help="explicit camera-property source correction; requires the Evolution policy base")
     stage.add_argument("--factory-property-contexts-capability-contract", type=Path,
                        help="explicit seven-prefix factory label preservation; requires the camera property capability")
+    stage.add_argument("--qmipriod-policy-contract", type=Path,
+                       help="explicit exact debug-log access; requires the native OEM check")
     verify = commands.add_parser("verify", help="verify every transferred file against reviewed workspace controls")
     verify.add_argument("--bundle", required=True, type=Path)
     verify.add_argument("--framework-provider-inputs-receipt", type=Path,
@@ -1161,7 +1202,8 @@ def main(argv=None):
                                   framework_provider_inputs_receipt=args.framework_provider_inputs_receipt,
                                   evolution_policy_base_contract=args.evolution_policy_base_contract,
                                   camera_property_capability_contract=args.camera_property_capability_contract,
-                                  factory_property_contexts_capability_contract=args.factory_property_contexts_capability_contract)
+                                  factory_property_contexts_capability_contract=args.factory_property_contexts_capability_contract,
+                                  qmipriod_policy_contract=args.qmipriod_policy_contract)
         else:
             result = verify_bundle(args.bundle,
                                    framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)

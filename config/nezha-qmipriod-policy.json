@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-qmipriod-log-access-v1",
+  "device": "nezha",
+  "base": {
+    "path": "vendor_sepolicy.cil",
+    "sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+    "size_bytes": 1708593
+  },
+  "output": {
+    "path": "vendor_sepolicy.cil",
+    "sha256": "7c1e7d01681b90a11f85ddd7f196143701ee1fcc580307201b16d75f95c49f54",
+    "size_bytes": 1708840
+  },
+  "suffix": "\n; Nezha qmipriod debug-log access: measured fopen(log.txt, \"w\") startup failure.\n(allow vendor_qmipriod vendor_qmipriod_data_file (dir (search write add_name)))\n(allow vendor_qmipriod vendor_qmipriod_data_file (file (create open write getattr)))\n",
+  "evidence": {
+    "audit": "research/log-audit-20260912.json",
+    "binary_sha256": "427b91ba62140b17badd55f6d7850b92e088a513d1c9ae8d4585801d476a9c98",
+    "startup_fopen_va": "0x4880",
+    "null_return_branch_va": "0x488c",
+    "failure_return_va": "0x4a28",
+    "log_path": "/data/vendor/qmipriod/log.txt",
+    "mode": "w",
+    "logger_checks_null": true
+  },
+  "scope": {
+    "new_domains": false,
+    "new_labels": false,
+    "permissive": false,
+    "file_execute": false,
+    "neverallow_bypass": false,
+    "device_tested": false
+  }
+}

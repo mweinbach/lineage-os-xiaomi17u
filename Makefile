@@ -33,6 +33,7 @@ CURRENT_TEST_MODULES = \
 	test_v16_install_record test_v17_install_record test_v20_install_record test_v21_install_record test_v22_install_record test_v23_install_record test_gemini_nano_record test_tier2_camera_v16 test_leica_essential \
 	test_hevc_length_prefixed test_now_playing_dsp_model test_now_playing_trigger test_aicore \
 	test_audio_volume_curves test_camera_split_modules test_shade_notification_limit \
+	test_qmipriod_policy \
 	test_ota_package test_delivery_route test_kernel_inputs
 
 .DEFAULT_GOAL := help

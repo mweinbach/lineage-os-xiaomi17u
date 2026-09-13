@@ -464,7 +464,8 @@ def _write_new(directory, name, data):
     require(Reader().read(path) == data, "published bytes failed readback")
 
 
-def derive(corpus_root, output, *, contract_path=None, private_output_root=None, tool_source=None):
+def derive(corpus_root, output, *, contract_path=None, private_output_root=None, tool_source=None,
+           qmipriod_contract_path=None):
     """Publish one new private directory atomically, or leave no result behind."""
     corpus_root = real_directory(corpus_root)
     destination = _destination(output, corpus_root, private_output_root)
@@ -480,6 +481,19 @@ def derive(corpus_root, output, *, contract_path=None, private_output_root=None,
                                              row["sha256"], row["size_bytes"])
               for row in contract["inputs"]}
     result, receipt = derive_corpus(corpus, contract)
+    if qmipriod_contract_path is not None:
+        if __package__:
+            from . import qmipriod_policy as qp
+        else:
+            import qmipriod_policy as qp
+        extension = qp.load_contract(qmipriod_contract_path, reader)
+        result = qp.extend(result, extension)
+        receipt["qmipriod_logging"] = {
+            "contract_sha256": qp.CONTRACT_SHA256,
+            "base_output": receipt["output"],
+            "tool_sha256": sha(reader.read(tool_path.with_name("qmipriod_policy.py"))),
+        }
+        receipt["output"] = dict(extension["output"])
     receipt["tool_sha256"] = sha(tool)
     receipt["publisher_sha256"] = sha(publisher)
     receipt["input_manifest"] = [{**row, "path": str(corpus_root / row["runtime_path"].lstrip("/"))}
@@ -510,6 +524,8 @@ def main(argv=None):
                          help="root containing the exact ten runtime-relative CIL files in the public contract")
     command.add_argument("--output", required=True, type=Path)
     command.add_argument("--contract", type=Path, help="copied contract with the exact reviewed hash")
+    command.add_argument("--qmipriod-contract", type=Path,
+                         help="explicit exact additive policy for the daemon's debug log")
     command.add_argument("--private-output-root", type=Path,
                          help="existing private external build/sbox root; output must be a new descendant")
     command.add_argument("--tool-source", type=Path,
@@ -517,7 +533,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         receipt = derive(args.corpus_root, args.output, contract_path=args.contract,
-                         private_output_root=args.private_output_root, tool_source=args.tool_source)
+                         private_output_root=args.private_output_root, tool_source=args.tool_source,
+                         qmipriod_contract_path=args.qmipriod_contract)
     except (OSError, VendorPolicyError) as exc:
         print(f"vendor-policy: {exc}", file=sys.stderr)
         return 1

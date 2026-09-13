@@ -437,6 +437,45 @@ class PolicyInputsTests(unittest.TestCase):
         return policy.stage_inputs(self.corpus, output or self.output, factory_policy_receipt=self.receipt_path,
                                    oem_policy_contract=self.oem_path)
 
+    def install_qmipriod_fixture(self):
+        from scripts import qmipriod_policy as qp
+        self.install_oem_fixture()
+        extension = qp.load_contract()
+        extension["base"] = self.correction["output"]
+        result = b"not built\n" + extension["suffix"].encode()
+        extension["output"] = {"path": "vendor_sepolicy.cil", **policy.identity(result)}
+        path = self.workspace / policy.QMIPRIOD_CONTRACT_PATH
+        raw = policy.encoded(extension)
+        path.write_bytes(raw)
+        self.enterContext(mock.patch.object(qp, "CONTRACT_SHA256", policy.identity(raw)["sha256"]))
+        (self.workspace / "scripts/qmipriod_policy.py").write_bytes(b"synthetic unused extension tool\n")
+        return path
+
+    def test_qmipriod_stage_wires_derivation_and_native_check_and_rejects_tampering(self):
+        path = self.install_qmipriod_fixture()
+        result = policy.stage_inputs(self.corpus, self.output, factory_policy_receipt=self.receipt_path,
+                                     oem_policy_contract=self.oem_path, qmipriod_policy_contract=path)
+        verified = policy.verify_bundle(self.output)
+        self.assertEqual(verified["status"], "verified")
+        self.assertEqual(result["files"], verified["files"])
+        text = (self.output / "Android.bp").read_text()
+        self.assertEqual(text.count("--qmipriod-contract"), 2)
+        self.assertIn("ignore_neverallow: false", text)
+        self.assertIn('"nezha_factory_oem_policy_check"', text)
+        self.assertEqual(result["expected_vendor_derivative"],
+                         result["qmipriod_policy_contract"]["output"])
+        target = self.output / "tools/nezha-qmipriod-policy.json"
+        target.write_bytes(target.read_bytes() + b" ")
+        with self.assertRaises(ValueError):
+            policy.verify_bundle(self.output)
+
+    def test_qmipriod_cannot_be_selected_without_native_oem_check(self):
+        path = self.install_qmipriod_fixture()
+        with self.assertRaisesRegex(ValueError, "native OEM check"):
+            policy.stage_inputs(self.corpus, self.output, factory_policy_receipt=self.receipt_path,
+                                qmipriod_policy_contract=path)
+        self.assertFalse(self.output.exists())
+
     def test_oem_bundle_requires_explicit_opt_in_and_keeps_original_input_bytes(self):
         self.install_oem_fixture()
         legacy_path = self.root / "legacy-private-bundle"
