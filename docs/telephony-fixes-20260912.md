@@ -5,8 +5,9 @@ fault in Xiaomi display-device routing has a factory-backed fix.** The earlier
 notification-shade patch is also adopted. Source revision 30 is
 `nezha.a22a7b1e3294c491ae5d03db`, with 736 recorded input files. The ordinary
 SystemUI, telephony, framework-resource and source-policy component build passed;
-the full target-files build and all workspace tests passed. Signed delivery is
-being prepared. These changes have not been installed. The connected phone remains on v25, and collection in this work was
+the full target-files build, all workspace tests, signing and both archive
+checks passed. The private eight-image v26 bundle is verified and ready for
+installation review. These changes have not been installed. The connected phone remains on v25, and collection in this work was
 read-only.
 
 The [measurement record](../research/telephony-fixes-20260912.json) binds the
@@ -96,8 +97,28 @@ source, component, filesystem and package validation.
 
 The full build succeeded on the unchanged second attempt. The first attempt
 failed in the host `merge_zips` Go runtime (`SIGSEGV` in `scanobject`) while
-packaging FaceUnlock; the exact failed step and subsequent signing succeeded
+packaging FaceUnlock; the exact failed step and FaceUnlock APK signing succeeded
 on retry. AppFunctions warnings at the end of the first log were not the
 stopping failure. All 736 source inputs match the revision-30 record before and
 after the successful build. The guest resource checks and all 46 unsigned
 archive checks passed.
+
+## Verified private delivery
+
+The [v26 bundle manifest](../artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26/manifest.json)
+has SHA-256 `883ead802b615175e31fb572889ada5d502adfb829b659530051303e1ae98225`.
+It contains eight payloads: Super plus boot, dtbo, init_boot, vendor_boot,
+working76 recovery, vbmeta_system and vbmeta for the existing slot-A route.
+Bundle assembly and byte verification pass. Signing, reconciliation and the
+final AVB inventory pass separately, and all **45 signed archive checks** pass.
+The signed archive is 11,146,729,082 bytes, SHA-256
+`cc1a63491b5ab867dd382baf0a9241544c30d6fe05cc0310211a877c31599207`.
+
+The final read-only phone check still reports v25, slot A, the same boot,
+SELinux Enforcing and ADB UID 2000. Android preflight reports no collection errors;
+physical partition capacities remain unknown to the shell and need fresh
+bootloader checks before flashing. The bundle is not device-admitted, and
+installation/reboot authorization has not been recorded. This is a private
+image bundle, not an OTA installer. IMS registration and calls/SMS, IWLAN binding,
+QMI survival, display-node creation and notification recurrence remain device
+validation steps after an authorized installation.

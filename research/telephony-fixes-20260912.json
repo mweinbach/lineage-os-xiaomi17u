@@ -1,12 +1,18 @@
 {
   "schema_version": 1,
   "id": "nezha-telephony-and-display-fixes-20260912",
-  "status": "full_build_and_tests_passed_signed_delivery_in_progress",
+  "status": "signed_bundle_verified_pending_device_authorization_and_validation",
   "device": {
     "observed_build": "nezha.b2c99443fe9e90a4a7954eac",
     "slot": "a",
     "selinux": "Enforcing",
-    "writes_performed": false
+    "writes_performed": false,
+    "final_identity_matches_initial_build_and_boot": true,
+    "android_preflight": {
+      "status": "partial-observations",
+      "errors": [],
+      "unknowns": "Physical partition capacities are unavailable to the Android shell; fresh bootloader checks remain before any flash."
+    }
   },
   "fixes": [
     {
@@ -216,6 +222,66 @@
       "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v26-admit/admission.json",
       "sha256": "b30e830fa20efd4c8750dac7f106433006711d24bbccc3dbe303447d2768f4c1",
       "size_bytes": 7114
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-host-workflow-status.json",
+      "sha256": "8705cba8e2fa19cdade872859b48fb83c57430175b6ecff6f028060c7174e834",
+      "size_bytes": 531
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-signed-gates.json",
+      "sha256": "272c3cb9d2ce8b3ae41dd9c4f72246c492c3f8a6dc3d9f325b6190f9ddd53cfc",
+      "size_bytes": 5226
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/final-phone-identity.json",
+      "sha256": "bc427b7a0f674ac6cafca80a05fb699db1c740e568b96e6a82c2d2d2f46362d4",
+      "size_bytes": 1083
+    },
+    {
+      "path": "evidence/telephony-fixes-20260912-v26-preflight/manifest.json",
+      "sha256": "2ad349c5d63de01b445546f81992d3071e0cd2e92e76e6daad48dcc8bf90642e",
+      "size_bytes": 90330
+    },
+    {
+      "path": "reports/variant-opt-in-20260906/v26-signing.json",
+      "sha256": "3b2bf2020a23645c5c6e64dd5959746edb3072708f5d222723371c9161b73842",
+      "size_bytes": 1216
+    },
+    {
+      "path": "reports/variant-opt-in-20260906/v26-bundle.json",
+      "sha256": "c6f81fac51fa781207d3c05b414db93310c0d35d932f61a9f4c9fab043c1b02e",
+      "size_bytes": 407
+    },
+    {
+      "path": "reports/variant-opt-in-20260906/v26-delivery-plan.json",
+      "sha256": "7167af66bd159042bca9b16f2efe808001c218ab3ae8b66decf0e5e58b1965bb",
+      "size_bytes": 14694
+    },
+    {
+      "path": "reports/variant-opt-in-20260906/v26-bundle-verify.log",
+      "sha256": "206722d654f9e6cf099d8ebbd15d183f410985af5d6737db217f20c627382871",
+      "size_bytes": 204
+    },
+    {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26/manifest.json",
+      "sha256": "883ead802b615175e31fb572889ada5d502adfb829b659530051303e1ae98225",
+      "size_bytes": 7525
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v26/signed-v1/signing-receipt.json",
+      "sha256": "d429d4208f141debde337d50ac1d636bf199db048985811b38c6307329916783",
+      "size_bytes": 88500
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v26/signed-v1/verification-manifest.json",
+      "sha256": "8ccaa9c5d7dcea05f85b67a26f034cc71909a1b234b250e030090cceae9b200b",
+      "size_bytes": 4220
+    },
+    {
+      "path": "artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v26/published-inventory.json",
+      "sha256": "d9d0ae55b7cd3610cbabdb0b753d70b0eb0e39f423d5282001721b5ef5c66567",
+      "size_bytes": 13642
     }
   ],
   "source": {
@@ -243,7 +309,11 @@
     },
     "unsigned_archive_checks": 46,
     "unsigned_archive_passed": true,
-    "guest_gates_passed": true
+    "guest_gates_passed": true,
+    "signed_archive_checks": 45,
+    "signed_archive_passed": true,
+    "signatures_verified": true,
+    "bundle_byte_identities_verified": true
   },
   "delivery": {
     "version": "v26",
@@ -259,6 +329,20 @@
       "size_bytes": 9477974128
     },
     "installed": false,
-    "bundle_verified": false
+    "bundle_verified": true,
+    "signed_archive": {
+      "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v26/reconciled-v1/target-files.zip",
+      "sha256": "cc1a63491b5ab867dd382baf0a9241544c30d6fe05cc0310211a877c31599207",
+      "size_bytes": 11146729082
+    },
+    "bundle_path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26",
+    "bundle_manifest": {
+      "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26/manifest.json",
+      "sha256": "883ead802b615175e31fb572889ada5d502adfb829b659530051303e1ae98225",
+      "size_bytes": 7525
+    },
+    "payload_count": 8,
+    "installation_authorized": false,
+    "device_admitted": false
   }
 }

@@ -16,7 +16,9 @@ selectors. The [implementation follow-up](telephony-fixes-20260912.md) now recor
 three source fixes, the adopted shade patch and a newly diagnosed factory display
 node-routing fix. The full source-revision-30 build
 (`nezha.a22a7b1e3294c491ae5d03db`), 46 unsigned archive checks and all 5,111
-workspace tests pass. Signed delivery is being prepared; none is installed. The live audio policy
+workspace tests pass. Signing, all 45 signed archive checks and the private
+eight-image v26 bundle verification also pass. Installation authorization and
+fresh bootloader checks remain; none is installed. The live audio policy
 now has 15 groups with 75 populated curves; the older empty-curves fault is not
 present in this capture. No new listening, call or SMS test was performed.
 The newly inserted physical Google Fi SIM is loaded
