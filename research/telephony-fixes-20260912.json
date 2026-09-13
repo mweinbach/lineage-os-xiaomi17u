@@ -65,13 +65,25 @@
       "id": "cellular-registration",
       "observation": "Three modem-reported searches recover in 16.220, 19.129 and 19.033 seconds, roughly 12 minutes apart. A separate 20:21:28 event reports MS_IDENTITY_CANNOT_BE_DERIVED_BY_NETWORK and PLMN_NOT_ALLOWED; registration recovers by 20:21:29.983.",
       "cause": "unresolved carrier/modem registration behavior; not proven caused by the QMI or WLAN binding errors",
-      "next": "Verify IMS registration after the capability fix, then capture modem reject/data reasons if it persists."
+      "next": "Verify IMS registration after the capability fix, then capture modem reject/data reasons if it persists.",
+      "extra_code_mapping": {
+        "4001": "packet service attached",
+        "4002": "packet service not attached"
+      },
+      "extra_code_context": "Factory IMS emits these on service-domain changes while IMS is already deregistered; they are not a root-cause diagnosis.",
+      "data_detach": "20:21:28.119 modem unsolicited EMM_DETACHED; normal data setup succeeds at 20:21:31.258. No radio-power, network-selection, allowed-network-type or data-deactivation request appears in the retained RILJ lines."
     },
     {
       "id": "settings-audio-denial",
       "observation": "Settings sent Binder transaction 1599295570, which local IBinder defines as SYSPROPS_TRANSACTION (_SPR). SystemPropPoker broadcasts it to services from a background AsyncTask and ignores RemoteException.",
-      "classification": "developer-settings property-refresh broadcast; does not establish a playback failure",
+      "classification": "consistent with a developer-settings property-refresh broadcast; does not establish a playback failure",
       "policy_changed": false
+    },
+    {
+      "id": "radio-reporting",
+      "observation": "The analytics subscription lookup catches NullPointerException and returns INVALID_SUB_ID; the AIDL physical-channel parser logs unknown band data and continues without setting the band.",
+      "feature_failure_established": false,
+      "source_changed": false
     }
   ],
   "evidence": [
@@ -144,6 +156,21 @@
       "path": "reports/telephony-fixes-20260912/source-revision-30/source-installed.json",
       "sha256": "8388c3ff8eb5a777e0996a37a3ae81a20ec097119648bd52bbba568450114295",
       "size_bytes": 184379
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/radio-data-detach.json",
+      "sha256": "91d990c609c4e0a3a36e682f8094a6b15c8a2fa04aefe17c3e0cfc7ddedb858c",
+      "size_bytes": 1129
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/radio-reporting-followup.json",
+      "sha256": "adeba665ea701b2d61ba4c251b93047af73caf11edc08be5ad2ac62dfac8f006",
+      "size_bytes": 5151
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/ims-extra-codes.json",
+      "sha256": "1080ee48382eec1359110db8eced68e8a15239514c3cf43bcf8c35cdac0504b0",
+      "size_bytes": 2231
     }
   ],
   "source": {

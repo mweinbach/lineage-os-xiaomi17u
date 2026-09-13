@@ -53,14 +53,30 @@ intervals lasted **16.220, 19.129 and 19.033 seconds**, approximately twelve
 minutes apart, with no reported rejection cause in those intervals. A separate
 brief event at 20:21:28 reported `MS_IDENTITY_CANNOT_BE_DERIVED_BY_NETWORK` and
 then `PLMN_NOT_ALLOWED`; LTE registration returned by 20:21:29.983. These are
-PHONE0 records. The logs do not establish whether provisioning, network state or
-modem behavior caused them. Verify IMS after the capability fix before changing
-radio policy; capture modem rejection and data-call reasons if they persist.
+PHONE0 records. In the same separate event, the modem reports `EMM_DETACHED`
+at 20:21:28.119 and a normal data setup succeeds at 20:21:31.258. The retained
+RILJ lines contain no radio-power, network-selection, allowed-network-type or
+explicit data-deactivation request. The logs do not establish whether
+provisioning, network state or modem behavior caused the drops. Verify IMS after
+the capability fix before changing radio policy.
+
+The exact retained factory IMS APK resolves the previously unexplained extra
+codes: **4001 means packet service attached; 4002 means not attached**.
+`ImsRegistrationUtils.convertToPsAttachedCode` maps the service-domain values,
+and `ImsRegistrationController.maybeNotifySrvDomainChange` emits them while IMS
+is already deregistered. The six PHONE0 callbacks match loss and recovery of
+packet service; they do not establish a new SIP rejection or its cause.
+
+Two additional warnings come from handled reporting paths. The analytics
+subscription lookup catches a null lookup and returns `INVALID_SUB_ID`; its
+error line does not identify which slot failed. The physical-channel parser
+logs unknown modem band data and continues without setting a band. Neither
+message by itself establishes another broken cellular feature.
 
 The Settings-to-audio Binder denial corresponds to transaction **1599295570**,
 `_SPR` / `SYSPROPS_TRANSACTION`. The local SettingsLib `SystemPropPoker` sends this
 property-refresh transaction to registered services from an AsyncTask and ignores
-remote failures. This explains the context of the warning and does not establish
+remote failures. This is consistent with the warning context and does not establish
 an audio playback failure. No new audio HAL permission was added.
 
 The QMI crash loop remains the measured trigger for most of the long-property
