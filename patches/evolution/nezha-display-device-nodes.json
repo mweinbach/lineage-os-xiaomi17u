@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "nezha-display-device-nodes-v1",
+  "project": "system/core",
+  "base_commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+  "patch": "patches/evolution/nezha-display-device-nodes.patch",
+  "patch_sha256": "d1c579140af7b0197213d6994cc80356366569c5e21cfd30be6f42b71c507ea7",
+  "files": [
+    {
+      "path": "rootdir/ueventd.rc",
+      "before_sha256": "ded1baf9ccb9b4e4dbf41f0ec86237edce4a8a67fae49c2917c32243d06c46ca",
+      "after_sha256": "e93c71810440010b90f6929ea905bc18be91ef146a2436d5a8fd154a4b27c96a"
+    }
+  ],
+  "factory_reference": {
+    "path": "artifacts/camera-analysis/factory-extract/system/system/etc/ueventd.rc",
+    "sha256": "0a2928fb125b01faed016b06272511df83c5243788438b2f783fa23f59d2fb87"
+  },
+  "measured_failure": "Live /dev/disp_feature and /dev/disp_log exist with generic device labels and 0600 root:root. Vendor library opens /dev/mi_display/disp_feature and returns invalid parameter before ioctl because the stored file descriptor is negative.",
+  "change": "Restore the exact factory subsystem directory and DAC rule. Existing factory SELinux labels and domain rules apply to these paths.",
+  "scope": {
+    "source_candidate": true,
+    "source_adopted": false,
+    "android_build": false,
+    "device_installed": false
+  }
+}

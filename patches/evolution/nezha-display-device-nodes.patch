@@ -1,0 +1,22 @@
+--- a/rootdir/ueventd.rc
++++ b/rootdir/ueventd.rc
+@@ -11,6 +11,11 @@
+ subsystem drm
+     devname uevent_devpath
+     dirname /dev/dri
++
++# Xiaomi display feature nodes use a subsystem directory.
++subsystem mi_display
++    devname uevent_devpath
++    dirname /dev/mi_display
+ 
+ subsystem input
+     devname uevent_devpath
+@@ -48,6 +53,7 @@
+ /dev/binder               0666   root       root
+ /dev/hwbinder             0666   root       root
+ /dev/vndbinder            0666   root       root
++/dev/mi_display/*         0666   root       graphics
+ /dev/vfio/*               0666   root       root
+ 
+ /dev/pmsg0                0222   root       log
