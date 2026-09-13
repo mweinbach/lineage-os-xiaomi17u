@@ -7,12 +7,15 @@ missing cards: the fully open, unlocked shade retains a one-notification
 lockscreen limit while its combined interaction state remains active. The later
 authorized SystemUI restart restores visible notification cards and the normal
 unrestricted count; the phone stays on the same boot and ADB returns to shell
-UID 2000. A focused source candidate clears the limit without waiting for that
-state; it is not adopted, built or installed, so recurrence remains possible.
+UID 2000. The source fix now clears the limit without waiting for that state and its
+SystemUI component builds; it has not been installed, so recurrence remains possible.
 The subsequent [read-only log audit](log-audit-20260912.md) identifies disabled
 VoLTE/video-call device capabilities despite factory support and Fi VoLTE
 provisioning, the continuing QMI helper restart loop, and empty IWLAN service
-selectors. Those fixes are not implemented or installed. The live audio policy
+selectors. The [implementation follow-up](telephony-fixes-20260912.md) now records the
+three source fixes, the adopted shade patch and a newly diagnosed factory display
+node-routing fix. Ordinary components pass and source revision 30
+(`nezha.a22a7b1e3294c491ae5d03db`) is building the full package; none is installed. The live audio policy
 now has 15 groups with 75 populated curves; the older empty-curves fault is not
 present in this capture. No new listening, call or SMS test was performed.
 The newly inserted physical Google Fi SIM is loaded

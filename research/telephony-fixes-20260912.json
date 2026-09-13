@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "id": "nezha-telephony-and-display-fixes-20260912",
+  "status": "source_and_vendor_leaf_validated_android_build_in_progress",
+  "device": {
+    "observed_build": "nezha.b2c99443fe9e90a4a7954eac",
+    "slot": "a",
+    "selinux": "Enforcing",
+    "writes_performed": false
+  },
+  "fixes": [
+    {
+      "id": "ims-capabilities",
+      "source": "device/xiaomi/nezha/ims/overlay/frameworks/base/core/res/res/values/config.xml",
+      "compiled_values": {
+        "config_device_volte_available": true,
+        "config_device_vt_available": true
+      },
+      "carrier_and_user_gates_preserved": true
+    },
+    {
+      "id": "iwlan-binding",
+      "package": "vendor.qti.iwlan",
+      "classes": [
+        "IWlanNetworkService",
+        "IWlanDataService",
+        "QualifiedNetworksServiceImpl"
+      ],
+      "compiled_selectors_verified": true,
+      "dependencies": {
+        "factory_apk_and_jni_present": true,
+        "vendor_loader_path_in_source": true,
+        "matching_iwlan_aidl_library_present": true,
+        "live_slot_services_present": true,
+        "existing_selinux_client_role": true
+      },
+      "device_binding_tested": false,
+      "wifi_calling_enabled": false
+    },
+    {
+      "id": "qmi-logging",
+      "contract": "config/nezha-qmipriod-policy.json",
+      "vendor_image_contract": "config/nezha-qmipriod-image.json",
+      "allow_rules": 2,
+      "permissions_added": 7,
+      "strict_retained_user_corpus_compilation": true,
+      "userdebug_baseline_comparison": "identical existing su neverallow failures",
+      "image_entries_compared": 3910
+    },
+    {
+      "id": "display-nodes",
+      "contract": "patches/evolution/nezha-display-device-nodes.json",
+      "factory_subsystem_and_permissions_restored": true,
+      "device_validation": false
+    },
+    {
+      "id": "notification-shade",
+      "contract": "patches/evolution/nezha-shade-notification-limit.json",
+      "source_adopted_in_revision": 29,
+      "device_validation": false
+    }
+  ],
+  "other_findings": [
+    {
+      "id": "cellular-registration",
+      "observation": "Three modem-reported searches recover in 16.220, 19.129 and 19.033 seconds, roughly 12 minutes apart. A separate 20:21:28 event reports MS_IDENTITY_CANNOT_BE_DERIVED_BY_NETWORK and PLMN_NOT_ALLOWED; registration recovers by 20:21:29.983.",
+      "cause": "unresolved carrier/modem registration behavior; not proven caused by the QMI or WLAN binding errors",
+      "next": "Verify IMS registration after the capability fix, then capture modem reject/data reasons if it persists."
+    },
+    {
+      "id": "settings-audio-denial",
+      "observation": "Settings sent Binder transaction 1599295570, which local IBinder defines as SYSPROPS_TRANSACTION (_SPR). SystemPropPoker broadcasts it to services from a background AsyncTask and ignores RemoteException.",
+      "classification": "developer-settings property-refresh broadcast; does not establish a playback failure",
+      "policy_changed": false
+    }
+  ],
+  "evidence": [
+    {
+      "path": "reports/telephony-fixes-20260912/compiled-resources.json",
+      "sha256": "df603580583abc45979ee66ba410253985b8b4485a65134a1bcba4b27c5eb5a1",
+      "size_bytes": 867
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/policy-native.json",
+      "sha256": "488d18580507649028b4e59b5b0c34559a15db94d4e75ec945003a1cd2637cd9",
+      "size_bytes": 16241
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/vendor-raw-v2.stdout",
+      "sha256": "1c279b98ded49976f3a3ba9e9bc05a3f6c02baba8d0083d3ef7382242dcf6d84",
+      "size_bytes": 7723
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/vendor-image.json",
+      "sha256": "a89e774f1eb9879a92cdca8de763ac8e651130ceb2470191e881189db2bd0e22",
+      "size_bytes": 1889
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/source-revision-29/source-installed.json",
+      "sha256": "4f2c70ff270e5543abd924df2fe91725e4b602fb49c60f2ed3f4090a9ec2b011",
+      "size_bytes": 183940
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/source-revision-30/source-request.json",
+      "sha256": "695ae9c62a1cfb067cbd73f21cee38d432366a55f9dcc8a97ef66dd6b13e3919",
+      "size_bytes": 199856
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/cellular-state-transitions.json",
+      "sha256": "a5bd3ddefa87973c6e1e07ff9e31941a918be4bc45eec12e99dcf31bdaa7ba4c",
+      "size_bytes": 1239
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/display-node-routing.txt",
+      "sha256": "cd1c1021e1efda75aa2fcbbbb2634563382cba9b3642a1e71fd60f6a7d960aac",
+      "size_bytes": 582
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/display-node.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/current-policy-sidecars.txt",
+      "sha256": "59aae72ec05b343f28c3ed59002da5195e3ba8a5e57683b0173c0a43105cbac7",
+      "size_bytes": 524
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/iwlan-native-and-hal.txt",
+      "sha256": "45cce580e4dac0385fa9a0f12359cbbff4b3889d02b560533a1bc05150556291",
+      "size_bytes": 309
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/test-current.log",
+      "sha256": "21670ebed7849c9304b581c7cc3c08f9a1377a17f159649e27458960a3ec6565",
+      "size_bytes": 209191
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/make-test.log",
+      "sha256": "b10e1d44f81c99628cfcc7e425dd23a351b854a80d13778e0358c6f5b35b2db0",
+      "size_bytes": 905375
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/source-revision-30/source-installed.json",
+      "sha256": "8388c3ff8eb5a777e0996a37a3ae81a20ec097119648bd52bbba568450114295",
+      "size_bytes": 184379
+    }
+  ],
+  "source": {
+    "revision": 30,
+    "build_number": "nezha.a22a7b1e3294c491ae5d03db",
+    "files": 736,
+    "record": {
+      "path": "reports/telephony-fixes-20260912/source-revision-30/source-installed.json",
+      "sha256": "8388c3ff8eb5a777e0996a37a3ae81a20ec097119648bd52bbba568450114295",
+      "size_bytes": 184379
+    }
+  },
+  "ordinary_component_build_passed": true
+}

@@ -7,6 +7,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
+| [Telephony, notification and display fixes](telephony-fixes-20260912.md) | IMS capabilities and IWLAN selectors compiled; exact QMI vendor-policy image verified; factory display-node routing restored in source; full package building, no installation |
 | [V25 log audit](log-audit-20260912.md) | Read-only triage: factory VoLTE/video-call capabilities missing, QMI helper restart loop, unconfigured IWLAN binding; populated audio curves and successful Now Playing rearm distinguished from warning noise |
 | [Missing notification cards](shade-notifications-20260912.md) | Authorized SystemUI restart restores cards after a stale lockscreen limit; source candidate remains uninstalled and recurrence is possible; physical Google Fi SIM registration observed |
 | [eSIM root GPIO and power capture](esim-root-power-20260912.md) | Five startup attempts configure all three alternate pins and reach the named eSIM power resource; still RX BREAK/NO_ATR, original state restored, physical cause unresolved |
