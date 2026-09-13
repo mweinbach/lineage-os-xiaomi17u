@@ -66,6 +66,7 @@ TEMPLATE_FILES = (
     "ims/permissions/privapp-permissions-org.codeaurora.ims.xml",
     "ims/permissions/qti_permissions.xml",
     "ims/overlay/packages/services/Telephony/res/values/config.xml",
+    "ims/overlay/frameworks/base/core/res/res/values/config.xml",
     "ims/sepolicy/public/vendor_qtelephony.te",
     "ims/sepolicy/private/vendor_qtelephony.te",
     "ims/sepolicy/private/seapp_contexts",

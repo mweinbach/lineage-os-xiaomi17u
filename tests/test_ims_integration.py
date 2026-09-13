@@ -7,6 +7,7 @@ import re
 import subprocess
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "device/xiaomi/nezha"
@@ -160,6 +161,30 @@ class RestoredPolicyTests(unittest.TestCase):
         listed = {name for name in generator.TEMPLATE_FILES if name == "ims.mk" or name.startswith("ims/")}
         on_disk = {"ims.mk"} | {p.relative_to(DEVICE).as_posix() for p in (DEVICE / "ims").rglob("*") if p.is_file()}
         self.assertEqual(listed, on_disk)
+
+
+class TelephonyCapabilityTests(unittest.TestCase):
+    def test_factory_capabilities_and_exact_vendor_services_are_selected(self):
+        # Protect the measured v25 failure: a bound IMS APK alone left the device
+        # VoLTE flag false, and an installed IWLAN APK had no framework binding.
+        root = ET.parse(DEVICE / "ims/overlay/frameworks/base/core/res/res/values/config.xml").getroot()
+        values = {node.attrib["name"]: node.text for node in root}
+        self.assertEqual(len(root), len(values), "duplicate resource definition")
+        self.assertEqual(values, {
+            "config_device_volte_available": "true",
+            "config_device_vt_available": "true",
+            "config_wlan_network_service_package": "vendor.qti.iwlan",
+            "config_wlan_network_service_class": "vendor.qti.iwlan.IWlanNetworkService",
+            "config_wlan_data_service_package": "vendor.qti.iwlan",
+            "config_wlan_data_service_class": "vendor.qti.iwlan.IWlanDataService",
+            "config_qualified_networks_service_package": "vendor.qti.iwlan",
+            "config_qualified_networks_service_class": "vendor.qti.iwlan.QualifiedNetworksServiceImpl",
+        })
+        # Device support must not manufacture carrier provisioning or a user opt-in.
+        for node in root:
+            self.assertFalse(node.attrib["name"].startswith(("carrier_", "persist.", "debug.")))
+            if node.tag == "string":
+                self.assertEqual(node.attrib.get("translatable"), "false")
 
 
 if __name__ == "__main__":

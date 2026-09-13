@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Device support and provider selection; carrier and user gates still apply. -->
+<resources>
+    <!-- Both capabilities are declared by this device's factory framework. -->
+    <bool name="config_device_volte_available">true</bool>
+    <bool name="config_device_vt_available">true</bool>
+
+    <!-- Exact services exported by the retained vendor IWlanService APK. -->
+    <string name="config_wlan_network_service_package" translatable="false">vendor.qti.iwlan</string>
+    <string name="config_wlan_network_service_class" translatable="false">vendor.qti.iwlan.IWlanNetworkService</string>
+    <string name="config_wlan_data_service_package" translatable="false">vendor.qti.iwlan</string>
+    <string name="config_wlan_data_service_class" translatable="false">vendor.qti.iwlan.IWlanDataService</string>
+    <string name="config_qualified_networks_service_package" translatable="false">vendor.qti.iwlan</string>
+    <string name="config_qualified_networks_service_class" translatable="false">vendor.qti.iwlan.QualifiedNetworksServiceImpl</string>
+</resources>
