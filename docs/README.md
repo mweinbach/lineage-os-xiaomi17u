@@ -7,6 +7,7 @@ remaining work. The expanded index preserves dated evidence and earlier experime
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
+| [Missing notification cards](shade-notifications-20260912.md) | Fully open shade retains a one-notification lockscreen limit while interaction state is stale; source candidate prepared, not installed; physical Google Fi SIM registration observed |
 | [eSIM root GPIO and power capture](esim-root-power-20260912.md) | Five startup attempts configure all three alternate pins and reach the named eSIM power resource; still RX BREAK/NO_ATR, original state restored, physical cause unresolved |
 | [eSIM NFC power and raw UART investigation](esim-nfc-uart-20260912.md) | NFC power/link still NO_ATR, raw UART break before cleanup; global controller/TZ configuration comparisons and verified root GPIO/PMIC log access |
 | [Combined eSIM boot and held-channel test](esim-combined-20260912.md) | Application-LPA candidate boots unlocked with a verified ISD hold; three attempts still fail before ATR; both authorized reboots and full restoration completed |

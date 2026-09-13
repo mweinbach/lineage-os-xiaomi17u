@@ -1,0 +1,73 @@
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModel.kt b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModel.kt
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModel.kt
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModel.kt
+@@ -951,13 +951,15 @@
+                 val availableHeight = flows[3] as Float
+                 val useExtraShelfSpace = flows[4] as Boolean
+ 
+-                if (!isUserInteracting) {
+-                    if (showLimitedNotifications) {
++                if (showLimitedNotifications) {
++                    if (!isUserInteracting) {
+                         emit(calculateSpace(availableHeight, useExtraShelfSpace))
+-                    } else if (showUnlimitedNotifications) {
+-                        // -1 means no limit
+-                        emit(-1)
+                     }
++                } else if (showUnlimitedNotifications) {
++                    // A lockscreen count must not survive into the shade while an input
++                    // interaction is finishing (or its tracking state has become stale).
++                    // Only lockscreen space recalculation needs to wait for the gesture.
++                    emit(-1)
+                 }
+             }
+             .distinctUntilChanged()
+diff --git a/packages/SystemUI/multivalentTests/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModelTest.kt b/packages/SystemUI/multivalentTests/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModelTest.kt
+--- a/packages/SystemUI/multivalentTests/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModelTest.kt
++++ b/packages/SystemUI/multivalentTests/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModelTest.kt
+@@ -954,6 +954,45 @@
+         }
+ 
+     @Test
++    @DisableSceneContainer
++    fun maxNotificationsOnUnlock_clearsLimitWhileInteractionRemainsActive() =
++        kosmos.runTest {
++            val calculateSpace = { _: Float, _: Boolean -> 1 }
++            val maxNotifications by collectLastValue(underTest.getMaxNotifications(calculateSpace))
++            advanceTimeBy(50L)
++            showLockscreen()
++            assertThat(maxNotifications).isEqualTo(1)
++
++            shadeTestUtil.setLockscreenShadeTracking(true)
++            fakeKeyguardRepository.setStatusBarState(StatusBarState.SHADE)
++            keyguardTransitionRepository.sendTransitionSteps(
++                from = LOCKSCREEN,
++                to = GONE,
++                testScope,
++            )
++
++            // The unlocked shade must not retain the lockscreen's one-notification limit.
++            assertThat(maxNotifications).isEqualTo(-1)
++        }
++
++    @Test
++    @DisableSceneContainer
++    fun maxNotificationsOnShade_clearsLimitWhileInteractionRemainsActive() =
++        kosmos.runTest {
++            val calculateSpace = { _: Float, _: Boolean -> 1 }
++            val maxNotifications by collectLastValue(underTest.getMaxNotifications(calculateSpace))
++            advanceTimeBy(50L)
++            showLockscreen()
++            assertThat(maxNotifications).isEqualTo(1)
++
++            shadeTestUtil.setLockscreenShadeTracking(true)
++            shadeTestUtil.setLockscreenShadeExpansion(1f)
++            fakeKeyguardRepository.setStatusBarState(StatusBarState.SHADE_LOCKED)
++
++            assertThat(maxNotifications).isEqualTo(-1)
++        }
++
++    @Test
+     fun maxNotificationsOnShade() =
+         kosmos.runTest {
+             val calculateSpace = { space: Float, useExtraShelfSpace: Boolean -> 10 }

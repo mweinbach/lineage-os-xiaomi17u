@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "id": "nezha-shade-notification-limit-v1",
+  "status": "source_candidate_not_installed",
+  "project": "frameworks/base",
+  "origin": "https://github.com/Evolution-X/frameworks_base",
+  "branch": "bka",
+  "base_commit": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "upstream_checked_commit": "7857aa02c9a06e1b5a5f94673798062b6c34da63",
+  "upstream_checked_result": "same getMaxNotifications implementation",
+  "patch": "patches/evolution/nezha-shade-notification-limit.patch",
+  "patch_sha256": "c3cb44a144e366c4e413f499e740b474eb56e33e169eac8067f074d0f3f1ef33",
+  "files": [
+    {
+      "path": "packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModel.kt",
+      "before_sha256": "893bed8fbd2699f23c2e0870a4f3b0c5c6b7fcca6978e8efac2be246f46a5a2c",
+      "after_sha256": "757a1eaaf450182011c35c0132a480d7f9a5f2d5d411ede91b44083bbf57d653"
+    },
+    {
+      "path": "packages/SystemUI/multivalentTests/src/com/android/systemui/statusbar/notification/stack/ui/viewmodel/SharedNotificationContainerViewModelTest.kt",
+      "before_sha256": "2cdeb3c63ba19079b67a54211ec82f414518774a16699f6997a130890dad1c19",
+      "after_sha256": "319f894d025a06b21f58e675d5e7b77be55eae419000f532999a0b1b6f48c48d"
+    }
+  ],
+  "purpose": "Clear the lockscreen notification count when the shade is eligible for unlimited notifications, even if gesture tracking remains active; keep lockscreen space recalculation deferred during gestures.",
+  "runtime_observation": {
+    "build": "nezha.b2c99443fe9e90a4a7954eac",
+    "shade_expanded_fraction": 1.0,
+    "shade_expanded": true,
+    "is_on_lockscreen": false,
+    "show_unlimited_notifications": true,
+    "is_user_interacting": true,
+    "panel_tracking": false,
+    "qs_tracking": false,
+    "max_displayed_notifications": 1,
+    "stack_end_height_px": 342,
+    "screenshot": "User screenshot and read-only live screenshot show shelf icons while notification content is present in records.",
+    "interaction_started_at_phone_time": "2026-09-12 19:41:16.488",
+    "interaction_log_context": "Lockscreen drag starts at the same timestamp; a brief Glanceable Hub transition overlaps. No later false interaction event in the retained buffer. The exact missing cleanup path is unproven."
+  },
+  "limits": [
+    "The source of the stale interaction flag is not established.",
+    "The candidate removes the stale limit; it does not repair the originating gesture lifecycle.",
+    "No SystemUI APK or ROM build and no phone installation have been performed.",
+    "Android multivalent regression tests are included in the patch but have not run."
+  ],
+  "validation": {
+    "patch_replay": "check and application pass; both postimage hashes match",
+    "coroutine_harness": "exact getMaxNotifications method extracted from each source and compiled with small Kotlin coroutine fixtures",
+    "original_method_result": "expected failure: unlocked shade retained stale limit 1",
+    "candidate_method_result": "all 6 scenarios pass",
+    "android_multivalent_tests": "two regressions included, not run",
+    "systemui_apk_build": "not run",
+    "source_adoption": "not performed",
+    "device_installation": "not performed",
+    "workspace_tests": [
+      {
+        "target": "test-current",
+        "exit": 0,
+        "seconds": 32.688,
+        "tests": 1127,
+        "unittest_seconds": 32.001,
+        "result": "OK"
+      },
+      {
+        "target": "test",
+        "exit": 0,
+        "seconds": 213.28,
+        "tests": 5104,
+        "unittest_seconds": 211.363,
+        "result": "OK"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "reports/sim-progress-notifications-20260912/systemui-open.txt",
+        "sha256": "633714b1d6a675bd8187f5aa0b22297889161c57313be8a984babf940c4ad814"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/notification-open.txt",
+        "sha256": "5c408e24394cf1c081480405aa733ec7932af6720a70d969b050dc830a2097c0"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/screen-open.png",
+        "sha256": "c16ab87f664daa281bb96881cb2ecae23b99325aeb52b40bf6dfa4d2bf841803"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/user-screenshot.png",
+        "sha256": "8501de6870de348b7409ad56db43852503ce554ba18c94eebb8eac02e9f88bc3"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/identity.txt",
+        "sha256": "8dba5be807f26ff1e817c6ee5c3012fd66d0ad86da7016c0acdd01701fa76836"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/identity-after.txt",
+        "sha256": "dbfcaddcfb8aefd24144a70c0299ba60612726bfa850c1fc86f54e56be2479a2"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/patch-replay.json",
+        "sha256": "2221ca88b2688be6e32f277de8d5f288ef51fde7a267e278129a49350222d34c"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/validate_flow.py",
+        "sha256": "51a07107ccea958be9e28b014f7417f4ed1063a83146e9176416917d73c73aee"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/flow-validation.json",
+        "sha256": "72e66ede323613c5f26aaa73841e405b864b4fc0c0cb7a88227af3ba6dc3b9e9"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/source-flow-result.log",
+        "sha256": "e23228defabc7b5ccb48becc06517d863fdecc40687ef94a7225f58d165774c1"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/candidate-flow-result.log",
+        "sha256": "d336ad327530dc19747fd1e5fb5abd7b52ecd5133eb187692015d0ec3e7f78ff"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/systemui-buffers.txt",
+        "sha256": "b1ff01ad8cdcd24e7853492d5ddc99d35ff234788f318c77f0434873cad67407"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/test-current.log",
+        "sha256": "6878fa002f4fe13f77cb3307151eb9342b78c9e100b4a73aaed23337a9f64949"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/test.log",
+        "sha256": "bd5f8f95826f44c25ca7d1a36a9aa2ff7c1e3edf0f7efd946f85fa902c4e840f"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/workspace-tests.json",
+        "sha256": "2f852bb10d870a47bbb418430451cee9f85186f797bb791fa6031aa49cd067cf"
+      }
+    ]
+  }
+}
