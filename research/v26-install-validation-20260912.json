@@ -1,0 +1,486 @@
+{
+  "schema_version": 1,
+  "id": "nezha-v26-install-validation-20260912",
+  "status": "installed_and_bounded_runtime_validated_remaining_functional_tests",
+  "document": "docs/v26-install-validation-20260912.md",
+  "implementation_record": "research/telephony-fixes-20260912.json",
+  "build_number": "nezha.a22a7b1e3294c491ae5d03db",
+  "source_revision": 30,
+  "source_input_count": 736,
+  "predecessor_build_number": "nezha.b2c99443fe9e90a4a7954eac",
+  "bundle_manifest_sha256": "883ead802b615175e31fb572889ada5d502adfb829b659530051303e1ae98225",
+  "signed_target_files_sha256": "cc1a63491b5ab867dd382baf0a9241544c30d6fe05cc0310211a877c31599207",
+  "installation": {
+    "explicit_user_authorization": true,
+    "slot": "a",
+    "acknowledged_payloads": [
+      {
+        "role": "super",
+        "target": "super",
+        "sha256": "76f0287bfaa826d4c95a3f893b356f3dc85e84ed83916dbe8b66519e568b1249"
+      },
+      {
+        "role": "dtbo",
+        "target": "dtbo_a",
+        "sha256": "f7e18f984df6e207e13b48a76d0ea74e76fd65392b252c9cc68c5c3a1bdecc57"
+      },
+      {
+        "role": "init_boot",
+        "target": "init_boot_a",
+        "sha256": "57ab68b501e2ceabe13af4bed102a1195b4fc59c0c268d02c3afdf1913cde4bf"
+      },
+      {
+        "role": "vendor_boot",
+        "target": "vendor_boot_a",
+        "sha256": "b833adabb6293fd51845d08deb6db3e1ac684245cf6d05f80534ec9bf0494821"
+      },
+      {
+        "role": "recovery",
+        "target": "recovery_a",
+        "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e"
+      },
+      {
+        "role": "boot",
+        "target": "boot_a",
+        "sha256": "5176f9b89150aedea3dcd77e163bc84925a9d6717e5738550bcbf9e4b507774e"
+      },
+      {
+        "role": "vbmeta_system",
+        "target": "vbmeta_system_a",
+        "sha256": "b368c8bbaaedc45b3d9f02d96d5602eeb35c07934cb1104bd1530896c3654512"
+      },
+      {
+        "role": "vbmeta",
+        "target": "vbmeta_a",
+        "sha256": "e34d390663d3d5579113c2d530956c6366bc2174263461dca193718da6c5e918"
+      }
+    ],
+    "fresh_avb_chain_verified": true,
+    "fresh_bootloader_capacity_reviewed": true,
+    "wipe_performed": false,
+    "slot_changed": false,
+    "userdata_or_metadata_partition_written": false,
+    "boot_completed_seconds": 25.3,
+    "selinux": "Enforcing",
+    "adb_uid": 2000,
+    "post_installation_root_used": false
+  },
+  "runtime": {
+    "schema_version": 1,
+    "final": true,
+    "build_number": "nezha.a22a7b1e3294c491ae5d03db",
+    "observation": {
+      "samples": 31,
+      "duration_seconds": 900.01,
+      "qmi_pids": [
+        "2669"
+      ],
+      "boot_identity_count": 1,
+      "qmi_init_property_readable": false
+    },
+    "ims": {
+      "phone0_connected_at_local": "09-12 22:58:35.891",
+      "last_callback_is_connected": true,
+      "callbacks_after_connected": [],
+      "volte_platform_enabled": true,
+      "mmtel_capabilities": [
+        "MmTel Capabilities - [Voice: true Video: false UT: false SMS: true CALL_COMPOSER: false BUSINESS_COMPOSER_ONLY: false]"
+      ],
+      "video_platform_enabled": false,
+      "wifi_calling_platform_enabled": false
+    },
+    "radio": {
+      "first_line_at_local": "09-12 22:58:13.097",
+      "last_line_at_local": "09-12 23:17:39.348",
+      "phone0_post_ims_registration_service_losses": [],
+      "phone0_state_observations": [
+        {
+          "at_local": "09-12 22:58:17.160",
+          "voice": "OUT_OF_SERVICE",
+          "data": "OUT_OF_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:17.637",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:17.793",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:19.611",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:21.607",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:23.510",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:25.522",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:27.526",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:29.531",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:31.541",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:33.354",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:33.592",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:35.929",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 22:58:51.292",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 23:00:35.597",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        },
+        {
+          "at_local": "09-12 23:00:46.459",
+          "voice": "IN_SERVICE",
+          "data": "IN_SERVICE"
+        }
+      ],
+      "previous_detach_or_reject_messages": 0
+    },
+    "iwlan_bound_services": [
+      "IWlanDataService",
+      "IWlanNetworkService",
+      "QualifiedNetworksServiceImpl"
+    ],
+    "resource_values": {
+      "config_device_volte_available": "true",
+      "config_device_vt_available": "true",
+      "config_device_wfc_ims_available": "false",
+      "config_wlan_network_service_package": "vendor.qti.iwlan",
+      "config_wlan_network_service_class": "vendor.qti.iwlan.IWlanNetworkService",
+      "config_wlan_data_service_package": "vendor.qti.iwlan",
+      "config_wlan_data_service_class": "vendor.qti.iwlan.IWlanDataService",
+      "config_qualified_networks_service_package": "vendor.qti.iwlan",
+      "config_qualified_networks_service_class": "vendor.qti.iwlan.QualifiedNetworksServiceImpl"
+    },
+    "audio": {
+      "volume_groups": 15,
+      "populated_curves": 75
+    },
+    "log_counts": {
+      "fatal_java": 0,
+      "fatal_native": 0,
+      "anr": 0,
+      "qmi_daemon_denial": 0,
+      "qmi_crash_or_exit": 0,
+      "flags_health_check": 0,
+      "legacy_property_reader": 0,
+      "display_invalid_parameter": 0,
+      "collector_qmi_property_denial": 20
+    },
+    "retained_log_lines_after_exact_deduplication": 61660,
+    "runtime": {
+      "selinux": "Enforcing",
+      "uid": "2000",
+      "slot": "_a",
+      "installed-fix-hashes": "7c1e7d01681b90a11f85ddd7f196143701ee1fcc580307201b16d75f95c49f54  /vendor/etc/selinux/vendor_sepolicy.cil\ne93c71810440010b90f6929ea905bc18be91ef146a2436d5a8fd154a4b27c96a  /system/etc/ueventd.rc",
+      "display-nodes": "total 0\ncrw-rw-rw- 1 root graphics u:object_r:vendor_displayfeature_device:s0  445,   0 1970-01-02 03:20 disp_feature\ncrw-rw-rw- 1 root graphics u:object_r:vendor_displaylog_device:s0      446,   0 1970-01-02 03:20 disp_log"
+    },
+    "notification": {
+      "user_confirmation": "Cards for notifications work",
+      "unlimited": true,
+      "display_limit_minus_one": true,
+      "active_download_progress_tested": false,
+      "stale_interaction_reproduced_in_runtime_capture": false
+    }
+  },
+  "remaining_findings": [
+    {
+      "id": "devicelock-controller-selection",
+      "effective_config_package": "com.google.android.devicelockcontroller",
+      "installed_controller_package": "com.android.devicelockcontroller",
+      "configured_package_installed": false,
+      "overlay": "com.google.android.overlay.googleconfig_gms",
+      "role": "android.app.role.SYSTEM_FINANCED_DEVICE_CONTROLLER",
+      "role_has_holder": false,
+      "denied_permission": "android.permission.MANAGE_DEVICE_POLICY_APPS_CONTROL",
+      "matching_source_commit": "f93460221d41b5b82dc3de2576e8a64c816d83af",
+      "device_management_state_changed": false,
+      "status": "package and role mismatch diagnosed; product integration correction not delivered"
+    }
+  ],
+  "limitations": [
+    "No completed call or SMS test",
+    "No active download progress capture",
+    "Video and Wi-Fi calling remain gated",
+    "No new brightness, refresh-rate, listening, mute or camera test",
+    "Stability is bounded to the recorded interval",
+    "QMI init service property is not readable as shell; process identity and elapsed time are used instead",
+    "Initial and shade-open process column query unsupported; corrected process collection succeeds",
+    "Notification interaction was false in the runtime capture; stale interaction branch is covered by the prior source harness"
+  ],
+  "workspace_validation": {
+    "make_test": {
+      "tests": 5111,
+      "seconds": 209.419,
+      "passed": true
+    },
+    "make_test_current": {
+      "passed": true,
+      "tests": 1132,
+      "seconds": 32.377
+    }
+  },
+  "private_evidence": [
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/authorization.json",
+      "sha256": "8eb70e99c3fe7c11f7185354b3bcbe07f7c18368a430255bee0f330574faef41",
+      "size_bytes": 634
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/preflight-android/manifest.json",
+      "sha256": "1829cba823523d114baa58df5235b7d7840d40fd1fc8f501fce706e9c979d316",
+      "size_bytes": 88409
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/android-reviewed.json",
+      "sha256": "df3ef237a883b33c49b3a9f41e2b93d2b1f0f87f87607037b5ee2adf635d717a",
+      "size_bytes": 1437
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/bundle-reverified.json",
+      "sha256": "f0be1d91a8e425b855bef237067cf86000f108bbc07be264b35f8b7ddd481b78",
+      "size_bytes": 214
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/avb-reverified.json",
+      "sha256": "e67a07ebc4d1723db595d6f55c6ff10cbcf8c13ecf6f140294929dc12041c2b9",
+      "size_bytes": 59928
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/enter-bootloader.json",
+      "sha256": "60851197da9eb151d9d00c8e7bd390e87d026e19f3020f1fcebd6c22144544ba",
+      "size_bytes": 75
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/preflight-bootloader/manifest.json",
+      "sha256": "c3cda49d86c6b12dcb12dc1e5f747a73ad6355fe96cf4cfaf959a770bd76b0e2",
+      "size_bytes": 48015
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/bootloader-reviewed.json",
+      "sha256": "a42195830dad004e116758ea30810f739780cb4d99ed8c2521e1347817dfb397",
+      "size_bytes": 328
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/capacity-reviewed.json",
+      "sha256": "4d7d7f137c31f76fd4451fe5296f75dc454411ef3ac6b8a693ffbb5760df6d3f",
+      "size_bytes": 1313
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/execution.json",
+      "sha256": "3cccdcff4011aff935282be3d24fe83bf8eefbb054b085494cf234035f7cd3ec",
+      "size_bytes": 3757
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/reboot-android.json",
+      "sha256": "fbe6640a4716ad80874dd958cbb1fb312ce2cb1e658783221ea94c0c3cb8e2cb",
+      "size_bytes": 271
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/boot-completed.json",
+      "sha256": "dfff5a786ec12bce9f4c17d8173142954cc1d1c63da363d2389bfb2730354ab8",
+      "size_bytes": 280
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/boot-observations.json",
+      "sha256": "cb0db9c766f70485b7970f933fcc75c317b5e46bd42f5db2d53e037691176aac",
+      "size_bytes": 870
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/first-boot-crash.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/service-observation.jsonl",
+      "sha256": "359d8f7a1545572e06eaf0fcb91c21da3f56ef848e17c022a5a5b6e6ceb4165c",
+      "size_bytes": 7118
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/processes-corrected.txt",
+      "sha256": "2765edccecf658f0c061515f41064c40768eee285384ca9df05c260c524aec5f",
+      "size_bytes": 114404
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/qmi-elapsed-intermediate.txt",
+      "sha256": "c3a88fce166ccaf13fabffc2adfac30647dc0e42cb58d3b6f2eae9032d6f6988",
+      "size_bytes": 85
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/qmi-elapsed-final.txt",
+      "sha256": "b9468aa3029b05cb4b600a0de8f3b0861ed1144a505c05dacd5e3e0fb2d0eed6",
+      "size_bytes": 85
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/radio-final.txt",
+      "sha256": "0e24643395f2ace9a0abe346863e12788f455bc80d71d4ce548dfb29918ea153",
+      "size_bytes": 1465435
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/shade-user-unlocked.png",
+      "sha256": "73e75a0b6ee71b24f97264012d0c88e420729c996bf5793c5d997f0b52d6414c",
+      "size_bytes": 846894
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/features.txt",
+      "sha256": "8fe1e725216497a20298e5fe05b574afc04a6fcac42076f1a3db1f8ea933a408",
+      "size_bytes": 6866
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/devicelock-package.txt",
+      "sha256": "4b81fb7aa8dba5b0bd606b1a6eb6dbc8a9c01c78fb2971b83311c915fbe34722",
+      "size_bytes": 15197
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/devicelock-config-verbose.txt",
+      "sha256": "53859414f60a88a8fd19c233331cfc6cc832df84d43a6b2086272d8818234f43",
+      "size_bytes": 702
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/devicelock-aosp-permissioncontroller-config.txt",
+      "sha256": "53859414f60a88a8fd19c233331cfc6cc832df84d43a6b2086272d8818234f43",
+      "size_bytes": 702
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/devicelock-google-package-list.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/roles.txt",
+      "sha256": "63212064fac338fbd86ac9c2426cdb1359aa4ab4ee0180c373bb4699026b4587",
+      "size_bytes": 5709
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/initial/collection.json",
+      "sha256": "858835f409ce7d258e712dc2c34357eab0a57d5108d116cf22e3f3a027e63c1a",
+      "size_bytes": 14763
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/initial/resources.json",
+      "sha256": "9eac62895147260db21324420749975f07bee4fbdeaa5024ef5d558f2d249f93",
+      "size_bytes": 1077
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/shade-open/collection.json",
+      "sha256": "7b2237e009384129e5656d8b2dc6ae1227d804f4278a1c67e18281522b356a2c",
+      "size_bytes": 14883
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/shade-open/resources.json",
+      "sha256": "9eac62895147260db21324420749975f07bee4fbdeaa5024ef5d558f2d249f93",
+      "size_bytes": 1077
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/intermediate/collection.json",
+      "sha256": "c3c8ce84038b94437f7126465606b1522bcc770a12172935505afce1854397f3",
+      "size_bytes": 14923
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/intermediate/resources.json",
+      "sha256": "9eac62895147260db21324420749975f07bee4fbdeaa5024ef5d558f2d249f93",
+      "size_bytes": 1077
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/settled/collection.json",
+      "sha256": "454bcb26049164511ed0dcfb8a88fca3fdd3a52e876d2ae0dfa28bd7b1004510",
+      "size_bytes": 14723
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v26-install/settled/resources.json",
+      "sha256": "9eac62895147260db21324420749975f07bee4fbdeaa5024ef5d558f2d249f93",
+      "size_bytes": 1077
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-runtime-final.json",
+      "sha256": "5d550ab6f26dac053ea1a25407f3a104e775c8730a0e7f6edfdfe13e3135ed82",
+      "size_bytes": 4808
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-install-workspace-tests.log",
+      "sha256": "8b9e3196546354e4084f015db37c628b225ee45d91f3fde6f8e8ecf8443c89d8",
+      "size_bytes": 905377
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-install-test-current.log",
+      "sha256": "22c4ebb5892f9ac4901703b8f5461a4ffe103522eb68c4ed5497c08248879a19",
+      "size_bytes": 209193
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-devicelock-source.txt",
+      "sha256": "670351ec0c3e0cb37e4d0c15d871b443b41b8344fd11ff944d2d1790e0fae7ca",
+      "size_bytes": 3234
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-devicelock-policy-source.txt",
+      "sha256": "b008a130f7637205286d6641579cf01b8ddb8266f96faacf571ca91c7f84d79a",
+      "size_bytes": 4316
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-roles-and-ims-source.txt",
+      "sha256": "1f3dcd1905f0f0cdb36ead60e2b03860b5711f7ceea97d5eb9c30805f43668c2",
+      "size_bytes": 2366
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-warning-source-identities.json",
+      "sha256": "28da744263fa7490edd4aa25965cf909e6992344a21f68800638075c9814aac3",
+      "size_bytes": 233
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/install_v26.py",
+      "sha256": "215e2562945be1540c5ff234e7c951bd81fed08fbb2aaeff9b154d498deaa51a",
+      "size_bytes": 5990
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/observe_v26.py",
+      "sha256": "9d177628832fb3640b5fc23da048bd8c9291ee4627ce9f98ab492d33556ade87",
+      "size_bytes": 4978
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/analyze_v26_runtime.py",
+      "sha256": "741b3d171c5293ea16eac3c0b68510aa8acd97ebedbfd816bdfe7158b32c8279",
+      "size_bytes": 5447
+    }
+  ]
+}

@@ -1,31 +1,36 @@
 # Current Nezha workspace status
 
-**Latest installed-phone observation (September 12): v25
-(`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
-The [notification-shade capture](shade-notifications-20260912.md) reproduces
-missing cards: the fully open, unlocked shade retains a one-notification
-lockscreen limit while its combined interaction state remains active. The later
-authorized SystemUI restart restores visible notification cards and the normal
-unrestricted count; the phone stays on the same boot and ADB returns to shell
-UID 2000. The source fix now clears the limit without waiting for that state and its
-SystemUI component builds; it has not been installed, so recurrence remains possible.
-The subsequent [read-only log audit](log-audit-20260912.md) identifies disabled
-VoLTE/video-call device capabilities despite factory support and Fi VoLTE
-provisioning, the continuing QMI helper restart loop, and empty IWLAN service
-selectors. The [implementation follow-up](telephony-fixes-20260912.md) now records the
-three source fixes, the adopted shade patch and a newly diagnosed factory display
-node-routing fix. The full source-revision-30 build
-(`nezha.a22a7b1e3294c491ae5d03db`), 46 unsigned archive checks and all 5,111
-workspace tests pass. Signing, all 45 signed archive checks and the private
-eight-image v26 bundle verification also pass. Installation authorization and
-fresh bootloader checks remain; none is installed. The live audio policy
-now has 15 groups with 75 populated curves; the older empty-curves fault is not
-present in this capture. No new listening, call or SMS test was performed.
-The newly inserted physical Google Fi SIM is loaded
-and registered on LTE with a connected data context; IMS is unregistered, and
-calls, SMS and cellular downloads remain untested. No causal link between SIM
-insertion and the shade fault is established. The initial inspection was
-read-only; the subsequent restart and shade verification were user-authorized.
+**Latest installed-phone observation (September 12): v26
+(`nezha.a22a7b1e3294c491ae5d03db`), slot A, boot completed in 25.3 seconds,
+SELinux Enforcing, ADB shell UID 2000.** The explicitly approved eight-image
+installation completed without a wipe, data clear or slot change. The
+[v26 installation record](v26-install-validation-20260912.md) separates the
+verified package and installation from the measured feature results.
+
+The phone now registers with IMS over LTE and advertises voice and SMS support.
+The VoLTE device gate is enabled, and all three retained IWLAN services bind to
+telephony. Carrier video and Wi-Fi calling gates remain disabled. Notification
+cards are visible in the captured unlocked shade, its display limit is `-1`, and
+the user confirms the cards work. Correctly named Xiaomi display nodes have their
+factory permissions and vendor labels. The QMI helper retains the same PID in
+31 samples over 15 minutes, with 19:29 process uptime at the final check. The
+retained radio log has no subsequent IMS disconnect or repeat of the earlier
+cellular losses during more than 19 minutes after IMS registration. Calls, SMS
+and an active download progress notification have not been independently tested.
+
+The [implementation record](telephony-fixes-20260912.md) binds source revision 30,
+736 input files, the successful full build, 46 unsigned archive checks, 45 signed
+archive checks and the verified private eight-image bundle. All 5,111 workspace
+tests also pass after installation. The [preceding v25 log audit](log-audit-20260912.md)
+and [notification diagnosis](shade-notifications-20260912.md) preserve the earlier
+failures and temporary SystemUI restart. No causal link between SIM insertion
+and the shade fault is established. The new log review also identifies a
+DeviceLock package-selection mismatch; its configuration selects Google's
+controller while the installed APEX contains the AOSP controller.
+
+The following eSIM experiments were measured on v25 before the v26 installation.
+Their unresolved hardware findings remain separate from the physical SIM's IMS
+registration on v26.
 The [root GPIO and power capture](esim-root-power-20260912.md) adds one completed,
 restored startup test. All five attempts configure DATA/CLK/RESET pins 70/71/72
 to the alternate function and back; the root power manager logs eSIM-resource
@@ -73,7 +78,7 @@ The [service investigation](esim-deep-20260912.md) confirms the installed ISD-R
 application; the validated diagnostic app now supports strict reader selection.
 This observation does not revalidate other features or reconstruct the v25
 installation. The v23 and older source/delivery sections below are earlier
-checkpoints; their pending delivery statements are not a current v25 inventory.
+checkpoints; their pending delivery statements are not a current v26 inventory.
 
 **Earlier v23 checkpoint:** userdebug (`nezha.2fa2ea3549a2fc869a4c79df`, source
 revision 25), slot A, boot completed in 25.6 s with SELinux Enforcing.
@@ -96,7 +101,8 @@ of its downloadable modes, which download correctly today and are then deleted
 when the load is refused ([record](camera-split-modules-20260911.md)). Neither
 has run on the phone.
 
-Everything below about v22 is carried unchanged into v23.
+The earlier v22 build is `nezha.b68e83ef070c648895e3881e`. Everything below
+about that checkpoint is carried unchanged into v23.
 The separately approved eight-image installation completed without a wipe, slot
 change or data clear, and userdata was retained. **Now Playing works on this phone.** V22 adds the
 [music-trigger shim](now-playing-trigger-20260911.md) over v21's Pixel
@@ -172,23 +178,23 @@ preserves earlier checkpoints; its pending gates are not current selections.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.b68e83ef070c648895e3881e` (userdebug, delivery set v22) |
-| Recorded predecessor (removed from host) | v21 `nezha.34aee22f376f606d9ed52909` ([install record](v21-install-validation-20260911.md), the Pixel music_detector files); earlier v20 `nezha.d5894f355e27f7d2f503f519` (recorder fix), v19, v18, and v17 `nezha.11b0a26475073bca18f34c39` (Leica Essential) |
+| Installed build identity | `nezha.a22a7b1e3294c491ae5d03db` (userdebug, delivery set v26) |
+| Recorded predecessor | v25 `nezha.b2c99443fe9e90a4a7954eac`, observed immediately before the authorized v26 installation; historical predecessors retain their dated records |
 | Earlier predecessors | v16 `nezha.434625bd9b5cd7a8a7eabd84`, [install record](v16-install-validation-20260910.md); v15 `nezha.81c1b93277a1fa371a3efbb3`, [install record](v15-install-validation-20260909.md) |
-| Installed source receipt | 718 rows; `reports/tier2-camera-20260909/source-revision-22/source-installed.json`, SHA256 `9c27bd6727b13f06a355c24b3734d8b4260b360cdc2acaf21188515c7448a6e1` |
-| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v22/` (the only delivery set retained on the host; see the [v22 install record](v22-install-validation-20260911.md)) |
-| Bundle manifest SHA256 | `f626deb90ed9e28a834deeea3d8bb44dc63d204e949e601420369110d3848b98` |
-| Reconciled signed target-files SHA256 | `ae3f0be8887e38fd35faf6792e60d11f344546a342875f8e69e760f58c53b953` |
-| Signing/reconciliation result | Passed signing, reconciliation, 18 host gates and eight-payload verification; receipts in the [tier 1 record](tier1-ims-dim-20260909.md) |
-| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.4 s |
-| Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, adb UID 0, SELinux `Enforcing`; IMS provider persistent in `vendor_qtelephony` and bound by telephony; no denials for the domain; dim policy lands at panel value 314 |
+| Installed source receipt | 736 rows; `reports/telephony-fixes-20260912/source-revision-30/source-installed.json`, SHA256 `8388c3ff8eb5a777e0996a37a3ae81a20ec097119648bd52bbba568450114295` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26/`; see the [v26 install record](v26-install-validation-20260912.md) |
+| Bundle manifest SHA256 | `883ead802b615175e31fb572889ada5d502adfb829b659530051303e1ae98225` |
+| Reconciled signed target-files SHA256 | `cc1a63491b5ab867dd382baf0a9241544c30d6fe05cc0310211a877c31599207` |
+| Signing/reconciliation result | Signing, reconciliation, 45 signed archive checks, eight-payload verification and a fresh complete AVB-chain verification pass; see the [implementation record](telephony-fixes-20260912.md) |
+| Installation observed | Shared Super plus seven A-chain writes acknowledged; no wipe, slot change or data clear; normal boot completed in 25.3 s |
+| Android runtime observed | `_a`, `sys.boot_completed=1`, `userdebug`, ADB UID 2000, SELinux `Enforcing`; IMS voice/SMS capabilities, three IWLAN service bindings, correct display nodes and visible notification cards; bounded stability results in the v26 record |
 | Camera acceptance observed | On v14: rear/front photo, UltraRAW DNG/preview, one Aperture effect and a short HEVC/AAC video pass. On v13 (byte-identical camera components): five Xiaomi Ultra HDR photos including main/telephoto 50 MP and telephoto 200 MP, Pro RAW, three physical RAW sensors and all ten warm Aperture Ultra HDR effects pass |
 | App data | V14: all 28 CE and five DE wallpaper picker members unchanged before first launch. V13: all 513 CE and five DE camera members unchanged; no claim about all userdata |
 | Recovery | TWRP `working76`; preserve its `fix22ZJ-touchfix18` runtime/hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; measured current state is recorded above |
 
 The private eight-image bundles and target-files ZIPs are not OTA or TWRP
-installers. Preserve the installed v14 set, the working76 rescue recovery,
+installers. Preserve the installed v26 set, the working76 rescue recovery,
 the stock return inputs, the signing key and the private build inputs.
 Superseded delivery sets are removed once their successor is installed and
 recorded; a removed set survives only as the hashes in its dated record. Artifact
@@ -223,15 +229,15 @@ current phone evidence for the wallpaper fix and the camera subset; the
 camera matrix evidence. The [source behavior record](camera-bayer-audio-compat-20260908.md)
 and [v13 package record](camera-v13-package-20260908.md) retain the host/build
 checks and their offline test results. Artifact, installation and capture
-verification remain separate evidence. The Linux checkout holds source
-revision 22 (`nezha.b68e83ef070c648895e3881e`), which is now installed as v22
-and adds the [Now Playing music-trigger shim](now-playing-trigger-20260911.md) and
+verification remain separate evidence. Installed v26 was built from source
+revision 30, recorded in the [implementation follow-up](telephony-fixes-20260912.md).
+It carries the earlier revision-22 [Now Playing music-trigger shim](now-playing-trigger-20260911.md) and
 the 8 mm UDFPS icon over revision 20's [DSP model fragment](now-playing-dsp-model-20260911.md)
 over revision 19's three-part [HEVC recorder fix](v20-install-validation-20260910.md)
 over revision 16's always-on [Leica Essential selection](leica-essential-20260910.md),
 the four CameraOpt methods and the [factory camcorder profile selection](camera-video-profiles-20260909.md).
-The [v22 installation record](v22-install-validation-20260911.md) is the current
-phone evidence, and the [tier 2 v16 page](tier2-camera-v16-20260910.md) holds
+The [v22 installation record](v22-install-validation-20260911.md) preserves that
+earlier phone evidence, and the [tier 2 v16 page](tier2-camera-v16-20260910.md) holds
 the earlier video matrix, microphone, CameraOpt runtime and Leica findings.
 
 1. Read [source-lock handling](source-lock.md),
@@ -281,6 +287,10 @@ present (one account, 22 third-party packages, 151 media files); no fingerprint
 template is enrolled.
 
 ## Remaining feature work
+
+The feature details below preserve v22 and older measurements. The v26 summary
+and installation record above supersede their installed-build, SIM and delivery
+status; other hardware acceptance still requires its own dated measurement.
 
 - **Camera:** V13 passes the requested capture matrix: ordinary rear/front
   Xiaomi Ultra HDR photos, main/telephoto 50 MP, telephoto 200 MP, Pro RAW,

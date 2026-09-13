@@ -1,15 +1,16 @@
 # Workspace documentation
 
-**Latest device observation: v25 on slot A with SELinux Enforcing, September 12.**
+**Latest device observation: v26 on slot A with SELinux Enforcing, September 12.**
 Start with the current status for source selection, measured capture results and
 remaining work. The expanded index preserves dated evidence and earlier experiments.
 
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
-| [Telephony, notification and display fixes](telephony-fixes-20260912.md) | IMS capabilities and IWLAN selectors compiled; exact QMI vendor-policy image verified; factory display-node routing restored in source; full package building, no installation |
+| [V26 installation and validation](v26-install-validation-20260912.md) | Eight images installed without a wipe; IMS registration and voice/SMS capabilities, IWLAN binding, display nodes and visible notification cards measured; bounded stability and remaining warnings |
+| [Telephony, notification and display fixes](telephony-fixes-20260912.md) | Source revision 30, full build, signing and archive checks pass; exact QMI vendor-policy image and factory display routing delivered in v26 |
 | [V25 log audit](log-audit-20260912.md) | Read-only triage: factory VoLTE/video-call capabilities missing, QMI helper restart loop, unconfigured IWLAN binding; populated audio curves and successful Now Playing rearm distinguished from warning noise |
-| [Missing notification cards](shade-notifications-20260912.md) | Authorized SystemUI restart restores cards after a stale lockscreen limit; source candidate remains uninstalled and recurrence is possible; physical Google Fi SIM registration observed |
+| [Missing notification cards](shade-notifications-20260912.md) | V25 diagnosis and temporary restart: stale lockscreen limit hides cards; the later v26 record measures the installed fix |
 | [eSIM root GPIO and power capture](esim-root-power-20260912.md) | Five startup attempts configure all three alternate pins and reach the named eSIM power resource; still RX BREAK/NO_ATR, original state restored, physical cause unresolved |
 | [eSIM NFC power and raw UART investigation](esim-nfc-uart-20260912.md) | NFC power/link still NO_ATR, raw UART break before cleanup; global controller/TZ configuration comparisons and verified root GPIO/PMIC log access |
 | [Combined eSIM boot and held-channel test](esim-combined-20260912.md) | Application-LPA candidate boots unlocked with a verified ISD hold; three attempts still fail before ATR; both authorized reboots and full restoration completed |

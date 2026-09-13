@@ -6,15 +6,16 @@ notification-shade patch is also adopted. Source revision 30 is
 `nezha.a22a7b1e3294c491ae5d03db`, with 736 recorded input files. The ordinary
 SystemUI, telephony, framework-resource and source-policy component build passed;
 the full target-files build, all workspace tests, signing and both archive
-checks passed. The private eight-image v26 bundle is verified and ready for
-installation review. These changes have not been installed. The connected phone remains on v25, and collection in this work was
-read-only.
+checks passed. The private eight-image v26 bundle was verified and subsequently installed with
+explicit user approval. The [v26 installation record](v26-install-validation-20260912.md)
+holds the later boot, IMS, IWLAN, QMI, display and notification results. The
+source investigation and pre-installation measurements below were performed on v25.
 
 The [measurement record](../research/telephony-fixes-20260912.json) binds the
 private evidence under `reports/telephony-fixes-20260912/`. The
 [preceding audit](log-audit-20260912.md) preserves the initial measurements.
 
-## Implemented changes
+## Implemented changes and pre-installation validation
 
 | Fault | Change | Validation and remaining device test |
 | --- | --- | --- |
@@ -114,11 +115,11 @@ final AVB inventory pass separately, and all **45 signed archive checks** pass.
 The signed archive is 11,146,729,082 bytes, SHA-256
 `cc1a63491b5ab867dd382baf0a9241544c30d6fe05cc0310211a877c31599207`.
 
-The final read-only phone check still reports v25, slot A, the same boot,
-SELinux Enforcing and ADB UID 2000. Android preflight reports no collection errors;
-physical partition capacities remain unknown to the shell and need fresh
-bootloader checks before flashing. The bundle is not device-admitted, and
-installation/reboot authorization has not been recorded. This is a private
-image bundle, not an OTA installer. IMS registration and calls/SMS, IWLAN binding,
-QMI survival, display-node creation and notification recurrence remain device
-validation steps after an authorized installation.
+Before the separately authorized installation, the final read-only check reported
+v25, slot A, the same boot, SELinux Enforcing and ADB UID 2000. Android preflight
+had no collection errors; physical partition capacities were unavailable to the
+shell, and installation/reboot authorization and fresh bootloader checks were
+still pending. The subsequent [installation record](v26-install-validation-20260912.md)
+records their completion and the measured runtime results. Calls/SMS, active
+download progress and long-term notification recurrence remain functional tests.
+This private image bundle is not an OTA installer.

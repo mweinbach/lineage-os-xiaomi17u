@@ -94,10 +94,9 @@ if __name__ == "__main__":
 
 
 class PreparedDeliveryTests(unittest.TestCase):
-    """The v16 set introduced these features; v16 is now the recorded predecessor and the
-    installed v17 carries them forward."""
+    """Preserve the v16 delivery and its measured successor as historical evidence."""
 
-    def test_records_share_one_delivery_carried_into_the_installed_build(self):
+    def test_records_share_one_delivery_carried_into_a_recorded_successor(self):
         first = json.loads(CAMERAOPT.read_text())["delivery_set"]
         second = json.loads(PROFILES.read_text())["delivery_set"]
         self.assertEqual(first, second)
@@ -117,13 +116,13 @@ class PreparedDeliveryTests(unittest.TestCase):
         page = (ROOT / "docs/cameraopt-four-methods-20260909.md").read_text()
         for value in (first["build_number"], first["reconciled_archive"]["sha256"], first["bundle_manifest_sha256"]):
             self.assertIn(value, page)
-        # v16 introduced these features and is now a lineage ancestor on the status page; the
-        # installed build is the one they were carried into, which still exposes the camcorder
-        # selection and CameraOpt.
+        # Keep both measured builds in the lineage without pinning either one as
+        # the currently installed build after a later authorized delivery.
         status = (ROOT / "docs/workspace-status.md").read_text()
         self.assertIn(first["build_number"], status)  # v16 still recorded in the lineage
         carried = json.loads((ROOT / first["carried_into"]).read_text())
         self.assertEqual(carried["build_number"], first["carried_into_build"])
-        self.assertIn("| Installed build identity | `" + carried["build_number"] + "`", status)
+        self.assertIn(carried["build_number"], status)
+        self.assertIn(carried["build_number"], (ROOT / carried["document"]).read_text())
         self.assertEqual(carried["camcorder_profiles"]["media_settings_xml"], "/vendor/etc/media_profiles_vendor.xml")
         self.assertIn("configuration_state=loaded", carried["cameraopt"]["configuration_state"])
