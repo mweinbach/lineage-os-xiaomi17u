@@ -33,7 +33,7 @@ The signing tool is pinned separately to avbtool commit
 `c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb`. This does not change the older avbtool
 selector used by the reproducible recovery builder. The existing AVB verifier
 profile is bound by SHA256
-`1859fd5e97e21c68485c8ca961ab46a5791df731179aed7f40a57d0f8c304b18`.
+`a1d3c6ca20ed9e6a70eede51fbf84d2400ce7143bd5a1371f953f122976071da`.
 That profile retains the stock physical bounds and carries the measured,
 admission-pinned successor `system_ext` logical-image allowance described in
 [successor-logical-budget.md](successor-logical-budget.md).

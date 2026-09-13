@@ -375,6 +375,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "c269b3b285dd70f5a3359b2c1a58b53e4a02e50ce5b25601bddab99d82eb5689", "size_bytes": 793632768},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v25-admit/admission.json", "sha256": "0a6afca76eff6d53b6688371e4c84699abb6bdab244eee7abdc4e430890a2d71", "size_bytes": 7139},
      "build_number": "nezha.b2c99443fe9e90a4a7954eac"},
+    # Telephony capability and IWLAN bindings, exact QMI vendor-policy leaf, notification limit fix and factory display-device routing, over v25; measured v26 product.
+    {"measured_image": {"sha256": "3eaa92dfee72efd1359977b5e7561312d5066318d8853652487906f407769ec6", "size_bytes": 793632768},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v26-admit/admission.json", "sha256": "b30e830fa20efd4c8750dac7f106433006711d24bbccc3dbe303447d2768f4c1", "size_bytes": 7114},
+     "build_number": "nezha.a22a7b1e3294c491ae5d03db"},
 )
 
 

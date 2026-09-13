@@ -503,7 +503,7 @@ class ContractTests(OfflineTests):
     def test_catalog_preserves_historical_canonical_bytes_and_requires_explicit_current_selection(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())
         historical = catalog["profiles"][policy.HISTORICAL_PROFILE]
-        self.assertEqual("e01c1df88a2be8bb84ae34ab110b82ca08e3d9559c8d8346ec7a81c57a904149",
+        self.assertEqual("12af47ad46f5cf937ab4cd1f200ab776706489ed4995b66584f7e91c834c32ea",
                          identity(policy.json_bytes(historical))["sha256"])
         self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
         current = policy.plan(policy.EXPORT4_PROFILE)
@@ -526,8 +526,8 @@ class ContractTests(OfflineTests):
         successor_dependencies = {row["path"]: policy.identity(row) for row in successor["dependencies"]}
         self.assertEqual({"sha256": "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
                           "size_bytes": 4339}, frozen_dependencies["config/nezha-avb-image-set.json"])
-        self.assertEqual({"sha256": "1859fd5e97e21c68485c8ca961ab46a5791df731179aed7f40a57d0f8c304b18",
-                          "size_bytes": 18079}, successor_dependencies["config/nezha-avb-image-set.json"])
+        self.assertEqual({"sha256": "a1d3c6ca20ed9e6a70eede51fbf84d2400ce7143bd5a1371f953f122976071da",
+                          "size_bytes": 18603}, successor_dependencies["config/nezha-avb-image-set.json"])
 
     def test_unknown_or_mutated_profile_fails_before_private_input_reads(self):
         with self.assertRaisesRegex(ValueError, "unknown or incomplete"):
@@ -2139,8 +2139,8 @@ class ProviderContractTests(OfflineTests):
     def test_additive_provider_catalog_preserves_both_prior_canonical_contracts(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())
         self.assertEqual({policy.HISTORICAL_PROFILE, policy.EXPORT4_PROFILE, policy.PROVIDER_PROFILE, policy.POLICY3_PROFILE}, set(catalog["profiles"]))
-        for name, expected in ((policy.HISTORICAL_PROFILE, "e01c1df88a2be8bb84ae34ab110b82ca08e3d9559c8d8346ec7a81c57a904149"),
-                               (policy.EXPORT4_PROFILE, "76af28e614c08960d9387db972e89b3b4367c064f6c74ce5aaea83dbb8026ed2")):
+        for name, expected in ((policy.HISTORICAL_PROFILE, "12af47ad46f5cf937ab4cd1f200ab776706489ed4995b66584f7e91c834c32ea"),
+                               (policy.EXPORT4_PROFILE, "21c5840344453679682d3fe476f42735b7fc62828c651d5b81fa5d4f9876436a")):
             self.assertEqual(expected, identity(policy.json_bytes(catalog["profiles"][name]))["sha256"])
         self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
         current = policy.plan(policy.PROVIDER_PROFILE)
@@ -2546,9 +2546,9 @@ class Policy3Evidence:
 class Policy3ContractTests(OfflineTests):
     def test_policy3_is_additive_explicit_and_cannot_promote_earlier_profiles(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())["profiles"]
-        previous = {policy.HISTORICAL_PROFILE: "e01c1df88a2be8bb84ae34ab110b82ca08e3d9559c8d8346ec7a81c57a904149",
-                    policy.EXPORT4_PROFILE: "76af28e614c08960d9387db972e89b3b4367c064f6c74ce5aaea83dbb8026ed2",
-                    policy.PROVIDER_PROFILE: "0589c9840cb636c8c86f9577c898644e0725994b0d31826cec1c1bf9870fdfc2"}
+        previous = {policy.HISTORICAL_PROFILE: "12af47ad46f5cf937ab4cd1f200ab776706489ed4995b66584f7e91c834c32ea",
+                    policy.EXPORT4_PROFILE: "21c5840344453679682d3fe476f42735b7fc62828c651d5b81fa5d4f9876436a",
+                    policy.PROVIDER_PROFILE: "4734bfb4e139e4c09c0f36f4fd02c1700b8d292f5c810add06713114909f57e4"}
         for name, expected in previous.items():
             with self.subTest(profile=name):
                 self.assertEqual(expected, identity(policy.json_bytes(catalog[name]))["sha256"])
