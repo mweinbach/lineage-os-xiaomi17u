@@ -131,7 +131,55 @@
       {
         "path": "reports/sim-progress-notifications-20260912/workspace-tests.json",
         "sha256": "2f852bb10d870a47bbb418430451cee9f85186f797bb791fa6031aa49cd067cf"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/restart/before.json",
+        "sha256": "61193a63c14a67a286e4af7834e649a441770ca978b580f0b00d59e8495b37ba"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/restart/after.json",
+        "sha256": "bde6cedb7632b74d8442a8e3df39fc434f5ff07d9f41a20926a100e5e8fdec2b"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/restart/systemui-before.txt",
+        "sha256": "dc9d40e9f182833255d03632c715ceb49ae2b7e3acd869d52de64b151fb9e7f1"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/restart/systemui-verified.txt",
+        "sha256": "1686b6ac35f6ab572a9c20c32b1f5e4aad86338116641717bfc4a025eec8e4a4"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/restart/screen-verified.png",
+        "sha256": "7f4ad4d96239c0dd3634f3262e037dc29362d0f314587e63f80b00b942c6a77c"
+      },
+      {
+        "path": "reports/sim-progress-notifications-20260912/restart/result.json",
+        "sha256": "73ac9858238fa21b9b85ea195583cdc811f9fa46e9f062023d87391b8ae77a34"
       }
     ]
+  },
+  "restart_validation": {
+    "authorization": "User approved restarting SystemUI and checking the notification shade.",
+    "systemui_restart_count": 1,
+    "system_server_unchanged": true,
+    "boot_id_unchanged": true,
+    "build_slot_boot_complete_selinux_unchanged": true,
+    "adb_uid_restored": 2000,
+    "selinux": "Enforcing",
+    "verification_ui_actions": [
+      "Wake screen",
+      "Dismiss unsecured keyguard through WindowManager",
+      "Expand notifications"
+    ],
+    "notification_cards_visually_present": true,
+    "verified_groups": [
+      "com.twitter.android",
+      "android"
+    ],
+    "is_user_interacting": false,
+    "max_displayed_notifications": -1,
+    "stack_end_height_px": 1064,
+    "source_fix_installed": false,
+    "active_download_tested": false
   }
 }

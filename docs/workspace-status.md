@@ -4,13 +4,16 @@
 (`nezha.b2c99443fe9e90a4a7954eac`), slot A, boot completed, SELinux Enforcing.**
 The [notification-shade capture](shade-notifications-20260912.md) reproduces
 missing cards: the fully open, unlocked shade retains a one-notification
-lockscreen limit while its combined interaction state remains active. A focused
-source candidate clears the limit without waiting for that state; it is not
-adopted, built or installed. The newly inserted physical Google Fi SIM is loaded
+lockscreen limit while its combined interaction state remains active. The later
+authorized SystemUI restart restores visible notification cards and the normal
+unrestricted count; the phone stays on the same boot and ADB returns to shell
+UID 2000. A focused source candidate clears the limit without waiting for that
+state; it is not adopted, built or installed, so recurrence remains possible.
+The newly inserted physical Google Fi SIM is loaded
 and registered on LTE with a connected data context; IMS is unregistered, and
 calls, SMS and cellular downloads remain untested. No causal link between SIM
-insertion and the shade fault is established. All phone access for this capture
-was read-only, with ADB remaining shell UID 2000.
+insertion and the shade fault is established. The initial inspection was
+read-only; the subsequent restart and shade verification were user-authorized.
 The [root GPIO and power capture](esim-root-power-20260912.md) adds one completed,
 restored startup test. All five attempts configure DATA/CLK/RESET pins 70/71/72
 to the alternate function and back; the root power manager logs eSIM-resource

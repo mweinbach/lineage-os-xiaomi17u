@@ -79,12 +79,28 @@ both recorded postimage hashes. `make test-current` passes 1,127 tests and
 `make test` passes 5,104 tests, including the private evidence hash checks.
 
 All raw dumps, screenshots, source snapshots and harness outputs remain under
-ignored `reports/sim-progress-notifications-20260912/`. No phone setting, package,
-file, root mode or modem configuration was changed, and no reboot or flash was
-performed. The existing Apple Container service and sole source VM were resumed
-for source reads; no source sync or Android build was started.
+ignored `reports/sim-progress-notifications-20260912/`. The initial inspection
+changed no phone setting, package, file, root mode or modem configuration, and
+performed no reboot or flash. The existing Apple Container service and sole
+source VM were resumed for source reads; no source sync or Android build started.
 
-A separately authorized SystemUI restart can test whether clearing its transient
-state restores the current notifications. It would not install the source fix
-or prove that the fault cannot recur. Permanent delivery still needs source
-adoption, a SystemUI/ROM build and separately authorized installation.
+## Authorized SystemUI restart
+
+The user subsequently approved restarting SystemUI and checking the shade.
+One TERM signal was sent to the verified SystemUI process through temporary
+root ADB. A replacement SystemUI process started; the `system_server` PID,
+kernel boot ID, build, slot, boot-completed state and Enforcing policy remained
+unchanged. ADB was returned to shell UID 2000.
+
+After waking the display, dismissing its unsecured keyguard through
+WindowManager and opening the shade, the screenshot shows ordinary app text,
+notification groups and the Android System group again. The fully open,
+unlocked shade now reports `isUserInteracting=false`,
+`maxDisplayedNotifications=-1` and a 1,064 px stack end height. The existing
+notification cards are restored; no active download was started for this test.
+
+The restart clears the transient failure without installing the source fix.
+Recurrence remains possible. Permanent delivery still needs source adoption,
+a SystemUI/ROM build and separately authorized installation. The restart
+receipts are under the private report's `restart/` directory and their hashes
+are included in the candidate metadata.
