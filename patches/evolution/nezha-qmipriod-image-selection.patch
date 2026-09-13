@@ -1,0 +1,20 @@
+--- a/device/xiaomi/nezha/generated/policy-image-delivery.mk
++++ b/device/xiaomi/nezha/generated/policy-image-delivery.mk
+@@ -49,3 +49,17 @@
+ # Native Kati and actual component copies must qualify this selected path.
+ BOARD_PREBUILT_VENDORIMAGE := vendor/xiaomi/nezha-policy-images/images/vendor.img
+ BOARD_PREBUILT_ODMIMAGE := vendor/xiaomi/nezha-policy-images/images/odm.img
++
++# Explicit QMI logging-policy image for the existing diagnostic userdebug profile.
++# The retained ODM cache remains a mismatch; init compiles the delivered CIL.
++# User-profile policy-image delivery requires a separately measured admission.
++ifneq ($(TARGET_BUILD_VARIANT)/$(NEZHA_BUILD_VARIANT_OPT_IN),userdebug/userdebug)
++$(error Nezha QMI image requires the explicitly selected userdebug profile)
++endif
++ifneq ($(shell test -d vendor/xiaomi/nezha-qmipriod-policy-image && test ! -L vendor/xiaomi/nezha-qmipriod-policy-image && test -f vendor/xiaomi/nezha-qmipriod-policy-image/vendor.img && test ! -L vendor/xiaomi/nezha-qmipriod-policy-image/vendor.img && echo regular),regular)
++$(error Nezha QMI policy image is missing or is not a regular private input)
++endif
++ifneq ($(shell sha256sum < vendor/xiaomi/nezha-qmipriod-policy-image/vendor.img 2>/dev/null | cut -d ' ' -f 1),a721dfa9bdebdf49bef12ebb18595fe47d31892b56cb2730a8845a3cc6efe453)
++$(error Nezha QMI policy image differs from the measured vendor leaf)
++endif
++BOARD_PREBUILT_VENDORIMAGE := vendor/xiaomi/nezha-qmipriod-policy-image/vendor.img

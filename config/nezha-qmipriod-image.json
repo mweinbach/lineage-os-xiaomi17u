@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "id": "nezha-qmipriod-vendor-image-userdebug-v1",
+  "variant": "userdebug",
+  "image": {
+    "path": "vendor/xiaomi/nezha-qmipriod-policy-image/vendor.img",
+    "sha256": "a721dfa9bdebdf49bef12ebb18595fe47d31892b56cb2730a8845a3cc6efe453",
+    "size_bytes": 959709184
+  },
+  "vendor_policy": {
+    "path": "config/nezha-qmipriod-policy.json",
+    "sha256": "2eadb0d5dc5062207f875aae64343d6e1b103fd31387683413a0cd14236e5911",
+    "size_bytes": 1231
+  },
+  "selection_patch": {
+    "path": "patches/evolution/nezha-qmipriod-image-selection.patch",
+    "sha256": "5fda38f25b80f60c830165aa367d97f8f29414905f71411f83475a875b9dee9c",
+    "size_bytes": 1491
+  },
+  "source_file": {
+    "path": "device/xiaomi/nezha/generated/policy-image-delivery.mk",
+    "before_sha256": "ed9164eb5ad7dc5b9ddcdc915fd452b8a57905d7e1d1bc90df31810ae8caa575",
+    "after_sha256": "9b34c1c9f943b28fbbd68be6503db349fcae7d8d9646632411c1c24cf2596635"
+  },
+  "evidence": [
+    {
+      "path": "reports/telephony-fixes-20260912/vendor-raw-v2.stdout",
+      "sha256": "1c279b98ded49976f3a3ba9e9bc05a3f6c02baba8d0083d3ef7382242dcf6d84",
+      "size_bytes": 7723
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/vendor-image.json",
+      "sha256": "a89e774f1eb9879a92cdca8de763ac8e651130ceb2470191e881189db2bd0e22",
+      "size_bytes": 1889
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/policy-native.json",
+      "sha256": "488d18580507649028b4e59b5b0c34559a15db94d4e75ec945003a1cd2637cd9",
+      "size_bytes": 16241
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/current-policy-sidecars.txt",
+      "sha256": "59aae72ec05b343f28c3ed59002da5195e3ba8a5e57683b0173c0a43105cbac7",
+      "size_bytes": 524
+    }
+  ],
+  "validation": {
+    "two_raw_reconstructions_identical": true,
+    "filesystem_entries_compared": 3910,
+    "exact_changed_files": [
+      "/etc/selinux/vendor_sepolicy.cil"
+    ],
+    "all_other_file_bytes_and_metadata_preserved": true,
+    "avb_hashtree_verified": true,
+    "avb_geometry_and_properties_preserved": true,
+    "strict_retained_user_corpus_compilation_passed": true,
+    "current_userdebug_strict_failure_identical_to_baseline": true
+  },
+  "delivery": {
+    "current_userdebug_precompiled_odm_hash_mismatch": true,
+    "uses_existing_init_split_policy_compilation": true,
+    "user_variant_admitted": false,
+    "source_adopted": false,
+    "rom_built": false,
+    "outer_signed": false,
+    "installed": false
+  }
+}
