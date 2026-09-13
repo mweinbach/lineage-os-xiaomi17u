@@ -5,8 +5,8 @@ fault in Xiaomi display-device routing has a factory-backed fix.** The earlier
 notification-shade patch is also adopted. Source revision 30 is
 `nezha.a22a7b1e3294c491ae5d03db`, with 736 recorded input files. The ordinary
 SystemUI, telephony, framework-resource and source-policy component build passed;
-the full target-files build is in progress. These changes have not been
-installed. The connected phone remains on v25, and collection in this work was
+the full target-files build and all workspace tests passed. Signed delivery is
+being prepared. These changes have not been installed. The connected phone remains on v25, and collection in this work was
 read-only.
 
 The [measurement record](../research/telephony-fixes-20260912.json) binds the
@@ -28,8 +28,9 @@ measured vendor image selection is [here](../config/nezha-qmipriod-image.json).
 The new unsigned vendor leaf is 959,709,184 bytes, SHA-256
 `a721dfa9bdebdf49bef12ebb18595fe47d31892b56cb2730a8845a3cc6efe453`.
 Only `/etc/selinux/vendor_sepolicy.cil` changes inside the filesystem; the
-original footer geometry and build properties remain. Outer signing is a
-separate delivery step.
+original footer geometry and build properties remain. The preparation contracts
+retain their original scope; the measurement record tracks later build and
+delivery results.
 
 The active build remains the existing explicit **userdebug** profile. Its normal
 metadata selection already uses init's split-policy compilation because the
@@ -87,8 +88,16 @@ QMI correction removes every other property warning.
 
 ## Validation
 
-Before source adoption, `make test-current` passed 1,132 tests and `make test`
-passed all 5,111 tests. The IMS tests, policy derivation/staging tests, exact patch
+After admitting the measured v26 package, `make test-current` passed 1,132 tests
+in 33.028 seconds and `make test` passed all 5,111 tests in 219.997 seconds. The IMS tests, policy derivation/staging tests, exact patch
 replays, native policy checks and complete vendor filesystem comparisons supply
 the focused evidence above. Hardware and carrier results remain separate from
 source, component, filesystem and package validation.
+
+The full build succeeded on the unchanged second attempt. The first attempt
+failed in the host `merge_zips` Go runtime (`SIGSEGV` in `scanobject`) while
+packaging FaceUnlock; the exact failed step and subsequent signing succeeded
+on retry. AppFunctions warnings at the end of the first log were not the
+stopping failure. All 736 source inputs match the revision-30 record before and
+after the successful build. The guest resource checks and all 46 unsigned
+archive checks passed.

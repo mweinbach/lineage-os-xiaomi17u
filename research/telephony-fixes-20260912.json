@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "nezha-telephony-and-display-fixes-20260912",
-  "status": "source_and_vendor_leaf_validated_android_build_in_progress",
+  "status": "full_build_and_tests_passed_signed_delivery_in_progress",
   "device": {
     "observed_build": "nezha.b2c99443fe9e90a4a7954eac",
     "slot": "a",
@@ -171,6 +171,51 @@
       "path": "reports/telephony-fixes-20260912/ims-extra-codes.json",
       "sha256": "1080ee48382eec1359110db8eced68e8a15239514c3cf43bcf8c35cdac0504b0",
       "size_bytes": 2231
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/native-full-build.json",
+      "sha256": "7144c5f42802da0522b3e1adff08944a28348c0d7cfa4239f4ae25723a2e4f39",
+      "size_bytes": 1521
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/build-attempt1-failure.json",
+      "sha256": "19b0e0f32208abaccd72b27b901bf6d52e4e7b7ebf09db7877743bc92a026bcd",
+      "size_bytes": 501
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-guest-gates.json",
+      "sha256": "670e9fff7077c05528e24bc5f83d2f6b47166923d849f0cbde983d85c3d8607e",
+      "size_bytes": 331
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-unsigned-gates.json",
+      "sha256": "c987e6039b4f81e25d5e49ec41390ba4d1403ba9dfd75e9b3676693dcc5a033b",
+      "size_bytes": 5289
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-admission-test-current.log",
+      "sha256": "f9f1424604430c8a07002d0096c0e485ab7c03adf504f2069492992c2236b314",
+      "size_bytes": 209191
+    },
+    {
+      "path": "reports/telephony-fixes-20260912/v26-admission-make-test.log",
+      "sha256": "f43b00c1c6599cee050fa12ffc9bbfb33b6308a4e2006f476148dbc4848420b6",
+      "size_bytes": 905375
+    },
+    {
+      "path": "reports/variant-opt-in-20260906/v26-package-receipt.json",
+      "sha256": "b2f1dbf73658ddf858ceb753ac717b4e79d3db9ffb5b79939419b77cd52e261d",
+      "size_bytes": 1080
+    },
+    {
+      "path": "reports/variant-opt-in-20260906/v26-transfer.json",
+      "sha256": "6b9438d3f991f6c83306c768ded895c1d42172c21f0da9fc816018c3e759f583",
+      "size_bytes": 1404
+    },
+    {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v26-admit/admission.json",
+      "sha256": "b30e830fa20efd4c8750dac7f106433006711d24bbccc3dbe303447d2768f4c1",
+      "size_bytes": 7114
     }
   ],
   "source": {
@@ -183,5 +228,37 @@
       "size_bytes": 184379
     }
   },
-  "ordinary_component_build_passed": true
+  "ordinary_component_build_passed": true,
+  "native_full_build_passed": true,
+  "validation": {
+    "test_current": {
+      "tests": 1132,
+      "seconds": 33.028,
+      "passed": true
+    },
+    "make_test": {
+      "tests": 5111,
+      "seconds": 219.997,
+      "passed": true
+    },
+    "unsigned_archive_checks": 46,
+    "unsigned_archive_passed": true,
+    "guest_gates_passed": true
+  },
+  "delivery": {
+    "version": "v26",
+    "build_number": "nezha.a22a7b1e3294c491ae5d03db",
+    "unsigned_archive": {
+      "path": "/work/out/nezha-feature-fixes-20260905-v1/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files.zip",
+      "sha256": "436ed41679dcb425ebf11ead9e9b575c0221158b71cf39dd57bb5755536410e4",
+      "size_bytes": 11324471516
+    },
+    "sparse_super": {
+      "path": "/work/validation/variant-opt-in-super-20260906-v26/super.img",
+      "sha256": "76f0287bfaa826d4c95a3f893b356f3dc85e84ed83916dbe8b66519e568b1249",
+      "size_bytes": 9477974128
+    },
+    "installed": false,
+    "bundle_verified": false
+  }
 }
