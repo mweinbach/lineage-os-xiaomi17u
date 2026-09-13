@@ -2,7 +2,7 @@
 
 Bring-up workspace for a private Evolution X (Android 16 QPR2, `bka` / `bp4a`)
 build for one Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`, 4 KiB pages). The
-installed build is the v23 userdebug delivery set, which boots with enforcing
+installed build is the v26 userdebug delivery set, which boots with enforcing
 SELinux and root ADB for diagnostics. Most of this repository is tooling,
 contracts and evidence records, not Android source.
 
@@ -119,22 +119,41 @@ quoted.
 
 ## Where things stand
 
-- Installed: v23, `nezha.2fa2ea3549a2fc869a4c79df`, userdebug, slot A,
-  Enforcing, bundle under
-  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v23/`. It is v22 plus
-  the AICore feature declaration from this phone's own global firmware, and it
-  carries the Now Playing music-trigger shim, the 8 mm UDFPS icon, v21's Pixel
+- Installed: v26, `nezha.a22a7b1e3294c491ae5d03db`, source revision 30,
+  userdebug, slot A, Enforcing, boot completed in 25.3 s, bundle under
+  `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v26/`. It adds the
+  telephony, notification-shade and display-node fixes over v25, and keeps every
+  earlier selection: the AICore feature declaration, the
+  Now Playing music-trigger shim, the 8 mm UDFPS icon, v21's Pixel
   `music_detector` files, v20's three-part MPEG4Writer fix, the always-on Leica
   Essential selection, the four ported CameraOpt methods and the factory
-  camcorder profile selection; see `docs/v23-install-validation-20260911.md`,
-  `docs/v22-install-validation-20260911.md`,
+  camcorder profile selection; see `docs/v26-install-validation-20260912.md`,
+  `docs/telephony-fixes-20260912.md`,
   `docs/v20-install-validation-20260910.md` and `docs/leica-essential-20260910.md`.
-- Two measured faults are fixed in source and waiting on a delivery set (v24):
-  source revision 26 restores the volume curves the AIDL engine path discards, so
-  until it lands every stream plays at full scale at every index including 0 and
-  the slider does nothing (`docs/audio-volume-curves-20260911.md`); source
-  revision 27 adds one SELinux rule so the Xiaomi camera can `dlopen` the native
-  libraries of its downloadable modes (`docs/camera-split-modules-20260911.md`).
+- A SIM is now inserted and IMS registers. On v26 both compiled device
+  capability booleans resolve true, `isVolteEnabledByPlatform=true`, the
+  physical-SIM IMS callback reports connected over LTE, and MmTel advertises
+  voice and SMS. All six IWLAN selectors resolve to the retained
+  `vendor.qti.iwlan` classes with live telephony bindings. A completed call and
+  an SMS exchange are still untested, and the video and Wi-Fi calling platform
+  gates remain false. Notification cards are visible and user-confirmed.
+- The audio volume curves are fixed and installed. The live v26 policy holds 15
+  volume groups and 75 populated device-category curves. The first attempt at
+  this fix boot-looped v24 on `Invalid usage 19`; the corrected one-file patch
+  leaves the AIDL conversion alone and fills the empty volume groups from the
+  legacy tables (`docs/audio-volume-curves-20260911.md`). No listening or mute
+  test has been run.
+- The camera split-module SELinux rule is in source
+  (`allow platform_app app_data_file:file execute;` in
+  `device/xiaomi/nezha/sepolicy/product/private/platform_app.te`) and ships in
+  the installed build, but downloadable camera modes have not been exercised
+  since, so it is neither reconfirmed nor declared fixed
+  (`docs/camera-split-modules-20260911.md`).
+- Open error from the v26 log review: DeviceLock has a package-selection
+  mismatch. The effective `config_systemFinancedDeviceController` resolves to
+  Google's controller while the installed APEX contains the AOSP one, so the
+  financed-device-controller role has no holder and its boot/unlock policy call
+  fails. Resolving the product selection is separate work.
 - Gemini Nano: AICore itself is installed and running from Play, but the model
   weights come over Google's attestation-gated protected download, which refuses
   this phone (`INVALID_ARGUMENT`, `verifiedbootstate=orange`). Nothing in the
@@ -149,10 +168,17 @@ quoted.
   `persist.sys.nezha.nowplaying.mode`; see `docs/now-playing-trigger-20260911.md`.
 - The 8 mm UDFPS icon is in the built SystemUI but undrawable until a fingerprint
   is enrolled (`dumpsys fingerprint` reports `"count":0`).
-- Predecessor (removed from host): v21, `nezha.34aee22f376f606d9ed52909` (the
-  Pixel music_detector files); earlier v20 `nezha.d5894f355e27f7d2f503f519`
-  (recorder fix), v19, v18, and v17 `nezha.11b0a26475073bca18f34c39` (Leica).
-- Source: revision 22 in the Linux checkout, now installed as v22. It carries the merged feature
+- Recorded predecessor: v25, `nezha.b2c99443fe9e90a4a7954eac`, observed
+  immediately before the authorized v26 installation. The v23, v24 and v25 set
+  bytes are still on the host at about 57 GB each, which the retention rule
+  above says to remove now that v26 is installed and recorded. Earlier sets
+  survive only as hashes: v21 `nezha.34aee22f376f606d9ed52909` (Pixel
+  music_detector files), v20 `nezha.d5894f355e27f7d2f503f519` (recorder fix),
+  v19, v18, and v17 `nezha.11b0a26475073bca18f34c39` (Leica).
+- Source: revision 30 in the Linux checkout, installed as v26, with 736
+  recorded input rows in
+  `reports/telephony-fixes-20260912/source-revision-30/source-installed.json`.
+  It carries the merged feature
   candidates (display brightness, Dolby, haptics, camera scheduling, refresh
   policy), the explicit userdebug opt-in, the QTI camera XML selection fix,
   the HyperOS camera framework port, native camera session hooks, vendor-key
@@ -160,8 +186,9 @@ quoted.
   the stale Flex clock removal. `user` is still the default variant; userdebug
   needs its explicit opt-in. The workload classifier stays disabled.
 - V15 carried the exact-stock IMS provider in its restored
-  `vendor_qtelephony` domain (no SIM) and the display dim level 0.05; those
-  remain in v20. See `docs/tier1-ims-dim-20260909.md`.
+  `vendor_qtelephony` domain and the display dim level 0.05; those remain in
+  v26, where the provider now has a SIM and registers. See
+  `docs/tier1-ims-dim-20260909.md`.
 - Camera: on v20 the Xiaomi app exposes the full video matrix (720p to 8K,
   30/60/120 fps). 4K60 Dolby Vision and 1080p record and play with a live
   microphone; 8K, 4K120 and long/sustained 4K60 now also record a decodable HEVC
@@ -185,10 +212,13 @@ quoted.
   (`docs/leica-essential-20260910.md`, `docs/v17-install-validation-20260910.md`).
   Image quality, focus, stabilization and the M9-vs-M3 look still need a lit scene
   (`docs/tier2-camera-v16-20260910.md`).
-- Open on device: retained userdata, UDFPS, shade visuals, IMS and VoLTE,
-  panel brightness and HBM policy, Dolby, haptics, refresh policy, workload
-  classifier, and the hardware ledger (radio, sensors, GNSS, NFC, Wi-Fi,
-  Bluetooth, suspend, charging, thermals).
+- Open on device: a completed call and SMS over the registered IMS, Wi-Fi
+  calling, retained userdata, UDFPS, shade visuals, panel brightness and HBM
+  policy, Dolby, haptics, refresh policy, workload classifier, and the hardware
+  ledger (radio, sensors, GNSS, NFC, Wi-Fi, Bluetooth, suspend, charging,
+  thermals). eSIM is unavailable: every startup attempt ends in RX BREAK and
+  NO_ATR and the physical cause is unresolved
+  (`docs/esim-root-power-20260912.md`).
 - Not yet built: OTA packages, the both-slot delivery route, a source kernel,
   release keys. The tracked tools for those exist but have not run on a real
   identity.
